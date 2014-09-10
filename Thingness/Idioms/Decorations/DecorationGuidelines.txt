@@ -1,0 +1,39 @@
+﻿DecorationOfBase is a base implementation of the Decorator pattern used within Decoratid.
+	Key Implementation Points:
+	-"This" MUST return this cast to the decorated type.  This is what allows us to get around the c# problem of being unable to
+		declare types like ISomethingOfT : T.
+	-"ApplyThisDecorationTo()" is a clone mechanism that can apply this decoration to the provided to-be-decorated.  Think of it 
+		as a ctor that takes in decorated and uses the instance properties for the other ctor arguments.
+	-"(De)HydrateDecoration" implementations SHOULD only act on their own layer and not on any other decoration in the decoration chain.
+	-The DecorationValueManager instantiates types without initialization, so all appropriate initialization should happen
+		in DydrateDecoration and ApplyThisDecorationTo.
+
+	Guidelines:
+		CTOR:
+			- SHOULD create a fully hydrated type - thus pass all required args in the ctor
+				- NO DEFAULT CTORS. The least verbose ctor should have one argument - decorated.
+			- the first argument SHOULD be the decorated instance, followed by decoration-specific
+				arguments.  
+			- SHOULD inherit from the base ctor that takes only the decorated instance.
+		ApplyThisDecorationTo():
+			- SHOULD, generally speaking, directly return a ctor'd instance with the non-Decorated arguments
+				(eg. every thing after the 1st arg) being populated from the current instance.
+		DehydrateDecoration/HydrateDecoration():
+			- SHOULD be sufficient to hydrate a decoration layer so that the call ApplyThisDecorationTo() would 
+			successfully decorate.
+			- if the decoration has no particular state, null/void implementations work fine.
+		IHasHydrationMap:
+			- typically implement this to satisfy the (De)hydrateDecoration behaviour when the decoration has state
+		
+		Re: Serializable / IHydrateable
+			Serialization is handled by DecorationValueManager/Graph, so unless there's another reason 
+			for additional serialization behaviour, just avoid marking as Serializable/ISerializable.
+			
+			Typically just have 1 serialization vector for decorations -> DecorationValueManager.  
+			This will encourage use of maps, and a consistent serialization approach is established
+			for decorations in general.  
+			
+Note:
+Graphing behaviour is pluggable and depends on the ValueManagerSet that is provided to the Graph.
+By default,  
+

@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{09BCE606-3426-4355-B6B0-3EEFDD387F96}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Decoratid</RootNamespace>
+    <AssemblyName>Decoratid</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="CuttingEdge.Conditions">
+      <HintPath>packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
+    </Reference>
+    <Reference Include="KellermanSoftware.Compare-NET-Objects">
+      <HintPath>packages\CompareNETObjects.3.00.0.0\lib\net45\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Communication\Decorations\DecoratedEndPointLogicBase.cs" />
+    <Compile Include="Communication\Implementations\Sockets\ProtocolUtil.cs" />
+    <Compile Include="Serialization\GrapherSerializationUtil.cs" />
+    <Compile Include="Thingness\Counter.cs" />
+    <Compile Include="Thingness\Idioms\Hydrateable\HydrateableUtil.cs" />
+    <Compile Include="Thingness\Idioms\Hydrateable\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Hydrateable\TypePrefixHydrateableUtil.cs" />
+    <Compile Include="Thingness\Idioms\Logics\LogicExtensions.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\HasHydrationMapValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\UndeclaredValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\Decorations\DecoratedValueManagerBase.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\Decorations\NullCheckDecoration.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\HydrationMapValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\SerializableValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\ManagedHydrateableValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\HydrateableValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\DecorationValueManager.cs" />
+    <Compile Include="Thingness\Delim.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Graph.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\GraphNode.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Path\RootSegment.cs" />
+    <Compile Include="Thingness\Idioms\Hydrateable\TypeFinder.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\CompoundValueManager.cs" />
+    <Compile Include="Thingness\Idioms\Hydrateable\TextDecorator.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\ValueManagerChainOfResponsibility.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\ValueTypeValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\DelegateValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\DuplicateValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Path\EnumeratedItemSegment.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Path\GraphPath.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Path\GraphSegment.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\NullValueManager.cs" />
+    <Compile Include="Thingness\Idioms\ObjectGraph\Values\PrimitiveValueManager.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\ConditionBuilder.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\Expiry\ConditionBuilder.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\ConditionBuilder.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\StrategizedConditionOf.cs" />
+    <Compile Include="Extensions\StreamExtensions.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\OperationProtocolClient.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\OperationProtocolConstants.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\OperationProtocolLogic.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\Operation.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\OperationProtocolRequestItem.cs" />
+    <Compile Include="Messaging\StoreProtocol\OperationProtocol\OperationProtocolResponseItem.cs" />
+    <Compile Include="Messaging\StoreProtocol\StoreProtocolClient.cs" />
+    <Compile Include="Messaging\StoreProtocol\StoreProtocolEndpointLogic.cs" />
+    <Compile Include="Messaging\StoreProtocol\StoreProtocolUnitOfWork.cs" />
+    <Compile Include="Serialization\JSONSerializationUtil.cs" />
+    <Compile Include="Serialization\ISerializationUtil.cs" />
+    <Compile Include="Serialization\NetDataContractSerializerUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Serialization\SerializationEnvelope.cs" />
+    <Compile Include="Serialization\SerializationManager.cs" />
+    <Compile Include="Serialization\UnattributedTypeSerializationSurrogate.cs" />
+    <Compile Include="Thingness\Idioms\Logics\Decorations\ErrorCatchingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Logics\Decorations\DecoratedLogicBase.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Evicting\EvictionPolicy.cs" />
+    <Compile Include="Tasks\Core\StrategizedTaskOf.cs" />
+    <Compile Include="Tasks\Core\StrategizedTask.cs" />
+    <Compile Include="Tasks\Decorations\AsynchronousDecoration.cs" />
+    <Compile Include="Tasks\Decorations\PollingDecoration.cs" />
+    <Compile Include="Tasks\Decorations\SynchronousDecoration.cs" />
+    <Compile Include="Tasks\Decorations\EventingDecoration.cs" />
+    <Compile Include="Tasks\JobTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\TaskStoreDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Logics\Logic.cs" />
+    <Compile Include="Thingness\Idioms\Logics\LogicOf.cs" />
+    <Compile Include="Thingness\Idioms\Logics\LogicTo.cs" />
+    <Compile Include="Thingness\Idioms\Logics\LogicOfTo.cs" />
+    <Compile Include="Thingness\Idioms\Logics\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Decorations\DecorationOfBase.cs" />
+    <Compile Include="Communication\Decorations\Throttle\ThrottlingEndPointLogicDecoration.cs" />
+    <Compile Include="Communication\EndPointHostBase.cs" />
+    <Compile Include="Communication\Implementations\Sockets\Interfaces.cs" />
+    <Compile Include="Communication\Implementations\Sockets\Client.cs" />
+    <Compile Include="Communication\Implementations\Sockets\Host.cs" />
+    <Compile Include="Communication\Interfaces.cs" />
+    <Compile Include="Communication\EndPoint.cs" />
+    <Compile Include="Communication\NetUtil.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\ContextualConditions.cs" />
+    <Compile Include="Configuration\ConfigEntry.cs" />
+    <Compile Include="Crypto\AESThenHMAC.cs" />
+    <Compile Include="Crypto\AESGCM.cs" />
+    <Compile Include="Crypto\CryptoHelper.cs" />
+    <Compile Include="Crypto\Hashing\IHashProvider.cs" />
+    <Compile Include="Crypto\Hashing\PasswordHash.cs" />
+    <Compile Include="Crypto\CipherPair.cs" />
+    <Compile Include="Crypto\KeyChain.cs" />
+    <Compile Include="Crypto\CipherPairFile.cs" />
+    <Compile Include="Crypto\MyKeyChain.cs" />
+    <Compile Include="Extensions\SerializationExtensions.cs" />
+    <Compile Include="Thingness\Idioms\Store\Broker\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Store\Broker\StoreConnection.cs" />
+    <Compile Include="Thingness\Idioms\Store\Broker\StoreConnectionManager.cs" />
+    <Compile Include="Thingness\Idioms\Store\CoreStores\EncodedInMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\CoreStores\EncryptedInMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Caching\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\DecorationExtensions.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Eventing\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Evicting\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Factoried\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Interception\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Masking\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Polling\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StoreOf\StoreOfUniqueIdDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StoreOf\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StreamBacked\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Validating\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Validating\ItemValidators.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StoreOf\StoreOfExactlyDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StreamBacked\BackingEncryptedStreamDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\Idioms\Store\Decorations\StreamBacked\BackingFileDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\Idioms\Store\Decorations\StreamBacked\BackingLockedFileDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\Idioms\Store\Decorations\StreamBacked\BackingStreamDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Validating\ValidatingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\FileStores.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\InMemoryStores.cs" />
+    <Compile Include="Tasks\Decorations\DecoratedTaskBase.cs" />
+    <Compile Include="Tasks\Core\Extensions.cs" />
+    <Compile Include="Tasks\Decorations\DependencyDecoration.cs" />
+    <Compile Include="Tasks\Extensions.cs" />
+    <Compile Include="Tasks\Decorations\ConditionalTriggerDecoration.cs" />
+    <Compile Include="Tasks\TaskBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\File\LockedFile.cs" />
+    <Compile Include="Crypto\ProtectedDataUtil.cs" />
+    <Compile Include="Thingness\Idioms\Store\StoreSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\Idioms\Store\StoreUtil.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\Decorations\StringableListDecorationBase.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\Decorations\LengthPrefixDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\Decorations\LengthPrefixListDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\Decorations\StringableDecorationBase.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\RawStringable.cs" />
+    <Compile Include="Thingness\Idioms\Stringable\RawStringableList.cs" />
+    <Compile Include="Thingness\Idioms\Testable\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Testable\TestableResult.cs" />
+    <Compile Include="Thingness\Idioms\Values\Decorations\ConditionalValueOfDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Values\Decorations\DecoratedValueOfBase.cs" />
+    <Compile Include="Thingness\Idioms\Values\Decorations\WaitingConditionalValueOfDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Values\FactoriedValueOf.cs" />
+    <Compile Include="Thingness\Idioms\Values\Extensions.cs" />
+    <Compile Include="Thingness\Idioms\Values\ValueOf.cs" />
+    <Compile Include="Thingness\IEquals.cs" />
+    <Compile Include="TypeLocation\IoC\Entries.cs" />
+    <Compile Include="Utils\FileUtil.cs" />
+    <Compile Include="Utils\PrimitivesUtil.cs" />
+    <Compile Include="Utils\SecureStringUtil.cs" />
+    <Compile Include="Extensions\BitwiseExtensions.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\AuditTrail\AuditingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\AuditTrail\FluentDecorator.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\AuditTrail\StoredItemAuditPoint.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Masking\MaskingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\SandboxId.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\StoreOf\StoreOfDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Broker\StoredObjectPointers.cs" />
+    <Compile Include="Thingness\ExpiryInfo.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\Expiry\ExpiryConditions.cs" />
+    <Compile Include="Thingness\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\Expiry\TimeWindowConditions.cs" />
+    <Compile Include="Thingness\TimeWindowInfo.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\LimitedTouchCondition.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\BooleanConditions.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Extensions.cs" />
+    <Compile Include="Configuration\AppConfigUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigStore.cs" />
+    <Compile Include="Extensions\ConversionExtensions.cs" />
+    <Compile Include="Extensions\DateExtensions.cs" />
+    <Compile Include="Interception\Decorating\DecoratingInterceptChain.cs" />
+    <Compile Include="Interception\Decorating\DecoratingInterceptLayer.cs" />
+    <Compile Include="Thingness\Onion.cs" />
+    <Compile Include="Interception\Decorating\DecoratingInterceptUnitOfWork.cs" />
+    <Compile Include="Interception\Decorating\Exceptions.cs" />
+    <Compile Include="Interception\Exceptions.cs" />
+    <Compile Include="Interception\InterceptChain.cs" />
+    <Compile Include="Logging\LoggingManager.cs" />
+    <Compile Include="Logging\StoreAsLogger.cs" />
+    <Compile Include="Reflection\IObjectInspector.cs" />
+    <Compile Include="Reflection\ObjectInspectorCache.cs" />
+    <Compile Include="Reflection\ReflectionObjectInspector.cs" />
+    <Compile Include="Reflection\ReflectionUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\TypeMeta.cs" />
+    <Compile Include="Extensions\FluentBool.cs" />
+    <Compile Include="Extensions\MaybeMonadFluentExtensions.cs" />
+    <Compile Include="Extensions\StringConversionExtensions.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Thingness\Idioms\Store\CommitException.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Caching\CacheDecoration.cs" />
+    <Compile Include="Interception\InterceptLayer.cs" />
+    <Compile Include="Interception\InterceptUnitOfWork.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Evicting\EvictDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Factoried\FactoryDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Eventing\EventingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Interception\InterceptingDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\Polling\PollDecoration.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\EventedInMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\EvictionConditionFactoryFactory.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\EvictingInMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\FactoriedEvictingInMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\CoreStores\InMemoryStore.cs" />
+    <Compile Include="Thingness\Idioms\Store\CommitBag.cs" />
+    <Compile Include="Thingness\Idioms\Store\Decorations\DecoratedStoreBase.cs" />
+    <Compile Include="Thingness\Idioms\Store\IHasIDWrappers.cs" />
+    <Compile Include="Thingness\Idioms\Store\StoredObjectId.cs" />
+    <Compile Include="Thingness\Idioms\Store\Implementations\UniqueIdGenerator.cs" />
+    <Compile Include="Thingness\Idioms\Store\SearchFilter.cs" />
+    <Compile Include="Thingness\Idioms\Store\StoreExtensions.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\Named\NamedDependencyAttribute.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\Named\NamedDependency.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\Named\NamedDependencySet.cs" />
+    <Compile Include="Thingness\StringGenerator.cs" />
+    <Compile Include="Thingness\StrategizedService.cs" />
+    <Compile Include="Thingness\Nothing.cs" />
+    <Compile Include="Thingness\BackgroundHost.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Common\ConstantConditions.cs" />
+    <Compile Include="Thingness\DisposableBase.cs" />
+    <Compile Include="Extensions\ActionExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\GenericExtensions.cs" />
+    <Compile Include="Thingness\EventArgOf.cs" />
+    <Compile Include="AssemblyTracker.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Thingness\StateMachineGraph.cs" />
+    <Compile Include="Thingness\Idioms\Store\Interfaces.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\StrategizedConditions.cs" />
+    <Compile Include="Thingness\Idioms\Conditions\Interfaces.cs" />
+    <Compile Include="Thingness\ServiceBase.cs" />
+    <Compile Include="TypeLocation\TypeContainer.cs" />
+    <Compile Include="TypeLocation\DefaultTypeLocator.cs" />
+    <Compile Include="TypeLocation\IoC\IoCContainer.cs" />
+    <Compile Include="TypeLocation\TypeLocator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\DependencyOf.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\DependencySorter.cs" />
+    <Compile Include="Thingness\Idioms\Dependencies\DependencyUtil.cs" />
+    <Compile Include="Utils\ACLUtil.cs" />
+    <Compile Include="Serialization\BinarySerializationUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Messaging\StoreProtocol\OperationProtocol\DesignNotes.txt" />
+    <Content Include="Thingness\Idioms\Decorations\DecorationGuidelines.txt" />
+    <Content Include="Thingness\Idioms\Dependencies\Named\Notes.txt" />
+    <Content Include="Thingness\Idioms\Logics\Notes.txt" />
+    <Content Include="Thingness\Idioms\ObjectGraph\GraphingNotes.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
+if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

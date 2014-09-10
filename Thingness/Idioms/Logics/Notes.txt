@@ -1,0 +1,27 @@
+﻿The Logics namespace is concerned with simplifying the concept of a delegate/method/do into 4 possible arrangements:
+Logic,LogicOf,LogicOfTo,LogicTo.  If logic needs some argument data it is modelled with the IHasContext idiom,
+as some contextual data Tof or "Of".  Similarly if logic produces some result data it is modelled with ILogicTo,
+and the result is available as a property.  
+
+These 4 forms can be thought of as Action, Action<Tof>, Func<Tof,Tto>, Func<Tto> instances, wrapped with stateful 
+argument and result placeholders as Context{get;} and Result{get;}, respectively.
+
+Ok why?
+
+-Enables decoration -> see ErrorCatchingDecoration
+-provides conceptual common ground using ILogic, ILogicOf, ILogicTo, and thus common behaviour, amongst
+Logic, LogicOf, LogicOfTo, LogicTo.
+-treats each instance as a "Unit of Work", conceptually.  Where the entire state of the operation is available.
+-explicit control of serialization.  We're trying to minimize the problem of behaviour into 4 forms so that the issues with
+	serializing it are likewise minimized.
+-common implementation of IEquatable, ToString wherein behaviour can be compared to each other!   
+
+
+Implementation Notes:
+-each class is sealed
+-marked as Serializable
+-IManagedHydrateable with the SerializableValueManager being the specified value manager
+	- thus Logic has its serialization behaviour completely specified, and this will work with both native .NET and
+		our custom Graph serialization approach.  
+	 
+ 

@@ -1,0 +1,30 @@
+﻿Dependencies:
+
+A "dependency", IDependencyOf is modelled as something (of T) that has a list of other things (of T) it depends on.  
+A set of dependencies can be sorted from least dependent to most.  
+A concrete instance of IDependencyOf, DependencyOf, exposes static methods for sorting a graph of like.
+DependencySorter performs the sorting of a set of dependencies.  
+
+
+
+Named Dependencies:
+
+
+
+
+	
+	
+	
+	
+	- 
+amenable to this, as they are built with string).
+
+
+
+
+
+Attributes are limited to using value types properties, so proxies to the actual dependency instance are needed.
+Thus NamedDependency is created to use strings as proxies, with an additional classifying property, DependencyTag.
+The Attribute wraps this class, and IHasNamedDependency and IHasNamedDependencies expose it via interface compatibility.
+
+AttributedDependencyUtil is a utility class enabling mining of dependency info from types via their attributes.

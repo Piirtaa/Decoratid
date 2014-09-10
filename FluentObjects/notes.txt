@@ -1,0 +1,32 @@
+﻿
+    /*  A fluent object is an object that implements a series of interfaces that explictly define its behaviour.
+     * These interfaces are:
+     * 
+     * IHasContext - provides property for the type of the object "state" or context.  
+     * IHasBehaviour - provides a hash for the behaviours
+     * IListensFor - indicates what the object is listening for in terms of system messages.  typically would apply this to a
+     *  persistent type of class (it has to have a lifespan in order to listen for stuff).  prob would be a system object,
+     *  singleton type of thing.
+     * IHasState  - indicates that the object has a bunch of states and is able to perform validations/behaviour depending on state.
+     *  typically would give an object state when we want state checks for behaviour defined in IHasBehaviour
+     * IHasTrigger - indicates that the object has conditions which, when met, will invoke object behaviour.  as with IListensFor this
+     *  is a persistent/lifespany type of class deal.
+     * IHasBackground - indicates the object has a background process.   persistent/lifespanny
+     * 
+     * The concepts:
+     * -objects have a context
+     * -behaviour acts on this context
+     * -behaviour and context are isolated explicitly - this enables hydration/dehydration and ability to execute behaviour
+     *  whereever.  ur not stuck with a single instance.  shit can run anywhere.  helps with parallelization
+     * -limits to core types of behaviour (handles messages, has triggers, background jobs, etc)
+     *   we want to sandbox/conform behaviour so shit will all look the same.  it will be easier to "view" the design.
+     * -it's meta. yes languages use OO approaches to enable this type of object behaviour - i'm just standardizing it, and 
+     * explicitly moving concerns out of the language itself into the code.  design, in other words, is transformed from the 
+     * "language domain" into the code domain.
+     * -it's fluent.  again, easier to view the design.
+     * 
+     * 
+     * 
+     */
+
+    

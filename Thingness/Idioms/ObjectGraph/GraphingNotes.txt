@@ -1,0 +1,64 @@
+﻿The Graphing system is core to how information is serialized in the Decoratid system.
+The general idea is this:
+
+	-Split an object graph into GraphNodes, each of which has a unique GraphPath (which locates the node within the graph),
+		a Raw Value (ie. a reference to the object instance), a ValueManager and serialized value.
+	-A ValueManager is a class that can convert an object (the node instance) into a string, and vice versa.
+	-A Chain Of Responsibility pattern is used to broker ValueManagers.
+		-The default list of ValueManagers in the chain order is:
+		     -Nulls 1st
+             -Duplicates 2nd - this does a NodeList scan per Node
+             -Fixed implementations 3rd (eg. Delegates, Primitives)
+             -Interface overrides 4th (eg. Hydrateable, ManagedHydrateable, IHasHydrationMap).
+			 -Custom things 5th (eg. Decorations)
+             -Catch-alls 6th (eg. value types (which should serialize).
+             -Final 7th (eg. Compounds)
+
+
+	-Why?
+		-Provides a clear hierarchy via the GraphPath, so that branches can be easily identified and parsed out.
+			-each GraphNode is a leaf, conceptually, and can be represented by 2 strings - the path and the serialized value
+				-thus each branch is a list of leafs.
+				-substring comparison of paths is all that is needed to find branches.
+				 
+		-Is inherently "Storeable", (and can take advantage of all store decorations)
+		-The GraphPaths provide a manifest of items in the graph
+			-can be used as graph signature
+			-can be used as delta signature
+			-can provide smell of size of graph
+			-makes iterating thru the graph very efficient (by graphpath length), and amenable to 
+				parallel operations (as it is very easy to see if 2 branches are separate) - see algorithm below.
+					1.  sort by graphpath length
+					2.  iterate
+							(keeping latest parent path)
+							
+							if item is child branch, skip
+							else, parallel process node
+				It's a naturally efficient parallelization alg.
+		-Very simple Chain of Responsibility pattern indicating how Values are handled provides
+			easy extensibility.
+		-#1 reason : easy to audit/localize/handle serialization problems!!!
+			-need this when serializing behaviour
+		-Fractal, thus simpler and more easily coverage tested/QA'd
+
+Customization:
+
+MappedValueManager is a type-specific value manager, aka IHydrationMap, that maintains a list of managers and
+ getter/setters, enabling the type to be handled.  
+
+UndeclaredValueManager is a ValueManager to use in a HydrationMap when the handler should be found by examining
+the chain of responsibility the session is using.
+
+In this way we have fractal ValueManagement as well.  A type can specify how it is handled (eg. takes responsibility) and
+within this scope, it is still able to delegate handling of its children back to the Chain of Responsibility 
+(eg. gives responsibility back).
+
+Should a custom valuemanagement scheme be created, such as something decorated with security concerns, we can inject
+it into the Chain of Responsibility and extend in this way.  The Graphing system is not partial to any implementations.
+
+Finally, when the chain of responsibility fails to find a handler for a type we have the CompoundValue, which just marks
+a node that is the composite of its children - we go as far down as we can, until we can't decompose.
+
+
+
+		  	  
