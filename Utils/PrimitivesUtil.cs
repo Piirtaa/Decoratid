@@ -15,8 +15,8 @@ namespace Decoratid.Utils
     public static class PrimitivesUtil
     {
         #region Declarations
-        private static Random _rnd = new Random();
-        private static StringGenerator _gen = new StringGenerator();
+        private static System.Random _rnd = new System.Random();
+        private static Decoratid.Random.StringGenerator _gen = new Decoratid.Random.StringGenerator();
         #endregion
 
         #region Random Primitive Generator

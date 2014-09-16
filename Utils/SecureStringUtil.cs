@@ -14,7 +14,6 @@ namespace Decoratid.Utils
     {
         public static SecureString ToSecureString(string input)
         {
-            
             SecureString secure = new SecureString();
             foreach (char c in input)
             {

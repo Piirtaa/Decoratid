@@ -10,15 +10,6 @@ namespace Decoratid.Utils
 {
     public static class ACLUtil
     {
-        /// <summary>
-        /// removes all access rules to the file except for the provided account
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="account"></param>
-        public static void LockFileDown(string fileName, string account)
-        {
-
-        }
 
         // Adds an ACL entry on the specified file for the specified account.
         public static void AddFileSecurity(string fileName, string account,

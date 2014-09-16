@@ -1,0 +1,39 @@
+﻿JARGON:
+	System/Machine/Automata : something that has a finite set of rules describing its behaviour
+	
+	Idiom : concept that describes a portion of a system, typically such a general idea that it reoccurs fractally throughout 
+		the system itself
+			-can be tersely represented
+		
+		Decorative:
+			-can be decorated/have variations of form
+
+	Protocol/Standard/Convention: a prescribed approach to solve a common problem in a consistent way when other approaches may 
+		be available.  is often implemented in a non-contractual way. 
+		Example:
+			-using the naming prefix "The" to indicate the type is a Singleton, typically with a pluggable instance.
+	
+	(De)Hydration/(De)Serialization: representing a thing in a textual format.
+
+	Decoration/Decorator Pattern: a design pattern wherein a layer is wrapped upon a thing, intercepting all of the 
+	thing's behaviours.  
+			-can be nested indefinitely
+			-can have layers injected/removed at runtime
+			-has Decoratid convention of being de(hydrateable) on a layer-level, such that an entire decoration chain 
+			will have a well-known serialization format
+
+CODE LAYOUT:
+	-namespace format is Idioms.{Concern}ing.
+		-where the Concern is the Behaviour we're modelling.  it's action-y, thus the "ing" suffix
+	-interfaces are "able", ie. I{Concern}able, would be the interface describing something that has this behaviour.
+		-Idioms are fundamentally behaviours and thus are capable of doing stuff (ie. able).
+	-if the behaviour is aggregated then it would be IHas{Concern}			
+	-(convention) have class named "Interfaces.cs" if the idiom is decorable (meaning we need an interface defining the behaviour so we can then wrap it)
+		-if this class doesn't exist we likely don't have something that can be decorated, and we're dealing more with a fixed "thing"
+	-decorations should live in the folder Decorations (ie. Idioms.{Concern}ing.Decorations)
+	-The basic/core implementations of idioms have prefix naming convention "Natural" to indicate they are standalone,
+		unadorned implementations of the idiom.
+	-types derived from idiom concepts should live in the folder Products (ie. Idioims.{Concern}ing.Products
+
+
+

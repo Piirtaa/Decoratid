@@ -19,5 +19,20 @@ namespace Decoratid.Extensions
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return Convert.ToInt64((date.ToUniversalTime() - epoch).TotalSeconds);
         }
+
+        public static string ToStringUnixTime(this DateTime? dt)
+        {
+            if (dt.HasValue == false)
+                return string.Empty;
+
+            return dt.GetValueOrDefault().ToUnixTime();
+        }
+        public static DateTime? FromStringUnixTime(this string unixTime)
+        {
+            if (string.IsNullOrEmpty(unixTime))
+                return null;
+
+            return FromUnixTime(long.Parse(unixTime));
+        }
     }
 }
