@@ -194,7 +194,7 @@ namespace Decoratid.Idioms.Core.Backgrounding
         {
             Condition.Requires(root).IsNotNull();
             var bg = BackgroundHost.New(isEnabled, backgroundIntervalMSecs, backgroundAction);
-            root.AddBehaviour(bg);
+            root.Is(bg);
             return root;
         }
         public static BackgroundHost GetBackground(this Polyface root)

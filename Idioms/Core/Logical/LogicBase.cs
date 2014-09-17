@@ -41,8 +41,7 @@ namespace Decoratid.Idioms.Core.Logical
         }
         #endregion
 
-
-        #region ILogic
+        #region ILogic/IPerforming
         public abstract void Perform();
         #endregion
 

@@ -19,8 +19,33 @@ namespace Decoratid.Idioms.Core
      * we will be further narrowing and specializing the conceptual lines.  Similarly decorations specialize as well,
      * as they follow the conceptual definitions.
      * 
+     * Polyface is the facilitator of injecting/compositing behaviour/things into a final, larger thing.  
+     * Types which support Polyfacing (eg. implement IPolyfacing), allow their individual behaviours to be linked
+     * to a Polyface.  Able to access one another, the faces in a Polyface can wire fluently, and in this way 
+     * composite behaviours.
      * 
-     *
+     *  The core functions of Polyface and IPolyfacing are:
+     *      Is<T>(T behaviour) - which sets the Polyface(creates new Polyface if one doesn't exist) behaviour 
+     *      As<T>() - which gets the Polyface behaviour (creates new Polyface if one doesn't exist)
+     * 
+     *  
+     * 
+     * Implementation Guidelines for IPerforming:
+     *  The general idea of having an IPerforming is to provide a decoration point around a process. 
+     *  We want this suite of decorations to be availables in more specialized behaviours. For example,
+     *  if IValueOf implements IPerforming, how do we give IValueOf all of the IPerforming decorations?
+     *  We do this by transforming the problem of IValueOf (or of anything else that is IPerforming AKA "doing something"),
+     *  by breaking it into 3 steps: get input; do something; get output. In the example of IValueOf.GetValue(),
+     *  which is the IPerforming "thing we're doing", our implementation looks like this, conceptually:
+     *  
+     *      GetValue()
+     *          -get input
+     *          -IPerforming.Perform()
+     *          -return output
+     *      
+     *  The ILogic implementations give a reference example of doing this.  
+     * 
+     * 
      */
 
 
@@ -84,5 +109,15 @@ namespace Decoratid.Idioms.Core
     public interface IPerforming
     {
         void Perform();
+    }
+    /// <summary>
+    /// says we have something that does something.  
+    /// </summary>
+    /// <remarks>
+    /// If we 
+    /// </remarks>
+    public interface IHasPerformer
+    {
+        IPerforming Performer { get; }
     }
 }

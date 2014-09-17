@@ -53,10 +53,24 @@ namespace Decoratid.Idioms.Core.ValueOfing
         private T Value { get; set; }
         #endregion
 
+        #region IPerforming
+        private void IPerforming.Perform()
+        {
+            //there's nothing to do.  we already have our value
+        }
+        #endregion
+
         #region Methods
         public T GetValue()
         {
-            return this.Value;
+            //step 1 - get arguments 
+            var rv = this.Value;
+            
+            //step 2 - do process 
+            ((IPerforming)this).Perform();
+            
+            //step 3 - get result
+            return rv;
         }
         #endregion
 
