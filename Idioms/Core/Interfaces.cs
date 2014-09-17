@@ -19,16 +19,33 @@ namespace Decoratid.Idioms.Core
      * we will be further narrowing and specializing the conceptual lines.  Similarly decorations specialize as well,
      * as they follow the conceptual definitions.
      * 
-     * Polyface is the facilitator of injecting/compositing behaviour/things into a final, larger thing.  
-     * Types which support Polyfacing (eg. implement IPolyfacing), allow their individual behaviours to be linked
-     * to a Polyface.  Able to access one another, the faces in a Polyface can wire fluently, and in this way 
-     * composite behaviours.
+     * Decorations:
+        *  DecorationOfBase
+        *      defines the base class implementation of the Decorator pattern.  (The concept of "Decoration" 
+            *  in its various forms is central to Decoratid.)  To implement a decorator requires a thing to decorate, usually
+            *  with the "thingness" specified by an interface or base class.  
+         *
+     *     Polyface
+         *     is the facilitator of injecting/compositing behaviour/things into a final, larger thing.  
+             * Types which support Polyfacing (eg. implement IPolyfacing), allow their individual behaviours to be linked
+             * to a Polyface.  Able to access one another, the faces in a Polyface can wire fluently, and in this way 
+             * composite behaviours.
+
+     *      *  The core functions of Polyface and IPolyfacing are:
+             *      Is<T>(T behaviour) - which sets the Polyface(creates new Polyface if one doesn't exist) behaviour 
+             *      As<T>() - which gets the Polyface behaviour (creates new Polyface if one doesn't exist)
+             * 
+             *  Thus a Polyface is able to have several faces with the use of Is/As.  And likewise each IPolyfacing face
+             *  can be decorated (eg. decorating the face and replacing the Polyface's face with the new decoration.  AKA wrap-placing)
+             *  with the use of Is/As.
+             *  
+             *      For example, the call to decorate a face and wrapplace it is: 
+             *          IPolyfacing.As<T>().DecorateWithX().Is<T>();
+             *              -get the T face, decorate it, set it     
      * 
-     *  The core functions of Polyface and IPolyfacing are:
-     *      Is<T>(T behaviour) - which sets the Polyface(creates new Polyface if one doesn't exist) behaviour 
-     *      As<T>() - which gets the Polyface behaviour (creates new Polyface if one doesn't exist)
+     *      In this way we facilitate decoration by adding Faces and the use of the decorator pattern along each Face, itself.
      * 
-     *  
+     * 
      * 
      * Implementation Guidelines for IPerforming:
      *  The general idea of having an IPerforming is to provide a decoration point around a process. 
