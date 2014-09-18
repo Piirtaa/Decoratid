@@ -8,13 +8,11 @@ using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.Hydrating;
-using Decoratid.Idioms.Core.Disposing;
-using Decoratid.Idioms.Core.Behaving;
 using CuttingEdge.Conditions;
+using Decoratid.Idioms.Core;
 
-namespace Decoratid.Idioms.Core.Backgrounding
+namespace Decoratid.Idioms.Backgrounding
 {
-
     public interface IHasBackgroundHost
     {
         BackgroundHost Background { get; }
@@ -64,7 +62,7 @@ namespace Decoratid.Idioms.Core.Backgrounding
         #endregion
 
         #region IPolyfacing
-        Polyface RootFace { get; set; }
+        Polyface IPolyfacing.RootFace { get; set; }
         #endregion
 
         #region Properties
@@ -190,6 +188,13 @@ namespace Decoratid.Idioms.Core.Backgrounding
 
     public static class BackgroundExtensions
     {
+        public static Polyface AddBlankBackground(this Polyface root)
+        {
+            Condition.Requires(root).IsNotNull();
+            var bg = BackgroundHost.NewBlank();
+            root.Is(bg);
+            return root;
+        }
         public static Polyface AddBackground(this Polyface root, bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
         {
             Condition.Requires(root).IsNotNull();
@@ -203,9 +208,28 @@ namespace Decoratid.Idioms.Core.Backgrounding
             var rv = root.As<BackgroundHost>();
             return rv;
         }
-        public static Polyface AddSelfAwareBackground(this Polyface root, ILogicOf<Polyface> action)
+        public static Polyface AddBlankBackground(this IPolyfacing face)
         {
-
+            Condition.Requires(face).IsNotNull();
+            Polyface rv = face.RootFace;
+            if (rv == null)
+            {
+                rv = Polyface.New();
+                face.RootFace = rv;
+            }
+            return rv.AddBlankBackground();
         }
+        public static Polyface AddBackground(this IPolyfacing face, bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
+        {
+            Condition.Requires(face).IsNotNull();
+            Polyface rv = face.RootFace;
+            if (rv == null)
+            {
+                rv = Polyface.New();
+                face.RootFace = rv;
+            }
+            return rv.AddBackground(isEnabled, backgroundIntervalMSecs, backgroundAction);
+        }
+
     }
 }

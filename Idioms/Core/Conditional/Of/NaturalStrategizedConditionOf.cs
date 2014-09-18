@@ -10,7 +10,7 @@ using CuttingEdge.Conditions;
 using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.Core.ValueOfing;
 
-namespace Decoratid.Idioms.Core.Conditional.Of.Core
+namespace Decoratid.Idioms.Core.Conditional.Of
 {
     /// <summary>
     /// A container that implements IConditionOf using a strategy operating on a contextual object of T.
@@ -33,7 +33,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Core
         {
         }
         #endregion
-        
+
         #region Static Fluent Methods
         public static NaturalStrategizedConditionOf<T> New(LogicOfTo<T, bool?> conditionStrategy)
         {
@@ -63,7 +63,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Core
         #endregion
 
         #region Methods
-        public virtual bool? Evaluate(T context)
+        public bool? Evaluate(T context)
         {
             Condition.Requires(this.ConditionStrategy).IsNotNull();
             //clone the logic, set context, and run the logic

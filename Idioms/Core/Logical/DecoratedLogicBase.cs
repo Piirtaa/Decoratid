@@ -1,17 +1,12 @@
-﻿using Decoratid.Idioms.Decorating;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Core.Logical.Decorations
+namespace Decoratid.Idioms.Core.Logical
 {
-    /// <summary>
-    /// define the value of decoration
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     public interface ILogicDecoration : ILogic, IDecorationOf<ILogic> { }
 
     /// <summary>

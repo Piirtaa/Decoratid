@@ -63,7 +63,7 @@ namespace Decoratid.Idioms.Core
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IPolyfacing
     {
         #region Declarations
         private T _Decorated;

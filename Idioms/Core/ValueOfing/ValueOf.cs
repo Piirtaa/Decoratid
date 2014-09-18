@@ -19,10 +19,10 @@ namespace Decoratid.Idioms.Core.ValueOfing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public sealed class NaturalValueOf<T> : IValueOf<T>, ISerializable, IEquatable<NaturalValueOf<T>>
+    public sealed class ValueOf<T> : IValueOf<T>, ISerializable, IEquatable<ValueOf<T>>
     {
         #region Ctor
-        public NaturalValueOf(T value)
+        public ValueOf(T value)
         {
             if (value == null)
                 throw new ArgumentNullException("value");
@@ -32,14 +32,14 @@ namespace Decoratid.Idioms.Core.ValueOfing
         #endregion
 
         #region Static Fluent
-        public static NaturalValueOf<T> New(T value)
+        public static ValueOf<T> New(T value)
         {
-            return new NaturalValueOf<T>(value);
+            return new ValueOf<T>(value);
         }
         #endregion
 
         #region ISerializable
-        protected NaturalValueOf(SerializationInfo info, StreamingContext context)
+        protected ValueOf(SerializationInfo info, StreamingContext context)
         {
             this.Value = (T)info.GetValue("_value", typeof(T));
         }
@@ -53,31 +53,17 @@ namespace Decoratid.Idioms.Core.ValueOfing
         private T Value { get; set; }
         #endregion
 
-        #region IPerforming
-        private void IPerforming.Perform()
-        {
-            //there's nothing to do.  we already have our value
-        }
-        #endregion
-
         #region Methods
         public T GetValue()
         {
-            //step 1 - get arguments 
-            var rv = this.Value;
-            
-            //step 2 - do process 
-            ((IPerforming)this).Perform();
-            
-            //step 3 - get result
-            return rv;
+            return this.Value;
         }
         #endregion
 
         #region Equality Overrides
         public override bool Equals(object obj)
         {
-            return Equals(obj as NaturalValueOf<T>);
+            return Equals(obj as ValueOf<T>);
         }
         public override string ToString()
         {
@@ -90,12 +76,12 @@ namespace Decoratid.Idioms.Core.ValueOfing
         #endregion
 
         #region IEquatable
-        public bool Equals(NaturalValueOf<T> other)
+        public bool Equals(ValueOf<T> other)
         {
             if (other == null)
                 return false;
 
-            NaturalValueOf<T> cObj = (NaturalValueOf<T>)other;
+            ValueOf<T> cObj = (ValueOf<T>)other;
             return cObj.Value.Equals(this.Value);
         }
         #endregion

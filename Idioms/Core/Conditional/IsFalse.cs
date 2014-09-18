@@ -6,22 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Idioms.Core.Logical;
 
-namespace Decoratid.Idioms.Core.Conditional.Core
+namespace Decoratid.Idioms.Core.Conditional
 {
     /// <summary>
-    /// Always true condition
+    /// always false condition
     /// </summary>
     [Serializable]
-    public sealed class IsTrue : ICondition
+    public sealed class IsFalse : ICondition
     {
         public bool? Evaluate()
         {
-            return true;
+            return false;
         }
-        public static IsTrue New()
+        public static IsFalse New()
         {
-            return new IsTrue();
+            return new IsFalse();
         }
     }
-
 }

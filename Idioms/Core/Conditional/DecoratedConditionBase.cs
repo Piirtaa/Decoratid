@@ -1,4 +1,4 @@
-﻿using Decoratid.Idioms.Decorating;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,21 +6,21 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
+namespace Decoratid.Idioms.Core.Conditional
 {
-    public interface IConditionOfDecoration<T> : IConditionOf<T>, IDecorationOf<IConditionOf<T>> { }
+    public interface IConditionDecoration : ICondition, IDecorationOf<ICondition> { }
 
-    public abstract class DecoratedConditionOfBase<T> : DecorationOfBase<IConditionOf<T>>, IConditionOfDecoration<T>
+    public abstract class DecoratedConditionBase : DecorationOfBase<ICondition>, IConditionDecoration
     {
         #region Ctor
-        public DecoratedConditionOfBase(IConditionOf<T> decorated)
+        public DecoratedConditionBase(ICondition decorated)
             : base(decorated)
         {
         }
         #endregion
 
         #region ISerializable
-        protected DecoratedConditionOfBase(SerializationInfo info, StreamingContext context)
+        protected DecoratedConditionBase(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -31,11 +31,11 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
         #endregion
 
         #region Methods
-        public virtual bool? Evaluate(T context)
+        public virtual bool? Evaluate()
         {
-            return base.Decorated.Evaluate(context);
+            return base.Decorated.Evaluate();
         }
-        public override IConditionOf<T> This
+        public override ICondition This
         {
             get { return this; }
         }

@@ -20,7 +20,8 @@ namespace Decoratid.Idioms.Core.Logical
     public sealed class LogicTo<T> : LogicBase, ILogicTo<T>
     {
         #region Ctor
-        public LogicTo(Func<T> function) : base()
+        public LogicTo(Func<T> function)
+            : base()
         {
             Condition.Requires(function).IsNotNull();
             this.Function = function;
@@ -36,7 +37,8 @@ namespace Decoratid.Idioms.Core.Logical
         #endregion
 
         #region ISerializable
-        protected LogicTo(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected LogicTo(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
             this.Function = (Func<T>)info.GetValue("_Function", typeof(Func<T>));
             this.Result = (T)info.GetValue("_Result", typeof(T));
@@ -78,4 +80,18 @@ namespace Decoratid.Idioms.Core.Logical
         #endregion
     }
 
+    public static class LogicToExtensions
+    {
+        public static Func<T> ToFunc<T>(this LogicTo<T> logic)
+        {
+            if (logic == null) { return null; }
+
+            return () => { return logic.CloneAndPerform(); };
+        }
+        public static LogicTo<T> MakeLogicTo<T>(this Func<T> function)
+        {
+            Condition.Requires(function).IsNotNull();
+            return new LogicTo<T>(function);
+        }
+    }
 }

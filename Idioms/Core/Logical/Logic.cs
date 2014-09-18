@@ -18,7 +18,8 @@ namespace Decoratid.Idioms.Core.Logical
     public sealed class Logic : LogicBase
     {
         #region Ctor
-        public Logic(Action action) : base()
+        public Logic(Action action)
+            : base()
         {
             Condition.Requires(action).IsNotNull();
             this.Action = action;
@@ -34,7 +35,8 @@ namespace Decoratid.Idioms.Core.Logical
         #endregion
 
         #region ISerializable
-        protected Logic(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected Logic(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
             this.Action = (Action)info.GetValue("_Action", typeof(Action));
         }
@@ -71,4 +73,21 @@ namespace Decoratid.Idioms.Core.Logical
         }
         #endregion
     }
+
+    public static class LogicExtensions
+    {
+        public static Action ToAction(this Logic logic)
+        {
+            if (logic == null) { return null; }
+
+            return () => { logic.CloneAndPerform(); };
+        }
+
+        public static Logic MakeLogic(this Action action)
+        {
+            Condition.Requires(action).IsNotNull();
+            return new Logic(action);
+        }
+    }
+
 }

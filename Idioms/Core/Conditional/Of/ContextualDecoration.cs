@@ -1,5 +1,5 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional.Core;
+
 using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.Core.ValueOfing;
 using System;
@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
+namespace Decoratid.Idioms.Core.Conditional.Of
 {
 
     /// <summary>
@@ -54,20 +54,42 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
         #endregion
 
         #region ICondition
-        public virtual bool? Evaluate()
+        public bool? Evaluate()
         {
+            bool? rv = null;
+
+            //get the value to apply
             var val = this.Context.GetValue();
 
             //clone the condition if we can
-            if (this.ConditionOf is ICloneableCondition)
+            if (this.Decorated is ICloneableCondition)
             {
-                ICloneableCondition cloneCond = (ICloneableCondition)this.ConditionOf;
+                ICloneableCondition cloneCond = (ICloneableCondition)this.Decorated;
                 IConditionOf<T> clone = (IConditionOf<T>)cloneCond.Clone();
-                return clone.Evaluate(val);
+                rv = clone.Evaluate(val);
             }
-            return this.ConditionOf.Evaluate(val);
+            rv = this.Decorated.Evaluate(val);
+            return rv;
         }
         #endregion
 
+        #region IPolyfacing
+        Polyface IPolyfacing.RootFace { get; set; }
+        #endregion
+    }
+
+    public static class ContextualExtensions
+    {
+        /// <summary>
+        /// Converts a ConditionOf into an ICondition by providing an argument valueOf 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="condOf"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static ICondition DefineCondition<T>(this IConditionOf<T> condOf, IValueOf<T> val)
+        {
+            return ContextualDecoration<T>.New(condOf, val);
+        }
     }
 }

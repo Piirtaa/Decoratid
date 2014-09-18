@@ -110,4 +110,25 @@ namespace Decoratid.Idioms.Core.Logical
 
 
     }
+
+    public static class LogicOfExtensions
+    {
+        public static Action<T> ToAction<T>(this LogicOf<T> logic)
+        {
+            if (logic == null) { return null; }
+
+            return (x) => { logic.CloneAndPerform(x.AsNaturalValue()); };
+        }
+        public static LogicOf<T> MakeLogicOf<T>(this Action<T> action)
+        {
+            Condition.Requires(action).IsNotNull();
+            return new LogicOf<T>(action);
+        }
+        public static LogicOf<T> MakeLogicOf<T>(this Action<T> action, IValueOf<T> context)
+        {
+            Condition.Requires(action).IsNotNull();
+            Condition.Requires(context).IsNotNull();
+            return new LogicOf<T>(action, context);
+        }
+    }
 }

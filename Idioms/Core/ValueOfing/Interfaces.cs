@@ -10,7 +10,7 @@ namespace Decoratid.Idioms.Core.ValueOfing
     /// interface giving us facility to decorate getting a value
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IValueOf<T> : IPerforming
+    public interface IValueOf<T> 
     {
         T GetValue();
     }

@@ -30,13 +30,13 @@ namespace Decoratid.Idioms.Core.ValueOfing
     }
 
     /// <summary>
-    /// use a factory to get a value.  this decoration ignores the core
+    /// use a factory to get a value.  
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <remarks>
    /// </remarks>
     [Serializable]
-    public sealed class NaturalFactoriedValueOf<T> : IValueOf<T>, ISerializable, IEquatable<NaturalFactoriedValueOf<T>>
+    public sealed class FactoriedValueOf<T> : IValueOf<T>, ISerializable, IEquatable<FactoriedValueOf<T>>
     {
         #region Ctor
         /// <summary>
@@ -48,7 +48,7 @@ namespace Decoratid.Idioms.Core.ValueOfing
         /// before querying it.  If we allowed use of ILogicOfTo in the factory, the context would need to be hydrated.  
         /// Additionally, we use CloneAndPerform as the perform mechanism to ensure the stateless nature of the logic, and LogicTo supports this.
         /// </remarks>
-        public NaturalFactoriedValueOf(LogicTo<T> factory) 
+        public FactoriedValueOf(LogicTo<T> factory) 
         {
             Condition.Requires(factory).IsNotNull();
             this.Factory = factory;
@@ -56,14 +56,14 @@ namespace Decoratid.Idioms.Core.ValueOfing
         #endregion
 
         #region Static Methods
-        public static NaturalFactoriedValueOf<T> New(LogicTo<T> factory)
+        public static FactoriedValueOf<T> New(LogicTo<T> factory)
         {
-            return new NaturalFactoriedValueOf<T>(factory);
+            return new FactoriedValueOf<T>(factory);
         }
         #endregion
         
         #region ISerializable
-        private NaturalFactoriedValueOf(SerializationInfo info, StreamingContext context)
+        private FactoriedValueOf(SerializationInfo info, StreamingContext context)
         {
             this.Factory = (LogicTo<T>)info.GetValue("Factory", typeof(T));
         }
@@ -87,7 +87,7 @@ namespace Decoratid.Idioms.Core.ValueOfing
         #region Equality Overrides
         public override bool Equals(object obj)
         {
-            return Equals(obj as NaturalValueOf<T>);
+            return Equals(obj as ValueOf<T>);
         }
         public override string ToString()
         {
@@ -101,12 +101,12 @@ namespace Decoratid.Idioms.Core.ValueOfing
         #endregion
 
         #region IEquatable
-        public bool Equals(NaturalFactoriedValueOf<T> other)
+        public bool Equals(FactoriedValueOf<T> other)
         {
             if (other == null)
                 return false;
 
-            NaturalFactoriedValueOf<T> cObj = (NaturalFactoriedValueOf<T>)other;
+            FactoriedValueOf<T> cObj = (FactoriedValueOf<T>)other;
             return cObj.ToString().Equals(this.ToString());
         }
         #endregion

@@ -28,8 +28,9 @@ namespace Decoratid.Idioms.Core.Logical
     /// Essentially, we are wrapping a delegate.  The wrapping gives us a chance to explicitly control the serialization of the 
     /// delegate, and also to restrict the types of delegates we are expecting (ActionLogic, ActionLogicOf, FunctionLogic, FunctionLogicOf).
     /// </remarks>
-    public interface ILogic : IPerforming
+    public interface ILogic 
     {
+        void Perform();
     }
 
     /// <summary>

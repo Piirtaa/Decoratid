@@ -43,26 +43,21 @@ namespace Decoratid.Idioms.Core
              *          IPolyfacing.As<T>().DecorateWithX().Is<T>();
              *              -get the T face, decorate it, set it     
      * 
-     *      In this way we facilitate decoration by adding Faces and the use of the decorator pattern along each Face, itself.
+     *      In this way we facilitate decoration by adding new Faces and decoration of each Face, itself.
      * 
+     * ILogic:
+             *  The general idea of ILogic is to provide a decoration point around a simple process.  
+     *              At this level we decorate with things like: PerformWhen, Trap and Log errors during performance,
+     *              performance benchmarking.  It wraps but does not intercept any data as there is no data 
+     *              to intercept in the void Perform() sig.  
+     *              
+         *              TODO: I guess if we get really fancy we can define another,
+         *              fancier interface that enables interception of args and result as with DecoratingIntercptionChain....
+
+
      * 
-     * 
-     * Implementation Guidelines for IPerforming:
-     *  The general idea of having an IPerforming is to provide a decoration point around a process. 
-     *  We want this suite of decorations to be availables in more specialized behaviours. For example,
-     *  if IValueOf implements IPerforming, how do we give IValueOf all of the IPerforming decorations?
-     *  We do this by transforming the problem of IValueOf (or of anything else that is IPerforming AKA "doing something"),
-     *  by breaking it into 3 steps: get input; do something; get output. In the example of IValueOf.GetValue(),
-     *  which is the IPerforming "thing we're doing", our implementation looks like this, conceptually:
-     *  
-     *      GetValue()
-     *          -get input
-     *          -IPerforming.Perform()
-     *          -return output
      *      
-     *  The ILogic implementations give a reference example of doing this.  
-     * 
-     * 
+     *  
      */
 
 
@@ -119,22 +114,7 @@ namespace Decoratid.Idioms.Core
     }
     #endregion
 
-    /// <summary>
-    /// indicates a thing performs some action, or does something.  This is the decorative hook upon which all
-    /// cross-cutting concerns can be injected (via decorations, which is the essence of this framework)
-    /// </summary>
-    public interface IPerforming
-    {
-        void Perform();
-    }
-    /// <summary>
-    /// says we have something that does something.  
-    /// </summary>
-    /// <remarks>
-    /// If we 
-    /// </remarks>
-    public interface IHasPerformer
-    {
-        IPerforming Performer { get; }
-    }
+
+
+    
 }

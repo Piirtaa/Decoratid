@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Logging;
 using Decoratid.Idioms.Core.Conditional;
-using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 
