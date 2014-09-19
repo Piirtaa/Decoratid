@@ -13,14 +13,14 @@ namespace Decoratid.Idioms.Core.Conditional.Of
 {
 
     /// <summary>
-    /// decorates as ICondition by providing context data 
+    /// decorates as ICondition by providing context data - the ValueOf
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public sealed class ContextualDecoration<T> : DecoratedConditionOfBase<T>, IHasContext<IValueOf<T>>, ICondition
+    public sealed class WithValueDecoration<T> : DecoratedConditionOfBase<T>, IHasContext<IValueOf<T>>, ICondition
     {
         #region Ctor
-        public ContextualDecoration(IConditionOf<T> decorated, IValueOf<T> context)
+        public WithValueDecoration(IConditionOf<T> decorated, IValueOf<T> context)
             : base(decorated)
         {
             Condition.Requires(context).IsNotNull();
@@ -29,14 +29,14 @@ namespace Decoratid.Idioms.Core.Conditional.Of
         #endregion
 
         #region Fluent Static
-        public static ContextualDecoration<T> New(IConditionOf<T> decorated, IValueOf<T> context)
+        public static WithValueDecoration<T> New(IConditionOf<T> decorated, IValueOf<T> context)
         {
-            return new ContextualDecoration<T>(decorated, context);
+            return new WithValueDecoration<T>(decorated, context);
         }
         #endregion
 
         #region ISerializable
-        protected ContextualDecoration(SerializationInfo info, StreamingContext context)
+        protected WithValueDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Context = (IValueOf<T>)info.GetValue("Context", typeof(IValueOf<T>));
@@ -72,13 +72,9 @@ namespace Decoratid.Idioms.Core.Conditional.Of
             return rv;
         }
         #endregion
-
-        #region IPolyfacing
-        Polyface IPolyfacing.RootFace { get; set; }
-        #endregion
     }
 
-    public static class ContextualExtensions
+    public static class WithExtensions
     {
         /// <summary>
         /// Converts a ConditionOf into an ICondition by providing an argument valueOf 
@@ -87,9 +83,10 @@ namespace Decoratid.Idioms.Core.Conditional.Of
         /// <param name="condOf"></param>
         /// <param name="val"></param>
         /// <returns></returns>
-        public static ICondition DefineCondition<T>(this IConditionOf<T> condOf, IValueOf<T> val)
+        public static ICondition WithValue<T>(this IConditionOf<T> condOf, IValueOf<T> val)
         {
-            return ContextualDecoration<T>.New(condOf, val);
+            Condition.Requires(condOf).IsNotNull();
+            return WithValueDecoration<T>.New(condOf, val);
         }
     }
 }

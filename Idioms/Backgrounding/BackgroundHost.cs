@@ -10,6 +10,7 @@ using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.Hydrating;
 using CuttingEdge.Conditions;
 using Decoratid.Idioms.Core;
+using Decoratid.Idioms.Polyfacing;
 
 namespace Decoratid.Idioms.Backgrounding
 {

@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Idioms.Core;
 using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Decorating;
+using Decoratid.Idioms.Core.ValueOfing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,25 +9,25 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Core.ValueOfing.Decorations
+namespace Decoratid.Idioms.Mutating
 {
     /// <summary>
-    /// is a ValueOf that mutates its value
+    /// is a ValueOf decoration that evaluates the decorated ValueOf and then scrubs it according to some strategy
     /// </summary>
     /// <remarks>
     /// Hold on!  Why would we do this? So we can chain mutations/adjustments on a value. 
     /// </remarks>
     /// <typeparam name="T"></typeparam>
-    public interface IMutatingValueOf<T> : IValueOf<T>
+    public interface IScrubbingValueOf<T> : IValueOf<T>
     {
-        T Mutate(T val);
+        LogicOfTo<T,T> MutateStrategy {get;}
     }
 
     [Serializable]
-    public class StrategizedMutatingValueOfDecoration<T> : DecoratedValueOfBase<T>, IMutatingValueOf<T>
+    public class ScrubbingValueOfDecoration<T> : DecoratedValueOfBase<T>, IScrubbingValueOf<T>
     {
         #region Ctor
-        public StrategizedMutatingValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T,T> mutateStrategy)
+        public ScrubbingValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T,T> mutateStrategy)
             : base(decorated)
         {
             Condition.Requires(mutateStrategy).IsNotNull();
@@ -35,7 +36,8 @@ namespace Decoratid.Idioms.Core.ValueOfing.Decorations
         #endregion
         
         #region ISerializable
-        protected StrategizedMutatingValueOfDecoration(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected ScrubbingValueOfDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
             this.MutateStrategy = (LogicOfTo<T, T>)info.GetValue("MutateStrategy", typeof(LogicOfTo<T, T>));
         }
@@ -55,7 +57,7 @@ namespace Decoratid.Idioms.Core.ValueOfing.Decorations
         #endregion
 
         #region Properties
-        private LogicOfTo<T,T> MutateStrategy { get; private set; }
+        public LogicOfTo<T,T> MutateStrategy { get; private set; }
         #endregion
 
         #region Methods
@@ -67,28 +69,25 @@ namespace Decoratid.Idioms.Core.ValueOfing.Decorations
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new StrategizedMutatingValueOfDecoration<T>(thing, this.MutateStrategy);
+            return new ScrubbingValueOfDecoration<T>(thing, this.MutateStrategy);
         }
         #endregion
-
     }
 
-    public static partial class Extensions
+    public static partial class ScrubbingValueOfExtensions
     {
         /// <summary>
-        /// applies an adjustment/mutation to a ValueOf
+        /// applies an adjustment/mutation to a ValueOf but doesn't change the underlying value
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="valueOf"></param>
         /// <param name="mutateStrategy"></param>
         /// <returns></returns>
-        public static StrategizedMutatingValueOfDecoration<T> ApplyMutation<T>(this IValueOf<T> valueOf, LogicOfTo<T, T> mutateStrategy)
+        public static ScrubbingValueOfDecoration<T> ApplyScrub<T>(this IValueOf<T> valueOf, LogicOfTo<T, T> mutateStrategy)
         {
             Condition.Requires(valueOf).IsNotNull();
             Condition.Requires(mutateStrategy).IsNotNull();
-
-            //wrap task
-            return new StrategizedMutatingValueOfDecoration<T>(valueOf, mutateStrategy);
+            return new ScrubbingValueOfDecoration<T>(valueOf, mutateStrategy);
         }
     }
 

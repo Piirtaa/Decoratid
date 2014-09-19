@@ -8,7 +8,7 @@ using Decoratid.Idioms.Core.Logical.Decorations;
 using Decoratid.Idioms.Core.ValueOfing;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.Core.Logical.Decorations
+namespace Decoratid.Idioms.Logging
 {
     public static class Extensions
     {

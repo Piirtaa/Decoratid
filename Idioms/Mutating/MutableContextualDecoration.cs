@@ -7,8 +7,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Idioms.Core.ValueOfing;
+using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Idioms.Core.Conditional.Of;
 
-namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
+namespace Decoratid.Idioms.Mutating
 {
     /// <summary>
     /// marks a condition as being Mutable
@@ -16,7 +18,6 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
     /// <typeparam name="T"></typeparam>
     public interface IMutableCondition : ICondition
     {
-        void Mutate();
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
     public sealed class MutableConditionDecoration<T> : DecoratedConditionOfBase<T>, IMutableCondition
     {
         #region Ctor
-        public MutableConditionDecoration(ContextualDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
+        public MutableConditionDecoration(WithValueDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
             : base(decorated)
         {
             Condition.Requires(mutateStrategy).IsNotNull();
@@ -38,7 +39,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
         #endregion
 
         #region Fluent Static
-        public static MutableConditionDecoration<T> New(ContextualDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
+        public static MutableConditionDecoration<T> New(WithValueDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
         {
             return new MutableConditionDecoration<T>(decorated, mutateStrategy);
         }
@@ -65,7 +66,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
         public override bool? Evaluate()
         {
             this.Mutate();
-            ContextualDecoration<T> dec = (ContextualDecoration<T>)this.Decorated;
+            WithValueDecoration<T> dec = (WithValueDecoration<T>)this.Decorated;
             return dec.Evaluate();
         }
         #endregion
@@ -74,7 +75,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of.Decorations
         public virtual void Mutate()
         {
             //grab the context
-            ContextualDecoration<T> dec = (ContextualDecoration<T>)this.Decorated;
+            WithValueDecoration<T> dec = (WithValueDecoration<T>)this.Decorated;
             var val = dec.Context;
           
             //mutate it 
