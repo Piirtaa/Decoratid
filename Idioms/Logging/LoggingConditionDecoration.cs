@@ -83,6 +83,4 @@ namespace Decoratid.Idioms.Logging
         }
         #endregion
     }
-
-
 }
