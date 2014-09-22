@@ -10,6 +10,7 @@ namespace Decoratid.Idioms.Counting
     /// <summary>
     /// a counter that does a threadsafe increment.  
     /// </summary>
+    [Serializable]
     public class Counter
     {
         private int _counter = 0;

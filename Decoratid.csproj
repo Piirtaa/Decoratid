@@ -64,6 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Idioms\Core\Conditional\DecoratedConditionBase.cs" />
+    <Compile Include="Idioms\Core\Conditional\Of\WithValueConditionOfDecoration.cs" />
+    <Compile Include="Idioms\Counting\CountingConditionDecoration.cs" />
+    <Compile Include="Idioms\Counting\CountingLogicDecoration.cs" />
+    <Compile Include="Idioms\Counting\CountingValueOfDecoration.cs" />
+    <Compile Include="Idioms\Counting\Interfaces.cs" />
     <Compile Include="Idioms\ErrorCatching\ErrorCatchingConditionDecoration.cs" />
     <Compile Include="Idioms\ErrorCatching\ErrorCatchingValueOfDecoration.cs" />
     <Compile Include="Idioms\ErrorCatching\Interfaces.cs" />
@@ -72,6 +77,7 @@
     <Compile Include="Idioms\Logging\LoggingLogicDecoration.cs" />
     <Compile Include="Idioms\Logging\Interfaces.cs" />
     <Compile Include="Idioms\Mutating\Interfaces.cs" />
+    <Compile Include="Idioms\Mutating\MutableWithValueConditionOfDecoration.cs" />
     <Compile Include="Idioms\Polyfacing\PolyfacingConditionDecoration.cs" />
     <Compile Include="Idioms\Core\Interfaces.cs" />
     <Compile Include="Idioms\ErrorCatching\ErrorCatchingLogicDecoration.cs" />
@@ -79,13 +85,10 @@
     <Compile Include="Idioms\Polyfacing\Polyface.cs" />
     <Compile Include="Idioms\Core\Conditional\And.cs" />
     <Compile Include="Idioms\Core\Conditional\IsFalse.cs" />
-    <Compile Include="Idioms\Core\Conditional\Of\WithValueDecoration.cs" />
     <Compile Include="Idioms\Core\Conditional\Of\DecoratedConditionOfBase.cs" />
-    <Compile Include="Idioms\Mutating\MutableContextualDecoration.cs" />
     <Compile Include="Idioms\Core\Conditional\Of\Interfaces.cs" />
     <Compile Include="Idioms\Core\Logical\LogicBase.cs" />
     <Compile Include="Idioms\Polyfacing\PolyfacingValueOfDecoration.cs" />
-    <Compile Include="Idioms\Mutating\ScrubbingValueOfDecoration.cs" />
     <Compile Include="Idioms\Core\ValueOfing\FactoriedValueOf.cs" />
     <Compile Include="Idioms\Core\ValueOfing\Interfaces.cs" />
     <Compile Include="Idioms\Core\ValueOfing\ValueOf.cs" />
@@ -100,7 +103,18 @@
     <Compile Include="Idioms\Expiring\Decorations\WindowableDecorationBase.cs" />
     <Compile Include="Idioms\Expiring\Decorations\ExpirableDecorationBase.cs" />
     <Compile Include="Idioms\Expiring\Interfaces.cs" />
+    <Compile Include="Idioms\Scrubbing\ScrubbingValueOfDecoration.cs" />
+    <Compile Include="Idioms\Sealing\SealingConditionDecoration.cs" />
+    <Compile Include="Idioms\Sealing\SealingLogicDecoration.cs" />
+    <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs" />
     <Compile Include="Idioms\Serviceable\Interfaces.cs" />
+    <Compile Include="Idioms\Stringing\LengthEncoder.cs" />
+    <Compile Include="Idioms\Stringing\LengthPrefixDecoration.cs" />
+    <Compile Include="Idioms\Stringing\LengthPrefixListDecoration.cs" />
+    <Compile Include="Idioms\Stringing\Stringable.cs" />
+    <Compile Include="Idioms\Stringing\StringableDecorationBase.cs" />
+    <Compile Include="Idioms\Stringing\StringableList.cs" />
+    <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs" />
     <Compile Include="Idioms\TypeLocating\Core\NaturalTypeLocator.cs" />
     <Compile Include="Idioms\TypeLocating\Extensions.cs" />
     <Compile Include="Idioms\TypeLocating\Interfaces.cs" />
@@ -124,7 +138,6 @@
     <Compile Include="Idioms\ObjectGraphing\GraphNode.cs" />
     <Compile Include="Idioms\ObjectGraphing\Path\RootSegment.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\CompoundValueManager.cs" />
-    <Compile Include="Idioms\Stringing\Products\LengthEncoder.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\ValueManagerChainOfResponsibility.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\ValueTypeValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DelegateValueManager.cs" />
@@ -189,13 +202,7 @@
     <Compile Include="Idioms\Core\Storing\StoreSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Stringing\Decorations\StringableListDecorationBase.cs" />
-    <Compile Include="Idioms\Stringing\Decorations\LengthPrefixDecoration.cs" />
-    <Compile Include="Idioms\Stringing\Decorations\LengthPrefixListDecoration.cs" />
-    <Compile Include="Idioms\Stringing\Decorations\StringableDecorationBase.cs" />
     <Compile Include="Idioms\Stringing\Interfaces.cs" />
-    <Compile Include="Idioms\Stringing\Core\NaturalStringable.cs" />
-    <Compile Include="Idioms\Stringing\Core\NaturalStringableList.cs" />
     <Compile Include="Idioms\Testing\Interfaces.cs" />
     <Compile Include="Idioms\Testing\TestableResult.cs" />
     <Compile Include="Idioms\Waiting\ConditionalValueOfDecoration.cs" />
@@ -279,7 +286,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Idioms\Sealing\" />
     <Folder Include="Idioms\TypeLocating\Decorations\" />
     <Folder Include="obj\" />
   </ItemGroup>

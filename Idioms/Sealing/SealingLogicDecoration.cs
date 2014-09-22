@@ -19,7 +19,7 @@ namespace Decoratid.Idioms.Sealing
     /// prevents further decoration
     /// </summary>
     [Serializable]
-    public class SealingLogicDecoration : DecoratedLogicBase
+    public class SealingLogicDecoration : DecoratedLogicBase, ISealedDecoration
     {
         #region Ctor
         public SealingLogicDecoration(ILogic decorated)

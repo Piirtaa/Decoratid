@@ -45,9 +45,7 @@ namespace Decoratid.Idioms.Sealing
         #region Methods
         public override T GetValue()
         {
-
             return Decorated.GetValue();
-
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {

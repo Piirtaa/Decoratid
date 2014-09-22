@@ -11,6 +11,7 @@ using Decoratid.Idioms.Hydrating;
 using CuttingEdge.Conditions;
 using Decoratid.Idioms.Core;
 using Decoratid.Idioms.Polyfacing;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Backgrounding
 {
@@ -22,7 +23,9 @@ namespace Decoratid.Idioms.Backgrounding
     /// <summary>
     /// sealed, disposable container class that does stuff in the background on a timer interval
     /// </summary>
-    public sealed class BackgroundHost : DisposableBase, IPolyfacing
+    /// 
+    [Serializable]
+    public sealed class BackgroundHost : DisposableBase, IPolyfacing, ISerializable
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -59,6 +62,21 @@ namespace Decoratid.Idioms.Backgrounding
         public static BackgroundHost New(bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
         {
             return new BackgroundHost(isEnabled, backgroundIntervalMSecs, backgroundAction);
+        }
+        #endregion
+
+        #region ISerializable
+        protected BackgroundHost(SerializationInfo info, StreamingContext context)
+        {
+            this.BackgroundAction = (ILogic)info.GetValue("BackgroundAction", typeof(ILogic));
+        }
+        protected void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("BackgroundAction", this.BackgroundAction);
+        }
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            ISerializable_GetObjectData(info, context);
         }
         #endregion
 

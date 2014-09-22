@@ -18,6 +18,8 @@ namespace Decoratid.Idioms.Counting
     /// <summary>
     /// Adds a Counter to track number of times evaluation has been invoked
     /// </summary>
+    /// 
+    [Serializable]
     public class CountingLogicDecoration : DecoratedLogicBase, IHasCounter
     {
         #region Ctor
@@ -27,6 +29,20 @@ namespace Decoratid.Idioms.Counting
             Counter = new Counter();
         }
         #endregion
+
+        #region ISerializable
+        protected CountingLogicDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            this.Counter = (Counter)info.GetValue("Counter", typeof(Counter));
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Counter", this.Counter);
+            base.ISerializable_GetObjectData(info, context);
+        }
+        #endregion
+
 
         #region Properties
         public Counter Counter { get; private set; }
@@ -45,5 +61,11 @@ namespace Decoratid.Idioms.Counting
         #endregion
     }
 
-
+    public static class CountingLogicDecorationExtensions
+    {
+        public static CountingLogicDecoration WithCounting(ILogic decorated)
+        {
+            return new CountingLogicDecoration(decorated);
+        }
+    }
 }
