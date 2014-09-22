@@ -12,27 +12,24 @@ using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.Core;
-using Decoratid.Idioms.Core.ValueOfing;
 
 namespace Decoratid.Idioms.Logging
 {
     /// <summary>
-    /// Adds a logger to ValueOf evaluation
+    /// Adds a logger to condition evaluation
     /// </summary>
-    [Serializable]
-    public class LoggingValueOfDecoration<T> : DecoratedValueOfBase<T>, IHasLogger
+    public class LoggingConditionDecoration : DecoratedConditionBase, IHasLogger
     {
         #region Ctor
-        public LoggingValueOfDecoration(IValueOf<T> decorated, ILogger logger)
+        public LoggingConditionDecoration(ICondition decorated, ILogger logger = null)
             : base(decorated)
         {
-            Condition.Requires(logger).IsNotNull();
             Logger = logger;
         }
         #endregion
 
         #region ISerializable
-        protected LoggingValueOfDecoration(SerializationInfo info, StreamingContext context)
+        protected LoggingConditionDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -47,42 +44,50 @@ namespace Decoratid.Idioms.Logging
         #endregion
 
         #region Methods
-        public override T GetValue()
+        public override bool? Evaluate()
         {
-            this.Logger.LogVerbose("GetValue started", null);
+            if (this.Logger != null)
+                this.Logger.LogVerbose("Evaluate started", null);
 
             try
             {
-                return Decorated.GetValue();
+                return base.Evaluate();
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Message, null, ex);
+                if (this.Logger != null)
+                    this.Logger.LogError(ex.Message, null, ex);
+
                 throw;
             }
             finally
             {
-                this.Logger.LogVerbose("GetValue completed", null);
+                if (this.Logger != null)
+                    this.Logger.LogVerbose("Evaluate completed", null);
             }
-            return default(T);
+            return false;
         }
-        public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
+        public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
+            if (this.Logger != null)
+                this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
 
-            IDecorationOf<IValueOf<T>> rv = null;
+            IDecorationOf<ICondition> rv = null;
             try
             {
-                rv = new LoggingValueOfDecoration<T>(thing, this.Logger);
+                rv = new LoggingConditionDecoration(thing);
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Message, null, ex);
+                if (this.Logger != null)
+                    this.Logger.LogError(ex.Message, null, ex);
+
                 throw;
             }
             finally
             {
-                this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
+                if (this.Logger != null)
+                    this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
             }
 
             return rv;
@@ -90,12 +95,11 @@ namespace Decoratid.Idioms.Logging
         #endregion
     }
 
-    public static class LoggingValueOfDecorationExtensions
+    public static class LoggingConditionDecorationExtensions
     {
-        public static LoggingValueOfDecoration<T> WithLogging<T>(IValueOf<T> decorated, ILogger logger)
+        public static LoggingConditionDecoration WithLogging(ICondition decorated)
         {
-            return new LoggingValueOfDecoration<T>(decorated, logger);
+            return new LoggingConditionDecoration(decorated);
         }
     }
-
 }

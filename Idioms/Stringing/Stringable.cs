@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Stringing.Core
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// a string wrapped as an IStringable.  Is implicitly convertable to/from string.  Use as an entrance point into 
     /// the Stringable idiom.
     /// </summary>
-    public class NaturalStringable : IStringable
+    public class Stringable : IStringable
     {
         #region Declarations
         private string _value = null;
         #endregion
 
         #region Ctor
-        public NaturalStringable(string text = null)
+        public Stringable(string text = null)
         {
         }
         #endregion
@@ -34,23 +34,30 @@ namespace Decoratid.Idioms.Stringing.Core
         #endregion
 
         #region Implicit Conversions
-        public static implicit operator string(NaturalStringable o)
+        public static implicit operator string(Stringable o)
         {
             if (o == null) { return null; }
             return o.GetValue();
         }
-        public static implicit operator NaturalStringable(string text)
+        public static implicit operator Stringable(string text)
         {
-            return new NaturalStringable(text);
+            return new Stringable(text);
         }
         #endregion
 
         #region Static Fluent 
-
-        public static NaturalStringable New(string text = null)
+        public static Stringable New(string text = null)
         {
-            return new NaturalStringable(text);
+            return new Stringable(text);
         }
         #endregion
+    }
+
+    public static class StringableExtensions
+    {
+        public static Stringable MakeStringable(this string text)
+        {
+            return Stringable.New(text);
+        }
     }
 }

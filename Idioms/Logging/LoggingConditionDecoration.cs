@@ -18,13 +18,26 @@ namespace Decoratid.Idioms.Logging
     /// <summary>
     /// Adds a logger to logic
     /// </summary>
+    [Serializable]
     public class LoggingConditionDecoration : DecoratedConditionBase, IHasLogger
     {
         #region Ctor
-        public LoggingConditionDecoration(ICondition decorated, ILogger logger = null)
+        public LoggingConditionDecoration(ICondition decorated, ILogger logger)
             : base(decorated)
         {
+            Condition.Requires(logger).IsNotNull();
             Logger = logger;
+        }
+        #endregion
+
+        #region ISerializable
+        protected LoggingConditionDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
@@ -35,8 +48,7 @@ namespace Decoratid.Idioms.Logging
         #region Methods
         public override bool? Evaluate()
         {
-            if (this.Logger != null)
-                this.Logger.LogVerbose("Evaluate started", null);
+            this.Logger.LogVerbose("Evaluate started", null);
 
             try
             {
@@ -44,43 +56,44 @@ namespace Decoratid.Idioms.Logging
             }
             catch (Exception ex)
             {
-                if (this.Logger != null)
-                    this.Logger.LogError(ex.Message, null, ex);
-
+                this.Logger.LogError(ex.Message, null, ex);
                 throw;
             }
             finally
             {
-                if (this.Logger != null)
-                    this.Logger.LogVerbose("Evaluate completed", null);
+                this.Logger.LogVerbose("Evaluate completed", null);
             }
             return false;
         }
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            if (this.Logger != null)
-                this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
+            this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
 
             IDecorationOf<ICondition> rv = null;
             try
             {
-                rv = new LoggingConditionDecoration(thing);
+                rv = new LoggingConditionDecoration(thing, this.Logger);
             }
             catch (Exception ex)
             {
-                if (this.Logger != null)
-                    this.Logger.LogError(ex.Message, null, ex);
-
+                this.Logger.LogError(ex.Message, null, ex);
                 throw;
             }
             finally
             {
-                if (this.Logger != null)
-                    this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
+                this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
             }
 
             return rv;
         }
         #endregion
+    }
+
+    public static class LoggingConditionDecorationExtensions
+    {
+        public static LoggingConditionDecoration WithLogging(ICondition decorated, ILogger logger)
+        {
+            return new LoggingConditionDecoration(decorated, logger);
+        }
     }
 }

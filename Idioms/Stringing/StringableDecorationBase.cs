@@ -1,4 +1,5 @@
-﻿using Decoratid.Idioms.Decorating;
+﻿using Decoratid.Idioms.Core;
+using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Stringing.Decorations
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// defines a stringable decoration.
@@ -52,15 +53,15 @@ namespace Decoratid.Idioms.Stringing.Decorations
         }
         #endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetValue();
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.Parse(text);
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetValue();
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.Parse(text);
+        //}
+        //#endregion
     }
 }

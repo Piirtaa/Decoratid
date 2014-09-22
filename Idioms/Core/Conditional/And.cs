@@ -1,12 +1,8 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Idioms.Core.Logical;
-
 using System.Runtime.Serialization;
-using CuttingEdge.Conditions;
 
 namespace Decoratid.Idioms.Core.Conditional
 {

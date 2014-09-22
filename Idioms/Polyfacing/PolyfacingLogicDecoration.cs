@@ -72,20 +72,20 @@ namespace Decoratid.Idioms.Polyfacing
         /// decorates with polyfacingness if it's not already there
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="valueOf"></param>
+        /// <param name="logic"></param>
         /// <param name="rootFace"></param>
         /// <returns></returns>
-        public static PolyfacingLogicDecoration Polyfacing<T>(this ILogic valueOf, Polyface rootFace = null)
+        public static PolyfacingLogicDecoration Polyfacing<T>(this ILogic logic, Polyface rootFace = null)
         {
-            Condition.Requires(valueOf).IsNotNull();
+            Condition.Requires(logic).IsNotNull();
 
-            if (valueOf is PolyfacingLogicDecoration)
+            if (logic is PolyfacingLogicDecoration)
             {
-                var pf = valueOf as PolyfacingLogicDecoration;
+                var pf = logic as PolyfacingLogicDecoration;
                 return pf;
             }
 
-            return new PolyfacingLogicDecoration(valueOf, rootFace);
+            return new PolyfacingLogicDecoration(logic, rootFace);
         }
     }
 

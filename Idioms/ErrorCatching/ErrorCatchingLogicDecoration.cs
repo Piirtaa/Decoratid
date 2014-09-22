@@ -18,7 +18,8 @@ namespace Decoratid.Idioms.ErrorCatching
     /// <summary>
     /// Traps all errors that are thrown from the logic
     /// </summary>
-    public class ErrorCatchingLogicDecoration : DecoratedLogicBase
+    [Serializable]
+    public class ErrorCatchingLogicDecoration : DecoratedLogicBase, IErrorCatching
     {
         #region Ctor
         public ErrorCatchingLogicDecoration(ILogic decorated)
@@ -27,6 +28,17 @@ namespace Decoratid.Idioms.ErrorCatching
         }
         #endregion
         
+        #region ISerializable
+        protected ErrorCatchingLogicDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
+        }
+        #endregion
+
         #region Methods
         public override void Perform()
         {
@@ -43,5 +55,13 @@ namespace Decoratid.Idioms.ErrorCatching
             return new ErrorCatchingLogicDecoration(thing);
         }
         #endregion
+    }
+
+    public static class ErrorCatchingLogicDecorationExtensions
+    {
+        public static ErrorCatchingLogicDecoration WithErrorCatching(ILogic decorated)
+        {
+            return new ErrorCatchingLogicDecoration(decorated);
+        }
     }
 }

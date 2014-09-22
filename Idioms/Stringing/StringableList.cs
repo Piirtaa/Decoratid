@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Stringing.Core
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// a list of strings wrapped as an IStringableList.  Use as an entrance point into 
     /// the StringableList idiom.  Is stringable and formats as a delimited list.
     /// </summary>
-    public class NaturalStringableList : List<string>, IStringableList
+    public class StringableList : List<string>, IStringableList
     {
         public static string ITEM_DELIM = Delim.US.ToString();
 
         #region Ctor
-        public NaturalStringableList() : base()
+        public StringableList() : base()
         {
             
         }
-        public NaturalStringableList(params string[] list)
+        public StringableList(params string[] list)
             : base(list)
         {
 
@@ -52,34 +52,46 @@ namespace Decoratid.Idioms.Stringing.Core
         #endregion
 
         #region Implicit Conversions
-        public static implicit operator string(NaturalStringableList o)
+        public static implicit operator string(StringableList o)
         {
             if (o == null) { return null; }
             return o.GetValue();
         }
-        public static implicit operator NaturalStringableList(string text)
+        public static implicit operator StringableList(string text)
         {
-            var rv =  new NaturalStringableList();
+            var rv =  new StringableList();
             rv.Parse(text);
             return rv;
         }
         #endregion
 
         #region Static Fluent
-        public static NaturalStringableList New()
+        public static StringableList New()
         {
-            return new NaturalStringableList();
+            return new StringableList();
         }
-        public static NaturalStringableList New(params string[] list)
+        public static StringableList New(params string[] list)
         {
-            return new NaturalStringableList(list);
+            return new StringableList(list);
         }
-        public static NaturalStringableList ParseNew(string data)
+        public static StringableList ParseNew(string data)
         {
-            var rv = new NaturalStringableList();
+            var rv = new StringableList();
             rv.Parse(data);
             return rv;
         }
         #endregion
+    }
+
+    public static class StringableListExtensions
+    {
+        public static StringableList MakeStringableList(this List<string> list)
+        {
+            return StringableList.New(list.ToArray());
+        }
+        public static StringableList MakeStringableList(this string[] list )
+        {
+            return StringableList.New(list);
+        }
     }
 }

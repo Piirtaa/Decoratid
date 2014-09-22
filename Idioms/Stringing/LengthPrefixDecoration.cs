@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Idioms.Core;
 
-namespace Decoratid.Idioms.Stringing.Decorations
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// marker interface indicating the length prefix decoration is applied

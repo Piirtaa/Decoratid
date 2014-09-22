@@ -22,11 +22,14 @@ namespace Decoratid.Idioms.Stringing
     }
 
     /*What's the point of Stringable-ness, really?
-     * To make (de)hydration data (typically a list of data), free from parsing problems when combined with a bunch of other 
-     * (de)hydration data, at whatever level nesting.  Has to be done fractally such that it will work the same regardless of what
-     * level in the serialization process we're at.  In the case, to ensure the data can be easily parsed/stored we
-     * specify the exact sizes of the data we're storing with the LengthPrefix decorations.  We may add CRC or Hashing or some 
-     * other integrity check decorations upon this.  The core concept, however, of using non-ambiguous parsing instructions, is established.
+     * To provide decorations of string that assist with (de)hydration, and help avoid data corruption.  
+     * -The LengthPrefix decorations specify the exact layout of datasizes of the data we're storing,
+     * and prefix the actual data with this, so that special character concerns during string parsing go away.
+     *  This also has the characteristic of working regardless of the nesting of dehydrated data 
+     *  as when non-trivial object graphing is done.  
+     * -Decorations that do CRC or Hashing or some other data integrity check are also possible with this
+     * idiom.
+     * -Encryption can be introduced here also
      * 
      */ 
 }

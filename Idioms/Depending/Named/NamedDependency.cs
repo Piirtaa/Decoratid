@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.Dependencies.Named
+namespace Decoratid.Idioms.Depending.Named
 {
     /*
     NamedDependency is used to model the dependency between things, using names/strings as a proxy to the actual thing.

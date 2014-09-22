@@ -5,7 +5,7 @@ using System.Reflection;
 using CuttingEdge.Conditions;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.Dependencies.Named
+namespace Decoratid.Idioms.Depending.Named
 {
     /// <summary>
     /// Decorate a type with this if you want to indicate a dependency of some sort.  

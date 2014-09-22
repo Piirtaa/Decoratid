@@ -18,13 +18,26 @@ namespace Decoratid.Idioms.Logging
     /// <summary>
     /// Adds a logger to logic
     /// </summary>
+    [Serializable]
     public class LoggingLogicDecoration : DecoratedLogicBase, IHasLogger
     {
         #region Ctor
-        public LoggingLogicDecoration(ILogic decorated, ILogger logger = null)
+        public LoggingLogicDecoration(ILogic decorated, ILogger logger)
             : base(decorated)
         {
+            Condition.Requires(logger).IsNotNull();
             Logger = logger;
+        }
+        #endregion
+
+        #region ISerializable
+        protected LoggingLogicDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
@@ -35,8 +48,7 @@ namespace Decoratid.Idioms.Logging
         #region Methods
         public override void Perform()
         {
-            if (this.Logger != null)
-                this.Logger.LogVerbose("Perform started", null);
+            this.Logger.LogVerbose("Perform started", null);
 
             try
             {
@@ -44,38 +56,32 @@ namespace Decoratid.Idioms.Logging
             }
             catch (Exception ex)
             {
-                if (this.Logger != null)
-                    this.Logger.LogError(ex.Message, null, ex);
-
+                this.Logger.LogError(ex.Message, null, ex);
                 throw;
             }
             finally
             {
-                if (this.Logger != null)
-                    this.Logger.LogVerbose("Perform completed", null);
+                this.Logger.LogVerbose("Perform completed", null);
             }
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            if (this.Logger != null)
-                this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
+            this.Logger.LogVerbose("ApplyThisDecorationTo started", thing);
 
             IDecorationOf<ILogic> rv = null;
+
             try
             {
-                rv = new LoggingLogicDecoration(thing);
+                rv = new LoggingLogicDecoration(thing, this.Logger);
             }
             catch (Exception ex)
             {
-                if (this.Logger != null)
-                    this.Logger.LogError(ex.Message, null, ex);
-
+                this.Logger.LogError(ex.Message, null, ex);
                 throw;
             }
             finally
             {
-                if (this.Logger != null)
-                    this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
+                this.Logger.LogVerbose("ApplyThisDecorationTo completed", null);
             }
 
             return rv;
@@ -83,5 +89,11 @@ namespace Decoratid.Idioms.Logging
         #endregion
     }
 
-
+    public static class LoggingLogicDecorationExtensions
+    {
+        public static LoggingLogicDecoration WithLogging(ILogic decorated, ILogger logger)
+        {
+            return new LoggingLogicDecoration(decorated, logger);
+        }
+    }
 }

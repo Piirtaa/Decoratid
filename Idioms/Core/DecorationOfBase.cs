@@ -55,6 +55,14 @@ namespace Decoratid.Idioms.Core
     }
 
     /// <summary>
+    /// marker interface. If present on a decoration it prevents other decorations from decorating it
+    /// </summary>
+    public interface ISealedDecoration
+    {
+
+    }
+
+    /// <summary>
     /// abstract class that provides templated implementation of a Decorator/Wrapper
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
@@ -63,7 +71,7 @@ namespace Decoratid.Idioms.Core
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IPolyfacing
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable
     {
         #region Declarations
         private T _Decorated;
@@ -224,6 +232,9 @@ namespace Decoratid.Idioms.Core
         {
             if (decorated == null)
                 throw new InvalidOperationException("null decoration injection");
+           
+            if (decorated is ISealedDecoration)
+                throw new InvalidOperationException("Cannot decorate a SealedDecoration");
 
             this._Decorated = decorated;
 

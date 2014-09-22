@@ -8,7 +8,7 @@ using Decoratid.Idioms.Storing;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
 
-namespace Decoratid.Interception.Decorating
+namespace Decoratid.Idioms.Intercepting.Decorating
 {
     /// <summary>
     /// marker interface to faciliate fast classification

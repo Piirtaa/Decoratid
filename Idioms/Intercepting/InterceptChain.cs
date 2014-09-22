@@ -14,7 +14,7 @@ using System.Runtime.Serialization;
 using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Interception
+namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
     /// defines a sequence of intercept layers that operate on some initial function TArg, TResult.  

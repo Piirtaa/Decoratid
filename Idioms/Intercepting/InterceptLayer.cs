@@ -13,7 +13,7 @@ using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.ValuesOf;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Interception
+namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
     /// defines a named layer that intercepts a Func of TArg,TResult and decorates it with strategies controlling the pipeline.

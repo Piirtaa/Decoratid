@@ -113,8 +113,5 @@ namespace Decoratid.Idioms.Core
         void SetId(T id);
     }
     #endregion
-
-
-
     
 }

@@ -17,10 +17,10 @@ namespace Decoratid.Idioms.Core.Conditional.Of
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public sealed class WithValueDecoration<T> : DecoratedConditionOfBase<T>, IHasContext<IValueOf<T>>, ICondition
+    public sealed class WithValueConditionOfDecoration<T> : DecoratedConditionOfBase<T>, IHasContext<IValueOf<T>>, ICondition
     {
         #region Ctor
-        public WithValueDecoration(IConditionOf<T> decorated, IValueOf<T> context)
+        public WithValueConditionOfDecoration(IConditionOf<T> decorated, IValueOf<T> context)
             : base(decorated)
         {
             Condition.Requires(context).IsNotNull();
@@ -29,14 +29,14 @@ namespace Decoratid.Idioms.Core.Conditional.Of
         #endregion
 
         #region Fluent Static
-        public static WithValueDecoration<T> New(IConditionOf<T> decorated, IValueOf<T> context)
+        public static WithValueConditionOfDecoration<T> New(IConditionOf<T> decorated, IValueOf<T> context)
         {
-            return new WithValueDecoration<T>(decorated, context);
+            return new WithValueConditionOfDecoration<T>(decorated, context);
         }
         #endregion
 
         #region ISerializable
-        protected WithValueDecoration(SerializationInfo info, StreamingContext context)
+        protected WithValueConditionOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Context = (IValueOf<T>)info.GetValue("Context", typeof(IValueOf<T>));
@@ -86,7 +86,7 @@ namespace Decoratid.Idioms.Core.Conditional.Of
         public static ICondition WithValue<T>(this IConditionOf<T> condOf, IValueOf<T> val)
         {
             Condition.Requires(condOf).IsNotNull();
-            return WithValueDecoration<T>.New(condOf, val);
+            return WithValueConditionOfDecoration<T>.New(condOf, val);
         }
     }
 }

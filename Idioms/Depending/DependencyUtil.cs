@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.Dependencies
+namespace Decoratid.Idioms.Depending
 {
     /// <summary>
     /// utility helper class for using dependencies

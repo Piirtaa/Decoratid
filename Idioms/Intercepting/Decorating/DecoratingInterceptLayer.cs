@@ -14,7 +14,7 @@ using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 
 
-namespace Decoratid.Interception.Decorating
+namespace Decoratid.Idioms.Intercepting.Decorating
 {
     /*  In this variation on the InterceptChain, et.al, this does the same basic functionality of providing
      * intercept points before and after a call, arrangeable in an onion.  The difference lies in that the extension

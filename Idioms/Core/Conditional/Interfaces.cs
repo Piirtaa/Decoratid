@@ -9,7 +9,7 @@ namespace Decoratid.Idioms.Core.Conditional
     /// <summary>
     /// defines a simple condition
     /// </summary>
-    public interface ICondition : IPolyfacing
+    public interface ICondition 
     {
         bool? Evaluate();
     }

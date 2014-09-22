@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Dependencies
+namespace Decoratid.Idioms.Depending
 {
     /// <summary>
     /// Provides fast-algorithm and low-memory usage to sort objects based on their dependencies. 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.Dependencies.Named
+namespace Decoratid.Idioms.Depending.Named
 {
     /// <summary>
     /// A container of nameddependencies and object instances associated with each named dependency. Helper methods

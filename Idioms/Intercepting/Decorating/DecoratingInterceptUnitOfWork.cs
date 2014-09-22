@@ -13,7 +13,7 @@ using Decoratid.Idioms.Core.ValueOfing;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 
-namespace Decoratid.Interception.Decorating
+namespace Decoratid.Idioms.Intercepting.Decorating
 {
     /// <summary>
     /// contains the state of an operation that has run thru an intercept chain.

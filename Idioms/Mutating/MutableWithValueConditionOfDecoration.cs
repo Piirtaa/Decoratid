@@ -16,21 +16,19 @@ namespace Decoratid.Idioms.Mutating
     /// marks a condition as being Mutable
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IMutableCondition : ICondition
+    public interface IMutableCondition : ICondition, IMutable
     {
     }
 
     /// <summary>
-    /// decorates by adding a mutation strategy to a Contextual decoration instance.
-    /// Typically used when we have an IConditionOf we've made contextual by supplying an argument, and then
-    /// we supply some logic by which the argument might mutate.
+    /// decorates by adding a mutation strategy to a ConditionOf WithValue instance.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public sealed class MutableConditionDecoration<T> : DecoratedConditionOfBase<T>, IMutableCondition
+    public sealed class MutableWithValueConditionOfDecoration<T> : DecoratedConditionOfBase<T>, IMutableCondition
     {
         #region Ctor
-        public MutableConditionDecoration(WithValueDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
+        public MutableWithValueConditionOfDecoration(WithValueConditionOfDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
             : base(decorated)
         {
             Condition.Requires(mutateStrategy).IsNotNull();
@@ -39,14 +37,14 @@ namespace Decoratid.Idioms.Mutating
         #endregion
 
         #region Fluent Static
-        public static MutableConditionDecoration<T> New(WithValueDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
+        public static MutableWithValueConditionOfDecoration<T> New(WithValueConditionOfDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
         {
-            return new MutableConditionDecoration<T>(decorated, mutateStrategy);
+            return new MutableWithValueConditionOfDecoration<T>(decorated, mutateStrategy);
         }
         #endregion
 
         #region ISerializable
-        protected MutableConditionDecoration(SerializationInfo info, StreamingContext context)
+        protected MutableWithValueConditionOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.MutationStrategy = (LogicOfTo<T, T>)info.GetValue("_MutationStrategy", typeof(LogicOfTo<T, T>));
@@ -63,10 +61,14 @@ namespace Decoratid.Idioms.Mutating
         #endregion
 
         #region ICondition
+        /// <summary>
+        /// mutates prior to evaluation
+        /// </summary>
+        /// <returns></returns>
         public override bool? Evaluate()
         {
             this.Mutate();
-            WithValueDecoration<T> dec = (WithValueDecoration<T>)this.Decorated;
+            WithValueConditionOfDecoration<T> dec = (WithValueConditionOfDecoration<T>)this.Decorated;
             return dec.Evaluate();
         }
         #endregion
@@ -75,7 +77,7 @@ namespace Decoratid.Idioms.Mutating
         public virtual void Mutate()
         {
             //grab the context
-            WithValueDecoration<T> dec = (WithValueDecoration<T>)this.Decorated;
+            WithValueConditionOfDecoration<T> dec = (WithValueConditionOfDecoration<T>)this.Decorated;
             var val = dec.Context;
           
             //mutate it 

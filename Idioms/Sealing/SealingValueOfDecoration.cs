@@ -14,23 +14,25 @@ using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.Core;
 using Decoratid.Idioms.Core.ValueOfing;
 
-namespace Decoratid.Idioms.ErrorCatching
+namespace Decoratid.Idioms.Sealing
 {
+
     /// <summary>
-    /// Traps all errors that are thrown from the logic
+    /// prevents further decoration
     /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class ErrorCatchingValueOfDecoration<T> : DecoratedValueOfBase<T>, IErrorCatching
+    public class SealingValueOfDecoration<T> : DecoratedValueOfBase<T>
     {
         #region Ctor
-        public ErrorCatchingValueOfDecoration(IValueOf<T> decorated)
+        public SealingValueOfDecoration(IValueOf<T> decorated)
             : base(decorated)
         {
         }
         #endregion
 
         #region ISerializable
-        protected ErrorCatchingValueOfDecoration(SerializationInfo info, StreamingContext context)
+        protected SealingValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -43,27 +45,28 @@ namespace Decoratid.Idioms.ErrorCatching
         #region Methods
         public override T GetValue()
         {
-            try
-            {
-                return Decorated.GetValue();
-            }
-            catch
-            {
-            }
-            return default(T);
+
+            return Decorated.GetValue();
+
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new ErrorCatchingValueOfDecoration<T>(thing);
+            return new SealingValueOfDecoration<T>(thing);
         }
         #endregion
     }
 
-    public static class ErrorCatchingValueOfDecorationExtensions
+    public static class SealingValueOfDecorationExtensions
     {
-        public static ErrorCatchingValueOfDecoration<T> WithErrorCatching<T>(IValueOf<T> decorated)
+        /// <summary>
+        /// prevents further decoration
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static SealingValueOfDecoration<T> Seal<T>(IValueOf<T> decorated)
         {
-            return new ErrorCatchingValueOfDecoration<T>(decorated);
+            return new SealingValueOfDecoration<T>(decorated);
         }
     }
 }

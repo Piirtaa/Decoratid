@@ -9,7 +9,7 @@ using Decoratid.Extensions;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 
-namespace Decoratid.Idioms.Dependencies
+namespace Decoratid.Idioms.Depending
 {
     /// <summary>
     /// Has a property, Dependency, that contains the dependency node info (self & deps)

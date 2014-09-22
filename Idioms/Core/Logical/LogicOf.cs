@@ -105,10 +105,6 @@ namespace Decoratid.Idioms.Core.Logical
             clone.Perform();
         }
         #endregion
-
-
-
-
     }
 
     public static class LogicOfExtensions

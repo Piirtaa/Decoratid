@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Thingness;
 using Decoratid.Extensions;
-using Decoratid.Interception.Decorating;
+using Decoratid.Idioms.Intercepting.Decorating;
 using System.Runtime.Serialization;
 using Decoratid.Idioms.Core.ValueOfing;
 using Decoratid.Idioms.Decorating;

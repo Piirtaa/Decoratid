@@ -9,29 +9,29 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Mutating
+namespace Decoratid.Idioms.Scrubbing
 {
     /// <summary>
     /// is a ValueOf decoration that evaluates the decorated ValueOf and then scrubs it according to some strategy
     /// </summary>
     /// <remarks>
-    /// Hold on!  Why would we do this? So we can chain mutations/adjustments on a value. 
+    /// Hold on!  Why would we do this? So we can chain adjustments on a value. 
     /// </remarks>
     /// <typeparam name="T"></typeparam>
     public interface IScrubbingValueOf<T> : IValueOf<T>
     {
-        LogicOfTo<T,T> MutateStrategy {get;}
+        LogicOfTo<T,T> ScrubbingStrategy {get;}
     }
 
     [Serializable]
     public class ScrubbingValueOfDecoration<T> : DecoratedValueOfBase<T>, IScrubbingValueOf<T>
     {
         #region Ctor
-        public ScrubbingValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T,T> mutateStrategy)
+        public ScrubbingValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T, T> ScrubbingStrategy)
             : base(decorated)
         {
-            Condition.Requires(mutateStrategy).IsNotNull();
-            this.MutateStrategy = mutateStrategy;
+            Condition.Requires(ScrubbingStrategy).IsNotNull();
+            this.ScrubbingStrategy = ScrubbingStrategy;
         }
         #endregion
         
@@ -39,7 +39,7 @@ namespace Decoratid.Idioms.Mutating
         protected ScrubbingValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.MutateStrategy = (LogicOfTo<T, T>)info.GetValue("MutateStrategy", typeof(LogicOfTo<T, T>));
+            this.ScrubbingStrategy = (LogicOfTo<T, T>)info.GetValue("ScrubbingStrategy", typeof(LogicOfTo<T, T>));
         }
         /// <summary>
         /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
@@ -51,25 +51,25 @@ namespace Decoratid.Idioms.Mutating
         /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("MutateStrategy", this.MutateStrategy);
+            info.AddValue("ScrubbingStrategy", this.ScrubbingStrategy);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
         #region Properties
-        public LogicOfTo<T,T> MutateStrategy { get; private set; }
+        public LogicOfTo<T,T> ScrubbingStrategy { get; private set; }
         #endregion
 
         #region Methods
         public override T GetValue()
         {
             var oldValue = Decorated.GetValue();
-            var rv = this.MutateStrategy.CloneAndPerform(oldValue.AsNaturalValue());
+            var rv = this.ScrubbingStrategy.CloneAndPerform(oldValue.AsNaturalValue());
             return rv;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new ScrubbingValueOfDecoration<T>(thing, this.MutateStrategy);
+            return new ScrubbingValueOfDecoration<T>(thing, this.ScrubbingStrategy);
         }
         #endregion
     }

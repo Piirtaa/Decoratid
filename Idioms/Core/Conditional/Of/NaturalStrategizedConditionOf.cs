@@ -72,4 +72,12 @@ namespace Decoratid.Idioms.Core.Conditional.Of
         }
         #endregion
     }
+
+    public static class StrategizedConditionOfExtensions
+    {
+        public static NaturalStrategizedConditionOf<T> BuildConditionOf<T>(this LogicOfTo<T, bool?> conditionStrategy)
+        {
+            return new NaturalStrategizedConditionOf<T>(conditionStrategy);
+        }
+    }
 }

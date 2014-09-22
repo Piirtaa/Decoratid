@@ -1,13 +1,10 @@
-﻿using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Core;
-using Decoratid.Idioms.Stringing.Decorations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Stringing.Products
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// uses istringable concepts to encode/decode text such that length prefix validations are decorated on the 
@@ -23,7 +20,7 @@ namespace Decoratid.Idioms.Stringing.Products
         /// <returns></returns>
         public static string LengthEncode(string text)
         {
-            var stringable = NaturalStringable.New(text).DecorateWithLengthPrefix();
+            var stringable = Stringable.New(text).DecorateWithLengthPrefix();
             var rv = stringable.GetValue();
             return rv;
         }
@@ -34,7 +31,7 @@ namespace Decoratid.Idioms.Stringing.Products
         /// <returns></returns>
         public static string LengthDecode(string text)
         {
-            var stringable = NaturalStringable.New().DecorateWithLengthPrefix();
+            var stringable = Stringable.New().DecorateWithLengthPrefix();
             stringable.Parse(text);
             var rv = stringable.Decorated.GetValue();
             return rv;
@@ -46,7 +43,7 @@ namespace Decoratid.Idioms.Stringing.Products
         /// <returns></returns>
         public static string LengthEncodeList(params string[] items)
         {
-            var stringable = NaturalStringableList.New(items).DecorateWithLengthPrefixList();
+            var stringable = StringableList.New(items).DecorateWithLengthPrefixList();
             var rv =  stringable.GetValue();
             return rv;
         }
@@ -57,7 +54,7 @@ namespace Decoratid.Idioms.Stringing.Products
         /// <returns></returns>
         public static List<string> LengthDecodeList(string text)
         {
-            var stringable = NaturalStringableList.ParseNew(text);
+            var stringable = StringableList.ParseNew(text);
             var rv =  stringable.ToList();
             return rv;
         }

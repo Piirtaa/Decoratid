@@ -10,7 +10,7 @@ using Decoratid.Thingness;
 using Decoratid.Logging;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Interception
+namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
     /// contains the state of an operation that has run thru an intercept chain.

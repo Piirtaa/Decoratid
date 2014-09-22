@@ -13,23 +13,23 @@ using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.Core.Logical;
 using Decoratid.Idioms.Core;
 
-namespace Decoratid.Idioms.ErrorCatching
+namespace Decoratid.Idioms.Sealing
 {
     /// <summary>
-    /// Traps all errors that are thrown from the condition evaluation
+    /// prevents further decoration
     /// </summary>
     [Serializable]
-    public class ErrorCatchingConditionDecoration : DecoratedConditionBase, IErrorCatching
+    public class SealingLogicDecoration : DecoratedLogicBase
     {
         #region Ctor
-        public ErrorCatchingConditionDecoration(ICondition decorated)
+        public SealingLogicDecoration(ILogic decorated)
             : base(decorated)
         {
         }
         #endregion
-        
+
         #region ISerializable
-        protected ErrorCatchingConditionDecoration(SerializationInfo info, StreamingContext context)
+        protected SealingLogicDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -40,29 +40,27 @@ namespace Decoratid.Idioms.ErrorCatching
         #endregion
 
         #region Methods
-        public override bool? Evaluate()
+        public override void Perform()
         {
-            try
-            {
-                return Decorated.Evaluate();
-            }
-            catch
-            {
-            }
-            return false;
+            Decorated.Perform();
         }
-        public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
+        public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            return new ErrorCatchingConditionDecoration(thing);
+            return new SealingLogicDecoration(thing);
         }
         #endregion
     }
 
-    public static class ErrorCatchingConditionDecorationExtensions
+    public static class SealingLogicDecorationExtensions
     {
-        public static ErrorCatchingConditionDecoration WithErrorCatching(ICondition decorated)
+        /// <summary>
+        /// prevents further decoration
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static SealingLogicDecoration Seal(ILogic decorated)
         {
-            return new ErrorCatchingConditionDecoration(decorated);
+            return new SealingLogicDecoration(decorated);
         }
     }
 }

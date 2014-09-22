@@ -8,7 +8,7 @@ using Decoratid.Idioms.Storing;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
 
-namespace Decoratid.Interception
+namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
     /// marker interface to faciliate fast InterceptionException classification

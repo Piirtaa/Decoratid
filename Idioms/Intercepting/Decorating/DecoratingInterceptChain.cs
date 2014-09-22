@@ -16,7 +16,7 @@ using Decoratid.Idioms.ValuesOf;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Interception.Decorating
+namespace Decoratid.Idioms.Intercepting.Decorating
 {
     /// <summary>
     /// defines a sequence of decorating intercept layers that operate on some initial function TArg, TResult.  

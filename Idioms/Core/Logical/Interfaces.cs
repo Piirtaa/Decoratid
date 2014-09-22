@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Logical.Decorations;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Core.ValueOfing;
+﻿using Decoratid.Idioms.Core.ValueOfing;
 
 namespace Decoratid.Idioms.Core.Logical
 {
