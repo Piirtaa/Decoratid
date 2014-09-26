@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
-using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Core.ValueOfing.Decorations;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Logical;
+using Decoratid.Core.ValueOfing.Decorations;
 
 namespace Decoratid.Idioms.Waiting
 {

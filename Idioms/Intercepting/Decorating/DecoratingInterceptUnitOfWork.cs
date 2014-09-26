@@ -8,8 +8,8 @@ using Decoratid.Extensions;
 using CuttingEdge.Conditions;
 using Decoratid.Thingness;
 using Decoratid.Logging;
-using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Core.ValueOfing;
+using Decoratid.Core.Logical;
+using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 

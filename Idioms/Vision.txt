@@ -1,0 +1,68 @@
+﻿Below lies the roadmap, or best estimate as of 25/09/14.  Shit changes, and documents change
+even less frequently.  This is where we try to keep shit canonical.
+
+Basic Things:
+	ValueOf
+	Logic
+	Condition
+	Store
+	
+Common Idioms (apply to the Things)
+	Thing.KackUntil(Condition)  - kacks unless the condition is true
+	*Thing.WaitUntil(Condition) - delays performance of the Thing's operation until the Condition is True.  Non-kacking, blocking call that works by polling.
+	Thing.Seal() - says the thing can't be decorated anymore
+	Thing.LogWith(Logger) - gives a logger for the operation
+	Thing.Trap() - traps exceptions from propagating on operations
+	Thing.Counted() - keeps operation counter
+	Thing.Polyfacing(optional Root polyface) - makes the thing polyface-compliant  (adds a polyface backref, lol), and opens up that radiant polymorphic spin
+
+Thing-Specific Idioms
+	ValueOf.Adjust(x->x) - adds an adjustment to ValueOf
+	ConditionOf.WithValue(x) - gives a condition of a contextual valueOf, thus turning it into a Condition 
+
+Store Idioms
+	TODO
+
+Task Idioms
+	TODO
+	Tasks are logic that is encapsulated as a trackable thing, so that it can be chained to other tasks
+
+Polyface Idioms 
+	Polyfacing.NewRoot() - creates a new polyface given the first polyfacing
+	(Static)Polyface.NewRoot() - creates a blank polyface
+	
+	Polymorphism Idioms:
+		Polyface.Is<T>(thing); - sets a face
+		Polyface.As<T>();- gets a face
+		
+	Custom Idioms:	
+		Polyface.IsEmptyBackground(); - adds an empty background face
+		Polyface.IsBackground(Logic, etc) - adds a background face
+		Polyface.AsBackground() - gets the background face
+
+Custom Idioms
+	Thing.ThisManyTimes(Integer) - allows the operation to be performed N times 
+		
+		btw the same thing could be implemented as a polyface:
+		Thing.Polyface() <- make polyface
+			.Is<Counter>(Counter.New())  <- add counter
+			.Is<Thing> <- get the original thing we're decorating
+			.KackUntil(Thing.Root.Is<Counter>().Current < N) <- decorate with a validator
+			
+			;		
+			TODO: link Things(store, logic, condition, valueof).  ie. have events on Things for Things to subscribe to
+			
+
+
+The PolyFace
+	-self describing
+	-the fluent text to build a polyface is also easily sent  over a wire, and we have behaviour over a wire now
+	-further the polyface can aggregate behaviour that exists on another node, if the Noded decoration/idiom is applied		
+
+
+
+
+Example of FTP Session
+	OnCondition(
+
+	TODO: see paper, as the idioms are named diff now

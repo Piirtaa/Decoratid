@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Core.ValueOfing.Decorations
+namespace Decoratid.Core.ValueOfing.Decorations
 {
 
     /// <summary>

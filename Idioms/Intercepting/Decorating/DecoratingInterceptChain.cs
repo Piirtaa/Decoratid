@@ -11,7 +11,7 @@ using Decoratid.Idioms.Dependencies;
 using Decoratid.Thingness;
 using Decoratid.Idioms.Storing.Core;
 using System.Runtime.Serialization;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.ValuesOf;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;

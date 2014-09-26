@@ -9,9 +9,10 @@ using CuttingEdge.Conditions;
 using Decoratid.Idioms.Storing;
 using Decoratid.Idioms.Dependencies;
 using System.Runtime.Serialization;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.ValuesOf;
 using Decoratid.Idioms.ObjectGraph;
+using Decoratid.Idioms.Depending;
 
 namespace Decoratid.Idioms.Intercepting
 {

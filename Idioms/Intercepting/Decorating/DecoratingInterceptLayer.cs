@@ -9,7 +9,7 @@ using CuttingEdge.Conditions;
 using Decoratid.Idioms.Storing;
 using Decoratid.Idioms.Dependencies;
 using Decoratid.Thingness;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 

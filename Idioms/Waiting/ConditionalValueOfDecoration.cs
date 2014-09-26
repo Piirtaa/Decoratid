@@ -7,12 +7,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Core.Conditional;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Core.ValueOfing.Decorations
+namespace Decoratid.Core.ValueOfing.Decorations
 {
     /// <summary>
     /// interface defining behaviour such that the value won't be available until the condition is met.  

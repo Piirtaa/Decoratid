@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Core;
+using Decoratid.Core;
 using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Stringing

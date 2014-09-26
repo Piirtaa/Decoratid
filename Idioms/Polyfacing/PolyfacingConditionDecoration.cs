@@ -1,7 +1,7 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core;
-using Decoratid.Idioms.Core.Conditional;
-using Decoratid.Idioms.Core.Conditional.Decorations;
+using Decoratid.Core;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Conditional.Decorations;
 using System;
 using System.Collections.Generic;
 using System.Linq;

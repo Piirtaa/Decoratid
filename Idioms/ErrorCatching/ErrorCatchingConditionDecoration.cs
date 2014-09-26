@@ -7,11 +7,11 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Core.Conditional;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Core;
+using Decoratid.Core.Logical;
+using Decoratid.Core;
 
 namespace Decoratid.Idioms.ErrorCatching
 {
@@ -60,7 +60,7 @@ namespace Decoratid.Idioms.ErrorCatching
 
     public static class ErrorCatchingConditionDecorationExtensions
     {
-        public static ErrorCatchingConditionDecoration WithErrorCatching(ICondition decorated)
+        public static ErrorCatchingConditionDecoration Trap(ICondition decorated)
         {
             return new ErrorCatchingConditionDecoration(decorated);
         }

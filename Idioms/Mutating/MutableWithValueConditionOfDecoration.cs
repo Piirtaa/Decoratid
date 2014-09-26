@@ -1,14 +1,15 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using Decoratid.Idioms.Core.ValueOfing;
-using Decoratid.Idioms.Core.Conditional;
-using Decoratid.Idioms.Core.Conditional.Of;
+using Decoratid.Core.ValueOfing;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Conditional.Of;
+using Decoratid.Idioms.WithValuing;
 
 namespace Decoratid.Idioms.Mutating
 {
@@ -88,5 +89,28 @@ namespace Decoratid.Idioms.Mutating
             
         }
         #endregion
+    }
+
+    public static partial class Extensions
+    {
+        /// <summary>
+        /// decorates with polyfacingness if it's not already there
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="valueOf"></param>
+        /// <param name="rootFace"></param>
+        /// <returns></returns>
+        public static MutableWithValueConditionOfDecoration<T> Mutating<T>(this WithValueConditionOfDecoration<T> decorated, LogicOfTo<T, T> mutateStrategy)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+            if (decorated is WithValueConditionOfDecoration<T>)
+            {
+                var pf = decorated as WithValueConditionOfDecoration<T>;
+                return pf;
+            }
+
+            return new WithValueConditionOfDecoration<T>(decorated, rootFace);
+        }
     }
 }

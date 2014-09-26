@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.Hydrating;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core;
+using Decoratid.Core;
 using Decoratid.Idioms.Polyfacing;
 using System.Runtime.Serialization;
 
@@ -207,48 +207,29 @@ namespace Decoratid.Idioms.Backgrounding
 
     public static class BackgroundExtensions
     {
-        public static Polyface AddBlankBackground(this Polyface root)
+        public static Polyface IsEmptyBackground(this Polyface root)
         {
             Condition.Requires(root).IsNotNull();
             var bg = BackgroundHost.NewBlank();
             root.Is(bg);
             return root;
         }
-        public static Polyface AddBackground(this Polyface root, bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
+        public static Polyface IsBackground(this Polyface root, bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
         {
             Condition.Requires(root).IsNotNull();
             var bg = BackgroundHost.New(isEnabled, backgroundIntervalMSecs, backgroundAction);
             root.Is(bg);
             return root;
         }
-        public static BackgroundHost GetBackground(this Polyface root)
+        public static BackgroundHost AsBackground(this Polyface root)
         {
             Condition.Requires(root).IsNotNull();
             var rv = root.As<BackgroundHost>();
             return rv;
         }
-        public static Polyface AddBlankBackground(this IPolyfacing face)
-        {
-            Condition.Requires(face).IsNotNull();
-            Polyface rv = face.RootFace;
-            if (rv == null)
-            {
-                rv = Polyface.New();
-                face.RootFace = rv;
-            }
-            return rv.AddBlankBackground();
-        }
-        public static Polyface AddBackground(this IPolyfacing face, bool isEnabled, double backgroundIntervalMSecs, ILogic backgroundAction)
-        {
-            Condition.Requires(face).IsNotNull();
-            Polyface rv = face.RootFace;
-            if (rv == null)
-            {
-                rv = Polyface.New();
-                face.RootFace = rv;
-            }
-            return rv.AddBackground(isEnabled, backgroundIntervalMSecs, backgroundAction);
-        }
+
+
+
 
     }
 }

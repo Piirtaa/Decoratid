@@ -7,12 +7,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Core.Conditional;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Core;
-using Decoratid.Idioms.Core.ValueOfing;
+using Decoratid.Core.Logical;
+using Decoratid.Core;
+using Decoratid.Core.ValueOfing;
 
 namespace Decoratid.Idioms.Counting
 {
@@ -65,7 +65,7 @@ namespace Decoratid.Idioms.Counting
         /// <summary>
         /// Adds a Counter to track number of times evaluation has been invoked
         /// </summary>
-        public static CountingValueOfDecoration<T> WithCounting<T>(IValueOf<T> decorated)
+        public static CountingValueOfDecoration<T> Counted<T>(IValueOf<T> decorated)
         {
             return new CountingValueOfDecoration<T>(decorated);
         }

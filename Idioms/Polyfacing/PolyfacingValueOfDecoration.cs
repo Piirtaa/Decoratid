@@ -7,12 +7,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Core.Conditional;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.Core.ValueOfing.Decorations;
-using Decoratid.Idioms.Core.ValueOfing;
-using Decoratid.Idioms.Core;
+using Decoratid.Core.ValueOfing.Decorations;
+using Decoratid.Core.ValueOfing;
+using Decoratid.Core;
 
 namespace Decoratid.Idioms.Polyfacing
 {

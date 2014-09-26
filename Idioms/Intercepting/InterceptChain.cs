@@ -7,11 +7,9 @@ using CuttingEdge.Conditions;
 using Decoratid.Idioms.Storing;
 using Decoratid.Idioms.Storing.Products;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Dependencies;
-using Decoratid.Thingness;
 using Decoratid.Idioms.Storing.Core;
 using System.Runtime.Serialization;
-using Decoratid.Idioms.Core.Logical;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.ObjectGraph;
 
 namespace Decoratid.Idioms.Intercepting

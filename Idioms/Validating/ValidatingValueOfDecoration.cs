@@ -7,12 +7,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Core.Conditional;
+using Decoratid.Core.Conditional;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.Core.Logical;
-using Decoratid.Idioms.Core;
-using Decoratid.Idioms.Core.ValueOfing;
+using Decoratid.Core.Logical;
+using Decoratid.Core;
+using Decoratid.Core.ValueOfing;
 
 namespace Decoratid.Idioms.Validating
 {
@@ -68,7 +68,7 @@ namespace Decoratid.Idioms.Validating
 
     public static class ValidatingValueOfDecorationExtensions
     {
-        public static ValidatingValueOfDecoration<T> DecorateWithValidation<T>(IValueOf<T> decorated, ICondition validatingCondition)
+        public static ValidatingValueOfDecoration<T> KackUntil<T>(IValueOf<T> decorated, ICondition validatingCondition)
         {
             Condition.Requires(decorated).IsNotNull();
             if (decorated is ValidatingValueOfDecoration<T>)

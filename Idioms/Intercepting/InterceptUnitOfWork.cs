@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Decoratid.Idioms.Storing.Products;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
-using Decoratid.Thingness;
-using Decoratid.Logging;
+
 using System.Runtime.Serialization;
+using Decoratid.Idioms.Logging;
 
 namespace Decoratid.Idioms.Intercepting
 {

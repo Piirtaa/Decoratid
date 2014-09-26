@@ -1,4 +1,4 @@
-﻿using Decoratid.Idioms.Core.Conditional;
+﻿using Decoratid.Core.Conditional;
 using System;
 using System.Collections.Generic;
 using System.Linq;
