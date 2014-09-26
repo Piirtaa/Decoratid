@@ -18,7 +18,6 @@ namespace Decoratid.Idioms.Counting
     /// <summary>
     /// Adds a Counter to track number of times evaluation has been invoked
     /// </summary>
-    /// 
     [Serializable]
     public class CountingLogicDecoration : DecoratedLogicBase, IHasCounter
     {
@@ -63,6 +62,9 @@ namespace Decoratid.Idioms.Counting
 
     public static class CountingLogicDecorationExtensions
     {
+        /// <summary>
+        /// Adds a Counter to track number of times evaluation has been invoked
+        /// </summary>
         public static CountingLogicDecoration WithCounting(ILogic decorated)
         {
             return new CountingLogicDecoration(decorated);

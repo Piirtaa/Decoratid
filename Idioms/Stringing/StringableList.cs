@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,8 @@ namespace Decoratid.Idioms.Stringing
     /// a list of strings wrapped as an IStringableList.  Use as an entrance point into 
     /// the StringableList idiom.  Is stringable and formats as a delimited list.
     /// </summary>
-    public class StringableList : List<string>, IStringableList
+    [Serializable]
+    public class StringableList : List<string>, IStringableList, ISerializable
     {
         public static string ITEM_DELIM = Delim.US.ToString();
 
@@ -23,6 +25,30 @@ namespace Decoratid.Idioms.Stringing
             : base(list)
         {
 
+        }
+        #endregion
+        
+        #region ISerializable
+        protected StringableList(SerializationInfo info, StreamingContext context) : base()
+        {
+            var data = info.GetString("data");
+            this.Parse(data);
+        }
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            ISerializable_GetObjectData(info, context);
+        }
+        /// <summary>
+        /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
+        /// helper function that does the actual implementation of ISerializable, and is called by the
+        /// explicit interface implementation of GetObjectData.  This is the method to be overridden in 
+        /// derived classes.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("data", this.GetValue());
         }
         #endregion
 

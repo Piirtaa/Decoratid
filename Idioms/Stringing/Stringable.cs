@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,8 @@ namespace Decoratid.Idioms.Stringing
     /// a string wrapped as an IStringable.  Is implicitly convertable to/from string.  Use as an entrance point into 
     /// the Stringable idiom.
     /// </summary>
-    public class Stringable : IStringable
+    [Serializable]
+    public class Stringable : IStringable, ISerializable
     {
         #region Declarations
         private string _value = null;
@@ -19,6 +21,30 @@ namespace Decoratid.Idioms.Stringing
         #region Ctor
         public Stringable(string text = null)
         {
+        }
+        #endregion
+
+        #region ISerializable
+        protected Stringable(SerializationInfo info, StreamingContext context)
+        {
+            var data = info.GetString("data");
+            this.Parse(data);
+        }
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            ISerializable_GetObjectData(info, context);
+        }
+        /// <summary>
+        /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
+        /// helper function that does the actual implementation of ISerializable, and is called by the
+        /// explicit interface implementation of GetObjectData.  This is the method to be overridden in 
+        /// derived classes.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("data", this.GetValue());
         }
         #endregion
 

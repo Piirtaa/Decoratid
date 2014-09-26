@@ -61,6 +61,9 @@ namespace Decoratid.Idioms.Counting
 
     public static class CountingConditionDecorationExtensions
     {
+        /// <summary>
+        /// Adds a Counter to track number of times evaluation has been invoked
+        /// </summary>
         public static CountingConditionDecoration WithCounting(ICondition decorated)
         {
             return new CountingConditionDecoration(decorated);

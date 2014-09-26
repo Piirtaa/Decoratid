@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Core;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Stringing
 {
@@ -31,6 +32,7 @@ namespace Decoratid.Idioms.Stringing
     /// It does NOT address lists of strings, and "delimiter injection" problems, but it gives us an approach to use to handle them,
     /// which we do in LengthPrefixList decoration - to put the length of each item in a prefix.
     /// </remarks>
+    [Serializable]
     public class LengthPrefixDecoration : StringableDecorationBase, ILengthPrefixStringable
     {
         public static string DELIM_PRE = Delim.US.ToString();
@@ -41,6 +43,17 @@ namespace Decoratid.Idioms.Stringing
             : base(decorated)
         {
 
+        }
+        #endregion
+
+        #region ISerializable
+        protected LengthPrefixDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 

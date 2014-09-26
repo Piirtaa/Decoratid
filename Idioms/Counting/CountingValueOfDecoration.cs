@@ -19,7 +19,6 @@ namespace Decoratid.Idioms.Counting
     /// <summary>
     /// Adds a Counter to track number of times evaluation has been invoked
     /// </summary>
-    /// 
     [Serializable]
     public class CountingValueOfDecoration<T> : DecoratedValueOfBase<T>, IHasCounter
     {
@@ -63,6 +62,9 @@ namespace Decoratid.Idioms.Counting
 
     public static class CountingValueOfDecorationExtensions
     {
+        /// <summary>
+        /// Adds a Counter to track number of times evaluation has been invoked
+        /// </summary>
         public static CountingValueOfDecoration<T> WithCounting<T>(IValueOf<T> decorated)
         {
             return new CountingValueOfDecoration<T>(decorated);

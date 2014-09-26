@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Core;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Stringing
 {
@@ -27,6 +28,8 @@ namespace Decoratid.Idioms.Stringing
     /// This helps avoid data corruption/injection/encoding issues, and gives us data/process validation.
     /// 
     /// </remarks>
+    /// 
+    [Serializable]
     public class LengthPrefixListDecoration : StringableListDecorationBase, ILengthPrefixStringableList
     {
         public static string DELIM_MID = Delim.US.ToString();
@@ -38,6 +41,17 @@ namespace Decoratid.Idioms.Stringing
             : base(decorated)
         {
 
+        }
+        #endregion
+
+        #region ISerializable
+        protected LengthPrefixListDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 

@@ -3,6 +3,7 @@ using Decoratid.Idioms.ObjectGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,20 @@ namespace Decoratid.Idioms.Stringing
         public StringableListDecorationBase(IStringableList decorated)
             : base(decorated)
         {
+        }
+        #endregion
+
+        #region ISerializable
+        protected StringableListDecorationBase(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            var data = info.GetString("data");
+            this.Parse(data);
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("data", this.GetValue());
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
