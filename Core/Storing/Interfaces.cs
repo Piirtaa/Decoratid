@@ -1,22 +1,10 @@
-﻿using System;
+﻿using Decoratid.Core.Contextual;
+using Decoratid.Core.Identifying;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Thingness;
-using Decoratid.Extensions;
-using Decoratid.Core.Conditional;
-using System.Reflection;
-using CuttingEdge.Conditions;
-using Decoratid.Idioms.Dependencies;
-using Decoratid.Idioms.Storing.Core;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {
-
-
-
-
     /// <summary>
     /// A bitwise enum of Store Operations
     /// </summary>
@@ -39,8 +27,6 @@ namespace Decoratid.Idioms.Storing
         Save = 2,
         Delete = 4
     }
-
-
 
     /// <summary>
     /// defines a key to a stored object.  
@@ -132,41 +118,11 @@ namespace Decoratid.Idioms.Storing
     }
 
 
-    /// <summary>
-    /// a persistent item (IHasId) that knows about the store it belongs to.
-    /// </summary>
-    /// <remarks>
-    /// Use this when you have an object that chats with the store for some behavioural reason
-    /// </remarks>
-    public interface IStoreAware : IHasId, IHasContext<IStore>
-    {
-    }
-
     public interface IMutable : IHasId
     {
         void Mutate();
     }
     #endregion
 
-    #region Store Serialization Hooks
-    ///// <summary>
-    ///// apply this to objects that can have their state transformed into an IStore, and can have their instance recreated from
-    ///// an IStore instance.  
-    ///// </summary>
-    //public interface IStoreConvertible 
-    //{
-    //    /// <summary>
-    //    /// implement when serializing local state to a store
-    //    /// </summary>
-    //    /// <param name="serializedStore"></param>
-    //    InMemoryStore ConvertToStore();
-
-    //    /// <summary>
-    //    /// implement when hydrating/deserializing from a store
-    //    /// </summary>
-    //    /// <param name="serializedStore"></param>
-    //    void HydrateFromStore(IStore store);
-    //}
-    #endregion
 
 }

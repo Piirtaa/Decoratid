@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {
     [Serializable]
     public class CommitException : ApplicationException

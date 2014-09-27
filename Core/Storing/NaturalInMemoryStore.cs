@@ -1,14 +1,11 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Thingness;
-using Decoratid.Extensions;
-using CuttingEdge.Conditions;
-using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Storing.Core
+namespace Decoratid.Core.Storing
 {
     /// <summary>
     /// simple in-memory store (backed by an underlying Dictionary).  This is the preferred store to use when dealing with in-memory 

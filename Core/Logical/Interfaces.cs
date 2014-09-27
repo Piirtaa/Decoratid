@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.ValueOfing;
+﻿using Decoratid.Core.Contextual;
+using Decoratid.Core.ValueOfing;
 
 namespace Decoratid.Core.Logical
 {

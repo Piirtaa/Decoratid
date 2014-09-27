@@ -8,7 +8,7 @@ using Decoratid.Extensions;
 using Decoratid.Idioms.ObjectGraph.Values.Decorations;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Storing;
+using Decoratid.Core.Storing;
 using Decoratid.Reflection;
 using Decoratid.Idioms.Hydrating;
 

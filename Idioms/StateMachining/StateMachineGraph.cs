@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Storing;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.StoreOf;
 
 namespace Decoratid.Idioms.StateMachineable
 {

@@ -1,5 +1,5 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Storing;
+using Decoratid.Core.Storing;
 using Decoratid.TypeLocation;
 using System;
 using System.Collections.Generic;

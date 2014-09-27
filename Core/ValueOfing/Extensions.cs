@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
-using Decoratid.Core.Logical;
-using Decoratid.Core.ValueOfing.Decorations;
+﻿using Decoratid.Core.Logical;
+using System;
 
 namespace Decoratid.Core.ValueOfing
 {

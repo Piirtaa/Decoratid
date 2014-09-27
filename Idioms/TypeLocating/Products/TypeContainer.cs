@@ -8,11 +8,11 @@ using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
 using Decoratid.Core.Conditional.Common;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Storing;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.StoreOf;
 using System.Diagnostics;
-using Decoratid.Idioms.Storing;
+using Decoratid.Core.Storing;
 
 
 namespace Decoratid.Idioms.TypeLocating.Products

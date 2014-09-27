@@ -8,15 +8,15 @@ using Decoratid.Thingness;
 using ServiceStack.Text;
 using Decoratid.Extensions;
 using System.IO;
-using Decoratid.Idioms.Storing.Decorations;
-using Decoratid.Idioms.Storing.Decorations.StreamBacked;
-using Decoratid.Idioms.Storing.Core;
+using Decoratid.Core.Storing.Decorations;
+using Decoratid.Core.Storing.Decorations.StreamBacked;
+using Decoratid.Core.Storing;
 using Decoratid.Crypto;
 using Decoratid.Core.Conditional;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     /// <summary>
     /// An in-memory store that backs to a file

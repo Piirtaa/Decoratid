@@ -7,7 +7,7 @@ using Decoratid.Core.Conditional;
 using Decoratid.Core.Conditional.Common.Expiry;
 using Decoratid.Thingness;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     /// <summary>
     /// Helper class that builds EvictionConditionFactories

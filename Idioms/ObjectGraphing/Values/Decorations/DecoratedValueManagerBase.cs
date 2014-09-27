@@ -1,5 +1,5 @@
 ﻿using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.Storing;
+using Decoratid.Core.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;

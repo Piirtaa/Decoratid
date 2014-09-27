@@ -59,10 +59,27 @@ The PolyFace
 	-the fluent text to build a polyface is also easily sent  over a wire, and we have behaviour over a wire now
 	-further the polyface can aggregate behaviour that exists on another node, if the Noded decoration/idiom is applied		
 
-
-
+	what is decoration vs idiom?
+		idiom describes general idea/behaviour
+		decoration applies this behaviour/idea to someThing to modify its behaviour
 
 Example of FTP Session
 	OnCondition(
 
 	TODO: see paper, as the idioms are named diff now
+
+
+
+TODO LIST:
+-break out core store stuff, and move store decorations into the general idioms section (identify with store prefix if stored specific)
+-since we're all about aggregating behaviour we need to do this with expiry for instance
+	-expiry idiom - do next
+-intercepting idiom and decorations for all 4 Things, since we will use this as the basis for chaining events (events themselves 
+ are an idiom/decoration and they depend on intercept or do they?? depends on implementation...see how store did it
+-the idea of a Remote Natural core type for each Thing
+	-need client server for each Thing, and implement std messaging.  RemoteValueOf, RemoteStore, RemoteLogic, RemoteCondition
+		argument serialization is done by the rehydrating layer
+-rehydrating layer is big TODO. put all the serialization stuff there so we CAN do remote shit right. getting tired of this already
+	-we have all core code in the classes commented out..need to move these to maps for each complex type, and have one big bag
+	of maps
+-all core things must serialize to their best ability using native .net concepts.  

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using Decoratid.Thingness;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Storing.Decorations;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Storing.Decorations.Factoried;
-using Decoratid.Idioms.Storing.Decorations.Evicting;
+using Decoratid.Core.Storing.Decorations;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.Factoried;
+using Decoratid.Core.Storing.Decorations.Evicting;
 using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     /// <summary>
     /// A simple in-memory store with events and eviction, that builds items ifthey aren't found.

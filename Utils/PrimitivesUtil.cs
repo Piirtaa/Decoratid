@@ -1,11 +1,7 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
 
 namespace Decoratid.Utils
 {
@@ -16,7 +12,7 @@ namespace Decoratid.Utils
     {
         #region Declarations
         private static System.Random _rnd = new System.Random();
-        private static Decoratid.Random.StringGenerator _gen = new Decoratid.Random.StringGenerator();
+        private static StringGenerator _gen = new StringGenerator();
         #endregion
 
         #region Random Primitive Generator

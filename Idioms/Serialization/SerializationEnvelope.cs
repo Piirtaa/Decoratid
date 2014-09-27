@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Storing;
+using Decoratid.Core.Storing;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Idioms.Hydrating;

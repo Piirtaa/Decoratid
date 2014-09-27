@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Decoratid.Idioms.Storing.Products;
+using Decoratid.Core.Storing.Products;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
 using Decoratid.Thingness;

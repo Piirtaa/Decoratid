@@ -2,8 +2,8 @@
 using Decoratid.Reflection;
 using Decoratid.Idioms.ObjectGraph.Path;
 using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.Storing;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.StoreOf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 using System.Collections;
-using Decoratid.Idioms.Storing.Core;
+using Decoratid.Core.Storing;
 using Decoratid.Idioms.Hydrating;
 
 namespace Decoratid.Idioms.ObjectGraph

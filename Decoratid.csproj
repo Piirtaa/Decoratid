@@ -64,200 +64,52 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Conditional\DecoratedConditionBase.cs" />
-    <Compile Include="Idioms\WithValuing\WithValueConditionOfDecoration.cs" />
-    <Compile Include="Idioms\Counting\CountingConditionDecoration.cs" />
-    <Compile Include="Idioms\Counting\CountingLogicDecoration.cs" />
-    <Compile Include="Idioms\Counting\CountingValueOfDecoration.cs" />
-    <Compile Include="Idioms\Counting\Interfaces.cs" />
-    <Compile Include="Idioms\ErrorCatching\ErrorCatchingConditionDecoration.cs" />
-    <Compile Include="Idioms\ErrorCatching\ErrorCatchingValueOfDecoration.cs" />
-    <Compile Include="Idioms\ErrorCatching\Interfaces.cs" />
-    <Compile Include="Idioms\Logging\LoggingConditionDecoration.cs" />
-    <Compile Include="Idioms\Logging\LoggingValueOfDecoration.cs" />
-    <Compile Include="Idioms\Logging\LoggingLogicDecoration.cs" />
-    <Compile Include="Idioms\Logging\Interfaces.cs" />
-    <Compile Include="Idioms\Mutating\Interfaces.cs" />
-    <Compile Include="Idioms\Mutating\MutableWithValueConditionOfDecoration.cs" />
-    <Compile Include="Idioms\Polyfacing\PolyfacingConditionDecoration.cs" />
-    <Compile Include="Core\Interfaces.cs" />
-    <Compile Include="Idioms\ErrorCatching\ErrorCatchingLogicDecoration.cs" />
-    <Compile Include="Idioms\Polyfacing\PolyfacingLogicDecoration.cs" />
-    <Compile Include="Idioms\Polyfacing\Polyface.cs" />
+    <Compile Include="Core\Contextual\AsContext.cs" />
+    <Compile Include="Core\Contextual\ContextualId.cs" />
+    <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
+    <Compile Include="Core\Identifying\AsHasId.cs" />
+    <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Core\Identifying\DecoratedHasIdBase.cs" />
+    <Compile Include="Core\Identifying\Interfaces.cs" />
+    <Compile Include="Core\Contextual\Interfaces.cs" />
     <Compile Include="Core\Conditional\And.cs" />
     <Compile Include="Core\Conditional\IsFalse.cs" />
     <Compile Include="Core\Conditional\Of\DecoratedConditionOfBase.cs" />
     <Compile Include="Core\Conditional\Of\Interfaces.cs" />
+    <Compile Include="Core\Identifying\NamedValueIHasIdDecoration.cs" />
     <Compile Include="Core\Logical\LogicBase.cs" />
-    <Compile Include="Idioms\Polyfacing\PolyfacingValueOfDecoration.cs" />
     <Compile Include="Core\ValueOfing\FactoriedValueOf.cs" />
     <Compile Include="Core\ValueOfing\Interfaces.cs" />
     <Compile Include="Core\ValueOfing\ValueOf.cs" />
-    <Compile Include="Idioms\Expiring\NaturalConstantWindowables.cs" />
-    <Compile Include="Idioms\Expiring\NaturalConstantExpirables.cs" />
-    <Compile Include="Idioms\Expiring\Decorations\Dated\Floating\FloatingDateDecoration.cs" />
-    <Compile Include="Idioms\Expiring\Decorations\Dated\Floating\FloatingStartEndDateDecoration.cs" />
-    <Compile Include="Idioms\Expiring\Decorations\Dated\StartEndDateDecoration.cs" />
-    <Compile Include="Idioms\Expiring\Decorations\Dated\ExpiryDateDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Expiring\Decorations\WindowableDecorationBase.cs" />
-    <Compile Include="Idioms\Expiring\Decorations\ExpirableDecorationBase.cs" />
-    <Compile Include="Idioms\Expiring\Interfaces.cs" />
-    <Compile Include="Idioms\Adjusting\AdjustedValueOfDecoration.cs" />
-    <Compile Include="Idioms\Sealing\SealingConditionDecoration.cs" />
-    <Compile Include="Idioms\Sealing\SealingLogicDecoration.cs" />
-    <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs" />
-    <Compile Include="Idioms\Serviceable\Interfaces.cs" />
-    <Compile Include="Idioms\Stringing\LengthEncoder.cs" />
-    <Compile Include="Idioms\Stringing\LengthPrefixDecoration.cs" />
-    <Compile Include="Idioms\Stringing\LengthPrefixListDecoration.cs" />
-    <Compile Include="Idioms\Stringing\Stringable.cs" />
-    <Compile Include="Idioms\Stringing\StringableDecorationBase.cs" />
-    <Compile Include="Idioms\Stringing\StringableList.cs" />
-    <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs" />
-    <Compile Include="Idioms\TypeLocating\Core\NaturalTypeLocator.cs" />
-    <Compile Include="Idioms\TypeLocating\Extensions.cs" />
-    <Compile Include="Idioms\TypeLocating\Interfaces.cs" />
-    <Compile Include="Idioms\TypeLocating\Products\TypeContainer.cs" />
-    <Compile Include="Idioms\TypeLocating\TheTypeLocator.cs" />
-    <Compile Include="Idioms\Serialization\GrapherSerializationUtil.cs" />
-    <Compile Include="Idioms\Counting\Counter.cs" />
-    <Compile Include="Idioms\Rehydrating\NaturalHydrator.cs" />
-    <Compile Include="Idioms\Rehydrating\Interfaces.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\HasHydrationMapValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\UndeclaredValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\Decorations\DecoratedValueManagerBase.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\Decorations\NullCheckDecoration.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\HydrationMapValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\SerializableValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\ManagedHydrateableValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\HydrateableValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
-    <Compile Include="Idioms\Delim.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Graph.cs" />
-    <Compile Include="Idioms\ObjectGraphing\GraphNode.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Path\RootSegment.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\CompoundValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\ValueManagerChainOfResponsibility.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\ValueTypeValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\DelegateValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\DuplicateValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Path\EnumeratedItemSegment.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Path\GraphPath.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Path\GraphSegment.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\NullValueManager.cs" />
-    <Compile Include="Idioms\ObjectGraphing\Values\PrimitiveValueManager.cs" />
     <Compile Include="Core\Conditional\Of\NaturalStrategizedConditionOf.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Idioms\Serialization\JSONSerializationUtil.cs" />
-    <Compile Include="Idioms\Serialization\ISerializationUtil.cs" />
-    <Compile Include="Idioms\Serialization\NetDataContractSerializerUtil.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Serialization\SerializationEnvelope.cs" />
-    <Compile Include="Idioms\Serialization\SerializationManager.cs" />
-    <Compile Include="Idioms\Validating\Interfaces.cs" />
-    <Compile Include="Idioms\Validating\ValidatingConditionDecoration.cs" />
-    <Compile Include="Idioms\Validating\ValidatingLogicDecoration.cs" />
-    <Compile Include="Idioms\Validating\ValidatingValueOfDecoration.cs" />
-    <Compile Include="Idioms\Waiting\Extensions.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
-    <Compile Include="Core\Storing\Decorations\Evicting\EvictionPolicy.cs" />
     <Compile Include="Core\Logical\Logic.cs" />
     <Compile Include="Core\Logical\LogicOf.cs" />
     <Compile Include="Core\Logical\LogicTo.cs" />
     <Compile Include="Core\Logical\LogicOfTo.cs" />
     <Compile Include="Core\Logical\Interfaces.cs" />
-    <Compile Include="Core\DecorationOfBase.cs" />
+    <Compile Include="Core\Decorating\DecorationOfBase.cs" />
     <Compile Include="Extensions\SerializationExtensions.cs" />
-    <Compile Include="Core\Storing\Decorations\Caching\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\DecorationExtensions.cs" />
-    <Compile Include="Core\Storing\Decorations\Eventing\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Evicting\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Factoried\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Interception\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Masking\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Polling\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\StoreOf\StoreOfUniqueIdDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\StoreOf\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\StreamBacked\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Validating\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\Validating\ItemValidators.cs" />
-    <Compile Include="Core\Storing\Decorations\StoreOf\StoreOfExactlyDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\StreamBacked\BackingEncryptedStreamDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Storing\Decorations\StreamBacked\BackingFileDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Storing\Decorations\StreamBacked\BackingLockedFileDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Storing\Decorations\StreamBacked\BackingStreamDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\Validating\ValidatingDecoration.cs" />
-    <Compile Include="Core\Storing\Products\FileStores.cs" />
-    <Compile Include="Core\Storing\Products\InMemoryStores.cs" />
-    <Compile Include="Idioms\Filing\LockedFile.cs" />
-    <Compile Include="Core\Storing\StoreSerializer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Stringing\Interfaces.cs" />
-    <Compile Include="Idioms\Testing\Interfaces.cs" />
-    <Compile Include="Idioms\Testing\TestableResult.cs" />
-    <Compile Include="Idioms\Waiting\ConditionalValueOfDecoration.cs" />
     <Compile Include="Core\ValueOfing\DecoratedValueOfBase.cs" />
-    <Compile Include="Idioms\Waiting\WaitingConditionalValueOfDecoration.cs" />
     <Compile Include="Core\ValueOfing\Extensions.cs" />
     <Compile Include="Extensions\EqualsExtensions.cs" />
     <Compile Include="Extensions\BitwiseExtensions.cs" />
-    <Compile Include="Core\Storing\Decorations\AuditTrail\AuditingDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\AuditTrail\FluentDecorator.cs" />
-    <Compile Include="Core\Storing\Decorations\AuditTrail\StoredItemAuditPoint.cs" />
-    <Compile Include="Core\Storing\Decorations\Masking\MaskingDecoration.cs" />
-    <Compile Include="Core\Storing\SandboxId.cs" />
-    <Compile Include="Core\Storing\Decorations\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Core\Conditional\Or.cs" />
     <Compile Include="Extensions\ConversionExtensions.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
-    <Compile Include="Idioms\Intercepting\Decorating\DecoratingInterceptChain.cs" />
-    <Compile Include="Idioms\Intercepting\Decorating\DecoratingInterceptLayer.cs" />
-    <Compile Include="Idioms\Intercepting\Decorating\DecoratingInterceptUnitOfWork.cs" />
-    <Compile Include="Idioms\Intercepting\Decorating\Exceptions.cs" />
-    <Compile Include="Idioms\Intercepting\Exceptions.cs" />
-    <Compile Include="Idioms\Intercepting\InterceptChain.cs" />
     <Compile Include="Extensions\FluentBool.cs" />
     <Compile Include="Extensions\MaybeMonadFluentExtensions.cs" />
     <Compile Include="Extensions\StringConversionExtensions.cs" />
     <Compile Include="Core\Storing\CommitException.cs" />
-    <Compile Include="Core\Storing\Decorations\Caching\CacheDecoration.cs" />
-    <Compile Include="Idioms\Intercepting\InterceptLayer.cs" />
-    <Compile Include="Idioms\Intercepting\InterceptUnitOfWork.cs" />
-    <Compile Include="Core\Storing\Decorations\Evicting\EvictDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\Factoried\FactoryDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\Eventing\EventingDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\Interception\InterceptingDecoration.cs" />
-    <Compile Include="Core\Storing\Decorations\Polling\PollDecoration.cs" />
-    <Compile Include="Core\Storing\Products\EventedInMemoryStore.cs" />
-    <Compile Include="Core\Storing\Products\EvictionConditionFactoryFactory.cs" />
-    <Compile Include="Core\Storing\Products\EvictingInMemoryStore.cs" />
-    <Compile Include="Core\Storing\Products\FactoriedEvictingInMemoryStore.cs" />
     <Compile Include="Core\Storing\NaturalInMemoryStore.cs" />
     <Compile Include="Core\Storing\CommitBag.cs" />
-    <Compile Include="Core\Storing\Decorations\DecoratedStoreBase.cs" />
-    <Compile Include="Core\Storing\IHasIDWrappers.cs" />
     <Compile Include="Core\Storing\StoredObjectId.cs" />
-    <Compile Include="Core\Storing\Products\UniqueIdGenerator.cs" />
     <Compile Include="Core\Storing\SearchFilter.cs" />
     <Compile Include="Core\Storing\StoreExtensions.cs" />
-    <Compile Include="Idioms\Depending\Named\NamedDependencyAttribute.cs" />
-    <Compile Include="Idioms\Depending\Named\NamedDependency.cs" />
-    <Compile Include="Idioms\Depending\Named\NamedDependencySet.cs" />
     <Compile Include="Utils\BinarySerializationUtil.cs" />
     <Compile Include="Utils\StringGenerator.cs" />
-    <Compile Include="Idioms\Serviceable\StrategizedService.cs" />
-    <Compile Include="Idioms\Nothing.cs" />
-    <Compile Include="Idioms\Backgrounding\BackgroundHost.cs" />
     <Compile Include="Core\Conditional\IsTrue.cs" />
     <Compile Include="Core\DisposableBase.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
@@ -267,15 +119,10 @@
     <Compile Include="Extensions\ReflectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\StateMachining\StateMachineGraph.cs" />
     <Compile Include="Core\Storing\Interfaces.cs" />
     <Compile Include="Core\Conditional\NaturalStrategizedCondition.cs" />
     <Compile Include="Core\Conditional\Interfaces.cs" />
-    <Compile Include="Idioms\Serviceable\ServiceBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Idioms\Depending\DependencyOf.cs" />
-    <Compile Include="Idioms\Depending\DependencySorter.cs" />
-    <Compile Include="Idioms\Depending\DependencyUtil.cs" />
     <Compile Include="Utils\ACLUtil.cs" />
     <Compile Include="Utils\FileUtil.cs" />
     <Compile Include="Utils\PrimitivesUtil.cs" />
@@ -284,19 +131,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Idioms\Identifying\" />
-    <Folder Include="Idioms\TypeLocating\Decorations\" />
+    <Folder Include="Idioms\" />
     <Folder Include="obj\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Core\DecorationGuidelines.txt" />
-    <Content Include="Idioms\Depending\Named\Notes.txt" />
-    <Content Include="Idioms\IdiomNotes.txt" />
+    <Content Include="Core\Decorating\DecorationGuidelines.txt" />
     <Content Include="Core\Logical\Notes.txt" />
-    <Content Include="Idioms\ObjectGraphing\GraphingNotes.txt" />
-    <Content Include="Idioms\Vision.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

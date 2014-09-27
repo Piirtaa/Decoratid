@@ -5,7 +5,7 @@
 //using System.Runtime.Serialization.Formatters.Binary;
 //using System.Text;
 //using System.Threading.Tasks;
-//using Decoratid.Idioms.Storing;
+//using Decoratid.Core.Storing;
 //using ServiceStack.Text;
 
 //namespace Decoratid.Serialization

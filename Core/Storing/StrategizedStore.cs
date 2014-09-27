@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Sandbox.Extensions;
 
-namespace Sandbox.Store.CoreStores
+namespace Decoratid.Core.Storing
 {
     /// <summary>
     /// a store that is implemented with strategies
     /// </summary>
-    public class StrategizedStore : ISerializable
+    public class StrategizedStore 
     {
         #region Ctor
-        public StrategizedStore(Func<IHasId, IHasId> getStrategy, 
+        public StrategizedStore(LogicOfTo<IHasId, IHasId> getStrategy, 
             Func<SearchFilter, List<IHasId>> searchStrategy, 
             Action<CommitBag> commitStrategy)
         {
@@ -25,23 +25,8 @@ namespace Sandbox.Store.CoreStores
         }
         #endregion
 
-        #region ISerializable
-        protected StrategizedStore(SerializationInfo info, StreamingContext context)
-        {
-            //this._Core = (T)info.GetValue("_Core", typeof(T));
-            //this._Decorated = (T)info.GetValue("_Decorated", typeof(T));
-
-        }
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            //base.GetObjectData(info, context);
-            //info.AddValue("_Core", this._Core, this._Core.GetType());
-            //info.AddValue("_Decorated", this._Decorated, this._Decorated.GetType());
-        }
-        #endregion
-
         #region Properties
-        public Func<IHasId, IHasId> GetStrategy { get; private set; }
+        public LogicOfTo<IHasId, IHasId> GetStrategy { get; private set; }
         public Func<SearchFilter, List<IHasId>> SearchStrategy { get; private set; }
         public Action<CommitBag> CommitStrategy { get; private set; }
         #endregion

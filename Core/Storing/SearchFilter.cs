@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {
     /// <summary>
     /// A wrapper class around Func IHasId,bool.  Facilitates decoration/extension.
@@ -14,7 +15,7 @@ namespace Decoratid.Idioms.Storing
     public class SearchFilter 
     {
         #region Ctor
-        public SearchFilter() { }
+        protected SearchFilter() { }
         public SearchFilter(Func<IHasId, bool> filter)
         {
             Condition.Requires(filter).IsNotNull();
@@ -54,10 +55,6 @@ namespace Decoratid.Idioms.Storing
     public class SearchFilterOf<T> : SearchFilter where T : IHasId
     {
         #region Ctor
-        public SearchFilterOf()
-            : base()
-        {
-        }
         public SearchFilterOf(Func<T, bool> filter): base()
         {
             //converts the generic expression to a non-generic one

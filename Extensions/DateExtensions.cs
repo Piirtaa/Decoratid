@@ -25,7 +25,7 @@ namespace Decoratid.Extensions
             if (dt.HasValue == false)
                 return string.Empty;
 
-            return dt.GetValueOrDefault().ToUnixTime();
+            return dt.GetValueOrDefault().ToUnixTime().ToString();
         }
         public static DateTime? FromStringUnixTime(this string unixTime)
         {

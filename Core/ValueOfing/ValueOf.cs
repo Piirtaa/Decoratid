@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Serialization;
-using Decoratid.Core.Conditional;
-using Decoratid.Utils;
 
 namespace Decoratid.Core.ValueOfing
 {
@@ -39,7 +28,7 @@ namespace Decoratid.Core.ValueOfing
         #endregion
 
         #region ISerializable
-        protected ValueOf(SerializationInfo info, StreamingContext context)
+        private ValueOf(SerializationInfo info, StreamingContext context)
         {
             this.Value = (T)info.GetValue("_value", typeof(T));
         }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Decoratid.Thingness;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.Storing.Decorations;
-using Decoratid.Idioms.Storing.Decorations.Eventing;
-using Decoratid.Idioms.Storing.Core;
+using Decoratid.Core.Storing.Decorations;
+using Decoratid.Core.Storing.Decorations.Eventing;
+using Decoratid.Core.Storing;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     /// <summary>
     /// simple in-memory store with events

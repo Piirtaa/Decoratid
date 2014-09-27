@@ -206,7 +206,7 @@ namespace Decoratid.Idioms.Polyfacing
         /// <param name="type"></param>
         /// <param name="behaviour"></param>
         /// <returns></returns>
-        public Polyface Is(this IPolyfacing face, string faceName, object behaviour)
+        public static Polyface Is(this IPolyfacing face, string faceName, object behaviour)
         {
             Condition.Requires(face).IsNotNull();
             Polyface rv = face.RootFace;
@@ -222,7 +222,7 @@ namespace Decoratid.Idioms.Polyfacing
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public object As(this IPolyfacing face, string name)
+        public static object As(this IPolyfacing face, string name)
         {
             Condition.Requires(face).IsNotNull();
             Polyface rv = face.RootFace;
@@ -239,7 +239,7 @@ namespace Decoratid.Idioms.Polyfacing
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>
         /// <returns></returns>
-        public T As<T>(this IPolyfacing face, string name)
+        public static T As<T>(this IPolyfacing face, string name)
         {
             Condition.Requires(face).IsNotNull();
             Polyface rv = face.RootFace;
@@ -254,3 +254,8 @@ namespace Decoratid.Idioms.Polyfacing
     }
 
 }
+/*
+             *      For example, the call to decorate a face and wrapplace it is: 
+             *          IPolyfacing.As<T>().DecorateWithX().Is<T>();
+             *              -get the T face, decorate it, set it    
+ */              

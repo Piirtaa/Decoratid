@@ -1,6 +1,6 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Storing;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.StoreOf;
 using Decoratid.Utils;
 using System;
 using System.Collections.Generic;

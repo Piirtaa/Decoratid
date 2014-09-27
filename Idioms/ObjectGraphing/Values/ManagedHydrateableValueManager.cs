@@ -1,7 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Serialization;
-using Decoratid.Idioms.Storing;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations.StoreOf;
 using System;
 using System.Collections.Generic;
 using System.Linq;

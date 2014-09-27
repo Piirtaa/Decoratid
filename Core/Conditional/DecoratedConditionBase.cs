@@ -1,4 +1,5 @@
 ﻿
+using Decoratid.Core.Decorating;
 using System;
 using System.Collections.Generic;
 using System.Linq;

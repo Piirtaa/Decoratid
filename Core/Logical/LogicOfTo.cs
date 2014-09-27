@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Contextual;
 using Decoratid.Core.ValueOfing;
-using Decoratid.Extensions;
-using Decoratid.Serialization;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
+using System;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Core.Logical
 {

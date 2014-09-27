@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Extensions;
 using System.Reflection;
-using Decoratid.Reflection;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Contextual;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {
-
-
     /// <summary>
     /// holds id and type info for an IHasId instance - the fundamental pointer to an object in a store.
     /// Is itself an IHasId and thus can be stored.
     /// </summary>
-    /// 
     [Serializable]
     public sealed class StoredObjectId : IStoredObjectId, IEquatable<StoredObjectId>
     {
@@ -104,13 +102,6 @@ namespace Decoratid.Idioms.Storing
         }
         #endregion
 
-        //#region Implicit Conversion
-        //public static implicit operator StoredObjectId(IStoredObjectId storedObjId)
-        //{
-        //    return new StoredObjectId(storedObjId.ObjectType, storedObjId.ObjectId);
-        //}
-        //#endregion
-
         #region Static Fluent Methods
         public static StoredObjectId New(Type objectType, object id)
         {
@@ -121,8 +112,41 @@ namespace Decoratid.Idioms.Storing
             return new StoredObjectId(iHasId);
         }
         #endregion
+    }
 
+    public static class SOIDExtensions
+    {
+        /// <summary>
+        /// creates a stored object id that points to AsId instance
+        /// </summary>
+        /// <typeparam name="TId"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static StoredObjectId CreateSOID4AsId<TId>(this TId obj)
+        {
+            return StoredObjectId.New(typeof(AsId<TId>), obj);
+        }
+        /// <summary>
+        /// creates a stored object id that points to AsHasId instance
+        /// </summary>
+        /// <typeparam name="TId"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static StoredObjectId CreateSOID4AsHasId<TId, T>(this TId obj)
+        {
+            return StoredObjectId.New(typeof(AsHasId<TId, T>), obj);
+        }
 
+        /// <summary>
+        /// creates a stored object id for ContextualAsId
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static StoredObjectId CreateSOID4ContextualAsId<TId, TContext>(this TId obj)
+        {
+            return StoredObjectId.New(typeof(ContextualId<TId, TContext>), obj);
+        }
     }
 
     ///// <summary>
@@ -189,4 +213,5 @@ namespace Decoratid.Idioms.Storing
 
 
     //}
+
 }

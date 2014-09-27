@@ -6,15 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core.Conditional;
 using Decoratid.Crypto;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Storing.Decorations;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
-using Decoratid.Idioms.Storing.Decorations.StreamBacked;
+using Decoratid.Core.Storing;
+using Decoratid.Core.Storing.Decorations;
+using Decoratid.Core.Storing.Decorations.StoreOf;
+using Decoratid.Core.Storing.Decorations.StreamBacked;
 using Decoratid.Thingness;
 using Decoratid.Idioms.Decorating;
 using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     /// <summary>
     /// an in memory store of the given type

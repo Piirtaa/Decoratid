@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 
-namespace Decoratid.Idioms.Storing.Products
+namespace Decoratid.Core.Storing.Products
 {
     //inspiration from http://msdn.microsoft.com/en-us/magazine/gg309174.aspx
 

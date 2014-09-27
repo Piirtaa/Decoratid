@@ -1,89 +1,14 @@
-﻿using System;
+﻿using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Dependencies;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {
     public static class StoreExtensions
     {
-        #region HasA Searches
-        /// <summary>
-        /// performs a regular Search amongst types T that also have a IHasDependencyOf THasA,and then sorts 
-        /// by the dependency from least dependent to most
-        /// </summary>
-        /// <typeparam name="Tobj"></typeparam>
-        /// <typeparam name="THasA"></typeparam>
-        /// <param name="store"></param>
-        public static List<T> SearchHasADependency<T, THasA>(this ISearchableStore store, SearchFilter filter)
-    where T : IHasId, IHasDependencyOf<THasA>
-        {
-            if (store == null)
-                return null;
-
-            var list = store.Search<T>(filter);
-
-            List<IHasDependencyOf<THasA>> depList = new List<IHasDependencyOf<THasA>>();
-            list.WithEach(x =>
-            {
-                depList.Add(x);
-            });
-
-            //sort deplist
-            depList = DependencyUtil.SortHasADependencies(depList);
-
-
-            //convert to T
-            List<T> returnValue = new List<T>();
-
-            depList.WithEach(x =>
-            {
-                returnValue.Add((T)x);
-            });
-
-            return returnValue;
-        }
-        /// <summary>
-        /// performs a regular GetAll of T, where T is IHasDependencyOf THasA, sorted by the Dependency
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="THasA"></typeparam>
-        /// <param name="store"></param>
-        public static List<T> GetAllHasADependency<T, THasA>(this ISearchableStore store)
-            where T : IHasId, IHasDependencyOf<THasA>
-        {
-            if (store == null)
-                return null;
-
-            var list = store.GetAll<T>();
-
-            List<IHasDependencyOf<THasA>> depList = new List<IHasDependencyOf<THasA>>();
-            list.WithEach(x =>
-            {
-                depList.Add(x);
-            });
-
-            //sort deplist
-            depList = DependencyUtil.SortHasADependencies(depList);
-
-
-            //convert to T
-            List<T> returnValue = new List<T>();
-
-            depList.WithEach(x =>
-            {
-                returnValue.Add((T)x);
-            });
-
-            return returnValue;
-        }
-        #endregion
 
         #region Search
         /// <summary>
@@ -420,20 +345,20 @@ namespace Decoratid.Idioms.Storing
         #endregion
 
         #region AsId, ContextualAsId
-        public static AsId<T> BuildAsId<T>(this T thing)
-        {
-            if (thing == null)
-                throw new ArgumentNullException();
+        //public static AsId<T> BuildAsId<T>(this T thing)
+        //{
+        //    if (thing == null)
+        //        throw new ArgumentNullException();
 
-            return AsId<T>.New(thing);
-        }
-        public static ContextualAsId<T, TContext> BuildContextualAsId<T, TContext>(this T thing, TContext context)
-        {
-            if (thing == null)
-                throw new ArgumentNullException();
+        //    return AsId<T>.New(thing);
+        //}
+        //public static ContextualAsId<T, TContext> BuildContextualAsId<T, TContext>(this T thing, TContext context)
+        //{
+        //    if (thing == null)
+        //        throw new ArgumentNullException();
 
-            return ContextualAsId<T, TContext>.New(thing, context);
-        }
+        //    return ContextualAsId<T, TContext>.New(thing, context);
+        //}
         #endregion
 
         #region Id Shifts

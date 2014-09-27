@@ -1,21 +1,18 @@
-﻿using System;
+﻿using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Storing.Core;
-using Decoratid.Idioms.Storing.Decorations.StoreOf;
-using Decoratid.Thingness;
-using ServiceStack.Text;
+using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Storing
+namespace Decoratid.Core.Storing
 {       
     /// <summary>
     /// container of data to "commit"  (eg. save, delete) to the db. 
     /// </summary>
     /// <remarks>wraps a store that contains CommitBagItem</remarks>
+    /// 
+    [Serializable]
     public sealed class CommitBag : ICommitBag
     {
         #region Declarations
@@ -103,38 +100,4 @@ namespace Decoratid.Idioms.Storing
         #endregion
     }
 
-    ///// <summary>
-    ///// a type-specific kind of commit bag.  Identical to CommitBag but we decorate its store as IStoreOf T.  This adds
-    ///// type validation that we want with the "OfX" idiom.
-    ///// </summary>
-    ///// <typeparam name="T"></typeparam>
-    //public class CommitBagOf<T> : CommitBag where T : IHasId
-    //{
-    //    #region Ctor
-    //    /// <summary>
-    //    /// default ctor.  use this if we're not sharing a commit bag's store
-    //    /// </summary>
-    //    public CommitBagOf()
-    //    {
-    //        this.Bag = new StoreOfDecoration<T>(new InMemoryStore());
-    //    }
-    //    /// <summary>
-    //    /// ctor that uses an explicitly provided store (eg. share pending commits with several sessions)
-    //    /// </summary>
-    //    /// <param name="store"></param>
-    //    public CommitBagOf(IStore store)
-    //    {
-    //        Condition.Requires(store).IsNotNull();
-
-    //        if (store is IStoreOf<T>)
-    //        {
-    //            this.Bag = store;
-    //        }
-    //        else
-    //        {
-    //            this.Bag = new StoreOfDecoration<T>(store);
-    //        }
-    //    }
-    //    #endregion
-    //}
 }

@@ -1,1 +1,16 @@
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid.pdb
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\CuttingEdge.Conditions.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\KellermanSoftware.Compare-NET-Objects.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\protobuf-net.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\ServiceStack.Text.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\BouncyCastle.Crypto.pdb
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\CuttingEdge.Conditions.xml
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\KellermanSoftware.Compare-NET-Objects.xml
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\protobuf-net.pdb
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\protobuf-net.xml
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\ServiceStack.Text.xml
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.pdb
