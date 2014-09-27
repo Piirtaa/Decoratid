@@ -1,0 +1,9 @@
+﻿Traps Errors on operations.
+
+
+Fluently decorated as:
+	valueOf.Trap();
+	logic.Trap();
+	condition.Trap();
+
+  

@@ -104,6 +104,18 @@
     <Compile Include="Idioms\Counting\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\ErrorCatching\ErrorCatchingConditionDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\ErrorCatching\ErrorCatchingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\ErrorCatching\ErrorCatchingValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\ErrorCatching\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Polyfacing\Polyface.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -175,6 +187,7 @@
     <Content Include="Idioms\Adjusting\Notes.txt" />
     <Content Include="Idioms\Backgrounding\Notes.txt" />
     <Content Include="Idioms\Counting\Notes.txt" />
+    <Content Include="Idioms\ErrorCatching\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
