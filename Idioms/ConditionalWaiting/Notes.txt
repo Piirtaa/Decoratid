@@ -1,0 +1,14 @@
+﻿ConditionalWaiter waits for a condition to be true, or until a stop waiting condition is true.  
+It's polyfacing.
+
+Fluently polyfaced as:
+	polyface.IsConditionalWaiter(wait condition, stopwaiting condition); - attaches a new ConditionalWaiter
+	polyface.AsConditionalWaiter(); - returns the ConditionalWaiter
+
+Fluently decorated as:
+	valueOf.WaitUntil(wait condition, stopwaiting condition);
+	logic.WaitUntil(wait condition, stopwaiting condition);
+	condition.WaitUntil(wait condition, stopwaiting condition);
+
+
+  

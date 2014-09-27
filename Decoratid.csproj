@@ -77,6 +77,11 @@
     <Compile Include="Core\Conditional\Of\DecoratedConditionOfBase.cs" />
     <Compile Include="Core\Conditional\Of\Interfaces.cs" />
     <Compile Include="Core\Identifying\NamedValueIHasIdDecoration.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\ConditionalWaiter.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\Interfaces.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\ConditionalWaitingConditionDecoration.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\ConditionalWaitingLogicDecoration.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\ConditionalWaitingValueOfDecoration.cs" />
     <Compile Include="Idioms\Delim.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -258,6 +263,7 @@
     <Content Include="Core\Logical\Notes.txt" />
     <Content Include="Idioms\Adjusting\Notes.txt" />
     <Content Include="Idioms\Backgrounding\Notes.txt" />
+    <Content Include="Idioms\ConditionalWaiting\Notes.txt" />
     <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
     <Content Include="Idioms\IdGenerating\Notes.txt" />
