@@ -21,6 +21,20 @@ The Polyface paradigm enables some interesting functionality:
 		in an aggregated fashion.   
 	-One can fluenty modify behaviour:
 		eg. 
-			Polyface.As<1st face>.DecorateWithX.Is<1st face>();  //kablammo!  we've replaced the first face
+			Polyface.As<1st face>.DecorateWithX.Is<1st face>();  //kablammo!  we've replaced the first face with its decoration
+
+Conceptually, The Polyfacing paradigm is to attach instances of behaviour to a larger thing, and to coordinate this larger thing's
+	attached behaviour to itself.  This differs from the Decorating paradigm which adds behaviour in layers upon a single
+	core thing.  Together, both Polyfacing and Decorating allow the Trunk Behaviour to be established (via polyfacing) and
+	embellished with additional behavioural concepts (via decoration).  Pretty powerful for a fluent thing.  
+
+We get cross-cutting-ness out of this.  Full interception.  Full data portability.  Minimum of code.  
+	Textual readable sentence descriptions of behaviour (think of That portability) - in other words, with a core
+	set of common behaviours, things built on this are fully behaviourally portable, as Text.
+	
+	   
+	 
+
 
 	
+		
