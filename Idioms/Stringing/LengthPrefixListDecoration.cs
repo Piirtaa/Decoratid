@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Core;
 using System.Runtime.Serialization;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.Stringing
 {

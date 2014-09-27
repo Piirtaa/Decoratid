@@ -264,6 +264,7 @@
     <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
     <Content Include="Idioms\Sealing\Notes.txt" />
+    <Content Include="Idioms\Stringing\Notes.txt" />
     <Content Include="Idioms\Validating\Notes.txt" />
     <Content Include="Idioms\Vision.txt" />
     <Content Include="Idioms\WithValuing\Notes.txt" />
