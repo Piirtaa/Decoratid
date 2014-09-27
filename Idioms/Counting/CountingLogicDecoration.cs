@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
+﻿using Decoratid.Core.Decorating;
 using Decoratid.Core.Logical;
-using Decoratid.Core;
+using System;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Counting
 {

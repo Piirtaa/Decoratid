@@ -1,0 +1,7 @@
+﻿BackgroundHost is a host container of background Logic.
+It's polyfacing.
+
+Fluently polyfaced as:
+	polyface.IsEmptyBackground(); - attaches empty background behaviour
+	polyface.IsBackground(Logic etc); - attaches background logic
+	polyface.AsBackground(); - returns the host container

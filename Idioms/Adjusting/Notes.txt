@@ -1,0 +1,6 @@
+﻿***Applies only the ValueOf Things
+
+Modifies the ValueOf according to a X->X function.
+
+Fluently decorate as:
+	valueOf.Adjust( function );

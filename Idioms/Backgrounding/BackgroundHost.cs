@@ -25,9 +25,9 @@ namespace Decoratid.Idioms.Backgrounding
 
         //timer stuff
         private System.Timers.Timer _timer = null;
-        protected bool _isInBackground = false;
-        protected double _backgroundIntervalMSecs = 30000; //30 second default
-        protected bool _isEnabled = true;
+        private bool _isInBackground = false;
+        private double _backgroundIntervalMSecs = 30000; //30 second default
+        private bool _isEnabled = true;
         #endregion
 
         #region Ctor
@@ -59,11 +59,11 @@ namespace Decoratid.Idioms.Backgrounding
         #endregion
 
         #region ISerializable
-        protected BackgroundHost(SerializationInfo info, StreamingContext context)
+        private BackgroundHost(SerializationInfo info, StreamingContext context)
         {
             this.BackgroundAction = (ILogic)info.GetValue("BackgroundAction", typeof(ILogic));
         }
-        protected void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        private void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("BackgroundAction", this.BackgroundAction);
         }
@@ -153,7 +153,7 @@ namespace Decoratid.Idioms.Backgrounding
         /// <summary>
         /// initializes the timer
         /// </summary>
-        protected void InitTimer()
+        private void InitTimer()
         {
             this.DisposeTimer();
 
@@ -170,7 +170,7 @@ namespace Decoratid.Idioms.Backgrounding
         /// <summary>
         /// disposes the timer
         /// </summary>
-        protected void DisposeTimer()
+        private void DisposeTimer()
         {
             if (this._timer != null)
             {

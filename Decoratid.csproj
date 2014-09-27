@@ -89,6 +89,21 @@
     <Compile Include="Idioms\Backgrounding\BackgroundHost.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Counting\Counter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Counting\CountingConditionDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Counting\CountingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Counting\CountingValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Counting\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Polyfacing\Polyface.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,6 +172,9 @@
   <ItemGroup>
     <Content Include="Core\Decorating\DecorationGuidelines.txt" />
     <Content Include="Core\Logical\Notes.txt" />
+    <Content Include="Idioms\Adjusting\Notes.txt" />
+    <Content Include="Idioms\Backgrounding\Notes.txt" />
+    <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
