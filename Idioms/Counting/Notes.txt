@@ -1,1 +1,13 @@
-﻿
+﻿Counter is a one-way threadsafe incrementor. 
+It's polyfacing.
+
+Fluently polyfaced as:
+	polyface.IsCounter(); - attaches a new counter
+	polyface.AsCounter(); - returns the counter
+
+Fluently decorated as:
+	valueOf.Counted();
+	logic.Counted();
+	condition.Counted();
+
+  

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Idioms.Polyfacing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,7 @@ namespace Decoratid.Idioms.Counting
     /// a counter that does a threadsafe increment.  
     /// </summary>
     [Serializable]
-    public class Counter
+    public class Counter : IPolyfacing
     {
         private int _counter = 0;
 
@@ -21,5 +23,26 @@ namespace Decoratid.Idioms.Counting
             return rv;
         }
         public int Current { get { return _counter; } }
+
+        #region IPolyfacing
+        Polyface IPolyfacing.RootFace { get; set; }
+        #endregion
+    }
+
+    public static class BackgroundExtensions
+    {
+        public static Polyface IsCounter(this Polyface root)
+        {
+            Condition.Requires(root).IsNotNull();
+            var counter = new Counter();
+            root.Is(counter);
+            return root;
+        }
+        public static Counter AsCounter(this Polyface root)
+        {
+            Condition.Requires(root).IsNotNull();
+            var rv = root.As<Counter>();
+            return rv;
+        }
     }
 }
