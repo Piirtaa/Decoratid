@@ -1,0 +1,10 @@
+﻿LongIdBroker is a container/broker of long ids, that uses a store to hold the next block of ids.
+It's polyfacing.
+
+Fluently polyfaced as:
+	polyface.IsIdBroker(some id broker info, store, etc); - attaches id broker
+	polyface.AsIdBroker(); - returns id broker
+
+
+Why would you use this?  In case you want to give a Polyface a range of Ids to use, and have this range be managed by an external 
+store.  

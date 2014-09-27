@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
+using Decoratid.Idioms.Polyfacing;
 
-namespace Decoratid.Core.Storing.Products
+namespace Decoratid.Idioms.IdGenerating
 {
     //inspiration from http://msdn.microsoft.com/en-us/magazine/gg309174.aspx
 
@@ -47,7 +50,7 @@ namespace Decoratid.Core.Storing.Products
     /// this class attaches to a store that contains entries of type LongIdGenerationEntry, and uses this to broker ranges of ids
     /// to be consumed
     /// </summary>
-    public class UniqueIdGenerator
+    public class LongIdBroker : IPolyfacing
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -60,7 +63,7 @@ namespace Decoratid.Core.Storing.Products
         #endregion
 
         #region Ctor
-        public UniqueIdGenerator(
+        public LongIdBroker(
           string generatorId,
           IStore store,
           int rangeSize = 1000,
@@ -71,6 +74,10 @@ namespace Decoratid.Core.Storing.Products
             _maxRetries = maxRetries;
             _store = store;
         }
+        #endregion
+
+        #region IPolyfacing
+        Polyface IPolyfacing.RootFace { get; set; }
         #endregion
 
         #region Methods
@@ -86,28 +93,34 @@ namespace Decoratid.Core.Storing.Products
                 return _lastId++;
             }
         }
-        
+        /// <summary>
+        /// grabs a block of ids from the store, updating the store in the process
+        /// </summary>
         private void UpdateFromSyncStore()
         {
             int retryCount = 0;
-            // maxRetries + 1 because the first run isn't a 're'try.
+            
+            //try until we max our tries out
             while (retryCount < _maxRetries + 1)
             {
                 try
                 {
+                    //get the id status from the store
                     LongIdGenerationEntry idEntry = _store.Get<LongIdGenerationEntry>(_generatorId);
                     if (idEntry == null)
                     {
+                        //don't have an id?  make a new one and save it to the store
                         idEntry = new LongIdGenerationEntry(_generatorId, 1);
                         idEntry.DateCreated = DateTime.UtcNow;
                         _store.SaveItem(idEntry);
                     }
 
-                    //increment and save
+                    //set our local id
                     this._lastId = idEntry.NextId;
 
+                    //reserve those id blocks 
                     idEntry.NextId += _rangeSize;
-                    _store.SaveItem(idEntry);  //TODO: store should implement concurrency/versioning 
+                    _store.SaveItem(idEntry);  //TODO: store should implement concurrency/versioning, but if the range is large enough we're prob good 
 
                     this._upperLimit = idEntry.NextId - 1;
                     
@@ -123,5 +136,32 @@ namespace Decoratid.Core.Storing.Products
               retryCount));
         }
         #endregion
+    }
+
+
+
+    public static class LongIdBrokerExtensions
+    {
+        public static Polyface IsIdBroker(this Polyface root,
+          string generatorId,
+          IStore store,
+          int rangeSize = 1000,
+          int maxRetries = 25)
+        {
+            Condition.Requires(root).IsNotNull();
+            var obj = new LongIdBroker(generatorId, store, rangeSize, maxRetries);
+            root.Is(obj);
+            return root;
+        }
+        public static LongIdBroker AsIdBroker(this Polyface root)
+        {
+            Condition.Requires(root).IsNotNull();
+            var rv = root.As<LongIdBroker>();
+            return rv;
+        }
+
+
+
+
     }
 }

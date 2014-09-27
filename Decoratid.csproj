@@ -77,6 +77,9 @@
     <Compile Include="Core\Conditional\Of\DecoratedConditionOfBase.cs" />
     <Compile Include="Core\Conditional\Of\Interfaces.cs" />
     <Compile Include="Core\Identifying\NamedValueIHasIdDecoration.cs" />
+    <Compile Include="Idioms\IdGenerating\LongIdBroker.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\Logical\LogicBase.cs" />
     <Compile Include="Core\ValueOfing\FactoriedValueOf.cs" />
     <Compile Include="Core\ValueOfing\Interfaces.cs" />
@@ -114,6 +117,21 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\ErrorCatching\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Logging\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Logging\LoggingConditionDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Logging\LoggingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Logging\LoggingValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Logging\StoreLogger.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Polyfacing\Polyface.cs">
@@ -188,6 +206,7 @@
     <Content Include="Idioms\Backgrounding\Notes.txt" />
     <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
+    <Content Include="Idioms\IdGenerating\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
