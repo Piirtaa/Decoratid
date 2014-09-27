@@ -1,15 +1,11 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core;
 using Decoratid.Core.Conditional;
 using Decoratid.Core.Conditional.Of;
-using Decoratid.Core.Logical;
+using Decoratid.Core.Contextual;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.ValueOfing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.WithValuing
 {
@@ -38,7 +34,7 @@ namespace Decoratid.Idioms.WithValuing
         #endregion
 
         #region ISerializable
-        protected WithValueConditionOfDecoration(SerializationInfo info, StreamingContext context)
+        private WithValueConditionOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Context = (IValueOf<T>)info.GetValue("Context", typeof(IValueOf<T>));
@@ -72,6 +68,13 @@ namespace Decoratid.Idioms.WithValuing
             }
             rv = this.Decorated.Evaluate(val);
             return rv;
+        }
+        #endregion
+
+        #region IDecoration
+        public override IDecorationOf<IConditionOf<T>> ApplyThisDecorationTo(IConditionOf<T> thing)
+        {
+            return new WithValueConditionOfDecoration<T>(thing, this.Context);
         }
         #endregion
     }

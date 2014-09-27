@@ -1,0 +1,10 @@
+﻿***Applies only the ConditionOf Things
+
+Supplies the context value (as valueOf) to a conditionOf, turning it into a condition .
+
+Fluently decorate as:
+	conditionOf.WithValue( valueOf );
+
+
+We might use this when we want to build up a condition from the logic first, and then supply a context later on
+in the expression, possibly linking it to some "calculated value" derived from a Polyface. 

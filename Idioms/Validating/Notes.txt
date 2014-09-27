@@ -1,0 +1,9 @@
+﻿Decorates by preventing operation unless the supplied condition is met.
+Only applies to Core Things:ValueOf, Logic, Condition
+
+Fluently decorated as:
+	valueOf.KackUntil(condition);
+	logic.KackUntil(condition);
+	condition.KackUntil(condition);
+
+  
