@@ -146,6 +146,15 @@
     <Compile Include="Idioms\Polyfacing\PolyfacingValueOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Sealing\SealingConditionDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Sealing\SealingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
     <Compile Include="Core\Logical\Logic.cs" />
@@ -207,7 +216,9 @@
     <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
     <Content Include="Idioms\IdGenerating\Notes.txt" />
+    <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
+    <Content Include="Idioms\Sealing\Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

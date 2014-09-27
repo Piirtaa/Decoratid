@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Core.Logical;
-using Decoratid.Core;
+﻿using Decoratid.Core.Decorating;
 using Decoratid.Core.ValueOfing;
+using System;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Sealing
 {
@@ -22,7 +11,7 @@ namespace Decoratid.Idioms.Sealing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class SealingValueOfDecoration<T> : DecoratedValueOfBase<T>
+    public class SealingValueOfDecoration<T> : DecoratedValueOfBase<T>, ISealedDecoration
     {
         #region Ctor
         public SealingValueOfDecoration(IValueOf<T> decorated)

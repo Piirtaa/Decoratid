@@ -1,0 +1,10 @@
+﻿Logging is the logging facility
+
+Fluently decorated as:
+	valueOf.LogWith(logger);
+	logic.LogWith(logger);
+	condition.LogWith(logger);
+
+StoreLogger is a logger that uses a backing store.
+
+  

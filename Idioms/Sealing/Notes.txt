@@ -1,0 +1,9 @@
+﻿Decorates by preventing further decoration.
+Only applies to Core Things:ValueOf, Logic, Condition
+
+Fluently decorated as:
+	valueOf.Seal();
+	logic.Seal();
+	condition.Seal();
+
+  
