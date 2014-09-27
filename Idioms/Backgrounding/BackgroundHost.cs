@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using Decoratid.Core.Logical;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.Hydrating;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.Polyfacing;
+using System;
 using System.Runtime.Serialization;
+using System.Timers;
 
 namespace Decoratid.Idioms.Backgrounding
 {

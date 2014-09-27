@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using System;

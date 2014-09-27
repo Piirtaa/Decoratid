@@ -83,6 +83,24 @@
     <Compile Include="Core\ValueOfing\ValueOf.cs" />
     <Compile Include="Core\Conditional\Of\NaturalStrategizedConditionOf.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
+    <Compile Include="Idioms\Adjusting\AdjustedValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Backgrounding\BackgroundHost.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Polyfacing\Polyface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Polyfacing\PolyfacingConditionDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Polyfacing\PolyfacingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Polyfacing\PolyfacingValueOfDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
     <Compile Include="Core\Logical\Logic.cs" />
@@ -134,12 +152,12 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Idioms\" />
     <Folder Include="obj\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Core\Decorating\DecorationGuidelines.txt" />
     <Content Include="Core\Logical\Notes.txt" />
+    <Content Include="Idioms\Polyfacing\Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

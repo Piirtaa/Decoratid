@@ -1,13 +1,8 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core;
 using Decoratid.Core.Conditional;
-using Decoratid.Core.Conditional.Decorations;
+using Decoratid.Core.Decorating;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Polyfacing
 {

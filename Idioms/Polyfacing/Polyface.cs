@@ -254,8 +254,3 @@ namespace Decoratid.Idioms.Polyfacing
     }
 
 }
-/*
-             *      For example, the call to decorate a face and wrapplace it is: 
-             *          IPolyfacing.As<T>().DecorateWithX().Is<T>();
-             *              -get the T face, decorate it, set it    
- */              

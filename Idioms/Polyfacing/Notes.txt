@@ -1,0 +1,26 @@
+﻿Notes on Polyface / Polyfacing
+
+A Polyface is internally a dictionary of "Faces", keyed by both Type and name,
+that externally is a register of instances by type and name.  
+  It has the fluent signatures:
+	Is<T> (T obj) - sets a Face, keyed by type T
+	Is(Type, obj) - sets a Face, keyed by type Type
+	Is(name, obj) - sets a Face, keyed by name
+	As<T>	- gets a Face, keyed by type T
+	As(name) - gets a Face, keyed by name
+	
+Conceptually, a Polyface is a radiant polymorphic fluent type.  It has many faces.  
+Each face can see the other.  A "Face" is something that has a backreference to a Root Polyface.
+A Face is IPolyfacing.  (To convert things to IPolyfacing, see the Polyfacing decorations).
+
+The Polyface paradigm enables some interesting functionality:
+	-One can fluently design an object in a few sentences.
+		eg. polyfacingThing.Polyfacing() <- makes a Polyface
+				.Is<TsecondFace>(2nd face) <- adds a new face
+	-Well-defined behaviours can be isolated as Faces and plug their behaviours into the Polyface
+		in an aggregated fashion.   
+	-One can fluenty modify behaviour:
+		eg. 
+			Polyface.As<1st face>.DecorateWithX.Is<1st face>();  //kablammo!  we've replaced the first face
+
+	
