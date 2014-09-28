@@ -1,15 +1,11 @@
-﻿using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph;
+﻿using Decoratid.Core.Decorating;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Expiring.Decorations
+namespace Decoratid.Idioms.Expiring
 {
-    
-    
+
+
     public interface IWindowableDecoration : IWindowable, IDecorationOf<IWindowable> { }
 
     /// <summary>
@@ -26,10 +22,21 @@ namespace Decoratid.Idioms.Expiring.Decorations
         }
         #endregion
 
-        #region Properties
-        public virtual bool IsInWindow()
+        #region ISerializable
+        protected WindowableDecorationBase(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
-            return base.Decorated.IsInWindow();
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
+        }
+        #endregion
+
+        #region Properties
+        public virtual bool IsInWindow(DateTime dt)
+        {
+            return base.Decorated.IsInWindow(dt);
         }
         public override IWindowable This
         {
@@ -41,16 +48,6 @@ namespace Decoratid.Idioms.Expiring.Decorations
         public override IDecorationOf<IWindowable> ApplyThisDecorationTo(IWindowable thing)
         {
             throw new NotImplementedException();
-        }
-        #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return null;
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
         }
         #endregion
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Expiring.Core
+namespace Decoratid.Idioms.Expiring
 {
     public class NaturalFalseExpirable : IExpirable
     {

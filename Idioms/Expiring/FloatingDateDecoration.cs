@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Expiring.Decorations.Dated.Floating
+namespace Decoratid.Idioms.Expiring
 {
     public interface IHasFloatingExpiryDate : IHasExpiryDate
     {
@@ -17,7 +17,7 @@ namespace Decoratid.Idioms.Expiring.Decorations.Dated.Floating
     public class FloatingExpiryDateDecoration : ExpirableDecorationBase, IHasExpiryDate
     {
         #region Ctor
-        public ExpiryDateDecoration(ExpiryDateDecoration decorated, DateTime expiryDate)
+        public ExpiryDateDecoration(ExpiryDateExpirableDecoration decorated, DateTime expiryDate)
             : base(decorated)
         {
             this.ExpiryDate = expiryDate.ToUniversalTime();

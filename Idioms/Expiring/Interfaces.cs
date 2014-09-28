@@ -5,15 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Expiring
-{
-    /// <summary>
-    /// has a window that it can be in/out of
-    /// </summary>
-    public interface IWindowable 
-    {
-        bool IsInWindow(DateTime dt);
-    }
-
+{   
     /// <summary>
     /// something that expires
     /// </summary>
@@ -22,6 +14,13 @@ namespace Decoratid.Idioms.Expiring
         bool IsExpired();
     }
 
+    /// <summary>
+    /// has a window that it can be in/out of
+    /// </summary>
+    public interface IWindowable 
+    {
+        bool IsInWindow(DateTime dt);
+    }
 
     /// <summary>
     /// has a last touched date 
@@ -42,12 +41,4 @@ namespace Decoratid.Idioms.Expiring
         void Touch();
     }
 
-    //public static class ExpiryExtensions
-    //{
-
-    //    public static bool IsExpired(this IExpirable obj)
-    //    {
-    //        return obj.ExpiryDate < DateTime.UtcNow;
-    //    }
-    //}
 }

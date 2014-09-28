@@ -1,15 +1,9 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Decorating;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Decoratid.Core.Decorating;
 using Decoratid.Extensions;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.Stringing.Products;
+using System;
 
-namespace Decoratid.Idioms.Expiring.Decorations.Dated
+namespace Decoratid.Idioms.Expiring
 {
     public interface IHasStartAndEndDate
     {
@@ -64,31 +58,31 @@ namespace Decoratid.Idioms.Expiring.Decorations.Dated
         }
         #endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return LengthEncoder.LengthEncodeList(this.StartDate.ToStringUnixTime(), this.EndDate.ToStringUnixTime());
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            var list = LengthEncoder.LengthDecodeList(text);
-            Condition.Requires(list).HasLength(2);
-            this.StartDate = list[0].FromStringUnixTime();
-            this.EndDate = list[1].FromStringUnixTime();
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return LengthEncoder.LengthEncodeList(this.StartDate.ToStringUnixTime(), this.EndDate.ToStringUnixTime());
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    var list = LengthEncoder.LengthDecodeList(text);
+        //    Condition.Requires(list).HasLength(2);
+        //    this.StartDate = list[0].FromStringUnixTime();
+        //    this.EndDate = list[1].FromStringUnixTime();
+        //}
+        //#endregion
     }
 
     public static class ExpiryDateDecorationExtensions
     {
-        public static ExpiryDateDecoration DecorateWithExpiryDate(this IExpirable thing, DateTime expiryDate)
+        public static ExpiryDateExpirableDecoration DecorateWithExpiryDate(this IExpirable thing, DateTime expiryDate)
         {
             Condition.Requires(thing).IsNotNull();
-            if (thing is ExpiryDateDecoration)
+            if (thing is ExpiryDateExpirableDecoration)
             {
-                return (ExpiryDateDecoration)thing;
+                return (ExpiryDateExpirableDecoration)thing;
             }
-            return new ExpiryDateDecoration(thing, expiryDate);
+            return new ExpiryDateExpirableDecoration(thing, expiryDate);
         }
     }
 }

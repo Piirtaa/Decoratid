@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Expiring.Decorations.Dated.Floating
+namespace Decoratid.Idioms.Expiring
 {
     class FloatingStartEndDateDecoration
     {

@@ -85,6 +85,15 @@
     <Compile Include="Idioms\Delim.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Expiring\ExpiryDateExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\FloatingDateDecoration.cs" />
+    <Compile Include="Idioms\Expiring\NaturalFloatingDatedExpirable.cs" />
+    <Compile Include="Idioms\Expiring\NaturalDatedExpirable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Expiring\ExpirableDecorationBase.cs" />
+    <Compile Include="Idioms\Expiring\Interfaces.cs" />
+    <Compile Include="Idioms\Expiring\NaturalConstantExpirables.cs" />
     <Compile Include="Idioms\IdGenerating\LongIdBroker.cs">
       <SubType>Code</SubType>
     </Compile>

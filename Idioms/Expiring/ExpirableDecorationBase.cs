@@ -1,19 +1,13 @@
-﻿using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph;
+﻿using Decoratid.Core.Decorating;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Expiring.Decorations
+namespace Decoratid.Idioms.Expiring
 {
-    
-    
     public interface IExpireableDecoration : IExpirable, IDecorationOf<IExpirable> { }
 
     /// <summary>
-    /// base class implementation of a IExpireable decoration
+    /// base class implementation of a IExpirable decoration
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
@@ -23,6 +17,17 @@ namespace Decoratid.Idioms.Expiring.Decorations
         public ExpirableDecorationBase(IExpirable decorated)
             : base(decorated)
         {
+        }
+        #endregion
+
+        #region ISerializable
+        protected ExpirableDecorationBase(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
@@ -44,14 +49,5 @@ namespace Decoratid.Idioms.Expiring.Decorations
         }
         #endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return null;
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-        }
-        #endregion
     }
 }
