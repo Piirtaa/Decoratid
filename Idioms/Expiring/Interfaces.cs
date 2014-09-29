@@ -15,30 +15,20 @@ namespace Decoratid.Idioms.Expiring
     }
 
     /// <summary>
-    /// has a window that it can be in/out of
-    /// </summary>
-    public interface IWindowable 
-    {
-        bool IsInWindow(DateTime dt);
-    }
-
-    /// <summary>
-    /// has a last touched date 
-    /// </summary>
-    public interface IHasLastTouched
-    {
-        DateTime LastTouchedDate { get; }
-    }
-
-    /// <summary>
     /// decorate items that can be touched with this interface
     /// </summary>
-    public interface ICanTouch : IHasLastTouched
+    public interface ITouchable 
     {
-        /// <summary>
-        /// updates the last touched date
-        /// </summary>
         void Touch();
     }
+    /// <summary>
+    /// composites Expirable
+    /// </summary>
+    public interface IHasExpirable : IExpirable
+    {
+        IExpirable Expirable { get; }
+    }
+
+
 
 }

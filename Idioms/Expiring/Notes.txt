@@ -1,0 +1,40 @@
+﻿Deals with the idea of expiry. 
+
+IExpirable defines the core idea.  IHasExpirable composites an IExpirable instance.
+
+ITouchable defines something can can be touched, with the intent that being touched mutates the touchable in some way.
+  This is useful in things like cached items, where each interaction with the cached item should keep the item alive 
+  for a little bit longer.
+
+Some containers are polyfacing, as they're intended for composition.  
+Eg. NaturalDatedExpirable, NaturalFloatingDatedExpirable, HasExpirable
+
+Fluently polyfaced as:
+	polyface.IsDatedExpirable(date); - attaches a new expirable
+	polyface.AsDatedExpirable(); - returns the expirable
+	polyface.IsFloatingDatedExpirable(date, touchingIncrSecs); - attaches a new floating expirable
+	polyface.AsFloatingDatedExpirable(); - returns the expirable
+
+	or, if we want to take advantage of the decorative expirables :
+
+	polyface.IsHasExpirable(NaturalFalseExpirable.New().ExpiresOn(when).Float(50 seconds));
+
+		Expirable instances themselves can also be decorated up to provide the functionality of NaturalDated, for example.  
+		Yes, I did this out of curiosity, ok.  Also it reads more fluently, kinda sounds better, and there might be 
+		something to this in terms of cross-cuttingness.
+
+		// creates a blank expiry, decorates it with date expiry, decorates with floating date
+		NaturalFalseExpirable.New().ExpiresOn(when).Float(50 seconds); 
+
+		//if a window is desired
+		NaturalFalseExpirable.New().InWindow(start, end).Float(50 seconds);
+
+	I think probably the best way to polyface is with the IsHasExpirable call.  This gives us composition that 
+	can be decorated.
+
+Fluently decorated as:
+	valueOf.HasExpirable(expirable);
+	logic.HasExpirable(expirable);
+	condition.HasExpirable(expirable);
+
+  

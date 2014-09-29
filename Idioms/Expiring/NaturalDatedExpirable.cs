@@ -1,4 +1,5 @@
-﻿using Decoratid.Idioms.Polyfacing;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Idioms.Polyfacing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,5 +52,20 @@ namespace Decoratid.Idioms.Expiring
 
     }
 
-
+    public static class NaturalDatedExpirableExtensions
+    {
+        public static Polyface IsDatedExpirable(this Polyface root, DateTime expiry)
+        {
+            Condition.Requires(root).IsNotNull();
+            var composited = new NaturalDatedExpirable(expiry);
+            root.Is(composited);
+            return root;
+        }
+        public static NaturalDatedExpirable AsDatedExpirable(this Polyface root)
+        {
+            Condition.Requires(root).IsNotNull();
+            var rv = root.As<NaturalDatedExpirable>();
+            return rv;
+        }
+    }
 }

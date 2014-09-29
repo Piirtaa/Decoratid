@@ -12,6 +12,11 @@ namespace Decoratid.Idioms.Expiring
         {
             return false;
         }
+
+        public static NaturalFalseExpirable New()
+        {
+            return new NaturalFalseExpirable();
+        }
     }
 
     public class NaturalTrueExpirable : IExpirable
@@ -19,6 +24,11 @@ namespace Decoratid.Idioms.Expiring
         public bool IsExpired()
         {
             return true;
+        }
+
+        public static NaturalTrueExpirable New()
+        {
+            return new NaturalTrueExpirable();
         }
     }
     /// <summary>
@@ -29,6 +39,11 @@ namespace Decoratid.Idioms.Expiring
         public bool IsExpired()
         {
             throw new InvalidOperationException ();
+        }
+
+        public static NaturalUndefinedExpirable New()
+        {
+            return new NaturalUndefinedExpirable();
         }
     }
 }

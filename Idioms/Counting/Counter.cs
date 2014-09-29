@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.Counting
         #endregion
     }
 
-    public static class BackgroundExtensions
+    public static class CounterExtensions
     {
         public static Polyface IsCounter(this Polyface root)
         {

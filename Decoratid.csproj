@@ -85,8 +85,11 @@
     <Compile Include="Idioms\Delim.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Expiring\ExpiryDateExpirableDecoration.cs" />
-    <Compile Include="Idioms\Expiring\FloatingDateDecoration.cs" />
+    <Compile Include="Idioms\Expiring\FloatingWindowExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\WindowExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\DateExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\FloatingDateExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\HasExpirable.cs" />
     <Compile Include="Idioms\Expiring\NaturalFloatingDatedExpirable.cs" />
     <Compile Include="Idioms\Expiring\NaturalDatedExpirable.cs">
       <SubType>Code</SubType>
@@ -94,6 +97,9 @@
     <Compile Include="Idioms\Expiring\ExpirableDecorationBase.cs" />
     <Compile Include="Idioms\Expiring\Interfaces.cs" />
     <Compile Include="Idioms\Expiring\NaturalConstantExpirables.cs" />
+    <Compile Include="Idioms\Expiring\ExpiringConditionDecoration.cs" />
+    <Compile Include="Idioms\Expiring\ExpiringLogicDecoration.cs" />
+    <Compile Include="Idioms\Expiring\ExpiringValueOfDecoration.cs" />
     <Compile Include="Idioms\IdGenerating\LongIdBroker.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -101,7 +107,7 @@
     <Compile Include="Core\ValueOfing\FactoriedValueOf.cs" />
     <Compile Include="Core\ValueOfing\Interfaces.cs" />
     <Compile Include="Core\ValueOfing\ValueOf.cs" />
-    <Compile Include="Core\Conditional\Of\NaturalStrategizedConditionOf.cs" />
+    <Compile Include="Core\Conditional\Of\StrategizedConditionOf.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Idioms\Adjusting\AdjustedValueOfDecoration.cs">
       <SubType>Code</SubType>
@@ -214,6 +220,62 @@
     <Compile Include="Idioms\WithValuing\WithValueConditionOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Storidioms\AuditTrail\AuditingDecoration.cs" />
+    <Compile Include="Storidioms\AuditTrail\FluentDecorator.cs" />
+    <Compile Include="Storidioms\AuditTrail\SandboxId.cs" />
+    <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
+    <Compile Include="Storidioms\Caching\CacheDecoration.cs" />
+    <Compile Include="Storidioms\Caching\FluentDecorator.cs" />
+    <Compile Include="Storidioms\DecoratedStoreBase.cs" />
+    <Compile Include="Storidioms\DecorationExtensions.cs" />
+    <Compile Include="Storidioms\Eventing\EventingDecoration.cs" />
+    <Compile Include="Storidioms\Eventing\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Evicting\EvictDecoration.cs" />
+    <Compile Include="Storidioms\Evicting\EvictionPolicy.cs" />
+    <Compile Include="Storidioms\Evicting\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
+    <Compile Include="Storidioms\Factoried\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Identity\CurrentUser.cs" />
+    <Compile Include="Storidioms\Identity\Extensions.cs" />
+    <Compile Include="Storidioms\Identity\IdentityDecoration.cs" />
+    <Compile Include="Storidioms\Identity\IdentityRecords.cs" />
+    <Compile Include="Storidioms\Identity\Interfaces.cs" />
+    <Compile Include="Storidioms\Indexing\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Indexing\IndexingDecoration.cs" />
+    <Compile Include="Storidioms\Interception\Copy of InterceptingDecoration.cs" />
+    <Compile Include="Storidioms\Interception\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Interception\InterceptingDecoration.cs" />
+    <Compile Include="Storidioms\Masking\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Masking\MaskingDecoration.cs" />
+    <Compile Include="Storidioms\Named\HasIdDecoration.cs" />
+    <Compile Include="Storidioms\Named\IHasIdStore.cs" />
+    <Compile Include="Storidioms\Named\Interfaces.cs" />
+    <Compile Include="Storidioms\Named\NamedStoreRegistry.cs" />
+    <Compile Include="Storidioms\Polling\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Polling\PollDecoration.cs" />
+    <Compile Include="Storidioms\Security\AccessConditions\PerUserAccessCondition.cs" />
+    <Compile Include="Storidioms\Security\CurrentUser.cs" />
+    <Compile Include="Storidioms\Security\Exceptions.cs" />
+    <Compile Include="Storidioms\Security\Extensions.cs" />
+    <Compile Include="Storidioms\Security\Interfaces.cs" />
+    <Compile Include="Storidioms\Security\SecureDecoration.cs" />
+    <Compile Include="Storidioms\Security\StoreAccessRule.cs" />
+    <Compile Include="Storidioms\StoreOf\FluentDecorator.cs" />
+    <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
+    <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
+    <Compile Include="Storidioms\StoreOf\StoreOfUniqueIdDecoration.cs" />
+    <Compile Include="Storidioms\StoreSerializer.cs" />
+    <Compile Include="Storidioms\StreamBacked\BackingEncryptedStreamDecoration.cs" />
+    <Compile Include="Storidioms\StreamBacked\BackingFileDecoration.cs" />
+    <Compile Include="Storidioms\StreamBacked\BackingLockedFileDecoration.cs" />
+    <Compile Include="Storidioms\StreamBacked\BackingStreamDecoration.cs" />
+    <Compile Include="Storidioms\StreamBacked\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Validating\ItemValidatorContainer.cs" />
+    <Compile Include="Storidioms\Validating\IsExactlyOfValidator.cs" />
+    <Compile Include="Storidioms\Validating\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Validating\Interfaces.cs" />
+    <Compile Include="Storidioms\Validating\IsOfValidator.cs" />
+    <Compile Include="Storidioms\Validating\ValidatingDecoration.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
     <Compile Include="Core\Logical\Logic.cs" />
@@ -251,7 +313,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Storing\Interfaces.cs" />
-    <Compile Include="Core\Conditional\NaturalStrategizedCondition.cs" />
+    <Compile Include="Core\Conditional\StrategizedCondition.cs" />
     <Compile Include="Core\Conditional\Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ACLUtil.cs" />
@@ -275,6 +337,7 @@
     <Content Include="Idioms\ConditionalWaiting\Notes.txt" />
     <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
+    <Content Include="Idioms\Expiring\Notes.txt" />
     <Content Include="Idioms\IdGenerating\Notes.txt" />
     <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
