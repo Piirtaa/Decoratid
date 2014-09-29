@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 using Decoratid.Extensions;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using System;
+using System.Collections.Generic;
 
 namespace Decoratid.Storidioms.Masking
 {
@@ -24,7 +19,8 @@ namespace Decoratid.Storidioms.Masking
     /// Masks a store (ie. only enables the indicated functions)
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
-    public class MaskingDecoration : DecoratedStoreBase, IMaskingStore, IHasHydrationMap
+    [Serializable]
+    public sealed class MaskingDecoration : DecoratedStoreBase, IMaskingStore//, IHasHydrationMap
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -42,25 +38,25 @@ namespace Decoratid.Storidioms.Masking
         public StoreOperation Mask { get; private set; }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<MaskingDecoration>();
-            hydrationMap.RegisterDefault("Mask", x => x.Mask, (x, y) => { x.Mask = (StoreOperation)y; });
-            return hydrationMap;
-        }
-        #endregion
+        //#region IHasHydrationMap
+        //public virtual IHydrationMap GetHydrationMap()
+        //{
+        //    var hydrationMap = new HydrationMapValueManager<MaskingDecoration>();
+        //    hydrationMap.RegisterDefault("Mask", x => x.Mask, (x, y) => { x.Mask = (StoreOperation)y; });
+        //    return hydrationMap;
+        //}
+        //#endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetHydrationMap().DehydrateValue(this, uow);
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.GetHydrationMap().HydrateValue(this, text, uow);
+        //}
+        //#endregion
 
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)

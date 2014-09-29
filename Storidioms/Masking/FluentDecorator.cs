@@ -20,7 +20,7 @@ namespace Decoratid.Core.Storing
         /// <param name="decorated"></param>
         /// <param name="mask"></param>
         /// <returns></returns>
-        public static MaskingDecoration DecorateWithOnlyTheseOperations(this IStore decorated,
+        public static MaskingDecoration AllowOperations(this IStore decorated,
             StoreOperation mask)
         {
             Condition.Requires(decorated).IsNotNull();
@@ -31,7 +31,7 @@ namespace Decoratid.Core.Storing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static MaskingDecoration DecorateWithoutCommit(this IStore decorated)
+        public static MaskingDecoration NoCommit(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new MaskingDecoration(decorated, StoreOperation.Get | StoreOperation.GetAll | StoreOperation.Search);
@@ -41,7 +41,7 @@ namespace Decoratid.Core.Storing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static MaskingDecoration DecorateWithoutGet(this IStore decorated)
+        public static MaskingDecoration NoGet(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new MaskingDecoration(decorated, StoreOperation.Commit | StoreOperation.GetAll | StoreOperation.Search);
@@ -51,7 +51,7 @@ namespace Decoratid.Core.Storing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static MaskingDecoration DecorateWithoutSearch(this IStore decorated)
+        public static MaskingDecoration NoSearch(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new MaskingDecoration(decorated, StoreOperation.Get | StoreOperation.GetAll | StoreOperation.Commit);
@@ -61,7 +61,7 @@ namespace Decoratid.Core.Storing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static MaskingDecoration DecorateWithoutGetAll(this IStore decorated)
+        public static MaskingDecoration NoGetAll(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new MaskingDecoration(decorated, StoreOperation.Get | StoreOperation.Commit | StoreOperation.Search);

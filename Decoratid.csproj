@@ -223,6 +223,12 @@
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
+    <Compile Include="Storidioms\Masking\FluentDecorator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Storidioms\Masking\MaskingDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Storidioms\StoreOf\FluentDecorator.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
