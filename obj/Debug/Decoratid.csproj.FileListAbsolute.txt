@@ -1,4 +1,3 @@
-C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid.dll
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid.pdb
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\BouncyCastle.Crypto.dll

@@ -5,7 +5,7 @@ using Decoratid.Extensions;
 using System;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Storidioms.Validating
+namespace Decoratid.Storidioms.ItemValidating
 {
     /// <summary>
     /// a writeable store that validates each item prior to commit

@@ -20,8 +20,6 @@ Fluently polyfaced as:
 	polyface.IsHasExpirable(NaturalFalseExpirable.New().ExpiresOn(when).Float(50 seconds));
 
 		Expirable instances themselves can also be decorated up to provide the functionality of NaturalDated, for example.  
-		Yes, I did this out of curiosity, ok.  Also it reads more fluently, kinda sounds better, and there might be 
-		something to this in terms of cross-cuttingness.
 
 		// creates a blank expiry, decorates it with date expiry, decorates with floating date
 		NaturalFalseExpirable.New().ExpiresOn(when).Float(50 seconds); 
@@ -32,7 +30,7 @@ Fluently polyfaced as:
 	I think probably the best way to polyface is with the IsHasExpirable call.  This gives us composition that 
 	can be decorated.
 
-Fluently decorated as:
+Fluently decorated as: (note: they all follow the IHasExpirable composition)
 	valueOf.HasExpirable(expirable);
 	logic.HasExpirable(expirable);
 	condition.HasExpirable(expirable);

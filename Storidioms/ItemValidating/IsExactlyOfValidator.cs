@@ -9,30 +9,43 @@ using Decoratid.Core.Conditional;
 using Decoratid.Core.Conditional.Of;
 using Decoratid.Core.Identifying;
 
-namespace Decoratid.Storidioms.Validating
+namespace Decoratid.Storidioms.ItemValidating
 {
-
-
     /// <summary>
-    /// validates that an IHasId is of T
+    /// validates that an IHasId is exactly of T
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// 
     [Serializable]
-    public class IsOfValidator<T> : IItemValidator
+    public class IsExactlyOfValidator : IItemValidator
     {
-        public IsOfValidator()
+        public IsExactlyOfValidator(Type type)
         {
+            Condition.Requires(type).IsNotNull();
+            this.OfType = type;
+
             this.IsValidCondition = new StrategizedConditionOf<IHasId>((x) =>
             {
                 if (x == null)
                     return false;
 
-                return typeof(T).IsAssignableFrom(x.GetType());
+                return type.Equals(x.GetType());
             });
         }
+        public Type OfType { get; private set; }
         [DataMember]
         public IConditionOf<IHasId> IsValidCondition { get; private set; }
+
+        #region Static Methods
+        public static IsExactlyOfValidator New(Type ofType)
+        {
+            return new IsExactlyOfValidator(ofType);
+        }
+        public static IsExactlyOfValidator New<T>()
+        {
+            return new IsExactlyOfValidator(typeof(T));
+        }
+        #endregion
     }
-  
+
 }

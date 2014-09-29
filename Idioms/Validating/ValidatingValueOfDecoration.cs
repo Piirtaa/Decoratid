@@ -59,7 +59,7 @@ namespace Decoratid.Idioms.Validating
 
     public static class ValidatingValueOfDecorationExtensions
     {
-        public static ValidatingValueOfDecoration<T> KackUntil<T>(IValueOf<T> decorated, ICondition validatingCondition)
+        public static ValidatingValueOfDecoration<T> KackUnless<T>(IValueOf<T> decorated, ICondition validatingCondition)
         {
             Condition.Requires(decorated).IsNotNull();
             if (decorated is ValidatingValueOfDecoration<T>)

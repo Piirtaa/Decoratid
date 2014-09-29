@@ -2,8 +2,8 @@
 Only applies to Core Things:ValueOf, Logic, Condition
 
 Fluently decorated as:
-	valueOf.KackUntil(condition);
-	logic.KackUntil(condition);
-	condition.KackUntil(condition);
+	valueOf.KackUnless(condition);
+	logic.KackUnless(condition);
+	condition.KackUnless(condition);
 
   

@@ -60,7 +60,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
     public static class ConditionalWaitingValueOfDecorationExtensions
     {
-        public static ConditionalWaitingValueOfDecoration<T> KackUntil<T>(IValueOf<T> decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingValueOfDecoration<T> KackUnless<T>(IValueOf<T> decorated, ICondition waitCondition, ICondition stopWaitingCondition)
         {
             return new ConditionalWaitingValueOfDecoration<T>(decorated, waitCondition, stopWaitingCondition);
         }

@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Storidioms.StoreOf;
-using Decoratid.Storidioms.Validating;
+using Decoratid.Storidioms.ItemValidating;
 using Decoratid.Extensions;
+using Decoratid.Core.Identifying;
 
 namespace Decoratid.Core.Storing
 {
@@ -15,6 +16,8 @@ namespace Decoratid.Core.Storing
     /// </summary>
     public static partial class FluentDecorator
     {
+
+
         /// <summary>
         /// replaces an item with the same id
         /// </summary>
@@ -48,7 +51,7 @@ namespace Decoratid.Core.Storing
         /// <typeparam name="T"></typeparam>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static StoreOfDecoration<T> DecorateWithIsOf<T>(this IStore decorated)
+        public static StoreOfDecoration<T> IsOf<T>(this IStore decorated)
               where T : IHasId
         {
             Condition.Requires(decorated).IsNotNull();
@@ -62,7 +65,7 @@ namespace Decoratid.Core.Storing
         /// <typeparam name="T"></typeparam>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static StoreOfUniqueIdDecoration<T> DecorateWithIsOfUniqueId<T>(this IStore decorated)
+        public static StoreOfUniqueIdDecoration<T> IsOfUniqueId<T>(this IStore decorated)
       where T : IHasId
         {
             Condition.Requires(decorated).IsNotNull();
@@ -77,7 +80,7 @@ namespace Decoratid.Core.Storing
         /// <typeparam name="T"></typeparam>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static StoreOfExactlyDecoration<T> DecorateWithExactlyIsOf<T>(this IStore decorated)
+        public static StoreOfExactlyDecoration<T> IsExactlyOf<T>(this IStore decorated)
       where T : IHasId
         {
             Condition.Requires(decorated).IsNotNull();

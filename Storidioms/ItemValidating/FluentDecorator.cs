@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using Decoratid.Storidioms.Validating;
+using Decoratid.Storidioms.ItemValidating;
 using Decoratid.Storidioms.StoreOf;
 
 namespace Decoratid.Core.Storing
@@ -20,7 +20,7 @@ namespace Decoratid.Core.Storing
         /// <param name="decorated"></param>
         /// <param name="validator"></param>
         /// <returns></returns>
-        public static ValidatingDecoration DecorateWithValidation(this IStore decorated, IItemValidator validator)
+        public static ValidatingDecoration ItemValidating(this IStore decorated, IItemValidator validator)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ValidatingDecoration(decorated, validator);

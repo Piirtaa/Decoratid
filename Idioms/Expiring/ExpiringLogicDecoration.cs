@@ -12,7 +12,7 @@ namespace Decoratid.Idioms.Expiring
     /// </summary>
     /// 
     [Serializable]
-    public class ExpiringLogicDecoration : DecoratedLogicBase, IExpirable
+    public class ExpiringLogicDecoration : DecoratedLogicBase, IHasExpirable
     {
         #region Ctor
         public ExpiringLogicDecoration(ILogic decorated, IExpirable expirable)

@@ -13,7 +13,7 @@ namespace Decoratid.Idioms.Expiring
     /// <typeparam name="T"></typeparam>
     /// 
     [Serializable]
-    public class ExpiringValueOfDecoration<T> : DecoratedValueOfBase<T>, IExpirable
+    public class ExpiringValueOfDecoration<T> : DecoratedValueOfBase<T>, IHasExpirable
     {
         #region Ctor
         public ExpiringValueOfDecoration(IValueOf<T> decorated, IExpirable expirable)
