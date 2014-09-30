@@ -58,7 +58,7 @@ namespace Decoratid.Idioms.Validating
 
     public static class ValidatingLogicDecorationExtensions
     {
-        public static ValidatingLogicDecoration KackUnless(ILogic decorated, ICondition validatingCondition)
+        public static ValidatingLogicDecoration KackUnless(this ILogic decorated, ICondition validatingCondition)
         {
             Condition.Requires(decorated).IsNotNull();
             if (decorated is ValidatingLogicDecoration)

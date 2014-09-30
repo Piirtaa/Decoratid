@@ -1,14 +1,10 @@
-﻿using Decoratid.Core.Decorating;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Storidioms.ItemValidating;
 using System.Collections.Generic;
-
-
-
-
-
 
 namespace Decoratid.Storidioms.StoreOf
 {
@@ -59,5 +55,24 @@ namespace Decoratid.Storidioms.StoreOf
             return list;
         }
         #endregion
+    }
+
+    public static class StoreOfDecorationExtensions
+    {
+        /// <summary>
+        /// constrains the store to operate on items of only T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static StoreOfDecoration<T> IsOf<T>(this IStore decorated)
+              where T : IHasId
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new StoreOfDecoration<T>(decorated);
+            //could alternately do
+            //return decorated.WithValidation(new IsOfValidator<T>());
+        }
+     
     }
 }

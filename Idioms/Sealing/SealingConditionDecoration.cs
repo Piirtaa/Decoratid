@@ -49,7 +49,7 @@ namespace Decoratid.Idioms.Sealing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static SealingConditionDecoration Seal(ICondition decorated)
+        public static SealingConditionDecoration Seal(this ICondition decorated)
         {
             return new SealingConditionDecoration(decorated);
         }

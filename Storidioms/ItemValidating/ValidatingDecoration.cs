@@ -95,4 +95,19 @@ namespace Decoratid.Storidioms.ItemValidating
 
 
     }
+
+    public static class ValidatingDecorationExtensions
+    {
+        /// <summary>
+        /// adds a commit validator to a store
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="validator"></param>
+        /// <returns></returns>
+        public static ValidatingDecoration Validates(this IStore decorated, IItemValidator validator)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new ValidatingDecoration(decorated, validator);
+        }
+    }
 }

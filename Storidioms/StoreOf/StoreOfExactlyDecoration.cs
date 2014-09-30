@@ -4,6 +4,7 @@ using Decoratid.Core.Storing;
 using Decoratid.Storidioms.ItemValidating;
 using System.Collections.Generic;
 using Decoratid.Extensions;
+using CuttingEdge.Conditions;
 
 namespace Decoratid.Storidioms.StoreOf
 {
@@ -65,5 +66,21 @@ namespace Decoratid.Storidioms.StoreOf
             return (T)item;
         }
         #endregion
+    }
+
+    public static class StoreOfExactlyDecorationExtensions
+    {
+        /// <summary>
+        /// constrains the store to operate on items of exactly T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static StoreOfExactlyDecoration<T> IsExactlyOf<T>(this IStore decorated)
+      where T : IHasId
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new StoreOfExactlyDecoration<T>(decorated);
+        }
     }
 }

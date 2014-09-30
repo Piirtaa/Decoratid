@@ -223,19 +223,18 @@
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
-    <Compile Include="Storidioms\Masking\FluentDecorator.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Storidioms\Logging\LoggingDecoration.cs" />
     <Compile Include="Storidioms\Masking\MaskingDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Storidioms\StoreOf\FluentDecorator.cs" />
+    <Compile Include="Storidioms\Polling\PollDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfUniqueIdDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\HasItemValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\IsExactlyOfValidator.cs" />
-    <Compile Include="Storidioms\ItemValidating\FluentDecorator.cs" />
     <Compile Include="Storidioms\ItemValidating\Interfaces.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\ValidatingDecoration.cs" />

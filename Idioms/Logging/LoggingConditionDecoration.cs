@@ -82,7 +82,7 @@ namespace Decoratid.Idioms.Logging
 
     public static class LoggingConditionDecorationExtensions
     {
-        public static LoggingConditionDecoration LogWith(ICondition decorated, ILogger logger)
+        public static LoggingConditionDecoration LogWith(this ICondition decorated, ILogger logger)
         {
             return new LoggingConditionDecoration(decorated, logger);
         }

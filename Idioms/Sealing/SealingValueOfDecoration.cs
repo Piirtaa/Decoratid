@@ -51,7 +51,7 @@ namespace Decoratid.Idioms.Sealing
         /// <typeparam name="T"></typeparam>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static SealingValueOfDecoration<T> Seal<T>(IValueOf<T> decorated)
+        public static SealingValueOfDecoration<T> Seal<T>(this IValueOf<T> decorated)
         {
             return new SealingValueOfDecoration<T>(decorated);
         }

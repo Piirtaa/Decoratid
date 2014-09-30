@@ -30,4 +30,5 @@ namespace Decoratid.Storidioms.ItemValidating
     {
         IItemValidator Validator { get; }
     }
+
 }

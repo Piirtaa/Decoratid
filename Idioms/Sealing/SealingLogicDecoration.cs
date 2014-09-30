@@ -48,7 +48,7 @@ namespace Decoratid.Idioms.Sealing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static SealingLogicDecoration Seal(ILogic decorated)
+        public static SealingLogicDecoration Seal(this ILogic decorated)
         {
             return new SealingLogicDecoration(decorated);
         }

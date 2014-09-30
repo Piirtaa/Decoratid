@@ -82,7 +82,7 @@ namespace Decoratid.Idioms.Logging
 
     public static class LoggingValueOfDecorationExtensions
     {
-        public static LoggingValueOfDecoration<T> LogWith<T>(IValueOf<T> decorated, ILogger logger)
+        public static LoggingValueOfDecoration<T> LogWith<T>(this IValueOf<T> decorated, ILogger logger)
         {
             return new LoggingValueOfDecoration<T>(decorated, logger);
         }

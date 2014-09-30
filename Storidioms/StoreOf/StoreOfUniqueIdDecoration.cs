@@ -5,6 +5,7 @@ using Decoratid.Storidioms.ItemValidating;
 using System.Collections.Generic;
 using System.Linq;
 using Decoratid.Extensions;
+using CuttingEdge.Conditions;
 
 namespace Decoratid.Storidioms.StoreOf
 {
@@ -68,5 +69,50 @@ namespace Decoratid.Storidioms.StoreOf
             return list.FirstOrDefault();
         }
         #endregion
+    }
+
+    public static partial class StoreOfUniqueIdDecorationExtensions
+    {
+        /// <summary>
+        /// replaces an item with the same id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="store"></param>
+        /// <param name="item"></param>
+        public static void Replace<T>(this IStoreOfUniqueId<T> store, T newItem) where T : IHasId
+        {
+            Condition.Requires(store).IsNotNull();
+
+            //remove the old item
+            SearchFilterOf<T> filter = new SearchFilterOf<T>((item) =>
+            {
+                return item.Id.Equals(newItem.Id) && (item.GetType().Equals(newItem.GetType()) == false);
+            });
+
+            var list = store.Search<T>(filter);
+
+            list.WithEach(oldItem =>
+            {
+                store.DeleteItem(oldItem.GetStoredObjectId());
+            });
+
+            //commit the new item
+            store.SaveItem(newItem);
+        }
+
+        /// <summary>
+        /// Is a "store of" and also requires that ids are unique
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static StoreOfUniqueIdDecoration<T> IsOfUniqueId<T>(this IStore decorated)
+      where T : IHasId
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new StoreOfUniqueIdDecoration<T>(decorated);
+            //could alternately do
+            //return decorated.WithValidation(new IsOfValidator<T>());
+        }
     }
 }
