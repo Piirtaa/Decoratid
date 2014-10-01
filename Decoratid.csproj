@@ -77,6 +77,15 @@
     <Compile Include="Core\Conditional\Of\DecoratedConditionOfBase.cs" />
     <Compile Include="Core\Conditional\Of\Interfaces.cs" />
     <Compile Include="Core\Identifying\NamedValueIHasIdDecoration.cs" />
+    <Compile Include="Core\Storing\DeltaExtensions.cs" />
+    <Compile Include="Core\Storing\SearchExtensions.cs" />
+    <Compile Include="Core\Storing\CommitExtensions.cs" />
+    <Compile Include="Core\Storing\GetAllExtensions.cs" />
+    <Compile Include="Core\Storing\GetExtensions.cs" />
+    <Compile Include="Idioms\Backgrounding\Interfaces.cs" />
+    <Compile Include="Idioms\Backgrounding\PollingConditionDecoration.cs" />
+    <Compile Include="Idioms\Backgrounding\PollingLogicDecoration.cs" />
+    <Compile Include="Idioms\Backgrounding\PollingValueOfDecoration.cs" />
     <Compile Include="Idioms\ConditionalWaiting\ConditionalWaiter.cs" />
     <Compile Include="Idioms\ConditionalWaiting\Interfaces.cs" />
     <Compile Include="Idioms\ConditionalWaiting\ConditionalWaitingConditionDecoration.cs" />
@@ -85,6 +94,11 @@
     <Compile Include="Idioms\Delim.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Depending\DependencyOf.cs" />
+    <Compile Include="Idioms\Depending\DependencySorter.cs" />
+    <Compile Include="Idioms\Depending\DependencyUtil.cs" />
+    <Compile Include="Idioms\Depending\Interfaces.cs" />
+    <Compile Include="Idioms\Depending\StoreExtensions.cs" />
     <Compile Include="Idioms\Expiring\FloatingWindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\WindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\DateExpirableDecoration.cs" />
@@ -223,11 +237,11 @@
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
-    <Compile Include="Storidioms\Logging\LoggingDecoration.cs" />
+    <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
     <Compile Include="Storidioms\Masking\MaskingDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Storidioms\Polling\PollDecoration.cs">
+    <Compile Include="Idioms\Backgrounding\PollingStoreDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />

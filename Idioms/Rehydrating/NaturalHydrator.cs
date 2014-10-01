@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Hydrating
+namespace Decoratid.Idioms.Rehydrating
 {
     /// <summary>
     /// Default implementation of IHydrator
@@ -47,7 +47,7 @@ namespace Decoratid.Idioms.Hydrating
             if (type == null)
                 return rv;
 
-            if (!typeof(IReconstable).IsAssignableFrom(type))
+            if (!typeof(IRehydrating).IsAssignableFrom(type))
                 return rv;
 
             rv = true;
@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.Hydrating
         /// </summary>
         /// <param name="hyd"></param>
         /// <returns></returns>
-        public string Dehydrate(IReconstable hyd)
+        public string Dehydrate(IRehydrating hyd)
         {
             if (hyd == null)
                 return null;
@@ -76,7 +76,7 @@ namespace Decoratid.Idioms.Hydrating
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public IReconstable Hydrate(string text)
+        public IRehydrating Hydrate(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return null;
@@ -90,7 +90,7 @@ namespace Decoratid.Idioms.Hydrating
             Condition.Requires(type).IsNotNull();
 
             var obj = ReflectionUtil.CreateUninitializedObject(type);
-            IReconstable hyd = obj as IReconstable;
+            IRehydrating hyd = obj as IRehydrating;
             hyd.Hydrate(list[1]);
             return hyd;
         }

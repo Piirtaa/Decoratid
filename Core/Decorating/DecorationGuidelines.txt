@@ -25,7 +25,7 @@
 		IHasHydrationMap:
 			- typically implement this to satisfy the (De)hydrateDecoration behaviour when the decoration has state
 		
-		Re: Serializable / IReconstable
+		Re: Serializable / IRehydrating
 			Serialization is handled by DecorationValueManager/Graph, so unless there's another reason 
 			for additional serialization behaviour, just avoid marking as Serializable/ISerializable.
 			

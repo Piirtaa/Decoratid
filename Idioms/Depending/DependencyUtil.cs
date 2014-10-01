@@ -19,7 +19,7 @@ namespace Decoratid.Idioms.Depending
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <returns></returns>
-        public static List<IHasDependencyOf<T>> SortHasADependencies<T>(List<IHasDependencyOf<T>> items)
+        public static List<IHasDependencyOf<T>> SortHasADependencies<T>(this List<IHasDependencyOf<T>> items)
         {
             List<IHasDependencyOf<T>> returnValue = new List<IHasDependencyOf<T>>();
 
@@ -36,7 +36,7 @@ namespace Decoratid.Idioms.Depending
                 }
             });
 
-            returnValue = SortDependenciesAndProjectByLookup<T, IHasDependencyOf<T>>(deps, map);
+            returnValue = SortDependenciesAndLookupValues<T, IHasDependencyOf<T>>(deps, map);
 
             return returnValue;
         }
@@ -48,7 +48,7 @@ namespace Decoratid.Idioms.Depending
         /// <param name="deps"></param>
         /// <param name="map"></param>
         /// <returns></returns>
-        public static List<Tvalue> SortDependenciesAndProjectByLookup<Tkey,Tvalue>(List<IDependencyOf<Tkey>> deps, Dictionary<Tkey,Tvalue> map)
+        public static List<Tvalue> SortDependenciesAndLookupValues<Tkey,Tvalue>(this List<IDependencyOf<Tkey>> deps, Dictionary<Tkey,Tvalue> map)
         {
             List<Tvalue> returnValue = new List<Tvalue>();
 
@@ -70,7 +70,7 @@ namespace Decoratid.Idioms.Depending
         /// <typeparam name="T"></typeparam>
         /// <param name="deps"></param>
         /// <returns></returns>
-        public static List<T> Sort<T>(List<IDependencyOf<T>> deps)
+        public static List<T> Sort<T>(this List<IDependencyOf<T>> deps)
         {
             List<T> returnValue = new List<T>();
 

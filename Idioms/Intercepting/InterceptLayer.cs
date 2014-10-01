@@ -13,6 +13,7 @@ using Decoratid.Core.Logical;
 using Decoratid.Idioms.ValuesOf;
 using Decoratid.Idioms.ObjectGraph;
 using Decoratid.Idioms.Depending;
+using Decoratid.Core.Identifying;
 
 namespace Decoratid.Idioms.Intercepting
 {

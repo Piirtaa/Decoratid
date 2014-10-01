@@ -1,39 +1,18 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Extensions;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
 
 namespace Decoratid.Idioms.Depending
 {
-    /// <summary>
-    /// Has a property, Dependency, that contains the dependency node info (self & deps)
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IHasDependencyOf<T>
-    {
-        IDependencyOf<T> Dependency { get; }
-    }
-
-    /// <summary>
-    /// A node (of T), presumably in a graph (of T), that has a list of other nodes (of T) it depends on
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IDependencyOf<T>
-    {
-        T Self { get; }
-        List<T> Prerequisites { get; }
-    }
 
     /// <summary>
     /// Container of a single dependency
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// 
+    [Serializable]
     public class DependencyOf<T> : IDependencyOf<T>
     {
         #region Ctor
@@ -66,8 +45,8 @@ namespace Decoratid.Idioms.Depending
         #endregion
 
         #region Properties
-        public T Self { get; set; }
-        public List<T> Prerequisites { get; set; }
+        public T Self { get; private set; }
+        public List<T> Prerequisites { get; private set; }
         #endregion
 
         #region Static Methods

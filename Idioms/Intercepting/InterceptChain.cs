@@ -1,16 +1,11 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
+using Decoratid.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Products;
-using Decoratid.Extensions;
-using Decoratid.Core.Storing;
-using System.Runtime.Serialization;
-using Decoratid.Core.Logical;
-using Decoratid.Idioms.ObjectGraph;
+using Decoratid.Storidioms.StoreOf;
 
 namespace Decoratid.Idioms.Intercepting
 {
