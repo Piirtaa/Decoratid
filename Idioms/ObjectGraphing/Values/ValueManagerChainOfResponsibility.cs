@@ -1,14 +1,8 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.TypeLocation;
+using Decoratid.Core.Identifying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Hydrating;
 
 namespace Decoratid.Idioms.ObjectGraph.Values
 {

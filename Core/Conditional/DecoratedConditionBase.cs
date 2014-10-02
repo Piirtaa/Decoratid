@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Core.Conditional
 {
-    public interface IConditionDecoration : ICondition, IDecorationOf<ICondition> { }
+    public interface IDecoratedCondition : ICondition, IDecorationOf<ICondition> { }
 
-    public abstract class DecoratedConditionBase : DecorationOfBase<ICondition>, IConditionDecoration
+    public abstract class DecoratedConditionBase : DecorationOfBase<ICondition>, IDecoratedCondition
     {
         #region Ctor
         public DecoratedConditionBase(ICondition decorated)

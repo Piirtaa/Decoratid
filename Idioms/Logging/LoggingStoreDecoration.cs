@@ -3,11 +3,12 @@ using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.Logging;
+using Decoratid.Storidioms;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Storidioms.Logging
+namespace Decoratid.Idioms.Logging
 {
     /// <summary>
     /// provides a background action that runs every BackgroundIntervalMSecs many milliseconds
@@ -17,7 +18,7 @@ namespace Decoratid.Storidioms.Logging
     }
 
     [Serializable]
-    public class LoggingDecoration : DecoratedStoreBase, ILoggingStore//, IHasHydrationMap
+    public class LoggingStoreDecoration : DecoratedStoreBase, ILoggingStore//, IHasHydrationMap
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -28,7 +29,7 @@ namespace Decoratid.Storidioms.Logging
         /// simple decorator.  To set background action use SetBackgroundAction
         /// </summary>
         /// <param name="decorated"></param>
-        public LoggingDecoration(IStore decorated, ILogger logger)
+        public LoggingStoreDecoration(IStore decorated, ILogger logger)
             : base(decorated)
         {
             Condition.Requires(logger).IsNotNull();
@@ -37,7 +38,7 @@ namespace Decoratid.Storidioms.Logging
         #endregion
 
         #region ISerializable
-        protected LoggingDecoration(SerializationInfo info, StreamingContext context)
+        protected LoggingStoreDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -54,7 +55,7 @@ namespace Decoratid.Storidioms.Logging
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new LoggingDecoration(store, this.Logger);
+            var returnValue = new LoggingStoreDecoration(store, this.Logger);
             return returnValue;
         }
         #endregion
@@ -137,17 +138,17 @@ namespace Decoratid.Storidioms.Logging
 
     }
 
-    public static class LoggingDecorationExtensions
+    public static class LoggingStoreDecorationExtensions
     {
-        public static LoggingDecoration LogWith(this IStore decorated, ILogger logger)
+        public static LoggingStoreDecoration LogWith(this IStore decorated, ILogger logger)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new LoggingDecoration(decorated, logger);
+            return new LoggingStoreDecoration(decorated, logger);
         }
 
-        public static LoggingDecoration GetLogger(this IStore decorated)
+        public static LoggingStoreDecoration GetLogger(this IStore decorated)
         {
-            return decorated.FindDecoratorOf<LoggingDecoration>(true);
+            return decorated.FindDecoratorOf<LoggingStoreDecoration>(true);
         }
 
     }

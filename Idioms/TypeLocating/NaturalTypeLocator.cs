@@ -6,23 +6,26 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.TypeLocation
+namespace Decoratid.Idioms.TypeLocating
 {
     /// <summary>
-    /// default implementation of a type locator.  
-    /// on construction will force all assemblies auto load all the assemblies configured by AssemblyTracker
+    /// default implementation of a type locator.  Walks thru all the non-dynamic currently loaded assemblies exported types
     /// </summary>
-    public class DefaultTypeLocator : ITypeLocator
+    public class NaturalTypeLocator : ITypeLocator
     {
         #region Ctor
-        public DefaultTypeLocator()
+        public NaturalTypeLocator()
         {
-            //force load of all assemblies
-            AssemblyTracker.Instance.Load();
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// looks in all the non-dynamic currently loaded assemblies, amongst their exported types, for 
+        /// a matching type
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public List<Type> Locate(Func<Type, bool> filter)
         {
             Condition.Requires(filter).IsNotNull();
@@ -43,6 +46,14 @@ namespace Decoratid.Idioms.TypeLocation
             });
 
             return returnValue;
+        }
+        #endregion
+
+
+        #region Static Fluent
+        public static NaturalTypeLocator New()
+        {
+            return new NaturalTypeLocator();
         }
         #endregion
 

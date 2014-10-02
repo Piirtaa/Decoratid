@@ -13,7 +13,7 @@ using Sandbox.Reflection;
 using Sandbox.Store;
 using Sandbox.Thingness;
 
-namespace Sandbox.TypeLocation
+namespace Decoratid.Idioms.TypeLocating
 {
     /// <summary>
     /// Container of a single type instance of the generic type.  Resolves the instance with the provided config key - this will

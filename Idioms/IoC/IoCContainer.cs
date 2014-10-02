@@ -1,44 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Idioms.Conditions;
-using Decoratid.Configuration;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Store;
-using Decoratid.Idioms.Store.CoreStores;
+﻿using Decoratid.Core.Storing;
+using System;
 
-namespace Decoratid.TypeLocation.IoC
+namespace Decoratid.Idioms.IoC
 {
 
     public class IoCContainer
     {
-
         #region Declarations
-        public const string PLUGIN_PREFIX = "PLUGIN_";
-
         private readonly object _stateLock = new object(); //the explicit object we thread lock on 
-        private static IoCContainer _instance = new IoCContainer(); //the singleton instance
         #endregion
 
         #region Ctor
-        static IoCContainer()
-        {
-        }
-        private IoCContainer()
+        public IoCContainer()
         {
             lock (this._stateLock)
             {
-                this.Store = new InMemoryStore();
-
-                this.AutoRegisterNamedEntries();
+                this.Store = new NaturalInMemoryStore();
             }
         }
         #endregion
 
         #region Properties
-        public static IoCContainer Instance { get { return _instance; } }
         private IStore Store { get; set; }
         #endregion
 
@@ -58,46 +40,46 @@ namespace Decoratid.TypeLocation.IoC
             TypedEntry entry = new TypedEntry(idType, registeredType);
             this.Store.SaveItem(entry);
         }
-        /// <summary>
-        /// Uses "configuration convention" and searches or all entries prefixed with "PLUGIN_" to 
-        /// determine the type name associated with the plugin
-        /// </summary>
-        /// <param name="idType"></param>
-        public void AutoRegisterNamedEntries()
-        {
-            var keys = ConfigStore.Instance.GetConfigKeysWithPrefix(PLUGIN_PREFIX);
+        ///// <summary>
+        ///// Uses "configuration convention" and searches or all entries prefixed with "PLUGIN_" to 
+        ///// determine the type name associated with the plugin
+        ///// </summary>
+        ///// <param name="idType"></param>
+        //public void AutoRegisterNamedEntries()
+        //{
+        //    var keys = ConfigStore.Instance.GetConfigKeysWithPrefix(PLUGIN_PREFIX);
 
-            keys.WithEach(x =>
-            {
-                //parse out the id/name
-                string id = x.Substring(6);
-                var fulltypeName = ConfigStore.Instance.GetConfigEntry(x);
+        //    keys.WithEach(x =>
+        //    {
+        //        //parse out the id/name
+        //        string id = x.Substring(6);
+        //        var fulltypeName = ConfigStore.Instance.GetConfigEntry(x);
 
-                var types = TypeLocator.Instance.Locate((type) =>
-                {
-                    return type.FullName == fulltypeName;
-                });
+        //        var types = TypeLocator.Instance.Locate((type) =>
+        //        {
+        //            return type.FullName == fulltypeName;
+        //        });
 
-                this.RegisterNamedEntry(id, Activator.CreateInstance(types.First()));
-            });
-        }
-        /// <summary>
-        /// Does a type resolution for types inheriting from idType and registers the first one
-        /// </summary>
-        /// <param name="idType"></param>
-        public void AutoRegisterEntry(Type idType)
-        {
-            var types = TypeLocator.Instance.Locate((type) =>
-            {
-                return type.Equals(idType) == false 
-                    && idType.IsAssignableFrom(type)
-                    && type.IsAbstract == false
-                    && type.GetConstructor(Type.EmptyTypes) != null;
-            });
+        //        this.RegisterNamedEntry(id, Activator.CreateInstance(types.First()));
+        //    });
+        //}
+        ///// <summary>
+        ///// Does a type resolution for types inheriting from idType and registers the first one
+        ///// </summary>
+        ///// <param name="idType"></param>
+        //public void AutoRegisterEntry(Type idType)
+        //{
+        //    var types = TypeLocator.Instance.Locate((type) =>
+        //    {
+        //        return type.Equals(idType) == false 
+        //            && idType.IsAssignableFrom(type)
+        //            && type.IsAbstract == false
+        //            && type.GetConstructor(Type.EmptyTypes) != null;
+        //    });
 
-            if (types != null && types.Count > 0)
-                this.RegisterEntry(idType, types.First());
-        }
+        //    if (types != null && types.Count > 0)
+        //        this.RegisterEntry(idType, types.First());
+        //}
         public void RegisterFactoriedEntry(Type idType, Func<object> factory)
         {
             FactoriedEntry entry = new FactoriedEntry(idType, factory);
@@ -112,13 +94,6 @@ namespace Decoratid.TypeLocation.IoC
         #endregion
 
         #region Broker Methods
-
-        public object RegisterAndGetNamedEntry(string id, object obj)
-        {
-            NamedEntry entry = new NamedEntry(id, obj);
-            this.Store.SaveItem(entry);
-            return entry.GetInstance();
-        }
         public object GetNamedInstance(string id)
         {
             var entry = this.Store.Get<NamedEntry>(id);

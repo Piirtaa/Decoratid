@@ -6,9 +6,11 @@ using Decoratid.Core.ValueOfing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Backgrounding;
 using Decoratid.Idioms.Logging;
-using Decoratid.Storidioms.Logging;
+using Decoratid.Storidioms;
+using System;
+using System.Runtime.Serialization;
 
-namespace Decoratid.Storidioms.Polling
+namespace Decoratid.Idioms.Backgrounding
 {
     /// <summary>
     /// provides a background action that runs every BackgroundIntervalMSecs many milliseconds
@@ -24,7 +26,9 @@ namespace Decoratid.Storidioms.Polling
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class PollDecoration : DecoratedStoreBase, IPollingStore//, IHasHydrationMap
+    /// 
+    [Serializable]
+    public class PollingStoreDecoration : DecoratedStoreBase, IPollingStore//, IHasHydrationMap
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -38,12 +42,26 @@ namespace Decoratid.Storidioms.Polling
         /// <param name="isEnabled"></param>
         /// <param name="backgroundIntervalMSecs"></param>
         /// <param name="backgroundAction"></param>
-        public PollDecoration(IStore decorated, ILogger logger)
-            : base(decorated.LogWith(logger))
+        public PollingStoreDecoration(IStore decorated)
+            : base(decorated)
         {
         }
         #endregion
 
+        #region ISerializable
+        protected PollingStoreDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+       {
+            this.BackgroundHost = (BackgroundHost)info.GetValue("BackgroundHost", typeof(BackgroundHost));
+            this.BackgroundStrategy = (LogicOf<IStore>)info.GetValue("BackgroundStrategy", typeof(LogicOf<IStore>));
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("BackgroundHost",BackgroundHost);
+            info.AddValue("BackgroundStrategy", BackgroundStrategy);
+            base.ISerializable_GetObjectData(info, context);
+        }
+        #endregion
         //#region IHasHydrationMap
         //public virtual IHydrationMap GetHydrationMap()
         //{
@@ -71,16 +89,12 @@ namespace Decoratid.Storidioms.Polling
         /// The background process container
         /// </summary>
         private BackgroundHost BackgroundHost { get; set; }
-        /// <summary>
-        /// ILogger.  Injected on construction
-        /// </summary>
-        private ILogger Logger { get { return this.FindDecoratorOf<ILoggingStore>(false).Logger; } }
         #endregion
 
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new PollDecoration(store, this.Logger);
+            var returnValue = new PollingStoreDecoration(store);
             if (this.BackgroundHost != null)
                 returnValue.SetBackgroundAction(this.BackgroundStrategy, this.BackgroundHost.BackgroundIntervalMSecs);
 
@@ -118,7 +132,7 @@ namespace Decoratid.Storidioms.Polling
                 backgroundAction.Context = (this as IStore).AsNaturalValue();
 
                 this.BackgroundHost = new BackgroundHost(true, backgroundIntervalMSecs,
-                    backgroundAction.LogWith(this.Logger));
+                    backgroundAction);
             }
         }
         #endregion
@@ -142,16 +156,16 @@ namespace Decoratid.Storidioms.Polling
     /// <summary>
     /// Fluent decorator.  By convention put all FluentDecorators in Decoratid.Core.Storing namespace.
     /// </summary>
-    public static partial class FluentDecorator
+    public static partial class PollingStoreDecorationExtensions
     {
         /// <summary>
         /// gets the first (exact type) PollDecoration 
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static PollDecoration GetPollingDecoration(this IStore decorated)
+        public static PollingStoreDecoration GetPollingDecoration(this IStore decorated)
         {
-            return decorated.FindDecoratorOf<PollDecoration>(true);
+            return decorated.FindDecoratorOf<PollingStoreDecoration>(true);
         }
         /// <summary>
         /// adds a background action 
@@ -160,10 +174,10 @@ namespace Decoratid.Storidioms.Polling
         /// <param name="backgroundAction"></param>
         /// <param name="backgroundIntervalMSecs"></param>
         /// <returns></returns>
-        public static PollDecoration DecorateWithPolling(this IStore decorated, ILogger logger)
+        public static PollingStoreDecoration DecorateWithPolling(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new PollDecoration(decorated, logger);
+            return new PollingStoreDecoration(decorated);
         }
 
     }

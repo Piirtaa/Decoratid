@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Core.Logical
 {
-    public interface ILogicDecoration : ILogic, IDecorationOf<ILogic> { }
+    public interface IDecoratedLogic : ILogic, IDecorationOf<ILogic> { }
 
     /// <summary>
     /// base class implementation
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class DecoratedLogicBase : DecorationOfBase<ILogic>, ILogicDecoration
+    public abstract class DecoratedLogicBase : DecorationOfBase<ILogic>, IDecoratedLogic
     {
         #region Ctor
         public DecoratedLogicBase(ILogic decorated)

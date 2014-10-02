@@ -8,10 +8,7 @@ using System.Timers;
 
 namespace Decoratid.Idioms.Backgrounding
 {
-    public interface IHasBackgroundHost
-    {
-        BackgroundHost Background { get; }
-    }
+
 
     /// <summary>
     /// sealed, disposable container class that does stuff in the background on a timer interval

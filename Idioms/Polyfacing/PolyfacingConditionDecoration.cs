@@ -10,7 +10,7 @@ namespace Decoratid.Idioms.Polyfacing
     /// makes the Condition polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IPolyfacingCondition : IConditionDecoration, IPolyfacing
+    public interface IPolyfacingCondition : IDecoratedCondition, IPolyfacing
     {
     }
 

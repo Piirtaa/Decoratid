@@ -10,7 +10,7 @@ namespace Decoratid.Idioms.Polyfacing
     /// makes the logic polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IPolyfacingLogic : ILogicDecoration, IPolyfacing
+    public interface IPolyfacingLogic : IDecoratedLogic, IPolyfacing
     {
     }
 

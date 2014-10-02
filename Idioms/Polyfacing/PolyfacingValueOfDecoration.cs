@@ -10,7 +10,7 @@ namespace Decoratid.Idioms.Polyfacing
     /// makes the valueof polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IPolyfacingValueOf<T> : IValueOfDecoration<T>, IPolyfacing
+    public interface IPolyfacingValueOf<T> : IDecoratedValueOf<T>, IPolyfacing
     {
     }
 

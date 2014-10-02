@@ -12,14 +12,14 @@ namespace Decoratid.Core.ValueOfing
     /// define the value of decoration
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IValueOfDecoration<T> : IValueOf<T>, IDecorationOf<IValueOf<T>> { }
+    public interface IDecoratedValueOf<T> : IValueOf<T>, IDecorationOf<IValueOf<T>> { }
 
     /// <summary>
     /// base class implementation
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public abstract class DecoratedValueOfBase<T> : DecorationOfBase<IValueOf<T>>, IValueOfDecoration<T>
+    public abstract class DecoratedValueOfBase<T> : DecorationOfBase<IValueOf<T>>, IDecoratedValueOf<T>
     {
         #region Ctor
         public DecoratedValueOfBase(IValueOf<T> decorated)

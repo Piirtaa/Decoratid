@@ -219,6 +219,12 @@
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\TypeLocating\NaturalTypeLocator.cs" />
+    <Compile Include="Idioms\TypeLocating\Extensions.cs" />
+    <Compile Include="Idioms\TypeLocating\Interfaces.cs" />
+    <Compile Include="Idioms\TypeLocating\TypeContainer.cs" />
+    <Compile Include="Idioms\TypeLocating\TypeLocatorDecorationBase.cs" />
+    <Compile Include="Idioms\TypeLocating\AssemblyLoadingDecoration.cs" />
     <Compile Include="Idioms\Validating\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
