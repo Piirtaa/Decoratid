@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Core.Storing;
+﻿using Decoratid.Core.Identifying;
+using System;
 
 namespace Decoratid.Serialization
 {

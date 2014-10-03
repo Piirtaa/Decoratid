@@ -1,18 +1,6 @@
-﻿using CuttingEdge.Conditions;
-using Decoratid.Serialization;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Hydrating;
+﻿using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// handles ISerializable and Serializable attributed types

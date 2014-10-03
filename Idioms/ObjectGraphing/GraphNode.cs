@@ -1,21 +1,11 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Reflection;
-using Decoratid.Idioms.ObjectGraph.Path;
-using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Decoratid.Extensions;
-using System.Collections;
-using Decoratid.Core.Storing;
-using Decoratid.Idioms.Hydrating;
+using Decoratid.Idioms.ObjectGraphing.Path;
+using Decoratid.Storidioms.StoreOf;
+using System.Collections.Generic;
 
-namespace Decoratid.Idioms.ObjectGraph
+namespace Decoratid.Idioms.ObjectGraphing
 {
     /// <summary>
     /// GraphPath + ManagedValue + Sequence
@@ -72,7 +62,7 @@ namespace Decoratid.Idioms.ObjectGraph
         /// <returns></returns>
         public string Dehydrate()
         {
-            var rv = TextDecorator.LengthEncodeList( this.TraversalIndex.ToString(), this.ValueManagerId, this.Id, this.Context);
+            var rv = LengthEncoder.LengthEncodeList( this.TraversalIndex.ToString(), this.ValueManagerId, this.Id, this.Context);
             return rv;
         }
         /// <summary>
@@ -82,7 +72,7 @@ namespace Decoratid.Idioms.ObjectGraph
         public void Hydrate(string text)
         {
             Condition.Requires(text).IsNotNullOrEmpty();
-            var arr = TextDecorator.LengthDecodeList(text);
+            var arr = LengthEncoder.LengthDecodeList(text);
             Condition.Requires(arr).IsNotEmpty();
             Condition.Requires(arr).HasLength(4);
             this.TraversalIndex = int.Parse(arr[0]);
@@ -246,7 +236,7 @@ namespace Decoratid.Idioms.ObjectGraph
             {
                 lines.Add(node.Dehydrate());
             });
-            var rv = TextDecorator.LengthEncodeList(lines.ToArray());
+            var rv = LengthEncoder.LengthEncodeList(lines.ToArray());
             return rv;
         }
         /// <summary>
@@ -259,7 +249,7 @@ namespace Decoratid.Idioms.ObjectGraph
             if (string.IsNullOrEmpty(storeText))
                 return null;
 
-            var lines = TextDecorator.LengthDecodeList(storeText);
+            var lines = LengthEncoder.LengthDecodeList(storeText);
 
             var list = new List<GraphNode>();
             for (int i = 0; i < lines.Count; i = i + 1)

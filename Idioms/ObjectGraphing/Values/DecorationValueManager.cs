@@ -1,19 +1,12 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Core.Storing;
+using Decoratid.Idioms.Stringing;
 using System;
 using System.Collections;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
 using System.Collections.Generic;
-using Decoratid.Reflection;
-using Decoratid.Idioms.Hydrating;
+using System.Reflection;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// handles Decorations (instances of DecorationOfBase)
@@ -74,13 +67,13 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                     UndeclaredValueManager mgr = new UndeclaredValueManager();
                     dehydLayer = mgr.DehydrateValue(each, uow);
                 }
-                decTextList.Add(TextDecorator.LengthEncodeList(fullType, dehydLayer));
+                decTextList.Add(LengthEncoder.LengthEncodeList(fullType, dehydLayer));
             }
-            return TextDecorator.LengthEncodeList(decTextList.ToArray());
+            return LengthEncoder.LengthEncodeList(decTextList.ToArray());
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
-            var list0 = TextDecorator.LengthDecodeList(nodeText);
+            var list0 = LengthEncoder.LengthDecodeList(nodeText);
 
             //declare the decoration we're returning
             object rv = null;
@@ -101,7 +94,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                 }
                 else
                 {
-                    var list1 = TextDecorator.LengthDecodeList(line);
+                    var list1 = LengthEncoder.LengthDecodeList(line);
                     string typeName = list1[0];
                     Type cType = TypeFinder.FindAssemblyQualifiedType(typeName);
                     Condition.Requires(cType).IsNotNull();

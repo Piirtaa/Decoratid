@@ -1,26 +1,16 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Extensions;
-using Decoratid.Reflection;
-using Decoratid.Idioms.Hydrating;
-using Decoratid.Idioms.ObjectGraph.Path;
-using Decoratid.Idioms.ObjectGraph.Values;
 using Decoratid.Core.Storing;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
+using Decoratid.Idioms.ObjectGraphing.Path;
+using Decoratid.Idioms.ObjectGraphing.Values;
+using Decoratid.Storidioms.StoreOf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Storidioms.StoreOf;
 
-namespace Decoratid.Idioms.ObjectGraph
+namespace Decoratid.Idioms.ObjectGraphing
 {
-
-
-
     /// <summary>
     /// a graph of objects converted into a storeOf GraphNode, and the ValueManager Chain of Responsibility that does
     /// the actual serialization of each node's value.  
@@ -299,7 +289,7 @@ namespace Decoratid.Idioms.ObjectGraph
         {
             var storeText = GraphNode.DehydrateNodeStore(this.NodeStore);
             var managerText = this.ChainOfResponsibility.Dehydrate();
-            string rv = TextDecorator.LengthEncodeList( managerText, storeText);
+            string rv = LengthEncoder.LengthEncodeList( managerText, storeText);
             return rv;
         }
         /// <summary>
@@ -309,7 +299,7 @@ namespace Decoratid.Idioms.ObjectGraph
         public void Hydrate(string text)
         {
             Condition.Requires(text).IsNotNullOrEmpty();
-            var arr = TextDecorator.LengthDecodeList(text);
+            var arr = LengthEncoder.LengthDecodeList(text);
             Condition.Requires(arr).HasLength(2);
             var storeText = arr[1];
             var managerText = arr[0];

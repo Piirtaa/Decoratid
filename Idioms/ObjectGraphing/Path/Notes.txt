@@ -1,0 +1,4 @@
+﻿GraphPath aggregates a list of segments
+-separator is |
+-always begins with RootSegment which strings to "Root"
+-is built up fluently

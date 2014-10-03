@@ -1,23 +1,10 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
+using Decoratid.Core.Identifying;
+using Decoratid.Idioms.Stringing;
 using Decoratid.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Idioms.ObjectGraph.Path;
-using System.Reflection;
-using Decoratid.TypeLocation;
-using System.Collections;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Reflection;
-using Decoratid.Idioms.Hydrating;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// is always the LAST manager in the Chain of Responsibility
@@ -43,12 +30,12 @@ namespace Decoratid.Idioms.ObjectGraph.Values
         public string DehydrateValue(object obj, IGraph uow)
         {
             //we return the full type of the compound type
-            return TextDecorator.LengthEncode(obj.GetType().AssemblyQualifiedName);
+            return LengthEncoder.LengthEncode(obj.GetType().AssemblyQualifiedName);
 
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
-            var realData = TextDecorator.LengthDecode(nodeText);
+            var realData = LengthEncoder.LengthDecode(nodeText);
 
             Type cType = TypeFinder.FindAssemblyQualifiedType(realData);
             Condition.Requires(cType).IsNotNull();

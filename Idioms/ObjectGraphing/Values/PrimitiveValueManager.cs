@@ -1,18 +1,9 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
 using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Hydrating;
+using Decoratid.Utils;
+using System.Linq;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// Handles system primitives
@@ -40,11 +31,11 @@ namespace Decoratid.Idioms.ObjectGraph.Values
             Condition.Requires(obj).IsNotNull();
             var name = obj.GetType().Name;
             var val = obj.ToString();
-            return TextDecorator.LengthEncodeList(name, val);
+            return LengthEncoder.LengthEncodeList(name, val);
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
-            var list = TextDecorator.LengthDecodeList(nodeText);
+            var list = LengthEncoder.LengthDecodeList(nodeText);
             Condition.Requires(list).HasLength(2);
 
             var type = PrimitivesUtil.GetSystemPrimitiveTypeBySimpleName(list.ElementAt(0));

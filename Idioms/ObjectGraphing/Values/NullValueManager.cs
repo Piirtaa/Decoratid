@@ -1,14 +1,5 @@
-﻿using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-
-namespace Decoratid.Idioms.ObjectGraph.Values
+﻿
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// Is always the FIRST manager in the Chain of Responsibility

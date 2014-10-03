@@ -1,15 +1,5 @@
 ﻿using CuttingEdge.Conditions;
-using Storidiom.Serialization;
-using Storidiom.Thingness.Idioms.Store;
-using Storidiom.Thingness.Idioms.Store.Decorations.StoreOf;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Storidiom.Extensions;
-using Storidiom.Thingness.Idioms.Stringable;
-using Storidiom.Thingness.Idioms.Stringable.Decorations;
 
 namespace Storidiom.Thingness.Idioms.ObjectGraph.Values
 {

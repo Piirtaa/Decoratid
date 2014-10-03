@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.TypeLocation;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
-using CuttingEdge.Conditions;
-using ServiceStack.Text;
-using Decoratid.Idioms.Hydrating;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using Decoratid.Storidioms.StoreOf;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Decoratid.Serialization
 {
@@ -31,9 +27,9 @@ namespace Decoratid.Serialization
         }
         private SerializationManager()
         {
-            this.Store = new NaturalInMemoryStore().DecorateWithIsOfUniqueId<ISerializationUtil>();
+            this.Store = new NaturalInMemoryStore().IsOfUniqueId<ISerializationUtil>();
             //hydrate it by loading types
-            var types = new TypeContainer<ISerializationUtil>();
+            var types = TypeContainer<ISerializationUtil>.NewDefault();
             types.ContainedTypes.WithEach(x =>
             {
                 try
@@ -70,7 +66,7 @@ namespace Decoratid.Serialization
         }
         #endregion
 
-        #region Envelope-y stuff
+        #region Private Envelope-y stuff
         /// <summary>
         /// Serializes with the specified serializer
         /// </summary>
@@ -137,7 +133,7 @@ namespace Decoratid.Serialization
             if (env == null)
                 return null;
 
-            var rv = ((IReconstable)env).Dehydrate();
+            var rv = ((IStringable)env).GetValue();
             return rv;
         }
         public string Serialize(string serializerId, object obj)
@@ -146,7 +142,7 @@ namespace Decoratid.Serialization
             if (env == null)
                 return null;
 
-            var rv = ((IReconstable)env).Dehydrate();
+            var rv = ((IStringable)env).GetValue();
             return rv;
         }
         public object Deserialize(string data)

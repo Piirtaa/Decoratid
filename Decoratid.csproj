@@ -195,6 +195,7 @@
     <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Stringing\DelimitedStringableListDecoration.cs" />
     <Compile Include="Idioms\Stringing\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -219,6 +220,11 @@
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\TypeLocating\AssemblyTrackingDecoration.cs" />
+    <Compile Include="Idioms\TypeLocating\TheTypeLocator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TypeLocating\TypeCachingDecoration.cs" />
     <Compile Include="Idioms\TypeLocating\NaturalTypeLocator.cs" />
     <Compile Include="Idioms\TypeLocating\Extensions.cs" />
     <Compile Include="Idioms\TypeLocating\Interfaces.cs" />

@@ -5,23 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Idioms.Stringing;
 
-namespace Decoratid.Idioms.ObjectGraph.Path
+namespace Decoratid.Idioms.ObjectGraphing.Path
 {
-    public interface IGraphSegment
-    {
-        string Path { get; }
-    }
 
     /// <summary>
     /// describes a set of contiguous segments defining a path to a node
     /// </summary>
     public sealed class GraphPath
     {
-        /// <summary>
-        /// use the Pipe Separator character as delimiter
-        /// </summary>
-        private string DELIM = "|";
+        public const string PREFIX = "";
+        public const string SUFFIX = "";
+        public const string DELIM = "|";
         
         #region Ctor
         private GraphPath()
@@ -41,7 +37,14 @@ namespace Decoratid.Idioms.ObjectGraph.Path
             get
             {
                 var list = this.Segments.Select((x) => { return x.Path; });
-                var path = string.Join(DELIM, list.ToArray());
+                var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+
+                list.WithEach(item =>
+                {
+                    stringlist.Add(item);
+                });
+
+                var path = stringlist.GetValue();
                 return path;
             }
         }
@@ -54,7 +57,14 @@ namespace Decoratid.Idioms.ObjectGraph.Path
                 //remove the last element
                 list.RemoveAt(list.Count - 1);
 
-                var path = string.Join(DELIM, list.ToArray());
+                var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+
+                list.WithEach(item =>
+                {
+                    stringlist.Add(item);
+                });
+
+                var path = stringlist.GetValue();
                 return path;
             }
         }
@@ -114,14 +124,17 @@ namespace Decoratid.Idioms.ObjectGraph.Path
         #region Implicit Conversion to string
         public static implicit operator GraphPath(string text)
         {
+            /*Note: this parsing scheme depends on unique prefixing of each node type, and unique delim at the graphpath level
+             * 
+             * 
+             */ 
             Condition.Requires(text).IsNotNullOrEmpty();
 
-            //split the text up by :
-            var segments = text.Split('|');
-            Condition.Requires(segments).IsNotEmpty();
+            var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+            stringlist.Parse(text);
 
             List<IGraphSegment> list = new List<IGraphSegment>();
-            segments.WithEach(seg =>
+            stringlist.WithEach(seg =>
             {
                 if (seg.StartsWith(RootSegment.PREFIX))
                 {
@@ -133,7 +146,7 @@ namespace Decoratid.Idioms.ObjectGraph.Path
                     EnumeratedItemSegment iSeg = seg;
                     list.Add(iSeg);
                 }
-                else
+                else if (seg.StartsWith(GraphSegment.PREFIX))
                 {
                     GraphSegment gSeg = seg;
                     list.Add(gSeg);

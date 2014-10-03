@@ -1,12 +1,6 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.TypeLocation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.ObjectGraph.Path
+namespace Decoratid.Idioms.ObjectGraphing.Path
 {
 
 

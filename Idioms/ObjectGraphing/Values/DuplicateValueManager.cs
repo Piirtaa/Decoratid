@@ -1,16 +1,7 @@
-﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Decoratid.Core.Storing;
 using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Hydrating;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// Handles Duplicates.  Each call to this does a graph scan, so it scales badly on large graphs
@@ -59,7 +50,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                 return object.ReferenceEquals(x.NodeValue, obj);
             }));
 
-            return TextDecorator.LengthEncode(matches[0].Id);
+            return LengthEncoder.LengthEncode(matches[0].Id);
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
@@ -72,7 +63,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                 return x.Id.Equals(nodeText);
             }));
 
-            return TextDecorator.LengthDecode(matches[0].Id);
+            return LengthEncoder.LengthDecode(matches[0].Id);
         }
         #endregion
     }

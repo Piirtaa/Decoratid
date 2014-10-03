@@ -1,13 +1,8 @@
-﻿using Decoratid.Idioms.Decorating;
-using Decoratid.Core.Storing;
+﻿using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.ObjectGraph.Values.Decorations
+namespace Decoratid.Idioms.ObjectGraphing.Values.Decorations
 {
     public interface INodeValueManagerDecoration : INodeValueManager, IDecorationOf<INodeValueManager> { }
 

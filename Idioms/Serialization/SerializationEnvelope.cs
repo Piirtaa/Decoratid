@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.Hydrating;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using System;
 
 namespace Decoratid.Serialization
 {
@@ -15,9 +10,9 @@ namespace Decoratid.Serialization
     /// A container class that contains the information on how to serialize/deserialize the thing it is containing
     /// </summary>
     /// <remarks>
-    /// Has the same id as the serializer.  has hydrateable implementation.  
+    /// Has the same id as the serializer.  has IStringable implementation.  
     /// </remarks>
-    public class SerializationEnvelope : IHasId<string>, IReconstable
+    public class SerializationEnvelope : IHasId<string>, IStringable
     {
         #region Ctor
         protected SerializationEnvelope() { }
@@ -49,20 +44,21 @@ namespace Decoratid.Serialization
         }
         #endregion
 
-        #region IReconstable
-        string IReconstable.Dehydrate()
+        #region IStringable
+        string IStringable.GetValue()
         {
             //split into: serializerid,instancetype name,serialized data
-            var rv = TextDecorator.LengthEncodeList(this.Id, this.InstanceType.AssemblyQualifiedName, this.SerializedData);
+            var rv = LengthEncoder.LengthEncodeList(this.Id, this.InstanceType.AssemblyQualifiedName, this.SerializedData);
             return rv;
         }
-        void IReconstable.Hydrate(string text)
+
+        void IStringable.Parse(string text)
         {
-            var list = TextDecorator.LengthDecodeList(text);
+            var list = LengthEncoder.LengthDecodeList(text);
             Condition.Requires(list).HasLength(3);
 
             this.Id = list[0];
-            this.InstanceType = TypeFinder.FindAssemblyQualifiedType(list[1]);
+            this.InstanceType = TheTypeLocator.Instance.Locator.FindAssemblyQualifiedType(list[1]);
             this.SerializedData = list[2];
         }
         #endregion
@@ -93,9 +89,11 @@ namespace Decoratid.Serialization
             Condition.Requires(text).IsNotNullOrEmpty();
             
             SerializationEnvelope rv = new SerializationEnvelope();
-            ((IReconstable)rv).Hydrate(text);
+            ((IStringable)rv).Parse(text);
             return rv;
         }
         #endregion
+
+
     }
 }

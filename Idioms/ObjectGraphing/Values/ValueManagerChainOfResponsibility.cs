@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// converts the node object/value into string.  
@@ -87,7 +87,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
         public string Dehydrate()
         {
             var ids = this.ValueManagers.Select((x) => { return x.Id; });
-            return TextDecorator.LengthEncodeList(ids.ToArray());
+            return LengthEncoder.LengthEncodeList(ids.ToArray());
         }
         /// <summary>
         /// takes a delimited list of value manager ids, and using TypeContainer plugin loading looks for 
@@ -97,7 +97,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
         public void Hydrate(string text)
         {
             Condition.Requires(text).IsNotNullOrEmpty();
-            var list = TextDecorator.LengthDecodeList(text);
+            var list = LengthEncoder.LengthDecodeList(text);
 
             List<INodeValueManager> plugins = null;
             //strategy to load the managers (via assembly interrogation/plugin loading)

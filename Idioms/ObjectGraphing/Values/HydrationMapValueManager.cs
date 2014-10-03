@@ -1,18 +1,10 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Idioms.ObjectGraphing.Values.Decorations;
+using Decoratid.Idioms.Stringing;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Idioms.ObjectGraph.Values.Decorations;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Core.Storing;
-using Decoratid.Reflection;
-using Decoratid.Idioms.Hydrating;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// has a hydration map. 
@@ -159,7 +151,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                 actualUow = Graph.NewDefault();
             }
 
-            var arr = TextDecorator.LengthDecodeList(text);
+            var arr = LengthEncoder.LengthDecodeList(text);
             Condition.Requires(arr.Count).IsEqualTo(this.Maps.Count);
 
             //iterate thru the Mappings and lines in parallel. 
@@ -209,7 +201,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values
                 var stringVal = mgr.DehydrateValue(val, actualUow);
                 lines.Add(stringVal);
             }
-            return TextDecorator.LengthEncodeList(lines.ToArray());
+            return LengthEncoder.LengthEncodeList(lines.ToArray());
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {

@@ -1,14 +1,8 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Idioms.Decorating;
+using Decoratid.Core.Decorating;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
 
-namespace Decoratid.Idioms.ObjectGraph.Values.Decorations
+namespace Decoratid.Idioms.ObjectGraphing.Values.Decorations
 {
     /// <summary>
     /// injects null check validation
@@ -57,15 +51,7 @@ namespace Decoratid.Idioms.ObjectGraph.Values.Decorations
         }
         #endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return string.Empty;
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-        }
-        #endregion
+
     }
 
 

@@ -1,17 +1,9 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Serialization;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Idioms.Hydrating;
+using System;
+using System.Linq;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     public sealed class ValueTypeValueManager : INodeValueManager
     {
@@ -38,11 +30,11 @@ namespace Decoratid.Idioms.ObjectGraph.Values
             var ser = new BinarySerializationUtil();
             var data = ser.Serialize(obj);
 
-            return TextDecorator.LengthEncodeList(name, data);
+            return LengthEncoder.LengthEncodeList(name, data);
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
-            var list = TextDecorator.LengthDecodeList(nodeText);
+            var list = LengthEncoder.LengthDecodeList(nodeText);
 
             Condition.Requires(list).HasLength(2);
             var ser = new BinarySerializationUtil();

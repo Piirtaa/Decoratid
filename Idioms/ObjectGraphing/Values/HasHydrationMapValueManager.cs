@@ -1,19 +1,8 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Serialization;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Decoratid.Idioms.Stringing;
-using Decoratid.Idioms.Stringing.Decorations;
-using Decoratid.Extensions;
-using Decoratid.Reflection;
-using Decoratid.Idioms.Hydrating;
+using System;
 
-namespace Decoratid.Idioms.ObjectGraph.Values
+namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// Handles instances of IHasHydrationMap. 
@@ -43,11 +32,11 @@ namespace Decoratid.Idioms.ObjectGraph.Values
             var map = hasMap.GetHydrationMap();
             Condition.Requires(map).IsNotNull();
             var data = map.DehydrateValue(obj, uow);
-            return TextDecorator.LengthEncodeList(typeName, data);
+            return LengthEncoder.LengthEncodeList(typeName, data);
         }
         public object HydrateValue(string nodeText, IGraph uow)
         {
-            var list = TextDecorator.LengthDecodeList(nodeText);
+            var list = LengthEncoder.LengthDecodeList(nodeText);
             Condition.Requires(list).HasLength(2);
 
             Type cType = TypeFinder.FindAssemblyQualifiedType(list[0]);

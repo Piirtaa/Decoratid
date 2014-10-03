@@ -1,14 +1,11 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.TypeLocation;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.ObjectGraph.Path
+namespace Decoratid.Idioms.ObjectGraphing.Path
 {
     /// <summary>
     /// </summary>
@@ -17,6 +14,8 @@ namespace Decoratid.Idioms.ObjectGraph.Path
     public sealed class GraphSegment : IGraphSegment
     {
         public const string PREFIX = "(";
+        public const string SUFFIX = ")";
+        public const string DELIM = ",";
 
         #region Ctor
         private GraphSegment(Type declaringType, string segmentName)
@@ -42,7 +41,10 @@ namespace Decoratid.Idioms.ObjectGraph.Path
         {
             get
             {
-                return string.Format("({0}){1}", this.DeclaringType.Name, this.SegmentName);
+                var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+                list.Add(this.DeclaringType.Name);
+                list.Add(this.SegmentName);
+                return list.GetValue();
             }
         }
         #endregion
@@ -50,18 +52,13 @@ namespace Decoratid.Idioms.ObjectGraph.Path
         #region Implicit Conversion to string
         public static implicit operator GraphSegment(string text)
         {
-            Condition.Requires(text).IsNotNullOrEmpty();
-            Condition.Requires(text).StartsWith(PREFIX);
+            var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+            list.Parse(text);
 
-            string declaringTypeName = text;
-            string segmentName = null;
-            string[] split = new string[] { "(", ")" };
+            string declaringTypeName = list[0];
+            string segmentName = list[1];
 
-            var arr = text.Split(split, StringSplitOptions.RemoveEmptyEntries);
-            declaringTypeName = arr[0];
-            segmentName = arr[1];
-
-            var types = TypeLocator.Instance.Locate((x) => { return x.Name == declaringTypeName; });
+            var types = TheTypeLocator.Instance.Locate((x) => { return x.Name == declaringTypeName; });
             Condition.Requires(types).IsNotNull().IsNotEmpty();
             Condition.Requires(segmentName).IsNotNullOrEmpty();
 

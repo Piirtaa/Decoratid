@@ -1,13 +1,13 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.TypeLocation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
+using Decoratid.Idioms.Stringing;
 
-namespace Decoratid.Idioms.ObjectGraph.Path
+namespace Decoratid.Idioms.ObjectGraphing.Path
 {
     /// <summary>
     /// describes the type of collection the segment is part of
@@ -30,6 +30,8 @@ namespace Decoratid.Idioms.ObjectGraph.Path
     public sealed class EnumeratedItemSegment : IGraphSegment
     {
         public const string PREFIX = "[";
+        public const string SUFFIX = "]";
+        public const string DELIM = ",";
 
         #region Ctor
         private EnumeratedItemSegment(int index, EnumeratedSegmentType segType)
@@ -50,23 +52,22 @@ namespace Decoratid.Idioms.ObjectGraph.Path
         {
             get
             {
-                return string.Format("[{0},{1}]", this.Index, this.SegmentType);
-            }
+                var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+                list.Add(this.Index);
+                list.Add(this.SegmentType);
+                return list.GetValue();
+           }
         }
         #endregion
 
         #region Implicit Conversion to string
         public static implicit operator EnumeratedItemSegment(string text)
         {
-            Condition.Requires(text).IsNotNullOrEmpty();
-            Condition.Requires(text).StartsWith("[");
-            Condition.Requires(text).EndsWith("]");
+            var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+            list.Parse(text);
 
-            string scrubText = text.Substring(1,text.Length - 2);
-            var arr = scrubText.Split(',');
-            Condition.Requires(arr).HasLength(2);
-            int index =  int.Parse(arr[0]);
-            EnumeratedSegmentType segType = (EnumeratedSegmentType)Enum.Parse(typeof(EnumeratedSegmentType), arr[1]);
+            int index =  int.Parse(list[0]);
+            EnumeratedSegmentType segType = (EnumeratedSegmentType)Enum.Parse(typeof(EnumeratedSegmentType), list[1]);
             EnumeratedItemSegment rv = new EnumeratedItemSegment(index, segType);
             return rv;
         }

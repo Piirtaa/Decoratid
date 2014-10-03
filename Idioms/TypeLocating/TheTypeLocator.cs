@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Utils;
-using Decoratid.Idioms.TypeLocating.Core;
 
 
 namespace Decoratid.Idioms.TypeLocating
@@ -30,7 +29,7 @@ namespace Decoratid.Idioms.TypeLocating
             lock (this._stateLock)
             {
                 //by default use the default type locator
-                this.Locator = new NaturalTypeLocator();
+                this.Locator = NaturalTypeLocator.New().TrackAssemblies().CacheTypes();
             }
         }
         #endregion
