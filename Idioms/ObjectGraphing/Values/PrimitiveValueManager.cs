@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Utils;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Linq;
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
-    /// Handles system primitives
+    /// Handles system primitives as defined in PrimitivesUtil
     /// </summary>
     public sealed class PrimitiveValueManager : INodeValueManager
     {
@@ -24,6 +25,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return PrimitivesUtil.IsSystemPrimitive(obj);
         }
         public string DehydrateValue(object obj, IGraph uow)

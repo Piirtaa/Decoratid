@@ -1,5 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +21,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
     /// <summary>
     /// Brokers ValueManagers using a ChainOfResponsibility pattern
     /// </summary>
-    public class ValueManagerChainOfResponsibility : IReconstable
+    public class ValueManagerChainOfResponsibility : IStringable
     {
 
         #region Ctor
@@ -79,22 +81,14 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         }
         #endregion
 
-        #region IReconstable
-        /// <summary>
-        /// hydrates to a delimited list of ids
-        /// </summary>
-        /// <returns></returns>
-        public string Dehydrate()
+        #region IStringable
+        public string GetValue()
         {
             var ids = this.ValueManagers.Select((x) => { return x.Id; });
             return LengthEncoder.LengthEncodeList(ids.ToArray());
         }
-        /// <summary>
-        /// takes a delimited list of value manager ids, and using TypeContainer plugin loading looks for 
-        /// each id
-        /// </summary>
-        /// <param name="text"></param>
-        public void Hydrate(string text)
+
+        public void Parse(string text)
         {
             Condition.Requires(text).IsNotNullOrEmpty();
             var list = LengthEncoder.LengthDecodeList(text);
@@ -103,7 +97,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             //strategy to load the managers (via assembly interrogation/plugin loading)
             Action initPlugins = () =>
             {
-                TypeContainer<INodeValueManager> types = TypeContainer<INodeValueManager>.New();
+                TypeContainer<INodeValueManager> types = TypeContainer<INodeValueManager>.NewDefault();
                 plugins = new List<INodeValueManager>();
                 foreach (var each in types.ContainedTypes)
                 {
@@ -162,7 +156,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             list.Add(new DuplicateValueManager());
             list.Add(new DelegateValueManager());
             list.Add(new PrimitiveValueManager());
-            list.Add(new HydrateableValueManager());
+            list.Add(new StringableValueManager());
             list.Add(new ManagedHydrateableValueManager());
             list.Add(new SerializableValueManager());
             list.Add(new DecorationValueManager());
@@ -179,10 +173,12 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         {
             return new ValueManagerChainOfResponsibility(valueManagers);
         }
-        public static ValueManagerChainOfResponsibility Default()
+        public static ValueManagerChainOfResponsibility NewDefault()
         {
             return new ValueManagerChainOfResponsibility(GetDefaultValueManagerList());
         }
         #endregion
+
+
     }
 }

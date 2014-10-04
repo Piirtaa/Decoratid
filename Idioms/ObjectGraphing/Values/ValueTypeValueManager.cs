@@ -1,11 +1,17 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using Decoratid.Utils;
 using System;
 using System.Linq;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
-    public sealed class ValueTypeValueManager : INodeValueManager
+    /// <summary>
+    /// only handles value types.  uses binary serializer
+    /// </summary>
+    public sealed class ValueTypeValueManager : BinarySerializingValueManager
     {
         public const string ID = "Value";
 
@@ -14,35 +20,16 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region IHasId
-        public string Id { get { return ID; } }
-        object IHasId.Id { get { return this.Id; } }
+        public override string Id { get { return ID; } }
         #endregion
 
         #region INodeValueManager
-        public bool CanHandle(object obj, IGraph uow)
+        public override bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return obj.GetType().IsValueType;
-        }
-        public string DehydrateValue(object obj, IGraph uow)
-        {
-            Condition.Requires(obj).IsNotNull();
-            var name = obj.GetType().AssemblyQualifiedName;
-            var ser = new BinarySerializationUtil();
-            var data = ser.Serialize(obj);
-
-            return LengthEncoder.LengthEncodeList(name, data);
-        }
-        public object HydrateValue(string nodeText, IGraph uow)
-        {
-            var list = LengthEncoder.LengthDecodeList(nodeText);
-
-            Condition.Requires(list).HasLength(2);
-            var ser = new BinarySerializationUtil();
-            var typeName = list.ElementAt(0);
-            var serData = list.ElementAt(1);
-            Type type = TypeFinder.FindAssemblyQualifiedType(typeName);
-            var obj = ser.Deserialize(type, serData);
-            return obj;
         }
         #endregion
 

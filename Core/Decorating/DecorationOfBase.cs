@@ -6,19 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace Decoratid.Core.Decorating
 {
-    ///// <summary>
-    ///// responsibility of a decoration to provide (de)hydration for its own layer, for use by DecorationValueManager
-    ///// </summary>
-    ///// <remarks>
-    ///// DecorationValueManager uses the decoration's Apply facility to build up, layer by layer, a
-    ///// decoration.  Each decoration need only be responsible for (de)hydrating its individual layer, and doesn't need to 
-    ///// consider the decoration chain itself.
-    ///// </remarks>
-    //public interface IDecorationHydrateable
-    //{
-    //    string DehydrateDecoration(IGraph uow);
-    //    void HydrateDecoration(string text, IGraph uow);
-    //}
+
 
     /// <summary>
     /// a generic decoration

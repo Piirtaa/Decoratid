@@ -1,6 +1,10 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using Decoratid.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +12,20 @@ using System.Reflection;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
+    /// <summary>
+    /// responsibility of a decoration to provide (de)hydration for its own layer, for use by DecorationValueManager
+    /// </summary>
+    /// <remarks>
+    /// DecorationValueManager uses the decoration's Apply facility to build up, layer by layer, a
+    /// decoration.  Each decoration need only be responsible for (de)hydrating its individual layer, and doesn't need to 
+    /// consider the decoration chain itself.
+    /// </remarks>
+    public interface IDecorationHydrateable
+    {
+        string DehydrateDecoration(IGraph uow);
+        void HydrateDecoration(string text, IGraph uow);
+    }
+
     /// <summary>
     /// handles Decorations (instances of DecorationOfBase)
     /// </summary>
@@ -27,6 +45,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             var genTypeDef = typeof(DecorationOfBase<>);
 
             var rv = genTypeDef.IsInstanceOfGenericType(obj);
@@ -88,6 +109,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                 //init the core
                 if (core == null)
                 {
+                    //delegate back to the graph
                     UndeclaredValueManager mgr = new UndeclaredValueManager();
                     core = mgr.HydrateValue(line, uow);
                     rv = core;
@@ -96,7 +118,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                 {
                     var list1 = LengthEncoder.LengthDecodeList(line);
                     string typeName = list1[0];
-                    Type cType = TypeFinder.FindAssemblyQualifiedType(typeName);
+                    Type cType = TheTypeLocator.Instance.Locator.FindAssemblyQualifiedType(typeName);
                     Condition.Requires(cType).IsNotNull();
 
                     //create an uninitialized

@@ -1,18 +1,14 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.ObjectGraphing.Values.Decorations;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Utils;
 using System;
 using System.Collections.Generic;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
-    /// <summary>
-    /// has a hydration map. 
-    /// </summary>
-    public interface IHasHydrationMap 
-    {
-        IHydrationMap GetHydrationMap();
-    }
+
 
 
     #region Member Map
@@ -71,6 +67,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
     }
     #endregion
+
     /// <summary>
     /// defines the mapping of value managers to getters/setters for something, implying fulfillment of 
     /// ValueManagement thru delegation to the maps.  TODO: remove implication 
@@ -163,6 +160,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                 var line = arr[i];
                 //note we inject a null check decoration below        
                 var mgr = actualUow.ChainOfResponsibility.GetValueManagerById(map.ValueManagerId).DecorateWithNullCheck();
+                if (mgr == null)
+                    continue;
+
                 var val = mgr.HydrateValue(line, actualUow);
                 eachMap.Set((T)obj, val);
             }
@@ -178,6 +178,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         /// <returns></returns>
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return obj is T;
         }
         public string DehydrateValue(object obj, IGraph uow)

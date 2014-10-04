@@ -1,13 +1,17 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Storing;
+using Decoratid.Idioms.Counting;
 using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.ObjectGraphing.Values;
+using Decoratid.Idioms.Stringing;
 using Decoratid.Storidioms.StoreOf;
+using Decoratid.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -24,7 +28,7 @@ namespace Decoratid.Idioms.ObjectGraphing
     /// <summary>
     /// converts an object graph into an IGraph format
     /// </summary>
-    public class Graph : IGraph, IReconstable
+    public class Graph : IGraph, IStringable
     {
         #region Ctor
         /// <summary>
@@ -33,7 +37,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// <param name="chainOfResponsibility">if null the default set is used</param>
         private Graph(ValueManagerChainOfResponsibility chainOfResponsibility = null)
         {
-            this.ChainOfResponsibility = chainOfResponsibility == null ? ValueManagerChainOfResponsibility.Default() : chainOfResponsibility;
+            this.ChainOfResponsibility = chainOfResponsibility == null ? ValueManagerChainOfResponsibility.NewDefault() : chainOfResponsibility;
         }
         #endregion
 
@@ -49,7 +53,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         {
             get
             {
-                var root = GraphNode.GetRootNode(this.NodeStore);
+                var root = this.NodeStore.GetRootNode();
                 return root;
             }
         }
@@ -69,7 +73,7 @@ namespace Decoratid.Idioms.ObjectGraphing
 
             Condition.Requires(obj).IsNotNull();
             
-            this.NodeStore = NaturalInMemoryStore.New().DecorateWithIsOf<GraphNode>();
+            this.NodeStore = NaturalInMemoryStore.New().IsOf<GraphNode>();
             this.Counter = new Counter();
             this.SkipFilter = skipFilter;
 
@@ -166,13 +170,13 @@ namespace Decoratid.Idioms.ObjectGraphing
         }
         #endregion
 
-        #region Reconsting Methods
+        #region Reconstitution Methods
         /// <summary>
         /// given a Node Store, hydrates the value of each node, and wires the entire graph back together
         /// </summary>
         /// <param name="nodeStore"></param>
         /// <returns>the root node value</returns>
-        private object Reconstitute(IStoreOf<GraphNode> nodeStore)
+        private object ReconstituteFromNodeStore(IStoreOf<GraphNode> nodeStore)
         {
             Condition.Requires(nodeStore).IsNotNull();
             this.NodeStore = nodeStore;
@@ -206,7 +210,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             foreach (var node in nodes)
             {
                 //get the parent
-                var parent = node.GetParentNode(nodeStore);
+                var parent = nodeStore.GetParentNode(node.Path);
 
                 if (parent != null && hasProcessed.ContainsKey(parent.Id) == false)
                 {
@@ -216,7 +220,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             }
 
             //return root node
-            var root = GraphNode.GetRootNode(nodeStore);
+            var root = nodeStore.GetRootNode();
             return root.NodeValue;
         }
         /// <summary>
@@ -236,7 +240,7 @@ namespace Decoratid.Idioms.ObjectGraphing
 
             var fields = ReflectionUtil.GetFieldInfosIncludingBaseClasses(parentNode.NodeValue.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-            var children = parentNode.GetImmediateChildNodes(nodeStore).OrderBy((x) => { return x.Path.EnumeratedSegmentIndex; }).ToList();
+            var children = nodeStore.GetImmediateChildNodes(parentNode.Path).OrderBy((x) => { return x.Path.EnumeratedSegmentIndex; }).ToList();
 
             foreach (var each in children)
             {
@@ -280,23 +284,17 @@ namespace Decoratid.Idioms.ObjectGraphing
         }
         #endregion
 
-        #region IReconstable
-        /// <summary>
-        /// serializes graph to string
-        /// </summary>
-        /// <returns></returns>
-        public string Dehydrate()
+        #region IStringable
+
+        public string GetValue()
         {
-            var storeText = GraphNode.DehydrateNodeStore(this.NodeStore);
-            var managerText = this.ChainOfResponsibility.Dehydrate();
-            string rv = LengthEncoder.LengthEncodeList( managerText, storeText);
+            var storeText = this.NodeStore.DehydrateNodeStore();
+            var managerText = this.ChainOfResponsibility.GetValue();
+            string rv = LengthEncoder.LengthEncodeList(managerText, storeText);
             return rv;
         }
-        /// <summary>
-        /// hydrates graph from string
-        /// </summary>
-        /// <param name="text"></param>
-        public void Hydrate(string text)
+
+        public void Parse(string text)
         {
             Condition.Requires(text).IsNotNullOrEmpty();
             var arr = LengthEncoder.LengthDecodeList(text);
@@ -305,12 +303,11 @@ namespace Decoratid.Idioms.ObjectGraphing
             var managerText = arr[0];
 
             var set = ValueManagerChainOfResponsibility.New();
-            set.Hydrate(managerText);
+            set.Parse(managerText);
             this.ChainOfResponsibility = set;
-            var store = GraphNode.HydrateNodeStore(storeText);
-            this.Reconstitute(store);
+            var store = NodeStoreUtil.HydrateNodeStore(storeText);
+            this.ReconstituteFromNodeStore(store);
         }
-
         #endregion
 
         #region Static Fluent
@@ -346,10 +343,11 @@ namespace Decoratid.Idioms.ObjectGraphing
         public static Graph Parse(string text, ValueManagerChainOfResponsibility managerSet = null)
         {
             Graph graph = new Graph(managerSet);
-            graph.Hydrate(text);
+            graph.Parse(text);
             return graph;
         }
         #endregion
+
 
     }
 }

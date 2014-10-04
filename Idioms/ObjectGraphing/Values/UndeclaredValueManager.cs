@@ -1,15 +1,14 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
 using System.Linq;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
-    //TODO: revisit the chain of responsibility design, and tighten it up so it's more self describing
-
     /// <summary>
     /// This manager does not itself know how to handle values, but it will take an educated guess, dammit!
     /// It delegates to Graph's ManagerSet to determine which manager is appropriate, and wraps it.  
-    /// One would use this to serialize stores they suspect might be decorated, or when the thing is 
+    /// One would use this to serialize things they suspect might be decorated, or when the thing is 
     /// ambiguous.
     /// </summary>
     public sealed class UndeclaredValueManager : INodeValueManager
@@ -29,11 +28,21 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         public bool CanHandle(object obj, IGraph uow)
         {
             var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow);
+            
+            //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
+            if (mgr != null && mgr is UndeclaredValueManager)
+                return false;
+
             return mgr != null;
         }
         public string DehydrateValue(object obj, IGraph uow)
         {
             var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow);
+
+            //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
+            if (mgr != null && mgr is UndeclaredValueManager)
+                return null;
+
             if (mgr == null)
                 return null;
 
@@ -49,6 +58,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             Condition.Requires(list).HasLength(2);
 
             var mgr = uow.ChainOfResponsibility.GetValueManagerById(list.ElementAt(0));
+            //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
+            if (mgr != null && mgr is UndeclaredValueManager)
+                return null;
+
             var obj = mgr.HydrateValue(list.ElementAt(1), uow);
             return obj;
         }

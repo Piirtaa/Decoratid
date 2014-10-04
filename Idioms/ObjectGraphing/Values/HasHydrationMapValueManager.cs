@@ -1,9 +1,20 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using Decoratid.Utils;
 using System;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
+    /// <summary>
+    /// has a hydration map. 
+    /// </summary>
+    public interface IHasHydrationMap
+    {
+        IHydrationMap GetHydrationMap();
+    }
+
     /// <summary>
     /// Handles instances of IHasHydrationMap. 
     /// </summary>
@@ -23,6 +34,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return obj is IHasHydrationMap;
         }
         public string DehydrateValue(object obj, IGraph uow)
@@ -39,7 +53,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             var list = LengthEncoder.LengthDecodeList(nodeText);
             Condition.Requires(list).HasLength(2);
 
-            Type cType = TypeFinder.FindAssemblyQualifiedType(list[0]);
+            Type cType = TheTypeLocator.Instance.Locator.FindAssemblyQualifiedType(list[0]);
             Condition.Requires(cType).IsNotNull();
             var obj = ReflectionUtil.CreateUninitializedObject(cType);
             IHasHydrationMap hasMap = obj as IHasHydrationMap;

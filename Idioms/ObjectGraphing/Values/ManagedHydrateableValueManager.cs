@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
@@ -12,8 +13,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
     }
 
     /// <summary>
-    /// Handles instances that are IManagedHydrateable.  Note that the graph that calls this must have a reference to the 
-    /// manager the IManagedHydrateable refers to in its set, or shit will break, yo.  
+    /// Handles instances that are IManagedHydrateable.  In other words, it handles types that know who its 
+    /// value manager is.  Note: the provided graph must have a reference to the indicated ValueManager,
+    /// or shit will break, yo.  
     /// </summary>
     public sealed class ManagedHydrateableValueManager : INodeValueManager
     {
@@ -31,13 +33,34 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
-            return obj is IManagedHydrateable;
-        }
-        public string DehydrateValue(object obj, IGraph uow)
-        {
+            if (obj == null)
+                return false;
+
+            //if it's not managedhydrateable skip immediately
+            if (!(obj is IManagedHydrateable))
+                return false;
+
+            //do we have the indicated value manager?  if not, we'll skip and let the chain decide
             IManagedHydrateable hyd = obj as IManagedHydrateable;
             var mgrId = hyd.GetValueManagerId();
             var mgr = uow.ChainOfResponsibility.GetValueManagerById(mgrId);
+            if (mgr == null)
+                return false;
+
+            return true;
+        }
+        public string DehydrateValue(object obj, IGraph uow)
+        {
+            if (!(obj is IManagedHydrateable))
+                return null;
+
+            //do we have the indicated value manager?  if not, we'll skip and let the chain decide
+            IManagedHydrateable hyd = obj as IManagedHydrateable;
+            var mgrId = hyd.GetValueManagerId();
+            var mgr = uow.ChainOfResponsibility.GetValueManagerById(mgrId);
+            if (mgr == null)
+                return null;
+
             var val =  mgr.DehydrateValue(obj, uow);
 
             return LengthEncoder.LengthEncodeList(mgrId, val);

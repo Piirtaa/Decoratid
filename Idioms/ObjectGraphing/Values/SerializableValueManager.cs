@@ -1,11 +1,18 @@
-﻿using Decoratid.Extensions;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
+using Decoratid.Utils;
+using System;
+using System.Linq;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// handles ISerializable and Serializable attributed types
     /// </summary>
-    public sealed class SerializableValueManager : INodeValueManager
+    public sealed class SerializableValueManager : BinarySerializingValueManager
     {
         public const string ID = "Serializable";
 
@@ -14,22 +21,16 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region IHasId
-        public string Id { get { return ID; } }
-        object IHasId.Id { get { return this.Id; } }
+        public override string Id { get { return ID; } }
         #endregion
 
         #region INodeValueManager
-        public bool CanHandle(object obj, IGraph uow)
+        public override bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return obj.IsMarkedSerializable();
-        }
-        public string DehydrateValue(object obj, IGraph uow)
-        {
-            return SerializationManager.Instance.Serialize(BinarySerializationUtil.ID, obj);
-        }
-        public object HydrateValue(string nodeText, IGraph uow)
-        {
-            return SerializationManager.Instance.Deserialize(nodeText);
         }
         #endregion
 

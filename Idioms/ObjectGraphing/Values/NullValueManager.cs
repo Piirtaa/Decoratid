@@ -1,8 +1,9 @@
 ﻿
+using Decoratid.Core.Identifying;
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
-    /// Is always the FIRST manager in the Chain of Responsibility
+    /// Is always the FIRST manager in the Chain of Responsibility.  Handles null values.
     /// </summary>
     public sealed class NullValueManager : INodeValueManager
     {

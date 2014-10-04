@@ -53,8 +53,8 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
             get
             {
                 var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
-                list.Add(this.Index);
-                list.Add(this.SegmentType);
+                list.Add(this.Index.ToString());
+                list.Add(this.SegmentType.ToString());
                 return list.GetValue();
            }
         }

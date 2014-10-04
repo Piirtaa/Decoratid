@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Storing;
+﻿using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 using Decoratid.Idioms.Stringing;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
@@ -24,6 +25,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             //we can handle this if it's  a duplicate reference of something already in the node store
             var matches = uow.NodeStore.Search<GraphNode>(SearchFilterOf<GraphNode>.NewOf((x) =>
             {

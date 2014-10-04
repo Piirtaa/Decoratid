@@ -18,6 +18,7 @@ namespace Decoratid.Core.Contextual
     public class ContextualId<TId, TContext> : IHasId<TId>, IHasContext<TContext>
     {
         #region Ctor
+        public ContextualId() { }
         public ContextualId(TId obj, TContext context)
         {
             if (obj == null)

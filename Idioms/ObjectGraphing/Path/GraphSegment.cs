@@ -58,7 +58,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
             string declaringTypeName = list[0];
             string segmentName = list[1];
 
-            var types = TheTypeLocator.Instance.Locate((x) => { return x.Name == declaringTypeName; });
+            var types = TheTypeLocator.Instance.Locator.Locate((x) => { return x.Name == declaringTypeName; });
             Condition.Requires(types).IsNotNull().IsNotEmpty();
             Condition.Requires(segmentName).IsNotNullOrEmpty();
 

@@ -1,13 +1,15 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.TypeLocating;
 using Decoratid.Utils;
 using System;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
-    /// is always the LAST manager in the Chain of Responsibility
+    /// is always the LAST manager in the Chain of Responsibility.  Handles objects that haven't been classified yet ->
+    /// in other words, it onions and we drill into the value's constituents, and continue classifying that way.
     /// </summary>
     public sealed class CompoundValueManager : INodeValueManager
     {
@@ -25,6 +27,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
+            if (obj == null)
+                return false;
+
             return true;
         }
         public string DehydrateValue(object obj, IGraph uow)
@@ -37,7 +42,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         {
             var realData = LengthEncoder.LengthDecode(nodeText);
 
-            Type cType = TypeFinder.FindAssemblyQualifiedType(realData);
+            Type cType = TheTypeLocator.Instance.Locator.FindAssemblyQualifiedType(realData);
             Condition.Requires(cType).IsNotNull();
             var obj = ReflectionUtil.CreateUninitializedObject(cType);
 
