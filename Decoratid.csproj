@@ -101,6 +101,10 @@
     <Compile Include="Idioms\Depending\DependencyUtil.cs" />
     <Compile Include="Idioms\Depending\Interfaces.cs" />
     <Compile Include="Idioms\Depending\StoreExtensions.cs" />
+    <Compile Include="Idioms\Eventing\EventingStoreDecoration.cs" />
+    <Compile Include="Idioms\Eventing\EventingConditionDecoration.cs" />
+    <Compile Include="Idioms\Eventing\EventingLogicDecoration.cs" />
+    <Compile Include="Idioms\Eventing\EventingValueOfDecoration.cs" />
     <Compile Include="Idioms\Expiring\FloatingWindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\WindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\DateExpirableDecoration.cs" />
@@ -414,6 +418,7 @@
     <Content Include="Idioms\ConditionalWaiting\Notes.txt" />
     <Content Include="Idioms\Counting\Notes.txt" />
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
+    <Content Include="Idioms\Eventing\Notes.txt" />
     <Content Include="Idioms\Expiring\Notes.txt" />
     <Content Include="Idioms\IdGenerating\Notes.txt" />
     <Content Include="Idioms\Intercepting\Notes.txt" />

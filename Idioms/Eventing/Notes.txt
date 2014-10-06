@@ -1,0 +1,9 @@
+﻿Decorates by adding events
+Only applies to Core Things:ValueOf, Logic, Condition
+
+Fluently decorated as:
+	valueOf.Eventing();
+	logic.Eventing();
+	condition.Eventing();
+
+  

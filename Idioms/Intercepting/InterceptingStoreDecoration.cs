@@ -225,10 +225,15 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static InterceptingStoreDecoration Intercept(this IStore decorated, ILogger logger)
+        public static InterceptingStoreDecoration Intercepting(this IStore decorated, ILogger logger)
         {
             Condition.Requires(decorated).IsNotNull();
             return new InterceptingStoreDecoration(decorated, logger);
+        }
+        public static InterceptingStoreDecoration Intercepting(this ILoggingStore decorated)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new InterceptingStoreDecoration(decorated, decorated.Logger);
         }
     }
 }

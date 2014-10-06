@@ -39,14 +39,14 @@ namespace Decoratid.Idioms.Intercepting
         public ILogger Logger { get; private set; }
         #endregion
 
-        #region Properties   
+        #region Properties
         public InterceptChain<TArg, TResult> InterceptChain { get; private set; }
         public TArg Arg { get; private set; }
         public TResult Result { get; private set; }
         public Exception Error { get; private set; }
-        IValueOf<TArg> DecoratedArg { get; set; }
-        ILogic DecoratedLogic { get; set; }
-        IValueOf<TResult> DecoratedResult { get; set; }
+        public IValueOf<TArg> DecoratedArg { get; private set; }
+        public ILogic DecoratedLogic { get; private set; }
+        public IValueOf<TResult> DecoratedResult { get; private set; }
         #endregion
 
         #region Methods
@@ -131,12 +131,12 @@ namespace Decoratid.Idioms.Intercepting
 
             this.Logger.Do((x) => x.LogVerbose("Arg", this.Arg));
             var arg = this.DecoratedArg.GetValue(); //invoke arg decoration chain
-            this.Logger.Do((x) => x.LogVerbose("DecoratedArg", arg)); 
-            
+            this.Logger.Do((x) => x.LogVerbose("DecoratedArg", arg));
+
             ILogicOf<TArg> logicOf = (ILogicOf<TArg>)this.DecoratedLogic;
             logicOf.Context = arg.AsNaturalValue();
             this.Logger.Do((x) => x.LogVerbose("Logic context set", null));
-            
+
             ILogicTo<TResult> logicTo = (ILogicTo<TResult>)this.DecoratedLogic;
             logicTo.Perform();
             this.Logger.Do((x) => x.LogVerbose("Logic performed", null));
@@ -144,15 +144,15 @@ namespace Decoratid.Idioms.Intercepting
             var result = logicTo.Result;
             this.Result = result;
             this.Logger.Do((x) => x.LogVerbose("Result", result));
-            
+
             //decorate the result
             this.Logger.Do((x) => x.LogVerbose("Decorate result started", null));
             var intercepts = this.InterceptChain.Layers;
-            
+
             if (result != null)
             {
                 IValueOf<TResult> resultOf = result.AsNaturalValue();
-                
+
                 //decorate the adjustments
                 intercepts.WithEach((intercept) =>
                 {

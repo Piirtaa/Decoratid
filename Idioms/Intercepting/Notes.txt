@@ -22,7 +22,7 @@ How interception is done:
 
 
 Fluently decorate as:
-	store.Intercept(logger);
+	store.Intercepting(logger);
 	
  
 

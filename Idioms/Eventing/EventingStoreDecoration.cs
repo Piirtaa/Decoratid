@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Intercepting;
-using Decoratid.Storidioms.Intercepting;
-using Decoratid.Idioms.Intercepting.Decorating;
-using System.Runtime.Serialization;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using Decoratid.Idioms.Logging;
+using Decoratid.Storidioms;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Decoratid.Storidioms.Eventing
+namespace Decoratid.Idioms.Eventing
 {
     /// <summary>
     /// using intercept idioms, exposes a bunch of events
@@ -56,7 +52,7 @@ namespace Decoratid.Storidioms.Eventing
     ///  are raised if the Arg is scrubbed.  
     ///  Also, this decoration will leak the filtered items via events. So it should not be used in secure applications.
     /// </remarks>
-    public class EventingDecoration : DecoratedStoreBase, IEventingStore, IInterceptingStore, IHasHydrationMap
+    public class EventingStoreDecoration : DecoratedStoreBase, IEventingStore, IInterceptingStore, IHasLogger
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -67,8 +63,8 @@ namespace Decoratid.Storidioms.Eventing
         /// ctor.  requires IStore to wrap
         /// </summary>
         /// <param name="decorated"></param>
-        public EventingDecoration(IStore decorated)
-            : base(decorated.DecorateWithInterception())
+        public EventingStoreDecoration(IStore decorated, ILogger logger)
+            : base(decorated.Intercepting(logger))
         {
             //wire to the intercepts
             this.InterceptCore.CommitOperationIntercept.Completed += CommitOperationIntercept_Completed;
@@ -78,64 +74,67 @@ namespace Decoratid.Storidioms.Eventing
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<EventingDecoration>();
-            return hydrationMap;
-        }
-        #endregion
+        //#region IHasHydrationMap
+        //public virtual IHydrationMap GetHydrationMap()
+        //{
+        //    var hydrationMap = new HydrationMapValueManager<EventingStoreDecoration>();
+        //    return hydrationMap;
+        //}
+        //#endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetHydrationMap().DehydrateValue(this, uow);
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.GetHydrationMap().HydrateValue(this, text, uow);
+        //}
+        //#endregion
+        #region IHasLogger
+        public ILogger Logger { get { return this.InterceptCore.Logger; } }
         #endregion
 
         #region Properties
-        protected InterceptingDecoration InterceptCore
+        protected InterceptingStoreDecoration InterceptCore
         {
             get
             {
-                return this.FindDecoratorOf<InterceptingDecoration>(true);
+                return this.FindDecoratorOf<InterceptingStoreDecoration>(true);
             }
         }
         #endregion
 
         #region Intercept Subscriptions
-        void GetOperationIntercept_Completed(object sender, EventArgOf<DecoratingInterceptUnitOfWork<IStoredObjectId, IHasId>> e)
+        void GetOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<IStoredObjectId, IHasId>> e)
         {
             var uow = e.Value;
 
             if (uow.Error == null)
             {
                 //if the result is nulled, fire the filtered event
-                if (uow.Result.LastValue == null && uow.Result.FirstValue != null)
+                if (uow.DecoratedResult.GetValue() == null && uow.Result != null)
                 {
-                    this.ItemRetrievedFiltered.BuildAndFireEventArgs(uow.Result.FirstValue);
+                    this.ItemRetrievedFiltered.BuildAndFireEventArgs(uow.Result);
                 }
                 else
                 {
 
-                    this.ItemRetrieved.BuildAndFireEventArgs(uow.Result.LastValue);
+                    this.ItemRetrieved.BuildAndFireEventArgs(uow.DecoratedResult.GetValue());
                 }
             }
         }
 
-        void SearchOperationIntercept_Completed(object sender, EventArgOf<DecoratingInterceptUnitOfWork<Tuple<Type, SearchFilter>, List<IHasId>>> e)
+        void SearchOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<Tuple<Type, SearchFilter>, List<IHasId>>> e)
         {
             var uow = e.Value;
 
             if (uow.Error == null)
             {
                 //examine the before and after lists to find deletions
-                var origList = uow.Result.FirstValue;
-                var finalList = uow.Result.LastValue;
+                var origList = uow.Result;
+                var finalList = uow.DecoratedResult.GetValue();
 
                 var delItems = origList.FindDeletedItems(finalList);
 
@@ -150,15 +149,15 @@ namespace Decoratid.Storidioms.Eventing
                 });
             }
         }
-        void GetAllOperationIntercept_Completed(object sender, EventArgOf<DecoratingInterceptUnitOfWork<Thingness.Nothing, List<IHasId>>> e)
+        void GetAllOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<Nothing, List<IHasId>>> e)
         {
             var uow = e.Value;
 
             if (uow.Error == null)
             {
                 //examine the before and after lists to find deletions
-                var origList = uow.Result.FirstValue;
-                var finalList = uow.Result.LastValue;
+                var origList = uow.Result;
+                var finalList = uow.DecoratedResult.GetValue();
 
                 var delItems = origList.FindDeletedItems(finalList);
 
@@ -173,16 +172,16 @@ namespace Decoratid.Storidioms.Eventing
                 });
             }
         }
-        void CommitOperationIntercept_Completed(object sender, EventArgOf<DecoratingInterceptUnitOfWork<ICommitBag, Thingness.Nothing>> e)
+        void CommitOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<ICommitBag, Nothing>> e)
         {
             var uow = e.Value;
 
             if (uow.Error == null)
             {
-                var origItemsToSave = uow.Arg.FirstValue.ItemsToSave.ToList();
-                var origItemsToDelete = uow.Arg.FirstValue.ItemsToDelete.ToList();
-                var finalItemsToSave = uow.Arg.LastValue.ItemsToSave.ToList();
-                var finalItemsToDelete = uow.Arg.LastValue.ItemsToDelete.ToList();
+                var origItemsToSave = uow.Arg.ItemsToSave.ToList();
+                var origItemsToDelete = uow.Arg.ItemsToDelete.ToList();
+                var finalItemsToSave = uow.DecoratedArg.GetValue().ItemsToSave.ToList();
+                var finalItemsToDelete = uow.DecoratedArg.GetValue().ItemsToDelete.ToList();
                 var scrubbedItemsToSave = origItemsToSave.FindDeletedItems(finalItemsToSave);
                 var scrubbedItemsToDel = origItemsToDelete.FindDeletedItems(finalItemsToDelete);
 
@@ -207,7 +206,7 @@ namespace Decoratid.Storidioms.Eventing
         #endregion
 
         #region IInterceptingStore
-        public DecoratingInterceptChain<IStoredObjectId, IHasId> GetOperationIntercept
+        public InterceptChain<IStoredObjectId, IHasId> GetOperationIntercept
         {
             get
             {
@@ -219,7 +218,7 @@ namespace Decoratid.Storidioms.Eventing
             }
         }
 
-        public DecoratingInterceptChain<Tuple<Type, SearchFilter>, List<IHasId>> SearchOperationIntercept
+        public InterceptChain<Tuple<Type, SearchFilter>, List<IHasId>> SearchOperationIntercept
         {
             get
             {
@@ -231,7 +230,7 @@ namespace Decoratid.Storidioms.Eventing
             }
         }
 
-        public DecoratingInterceptChain<ICommitBag, Thingness.Nothing> CommitOperationIntercept
+        public InterceptChain<ICommitBag, Nothing> CommitOperationIntercept
         {
             get
             {
@@ -242,7 +241,7 @@ namespace Decoratid.Storidioms.Eventing
                 this.InterceptCore.CommitOperationIntercept = value;
             }
         }
-        public DecoratingInterceptChain<Decoratid.Thingness.Nothing, List<IHasId>> GetAllOperationIntercept
+        public InterceptChain<Nothing, List<IHasId>> GetAllOperationIntercept
         {
             get
             {
@@ -267,7 +266,7 @@ namespace Decoratid.Storidioms.Eventing
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new EventingDecoration(store);
+            var returnValue = new EventingStoreDecoration(store, this.Logger);
 
             return returnValue;
         }
@@ -289,5 +288,29 @@ namespace Decoratid.Storidioms.Eventing
         #endregion
 
 
+    }
+
+    public static class EventingStoreDecorationExtensions
+    {
+        /// <summary>
+        /// gets the factory layer
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static EventingStoreDecoration GetEventingDecoration(this IStore decorated)
+        {
+            return decorated.FindDecoratorOf<EventingStoreDecoration>(true);
+        }
+
+        /// <summary>
+        /// adds events
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static EventingStoreDecoration DecorateWithEvents(this IStore decorated, ILogger logger)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new EventingStoreDecoration(decorated, logger);
+        }
     }
 }

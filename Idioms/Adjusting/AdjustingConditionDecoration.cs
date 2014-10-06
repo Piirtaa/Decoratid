@@ -31,6 +31,7 @@ namespace Decoratid.Idioms.Adjusting
             : base(info, context)
         {
             this.Adjustment = (LogicOfTo<ICondition, ICondition>)info.GetValue("Adjustment", typeof(LogicOfTo<ICondition, ICondition>));
+            this.AdjustedValue = (ICondition)info.GetValue("AdjustedValue", typeof(ICondition));
         }
         /// <summary>
         /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
@@ -43,6 +44,7 @@ namespace Decoratid.Idioms.Adjusting
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Adjustment", this.Adjustment);
+            info.AddValue("AdjustedValue", this.AdjustedValue);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
