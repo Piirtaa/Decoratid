@@ -16,7 +16,8 @@ namespace Decoratid.Idioms.Adjusting
     /// is a ValueOf decoration that evaluates the decorated ValueOf and then scrubs it according to some strategy
     /// </summary>
     /// <remarks>
-    /// Hold on!  Why would we do this? So we can chain adjustments on a value. 
+    /// Hold on!  Why would we do this? So we can chain adjustments on a value.
+    /// Also can be repurposed for audit and any general decoration.
     /// </remarks>
     /// <typeparam name="T"></typeparam>
     public interface IAdjustingValueOf<T> : IValueOf<T>
@@ -29,19 +30,19 @@ namespace Decoratid.Idioms.Adjusting
     /// is a ValueOf decoration that evaluates the decorated ValueOf and then scrubs it according to some strategy
     /// </summary>
     [Serializable]
-    public class AdjustedValueOfDecoration<T> : DecoratedValueOfBase<T>, IAdjustingValueOf<T>
+    public class AdjustingValueOfDecoration<T> : DecoratedValueOfBase<T>, IAdjustingValueOf<T>
     {
         #region Ctor
-        public AdjustedValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T, T> ScrubbingStrategy)
+        public AdjustingValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T, T> adjustment)
             : base(decorated)
         {
-            Condition.Requires(ScrubbingStrategy).IsNotNull();
-            this.Adjustment = ScrubbingStrategy;
+            Condition.Requires(adjustment).IsNotNull();
+            this.Adjustment = adjustment;
         }
         #endregion
 
         #region ISerializable
-        protected AdjustedValueOfDecoration(SerializationInfo info, StreamingContext context)
+        protected AdjustingValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Adjustment = (LogicOfTo<T, T>)info.GetValue("Adjustment", typeof(LogicOfTo<T, T>));
@@ -71,30 +72,23 @@ namespace Decoratid.Idioms.Adjusting
         {
             var oldValue = Decorated.GetValue();
             var rv = this.Adjustment.CloneAndPerform(oldValue.AsNaturalValue());
-            this.ScrubbedValue = rv;
+            this.AdjustedValue = rv;
             return rv;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new AdjustedValueOfDecoration<T>(thing, this.Adjustment);
+            return new AdjustingValueOfDecoration<T>(thing, this.Adjustment);
         }
         #endregion
     }
 
-    public static partial class AdjustedValueOfExtensions
+    public static partial class AdjustingValueOfDecorationExtensions
     {
-        /// <summary>
-        /// applies an adjustment/mutation to a ValueOf but doesn't change the underlying value
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="valueOf"></param>
-        /// <param name="mutateStrategy"></param>
-        /// <returns></returns>
-        public static AdjustedValueOfDecoration<T> Adust<T>(this IValueOf<T> valueOf, LogicOfTo<T, T> mutateStrategy)
+        public static AdjustingValueOfDecoration<T> Adjust<T>(this IValueOf<T> valueOf, LogicOfTo<T, T> adjustment)
         {
             Condition.Requires(valueOf).IsNotNull();
-            Condition.Requires(mutateStrategy).IsNotNull();
-            return new AdjustedValueOfDecoration<T>(valueOf, mutateStrategy);
+            Condition.Requires(adjustment).IsNotNull();
+            return new AdjustingValueOfDecoration<T>(valueOf, adjustment);
         }
     }
 

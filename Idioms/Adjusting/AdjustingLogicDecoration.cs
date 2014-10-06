@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
@@ -7,28 +8,21 @@ using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Adjusting
 {
-    /// <summary>
-    /// observes and does something with the logic but doesn't change it
-    /// </summary>
-    public interface IObservingLogic : IDecoratedLogic
+    public interface IAdjustingLogic : IDecoratedLogic
     {
-        LogicOf<ILogic> PreObservation { get; }
-        LogicOf<ILogic> PostObservation { get; }
+        LogicOfTo<ILogic, ILogic> Adjustment { get; }
+        ILogic AdjustedValue { get; }
     }
 
-    /// <summary>
-    /// prevents further decoration
-    /// </summary>
     [Serializable]
-    public class AdjustingLogicDecoration : DecoratedLogicBase, IObservingLogic
+    public class AdjustingLogicDecoration : DecoratedLogicBase, IAdjustingLogic
     {
         #region Ctor
-        public AdjustingLogicDecoration(ILogic decorated, LogicOf<ILogic> preObservation,
-            LogicOf<ILogic> postObservation)
+        public AdjustingLogicDecoration(ILogic decorated, LogicOfTo<ILogic, ILogic> adjustment)
             : base(decorated)
         {
-            this.PostObservation = postObservation;
-            this.PreObservation = preObservation;
+            Condition.Requires(adjustment).IsNotNull();
+            this.Adjustment = adjustment;
         }
         #endregion
 
@@ -36,53 +30,48 @@ namespace Decoratid.Idioms.Adjusting
         protected AdjustingLogicDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.PostObservation = (LogicOf<ILogic>)info.GetValue("PostObservation", typeof(LogicOf<ILogic>));
-            this.PreObservation = (LogicOf<ILogic>)info.GetValue("PreObservation", typeof(LogicOf<ILogic>));
+            this.Adjustment = (LogicOfTo<ILogic, ILogic>)info.GetValue("Adjustment", typeof(LogicOfTo<ILogic, ILogic>));
         }
+        /// <summary>
+        /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
+        /// helper function that does the actual implementation of ISerializable, and is called by the
+        /// explicit interface implementation of GetObjectData.  This is the method to be overridden in 
+        /// derived classes.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("PostObservation", this.PostObservation);
-            info.AddValue("PreObservation", this.PreObservation);
+            info.AddValue("Adjustment", this.Adjustment);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
 
-        #region IObservingLogic
-        public LogicOf<ILogic> PreObservation { get; private set; }
-        public LogicOf<ILogic> PostObservation { get; private set; }
+        #region IAdjustingLogic
+        public LogicOfTo<ILogic, ILogic> Adjustment { get; private set; }
+        public ILogic AdjustedValue { get; private set; }
         #endregion
 
         #region Methods
         public override void Perform()
         {
-            if (this.PreObservation != null)
-                this.PreObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
-
-            Decorated.Perform();
-
-            if (this.PostObservation != null)
-                this.PostObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
-            
+            var adjustment = this.Adjustment.CloneAndPerform(this.Decorated.AsNaturalValue());
+            this.AdjustedValue = adjustment;
+            this.AdjustedValue.Perform(); 
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            return new AdjustingLogicDecoration(thing, this.PreObservation, this.PostObservation);
+            return new AdjustingLogicDecoration(thing, this.Adjustment);
         }
         #endregion
     }
 
-    public static class ObservingLogicDecorationExtensions
+    public static class AdjustingLogicDecorationExtensions
     {
-        /// <summary>
-        /// prevents further decoration
-        /// </summary>
-        /// <param name="decorated"></param>
-        /// <returns></returns>
-        public static AdjustingLogicDecoration Observe(this ILogic decorated, LogicOf<ILogic> preObservation,
-            LogicOf<ILogic> postObservation)
+        public static AdjustingLogicDecoration Adjust(this ILogic decorated, LogicOfTo<ILogic, ILogic> adjustment)
         {
-            return new AdjustingLogicDecoration(decorated, preObservation, postObservation);
+            return new AdjustingLogicDecoration(decorated, adjustment);
         }
     }
 }

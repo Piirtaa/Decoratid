@@ -1,6 +1,7 @@
-﻿***Applies only the ValueOf Things
-
-Modifies the ValueOf according to a X->X function.
+﻿Modifies the thing according to a X->X function. Keeps the new calculated thing as a property.
 
 Fluently decorate as:
-	valueOf.Adjust( function );
+	valueOf.Adjust( logic);
+	logic.Adjust( logic);
+	condition.Adjust( logic);
+
