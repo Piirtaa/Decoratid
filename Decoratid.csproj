@@ -164,6 +164,7 @@
     <Compile Include="Idioms\Intercepting\InterceptChain.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Intercepting\InterceptingStoreDecoration.cs" />
     <Compile Include="Idioms\Intercepting\InterceptLayer.cs">
       <SubType>Code</SubType>
     </Compile>

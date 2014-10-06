@@ -162,8 +162,9 @@ namespace Decoratid.Idioms.Intercepting
             {
                 returnValue = uow.Perform();
             }
-            catch
+            catch(Exception ex)
             {
+                logger.LogError("InterceptChain Perform error", arg, ex);
                 throw;
             }
             finally

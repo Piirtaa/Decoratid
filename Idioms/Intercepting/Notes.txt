@@ -20,6 +20,9 @@ How interception is done:
 	intercept chain as being the template.  When InterceptUnitOfWork is invoked, decorations are built up for Arg, Logic and
 	Result based on the chain's template.  Then the decorations are all invoked.  
 
+
+Fluently decorate as:
+	store.Intercept(logger);
 	
  
 
