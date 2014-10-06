@@ -2,23 +2,39 @@
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Depending;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Decoratid.Storidioms.StoreOf;
+using Decoratid.Idioms.Depending;
+using Decoratid.Idioms.Logging;
 
 namespace Decoratid.Idioms.Intercepting
 {
-    public interface IInterceptChain<TArg, TResult>
-    {
-        List<InterceptLayer<TArg, TResult>> Layers { get; }
-        LogicOfTo<TArg, TResult> FunctionToIntercept { get; }
-    }
+    //TODO: this whole thing has a weird smell.  Thinking of using decoration metaphor to do this.
+    //for some reason i can't remember y, we use a manager onion that contains each layer and arranges layers
+    //by dependency, instead of a straight-up decoration.  This gives us the advantage of being able to 
+    //rearrange layers very quickly.  Also the interception is just weirder...meh.  i should probably turn this into a decoration.
+    //Oh wait.  I get it.  It's fully strategized and can be constructed fluently without having specific decoration knowledge.
+    //U just plug strategies in at various layers, and they execute in a known order.  
 
     /// <summary>
     /// defines a sequence of intercept layers that operate on some initial function TArg, TResult.  
     /// </summary>
     /// <remarks>
+    /// Within a chain of Intercepts, the execution is as follows:
+    /// 1.  from least dependant intercept to most -> decorate argument.  using the clothing metaphor, we want the last intercepting,
+    /// layer (eg. the most dependent) to, ultimately, dress the argument how it wants.
+    /// 2.  from least dependant intercept to most -> validate argument.  likewise, the validations should pass by each layer, with the
+    /// last layer ultimately deciding what is valid, after each layer's check.
+    /// 3.  from most dependant intercept to least -> if there is an action defined, perform it.  traverse dependencies until an action is defined.
+    /// Note:  to duplicate the behaviour of "inheritance", each layer has access to a "BaseLayer" property that wires to the next less-dependent layer.
+    /// The clothing metaphor - one behaves as they are dressed.
+    /// 4.  from least dependant intercept to most -> decorate return value.  clothing metaphor applies here as with steps 1 and 2.
+    /// 5.  from least dependant intercept to most -> validate return value.  clothing metaphor, again.
+    /// 
+    /// We want layers to be able to ensure the contractual requirements to their execution, such that the layers cannot be bypassed.
+    /// 
     /// </remarks>
     public class InterceptChain<TArg, TResult> 
     {
@@ -38,22 +54,15 @@ namespace Decoratid.Idioms.Intercepting
         
         #region Properties
         protected IStore Store { get;  set; }
-        public LogicOfTo<TArg, TResult> FunctionToIntercept { get; private set; }
-        public List<InterceptLayer<TArg, TResult>> Layers
-        {
-            get
-            {
-                return this.GetLayers();
-            }
-        }
+        protected LogicOfTo<TArg, TResult> FunctionToIntercept { get; set; }
         #endregion
 
-        //#region Events
-        ///// <summary>
-        ///// an event that is fired when the intercept chain that is used by an InterceptUnitOfWork
-        ///// </summary>
-        //public event EventHandler<EventArgOf<InterceptUnitOfWork<TArg, TResult>>> Completed;
-        //#endregion
+        #region Events
+        /// <summary>
+        /// an event that is fired when the intercept chain that is used by an InterceptUnitOfWork
+        /// </summary>
+        public event EventHandler<EventArgOf<InterceptUnitOfWork<TArg, TResult>>> Completed;
+        #endregion
 
         #region Fluent Wire Methods
         public InterceptChain<TArg, TResult> AddIntercept(InterceptLayer<TArg, TResult> layer)
@@ -79,6 +88,10 @@ namespace Decoratid.Idioms.Intercepting
             var interceptFromStore = this.Store.Get<InterceptLayer<TArg, TResult>>(interceptId);
             if (interceptFromStore != null)
                 throw new InvalidOperationException(string.Format("{0} is not registered", interceptId));
+
+            //var interceptItDependsOnFromStore = this.Store.GetById<InterceptLayer<TArg, TResult>>(interceptItDependsOn);
+            //if (interceptItDependsOnFromStore != null)
+            //    throw new InvalidOperationException(string.Format("{0} is not registered", interceptItDependsOn));
 
             interceptFromStore.AddDependency(interceptItDependsOn);
             this.Store.SaveItem(interceptFromStore);
@@ -135,10 +148,22 @@ namespace Decoratid.Idioms.Intercepting
         #endregion
         
         #region Helpers
-        private List<InterceptLayer<TArg, TResult>> GetLayers()
+        public List<InterceptLayer<TArg, TResult>> GetLayers()
         {
             //get all the registered intercepts in order of dependency, least to most
             var list = this.Store.GetAllHasADependency<InterceptLayer<TArg, TResult>, string>();
+
+            //set the initial layer
+            var initialLayer = new InterceptLayer<TArg, TResult>("initial");
+            initialLayer.SetAction(this.FunctionToIntercept);
+
+            //wire the layers together
+            InterceptLayer<TArg, TResult> lastLayer = initialLayer; //the first layer is the function being intercepted
+            list.WithEach(layer =>
+            {
+                layer.BaseLayer = lastLayer;
+                lastLayer = layer;
+            });
 
             return list;
         }
@@ -151,28 +176,28 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        //public TResult Perform(TArg arg, ILogger logger)
-        //{
-        //    TResult returnValue = default(TResult);
+        public TResult Perform(TArg arg, ILogger logger)
+        {
+            TResult returnValue = default(TResult);
 
-        //    InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
+            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
 
-        //    try
-        //    {
-        //        returnValue = uow.Perform();
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        //fire events
-        //        this.Completed.BuildAndFireEventArgs(uow);
-        //    }
+            try
+            {
+                returnValue = uow.Perform();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                //fire events
+                this.Completed.BuildAndFireEventArgs(uow);
+            }
 
-        //    return returnValue;
-        //}
+            return returnValue;
+        }
         #endregion
     }
 }

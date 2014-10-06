@@ -158,6 +158,18 @@
     <Compile Include="Idioms\ErrorCatching\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Intercepting\Exceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Intercepting\InterceptChain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Intercepting\InterceptLayer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Intercepting\InterceptUnitOfWork.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Logging\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -403,6 +415,7 @@
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
     <Content Include="Idioms\Expiring\Notes.txt" />
     <Content Include="Idioms\IdGenerating\Notes.txt" />
+    <Content Include="Idioms\Intercepting\Notes.txt" />
     <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\ObjectGraphing\GraphingNotes.txt" />
     <Content Include="Idioms\ObjectGraphing\Path\Notes.txt" />

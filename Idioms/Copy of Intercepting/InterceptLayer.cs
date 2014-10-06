@@ -8,20 +8,14 @@ using System;
 namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
-    /// defines a layer of an interception on a function
+    /// defines a named layer that intercepts a Func of TArg,TResult and decorates it with strategies controlling the pipeline.
     /// </summary>
     /// <remarks>
-    /// Each layer has 5 components. 
-    ///     decorate/scrub arg
-    ///     validate scrubbed arg
-    ///     perform
-    ///     decorate/scrub result
-    ///     validate scrubbed result 
+    /// The interception layer's pipeline is: 
+    ///     decorate/scrub arg -> validate scrubbed arg -> perform -> decorate/scrub result -> validate scrubbed result 
     /// </remarks>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    /// 
-    [Serializable]
     public class InterceptLayer<TArg, TResult> : IHasId<string>, IHasDependencyOf<string>
     {
         #region Declarations
@@ -41,16 +35,11 @@ namespace Decoratid.Idioms.Intercepting
             Condition.Requires(id).IsNotNullOrEmpty();
             this.Id = id;
             this.Dependency = new DependencyOf<string>(this.Id);
-            if (argDecorator != null)
-                this.ArgDecorator = argDecorator.MakeLogicOfTo();
-            if (argValidator != null)
-                this.ArgValidator = argValidator.MakeLogicOf();
-            if (action != null)
-                this.Action = action.MakeLogicOfTo();
-            if (resultDecorator != null)
-                this.ResultDecorator = resultDecorator.MakeLogicOfTo();
-            if (resultValidator != null)
-                this.ResultValidator = resultValidator.MakeLogicOf();
+            this.ArgDecorator = argDecorator.MakeLogicOfTo();
+            this.ArgValidator = argValidator.MakeLogicOf();
+            this.Action = action.MakeLogicOfTo();
+            this.ResultDecorator = resultDecorator.MakeLogicOfTo();
+            this.ResultValidator = resultValidator.MakeLogicOf();
         }
 
         public InterceptLayer(string id)
@@ -61,7 +50,7 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
-
+       
         #region IHasId
         public string Id { get; private set; }
         object IHasId.Id { get { return this.Id; } }
@@ -71,9 +60,16 @@ namespace Decoratid.Idioms.Intercepting
         public IDependencyOf<string> Dependency { get; private set; }
         #endregion
 
+        #region Placeholder
+        public InterceptLayer<TArg, TResult> BaseLayer { get; set; }
+        #endregion
+
         #region Properties
         public LogicOfTo<TArg, TArg> ArgDecorator { get; private set; }
         public LogicOf<TArg> ArgValidator { get; private set; }
+        /// <summary>
+        /// Set this if the intercept has some logic to replace the core action being performed
+        /// </summary>
         public LogicOfTo<TArg, TResult> Action { get; private set; }
         public LogicOfTo<TResult, TResult> ResultDecorator { get; private set; }
         public LogicOf<TResult> ResultValidator { get; private set; }
@@ -137,6 +133,40 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
+        #region Methods
+        public TArg DecorateArg(TArg arg)
+        {
+            if (this.ArgDecorator == null)
+                return arg;
+            return this.ArgDecorator.CloneAndPerform(arg.AsNaturalValue());
+        }
+        public void ValidateArg(TArg arg)
+        {
+            if (this.ArgValidator == null)
+                return;
+            this.ArgValidator.CloneAndPerform(arg.AsNaturalValue());
+        }
+        public TResult DecorateResult(TResult res)
+        {
+            if (this.ResultDecorator == null)
+                return res;
+            return this.ResultDecorator.CloneAndPerform(res.AsNaturalValue());
+        }
+        public void ValidateResult(TResult res)
+        {
+            if (this.ResultValidator == null)
+                return;
+            this.ResultValidator.CloneAndPerform(res.AsNaturalValue());
+        }
+        public TResult Do(TArg arg)
+        {
+            //recurse 
+            if (this.Action == null)
+                return this.BaseLayer.Do(arg);
+
+            return this.Action.CloneAndPerform(arg.AsNaturalValue());
+        }
+        #endregion
 
     }
 }

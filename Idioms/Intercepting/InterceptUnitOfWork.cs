@@ -4,12 +4,17 @@ using Decoratid.Idioms.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Decoratid.Core.Logical;
+using Decoratid.Core.ValueOfing;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Storing;
+using Decoratid.Idioms.Adjusting;
+using Decoratid.Idioms.Observing;
 
 namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
-    /// contains the state of an operation that has run thru an intercept chain.
-    /// Mutators duplicate the sig of the intercept, but wrap with exception handling
+    /// takes an interception chain and converts this into a set of decorations 
     /// </summary>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
@@ -23,10 +28,10 @@ namespace Decoratid.Idioms.Intercepting
         public InterceptUnitOfWork(InterceptChain<TArg, TResult> interceptChain, TArg arg, ILogger logger)
         {
             Condition.Requires(interceptChain).IsNotNull();
-            this.Layers = interceptChain.GetLayers();
-            this.Arg = arg;
 
             this.Logger = logger;
+            this.InterceptChain = interceptChain;
+            this.Arg = arg;
         }
         #endregion
 
@@ -34,13 +39,14 @@ namespace Decoratid.Idioms.Intercepting
         public ILogger Logger { get; private set; }
         #endregion
 
-        #region Properties
-        private List<InterceptLayer<TArg, TResult>> Layers { get; set; }
+        #region Properties   
+        public InterceptChain<TArg, TResult> InterceptChain { get; private set; }
         public TArg Arg { get; private set; }
-        public TArg DecoratedArg { get; private set; }
         public TResult Result { get; private set; }
-        public TResult DecoratedResult { get; private set; }
         public Exception Error { get; private set; }
+        IValueOf<TArg> DecoratedArg { get; set; }
+        ILogic DecoratedLogic { get; set; }
+        IValueOf<TResult> DecoratedResult { get; set; }
         #endregion
 
         #region Methods
@@ -49,15 +55,9 @@ namespace Decoratid.Idioms.Intercepting
             try
             {
                 //run thru the steps
-                this.DecorateArgument();
-                this.ValidateArgument();
-
-                //go to the outermost decoration and execute its do
-                var last = this.Layers.Last();
-                this.Result = last.Do(this.DecoratedArg);
-
-                this.DecorateResult();
-                this.ValidateResult();
+                this.DecorateArg();
+                this.DecorateLogic();
+                this.PerformDecorated();
             }
             catch (Exception ex)
             {
@@ -67,117 +67,124 @@ namespace Decoratid.Idioms.Intercepting
                 throw;
             }
 
-            return this.DecoratedResult;
+            return this.DecoratedResult.GetValue();
         }
-        #endregion
-
-        #region Step Methods
-        /// <summary>
-        /// walks dependencies from least to most and decorates the arg
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <returns></returns>
-        protected TArg DecorateArgument()
+        private void DecorateArg()
         {
-            this.Logger.Do((x) => x.LogDebug("Starting DecorateArgument", this.Arg));
+            this.Logger.Do((x) => x.LogVerbose("DecorateArg started", null));
+            var intercepts = this.InterceptChain.Layers;
 
             //decorate the argument
-            TArg decArg = this.Arg;
-            this.Layers.WithEach(layer =>
+            IValueOf<TArg> argOf = null;
+            if (this.Arg != null)
             {
-                try
-                {
-                    decArg = layer.DecorateArg(decArg);
-                    
-                    //track decoration progress
-                    this.DecoratedArg = decArg;
+                argOf = this.Arg.AsNaturalValue();
 
-                    this.Logger.Do((x) => x.LogDebug(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg));
-                }
-                catch (Exception ex)
+                //decorate the adjustments
+                intercepts.WithEach((intercept) =>
                 {
-                    this.Logger.Do((x) => x.LogError(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
+                    if (intercept.ArgDecorator != null)
+                    {
+                        argOf = argOf.Adjust(intercept.ArgDecorator);
+                    }
+                });
+                //decorate the observations
+                intercepts.WithEach((intercept) =>
+                {
+                    if (intercept.ArgValidator != null)
+                    {
+                        argOf = argOf.Observe(null, LogicOf<IValueOf<TArg>>.New((x) =>
+                        {
+                            intercept.ArgValidator.CloneAndPerform(argOf);
+                        }));
+                    }
+                });
+                this.DecoratedArg = argOf;
+            }
+            this.Logger.Do((x) => x.LogVerbose("DecorateArg completed", null));
+        }
+        private void DecorateLogic()
+        {
+            this.Logger.Do((x) => x.LogVerbose("DecorateLogic started", null));
+
+            var intercepts = this.InterceptChain.Layers;
+
+            //decorate the function
+            ILogic logic = this.InterceptChain.FunctionToIntercept;
+            intercepts.WithEach((intercept) =>
+            {
+                if (intercept.Action != null)
+                {
+                    logic = logic.Adjust(LogicOfTo<ILogic, ILogic>.New((x) =>
+                    {
+                        return intercept.Action;
+                    }));
+                }
+            });
+            this.DecoratedLogic = logic;
+
+            this.Logger.Do((x) => x.LogVerbose("DecorateLogic completed", null));
+        }
+        private void PerformDecorated()
+        {
+            this.Logger.Do((x) => x.LogVerbose("PerformDecorated started", null));
+
+            this.Logger.Do((x) => x.LogVerbose("Arg", this.Arg));
+            var arg = this.DecoratedArg.GetValue(); //invoke arg decoration chain
+            this.Logger.Do((x) => x.LogVerbose("DecoratedArg", arg)); 
+            
+            ILogicOf<TArg> logicOf = (ILogicOf<TArg>)this.DecoratedLogic;
+            logicOf.Context = arg.AsNaturalValue();
+            this.Logger.Do((x) => x.LogVerbose("Logic context set", null));
+            
+            ILogicTo<TResult> logicTo = (ILogicTo<TResult>)this.DecoratedLogic;
+            logicTo.Perform();
+            this.Logger.Do((x) => x.LogVerbose("Logic performed", null));
+
+            var result = logicTo.Result;
+            this.Result = result;
+            this.Logger.Do((x) => x.LogVerbose("Result", result));
+            
+            //decorate the result
+            this.Logger.Do((x) => x.LogVerbose("Decorate result started", null));
+            var intercepts = this.InterceptChain.Layers;
+            
+            if (result != null)
+            {
+                IValueOf<TResult> resultOf = result.AsNaturalValue();
                 
-                    throw new ArgDecorationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
-                }
-            });
-            this.DecoratedArg = decArg;
-            return this.DecoratedArg;
+                //decorate the adjustments
+                intercepts.WithEach((intercept) =>
+                {
+                    if (intercept.ResultDecorator != null)
+                    {
+                        resultOf = resultOf.Adjust(intercept.ResultDecorator);
+                    }
+                });
+                //decorate the observations
+                intercepts.WithEach((intercept) =>
+                {
+                    if (intercept.ResultValidator != null)
+                    {
+                        resultOf = resultOf.Observe(null, LogicOf<IValueOf<TResult>>.New((x) =>
+                        {
+                            intercept.ResultValidator.CloneAndPerform(resultOf);
+                        }));
+                    }
+                });
+                this.Logger.Do((x) => x.LogVerbose("Decorate result completed", null));
+
+
+                this.DecoratedResult = resultOf;
+                var decRes = resultOf.GetValue();
+
+                this.Logger.Do((x) => x.LogVerbose("DecoratedResult", decRes));
+            }
+
         }
 
-        /// <summary>
-        /// walks dependencies from least tomost and validates
-        /// </summary>
-        /// <param name="arg"></param>
-        protected void ValidateArgument()
-        {
-            this.Logger.Do((x) => x.LogDebug("Starting ValidateArgument", this.DecoratedArg));
-
-            this.Layers.WithEach(layer =>
-            {
-                try
-                {
-                    layer.ValidateArg(this.DecoratedArg);
-                    this.Logger.Do((x) => x.LogDebug(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg));
-                }
-                catch (Exception ex)
-                {
-                    this.Logger.Do((x) => x.LogError(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
-                    throw new ArgValidationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
-                }
-            });
-        }
-
-        protected TResult DecorateResult()
-        {
-            this.Logger.Do((x) => x.LogDebug("Starting DecorateResult", this.Result));
-
-            //decorate 
-            TResult decRes = this.Result;
-            this.Layers.WithEach(layer =>
-            {
-                try
-                {
-                    decRes = layer.DecorateResult(decRes);
-
-                    //track decoration progress
-                    this.DecoratedResult = decRes;
-                    
-                    this.Logger.Do((x) => x.LogDebug(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult));
-                }
-                catch (Exception ex)
-                {
-                    this.Logger.Do((x) => x.LogError(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
-                    throw new ResultDecorationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
-                }
-            });
-
-            return this.DecoratedResult;
-        }
-
-        /// <summary>
-        /// walks dependencies from least tomost and validates
-        /// </summary>
-        /// <param name="arg"></param>
-        protected void ValidateResult()
-        {
-            this.Logger.Do((x) => x.LogDebug("Starting ValidateResult", this.DecoratedResult));
-
-            this.Layers.WithEach(layer =>
-            {
-                try
-                {
-                    layer.ValidateResult(this.DecoratedResult);
-
-                    this.Logger.Do((x) => x.LogDebug(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult));
-                }
-                catch (Exception ex)
-                {
-                    this.Logger.Do((x) => x.LogError(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
-                    throw new ResultValidationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
-                }
-            });
-        }
         #endregion
+
+
     }
 }

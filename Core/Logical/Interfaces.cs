@@ -52,4 +52,5 @@ namespace Decoratid.Core.Logical
         T Result { get; }
     }
 
+    
 }
