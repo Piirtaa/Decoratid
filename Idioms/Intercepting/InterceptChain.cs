@@ -6,9 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Decoratid.Storidioms.StoreOf;
+using Decoratid.Idioms.Depending;
+using Decoratid.Idioms.Logging;
 
 namespace Decoratid.Idioms.Intercepting
 {
+    //TODO: this whole thing has a weird smell.  Thinking of using decoration metaphor to do this.
+    //for some reason i can't remember y, we use a manager onion that contains each layer and arranges layers
+    //by dependency, instead of a straight-up decoration.  This gives us the advantage of being able to 
+    //rearrange layers very quickly.  Also the interception is just weirder...meh.  i should probably turn this into a decoration.
+    //Oh wait.  I get it.  It's fully strategized and can be constructed fluently without having specific decoration knowledge.
+    //U just plug strategies in at various layers, and they execute in a known order.  
+
     /// <summary>
     /// defines a sequence of intercept layers that operate on some initial function TArg, TResult.  
     /// </summary>
@@ -167,11 +176,11 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public TResult Perform(TArg arg)
+        public TResult Perform(TArg arg, ILogger logger)
         {
             TResult returnValue = default(TResult);
 
-            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg);
+            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
 
             try
             {

@@ -21,7 +21,7 @@ namespace Decoratid.Idioms.Adjusting
     /// <typeparam name="T"></typeparam>
     public interface IAdjustedValueOf<T> : IValueOf<T>
     {
-        LogicOfTo<T,T> ScrubbingStrategy {get;}
+        LogicOfTo<T, T> ScrubbingStrategy { get; }
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ namespace Decoratid.Idioms.Adjusting
             this.ScrubbingStrategy = ScrubbingStrategy;
         }
         #endregion
-        
+
         #region ISerializable
         protected AdjustedValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -61,7 +61,8 @@ namespace Decoratid.Idioms.Adjusting
         #endregion
 
         #region Properties
-        public LogicOfTo<T,T> ScrubbingStrategy { get; private set; }
+        public LogicOfTo<T, T> ScrubbingStrategy { get; private set; }
+        private T ScrubbedValue { get; set; } //placeholder for the results of GetValue
         #endregion
 
         #region Methods
@@ -69,6 +70,7 @@ namespace Decoratid.Idioms.Adjusting
         {
             var oldValue = Decorated.GetValue();
             var rv = this.ScrubbingStrategy.CloneAndPerform(oldValue.AsNaturalValue());
+            this.ScrubbedValue = rv;
             return rv;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
@@ -78,7 +80,7 @@ namespace Decoratid.Idioms.Adjusting
         #endregion
     }
 
-    public static partial class ScrubbingValueOfExtensions
+    public static partial class AdjustedValueOfExtensions
     {
         /// <summary>
         /// applies an adjustment/mutation to a ValueOf but doesn't change the underlying value

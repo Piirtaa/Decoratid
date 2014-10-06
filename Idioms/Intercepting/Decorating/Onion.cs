@@ -1,14 +1,11 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Extensions;
-using Decoratid.Idioms.Storing;
 
-namespace Decoratid.Idioms.Decorating
+namespace Decoratid.Idioms.Intercepting.Decorating
 {
     /// <summary>
     /// A single layer of decoration.   

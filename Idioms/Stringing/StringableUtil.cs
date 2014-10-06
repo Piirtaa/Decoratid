@@ -8,21 +8,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Rehydrating
+namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// Default implementation of IHydrator
     /// </summary>
-    public class NaturalHydrator : IReconstor
+    public class StringableUtil 
     {
         #region Ctor
-        private NaturalHydrator() { }
+        private StringableUtil() { }
         #endregion
 
         #region Fluent Static 
-        public static NaturalHydrator New()
+        public static StringableUtil New()
         {
-            return new NaturalHydrator();
+            return new StringableUtil();
         }
         #endregion
 
@@ -47,7 +47,7 @@ namespace Decoratid.Idioms.Rehydrating
             if (type == null)
                 return rv;
 
-            if (!typeof(IRehydrating).IsAssignableFrom(type))
+            if (!typeof(IStringable).IsAssignableFrom(type))
                 return rv;
 
             rv = true;
@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.Rehydrating
         /// </summary>
         /// <param name="hyd"></param>
         /// <returns></returns>
-        public string Dehydrate(IRehydrating hyd)
+        public string Dehydrate(IStringable hyd)
         {
             if (hyd == null)
                 return null;

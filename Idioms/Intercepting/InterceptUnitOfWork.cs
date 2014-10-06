@@ -13,28 +13,28 @@ namespace Decoratid.Idioms.Intercepting
     /// </summary>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public class InterceptUnitOfWork<TArg, TResult>
+    public class InterceptUnitOfWork<TArg, TResult> : IHasLogger
     {
         #region Declarations
         private readonly object _stateLock = new object();
         #endregion
 
         #region Ctor
-        public InterceptUnitOfWork(InterceptChain<TArg, TResult> interceptChain, TArg arg)
+        public InterceptUnitOfWork(InterceptChain<TArg, TResult> interceptChain, TArg arg, ILogger logger)
         {
             Condition.Requires(interceptChain).IsNotNull();
             this.Layers = interceptChain.GetLayers();
             this.Arg = arg;
 
-            this._logger = LoggingManager.Instance.GetLogger();
+            this.Logger = logger;
         }
         #endregion
 
+        #region IHasLogger
+        public ILogger Logger { get; private set; }
+        #endregion
+
         #region Properties
-        /// <summary>
-        /// Logger injected on ctor.  To tweak perf of this we should broker different loggers (or null)
-        /// </summary>
-        private ILogger _logger { get; set; }
         private List<InterceptLayer<TArg, TResult>> Layers { get; set; }
         public TArg Arg { get; private set; }
         public TArg DecoratedArg { get; private set; }
@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.Intercepting
             catch (Exception ex)
             {
                 this.Error = ex;
-                this._logger.Do((x) => x.LogError("Unit of work error", this));
+                this.Logger.Do((x) => x.LogError("Unit of work error", this));
 
                 throw;
             }
@@ -79,7 +79,7 @@ namespace Decoratid.Idioms.Intercepting
         /// <returns></returns>
         protected TArg DecorateArgument()
         {
-            this._logger.Do((x) => x.LogDebug("Starting DecorateArgument", this.Arg));
+            this.Logger.Do((x) => x.LogDebug("Starting DecorateArgument", this.Arg));
 
             //decorate the argument
             TArg decArg = this.Arg;
@@ -92,11 +92,11 @@ namespace Decoratid.Idioms.Intercepting
                     //track decoration progress
                     this.DecoratedArg = decArg;
 
-                    this._logger.Do((x) => x.LogDebug(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg));
+                    this.Logger.Do((x) => x.LogDebug(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg));
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Do((x) => x.LogError(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
+                    this.Logger.Do((x) => x.LogError(string.Format("DecorateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
                 
                     throw new ArgDecorationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
                 }
@@ -111,18 +111,18 @@ namespace Decoratid.Idioms.Intercepting
         /// <param name="arg"></param>
         protected void ValidateArgument()
         {
-            this._logger.Do((x) => x.LogDebug("Starting ValidateArgument", this.DecoratedArg));
+            this.Logger.Do((x) => x.LogDebug("Starting ValidateArgument", this.DecoratedArg));
 
             this.Layers.WithEach(layer =>
             {
                 try
                 {
                     layer.ValidateArg(this.DecoratedArg);
-                    this._logger.Do((x) => x.LogDebug(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg));
+                    this.Logger.Do((x) => x.LogDebug(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg));
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Do((x) => x.LogError(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
+                    this.Logger.Do((x) => x.LogError(string.Format("ValidateArgument on layer {0}", layer.Id), this.DecoratedArg, ex));
                     throw new ArgValidationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
                 }
             });
@@ -130,7 +130,7 @@ namespace Decoratid.Idioms.Intercepting
 
         protected TResult DecorateResult()
         {
-            this._logger.Do((x) => x.LogDebug("Starting DecorateResult", this.Result));
+            this.Logger.Do((x) => x.LogDebug("Starting DecorateResult", this.Result));
 
             //decorate 
             TResult decRes = this.Result;
@@ -143,11 +143,11 @@ namespace Decoratid.Idioms.Intercepting
                     //track decoration progress
                     this.DecoratedResult = decRes;
                     
-                    this._logger.Do((x) => x.LogDebug(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult));
+                    this.Logger.Do((x) => x.LogDebug(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult));
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Do((x) => x.LogError(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
+                    this.Logger.Do((x) => x.LogError(string.Format("DecorateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
                     throw new ResultDecorationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
                 }
             });
@@ -161,7 +161,7 @@ namespace Decoratid.Idioms.Intercepting
         /// <param name="arg"></param>
         protected void ValidateResult()
         {
-            this._logger.Do((x) => x.LogDebug("Starting ValidateResult", this.DecoratedResult));
+            this.Logger.Do((x) => x.LogDebug("Starting ValidateResult", this.DecoratedResult));
 
             this.Layers.WithEach(layer =>
             {
@@ -169,11 +169,11 @@ namespace Decoratid.Idioms.Intercepting
                 {
                     layer.ValidateResult(this.DecoratedResult);
 
-                    this._logger.Do((x) => x.LogDebug(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult));
+                    this.Logger.Do((x) => x.LogDebug(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult));
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Do((x) => x.LogError(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
+                    this.Logger.Do((x) => x.LogError(string.Format("ValidateResult on layer {0}", layer.Id), this.DecoratedResult, ex));
                     throw new ResultValidationInterceptionException<TArg, TResult>(layer, this, ex.Message, ex);
                 }
             });

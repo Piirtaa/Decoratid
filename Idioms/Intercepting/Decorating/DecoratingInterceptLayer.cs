@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Core.Storing.Products;
-using Decoratid.Extensions;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Idioms.Dependencies;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
+using Decoratid.Idioms.Depending;
 
 
 namespace Decoratid.Idioms.Intercepting.Decorating

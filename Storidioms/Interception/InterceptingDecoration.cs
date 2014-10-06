@@ -77,6 +77,7 @@ namespace Decoratid.Storidioms.Intercepting
                 return this.Decorated.GetAll();
             });
             this.GetAllOperationIntercept.Completed += GetAllOperationIntercept_Completed;
+            
             this.SearchOperationIntercept = new DecoratingInterceptChain<Tuple<Type, SearchFilter>, List<IHasId>>((x) =>
             {
                 return this.Decorated.Search_NonGeneric(x.Item1, x.Item2);

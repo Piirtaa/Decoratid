@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Core.Storing.Products;
-using Decoratid.Extensions;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Idioms.Dependencies;
-using System.Runtime.Serialization;
-using Decoratid.Core.Logical;
-using Decoratid.Idioms.ValuesOf;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.Depending;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
+using Decoratid.Core.ValueOfing;
+using Decoratid.Idioms.Depending;
+using System;
 
 namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
     /// defines a named layer that intercepts a Func of TArg,TResult and decorates it with strategies controlling the pipeline.
     /// </summary>
+    /// <remarks>
+    /// The interception layer's pipeline is: 
+    ///     decorate/scrub arg -> validate scrubbed arg -> perform -> decorate/scrub result -> validate scrubbed result 
+    /// </remarks>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
     public class InterceptLayer<TArg, TResult> : IHasId<string>, IHasDependencyOf<string>
@@ -144,25 +138,25 @@ namespace Decoratid.Idioms.Intercepting
         {
             if (this.ArgDecorator == null)
                 return arg;
-            return this.ArgDecorator.CloneAndPerform(arg.ValueOf());
+            return this.ArgDecorator.CloneAndPerform(arg.AsNaturalValue());
         }
         public void ValidateArg(TArg arg)
         {
             if (this.ArgValidator == null)
                 return;
-            this.ArgValidator.CloneAndPerform(arg.ValueOf());
+            this.ArgValidator.CloneAndPerform(arg.AsNaturalValue());
         }
         public TResult DecorateResult(TResult res)
         {
             if (this.ResultDecorator == null)
                 return res;
-            return this.ResultDecorator.CloneAndPerform(res.ValueOf());
+            return this.ResultDecorator.CloneAndPerform(res.AsNaturalValue());
         }
         public void ValidateResult(TResult res)
         {
             if (this.ResultValidator == null)
                 return;
-            this.ResultValidator.CloneAndPerform(res.ValueOf());
+            this.ResultValidator.CloneAndPerform(res.AsNaturalValue());
         }
         public TResult Do(TArg arg)
         {
@@ -170,7 +164,7 @@ namespace Decoratid.Idioms.Intercepting
             if (this.Action == null)
                 return this.BaseLayer.Do(arg);
 
-            return this.Action.CloneAndPerform(arg.ValueOf());
+            return this.Action.CloneAndPerform(arg.AsNaturalValue());
         }
         #endregion
 

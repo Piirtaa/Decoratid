@@ -1,0 +1,9 @@
+﻿Decorates by observing the operation.
+Only applies to Core Things:ValueOf, Logic, Condition
+
+Fluently decorated as:
+	valueOf.Observe(before logic of, after logic of);
+	logic.Observe(before logic of, after logic of);
+	condition.Observe(before logic of, after logic of);
+
+  

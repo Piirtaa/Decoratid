@@ -245,6 +245,9 @@
     <Compile Include="Idioms\ObjectGraphing\Values\ValueTypeValueManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Observing\ObservingConditionDecoration.cs" />
+    <Compile Include="Idioms\Observing\ObservingLogicDecoration.cs" />
+    <Compile Include="Idioms\Observing\ObservingValueOfDecoration.cs" />
     <Compile Include="Idioms\Polyfacing\Polyface.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -401,6 +404,7 @@
     <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\ObjectGraphing\GraphingNotes.txt" />
     <Content Include="Idioms\ObjectGraphing\Path\Notes.txt" />
+    <Content Include="Idioms\Observing\Notes.txt" />
     <Content Include="Idioms\Polyfacing\Notes.txt" />
     <Content Include="Idioms\Sealing\Notes.txt" />
     <Content Include="Idioms\Stringing\Notes.txt" />
