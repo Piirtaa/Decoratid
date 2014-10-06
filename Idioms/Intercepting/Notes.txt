@@ -10,6 +10,8 @@ as LogicOfTo.
 I envision things like this.  Polyface fans out distinct verticals of responsibility.  Decorations decorate these
 verticals.  Interception decorates the operationality of operations - it fans into the operation.
 
+The InterceptChain maintains events that can be subscribed to, and a managing method that will spawn a unit of work.
+
 How interception is done:
 	For a given LogicOfTo operation, an interceptChain is created.  Layers are added to this chain.  An intercept layer
 	Adjusts and Observes argument, result and logic.  Layers implement Dependency defining when each layer applies.

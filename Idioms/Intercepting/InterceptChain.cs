@@ -3,6 +3,7 @@ using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Depending;
+using Decoratid.Idioms.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,12 +49,12 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
-        //#region Events
-        ///// <summary>
-        ///// an event that is fired when the intercept chain that is used by an InterceptUnitOfWork
-        ///// </summary>
-        //public event EventHandler<EventArgOf<InterceptUnitOfWork<TArg, TResult>>> Completed;
-        //#endregion
+        #region Events
+        /// <summary>
+        /// an event that is fired when the intercept chain that is used by an InterceptUnitOfWork
+        /// </summary>
+        public event EventHandler<EventArgOf<InterceptUnitOfWork<TArg, TResult>>> Completed;
+        #endregion
 
         #region Fluent Wire Methods
         public InterceptChain<TArg, TResult> AddIntercept(InterceptLayer<TArg, TResult> layer)
@@ -151,28 +152,28 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        //public TResult Perform(TArg arg, ILogger logger)
-        //{
-        //    TResult returnValue = default(TResult);
+        public TResult Perform(TArg arg, ILogger logger)
+        {
+            TResult returnValue = default(TResult);
 
-        //    InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
+            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
 
-        //    try
-        //    {
-        //        returnValue = uow.Perform();
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        //fire events
-        //        this.Completed.BuildAndFireEventArgs(uow);
-        //    }
+            try
+            {
+                returnValue = uow.Perform();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                //fire events
+                this.Completed.BuildAndFireEventArgs(uow);
+            }
 
-        //    return returnValue;
-        //}
+            return returnValue;
+        }
         #endregion
     }
 }

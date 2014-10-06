@@ -61,7 +61,6 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
-
         #region IHasId
         public string Id { get; private set; }
         object IHasId.Id { get { return this.Id; } }
