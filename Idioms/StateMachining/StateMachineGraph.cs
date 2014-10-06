@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
+using Decoratid.Storidioms.StoreOf;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Extensions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
 
-namespace Decoratid.Idioms.StateMachineable
+namespace Decoratid.Idioms.StateMachining
 {
     /// <summary>
     /// defines a state transition (as an item in a store)
@@ -61,7 +57,7 @@ namespace Decoratid.Idioms.StateMachineable
             this.InitialState = initialState;
             this.CurrentState = initialState;
 
-            this.Store = new StoreOfDecoration<StateTransition<TState,TTrigger>>( new NaturalInMemoryStore());
+            this.Store = NaturalInMemoryStore.New().IsOf<StateTransition<TState,TTrigger>>();
         }
         public StateMachineGraph(TState initialState, IStoreOf<StateTransition<TState, TTrigger>> store)
         {
@@ -160,11 +156,7 @@ namespace Decoratid.Idioms.StateMachineable
         public static StateMachineGraph<TState, TTrigger> Clone(StateMachineGraph<TState, TTrigger> graph)
         {
             if (graph == null) { return null; }
-           
-            var data = StoreSerializer.SerializeStore(graph.Store);
-            IStore cloneStore = StoreSerializer.DeserializeStore(data);
-            var store = new StoreOfDecoration<StateTransition<TState, TTrigger>>(cloneStore);
-            StateMachineGraph<TState, TTrigger> returnValue = new StateMachineGraph<TState, TTrigger>(graph.InitialState, store);
+            StateMachineGraph<TState, TTrigger> returnValue = new StateMachineGraph<TState, TTrigger>(graph.InitialState, graph.Store);
             returnValue.SetCurrentState(graph.CurrentState);
             return returnValue;
         }

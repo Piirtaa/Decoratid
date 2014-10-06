@@ -288,6 +288,7 @@
     <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\StateMachining\StateMachineGraph.cs" />
     <Compile Include="Idioms\Stringing\DelimitedStringableListDecoration.cs" />
     <Compile Include="Idioms\Stringing\Interfaces.cs">
       <SubType>Code</SubType>
