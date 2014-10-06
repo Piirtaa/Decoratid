@@ -5,7 +5,7 @@ using Decoratid.Core.ValueOfing;
 using System;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Observing
+namespace Decoratid.Idioms.Adjusting
 {
     /// <summary>
     /// observes and does something with the condition but doesn't change it
@@ -17,10 +17,10 @@ namespace Decoratid.Idioms.Observing
     }
 
     [Serializable]
-    public class ObservingConditionDecoration : DecoratedConditionBase, IObservingCondition
+    public class AdjustingConditionDecoration : DecoratedConditionBase, IObservingCondition
     {
         #region Ctor
-        public ObservingConditionDecoration(ICondition decorated, LogicOf<ICondition> preObservation,
+        public AdjustingConditionDecoration(ICondition decorated, LogicOf<ICondition> preObservation,
             LogicOf<ICondition> postObservation)
             : base(decorated)
         {
@@ -30,7 +30,7 @@ namespace Decoratid.Idioms.Observing
         #endregion
 
         #region ISerializable
-        protected ObservingConditionDecoration(SerializationInfo info, StreamingContext context)
+        protected AdjustingConditionDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.PostObservation = (LogicOf<ICondition>)info.GetValue("PostObservation", typeof(LogicOf<ICondition>));
@@ -64,7 +64,7 @@ namespace Decoratid.Idioms.Observing
         }
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            return new ObservingConditionDecoration(thing, this.PreObservation, this.PostObservation);
+            return new AdjustingConditionDecoration(thing, this.PreObservation, this.PostObservation);
         }
         #endregion
     }
@@ -76,10 +76,10 @@ namespace Decoratid.Idioms.Observing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static ObservingConditionDecoration Observe(this ICondition decorated, LogicOf<ICondition> preObservation,
+        public static AdjustingConditionDecoration Observe(this ICondition decorated, LogicOf<ICondition> preObservation,
             LogicOf<ICondition> postObservation)
         {
-            return new ObservingConditionDecoration(decorated, preObservation, postObservation);
+            return new AdjustingConditionDecoration(decorated, preObservation, postObservation);
         }
     }
 }

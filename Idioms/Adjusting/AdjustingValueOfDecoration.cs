@@ -19,23 +19,24 @@ namespace Decoratid.Idioms.Adjusting
     /// Hold on!  Why would we do this? So we can chain adjustments on a value. 
     /// </remarks>
     /// <typeparam name="T"></typeparam>
-    public interface IAdjustedValueOf<T> : IValueOf<T>
+    public interface IAdjustingValueOf<T> : IValueOf<T>
     {
-        LogicOfTo<T, T> ScrubbingStrategy { get; }
+        LogicOfTo<T, T> Adjustment { get; }
+        T AdjustedValue { get; }
     }
 
     /// <summary>
     /// is a ValueOf decoration that evaluates the decorated ValueOf and then scrubs it according to some strategy
     /// </summary>
     [Serializable]
-    public class AdjustedValueOfDecoration<T> : DecoratedValueOfBase<T>, IAdjustedValueOf<T>
+    public class AdjustedValueOfDecoration<T> : DecoratedValueOfBase<T>, IAdjustingValueOf<T>
     {
         #region Ctor
         public AdjustedValueOfDecoration(IValueOf<T> decorated, LogicOfTo<T, T> ScrubbingStrategy)
             : base(decorated)
         {
             Condition.Requires(ScrubbingStrategy).IsNotNull();
-            this.ScrubbingStrategy = ScrubbingStrategy;
+            this.Adjustment = ScrubbingStrategy;
         }
         #endregion
 
@@ -43,7 +44,7 @@ namespace Decoratid.Idioms.Adjusting
         protected AdjustedValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.ScrubbingStrategy = (LogicOfTo<T, T>)info.GetValue("ScrubbingStrategy", typeof(LogicOfTo<T, T>));
+            this.Adjustment = (LogicOfTo<T, T>)info.GetValue("Adjustment", typeof(LogicOfTo<T, T>));
         }
         /// <summary>
         /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
@@ -55,27 +56,27 @@ namespace Decoratid.Idioms.Adjusting
         /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("ScrubbingStrategy", this.ScrubbingStrategy);
+            info.AddValue("Adjustment", this.Adjustment);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
         #region Properties
-        public LogicOfTo<T, T> ScrubbingStrategy { get; private set; }
-        private T ScrubbedValue { get; set; } //placeholder for the results of GetValue
+        public LogicOfTo<T, T> Adjustment { get; private set; }
+        public T AdjustedValue { get; private set; } 
         #endregion
 
         #region Methods
         public override T GetValue()
         {
             var oldValue = Decorated.GetValue();
-            var rv = this.ScrubbingStrategy.CloneAndPerform(oldValue.AsNaturalValue());
+            var rv = this.Adjustment.CloneAndPerform(oldValue.AsNaturalValue());
             this.ScrubbedValue = rv;
             return rv;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new AdjustedValueOfDecoration<T>(thing, this.ScrubbingStrategy);
+            return new AdjustedValueOfDecoration<T>(thing, this.Adjustment);
         }
         #endregion
     }

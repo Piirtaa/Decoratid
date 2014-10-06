@@ -38,9 +38,13 @@ namespace Decoratid.Idioms.Observing
         protected ObservingValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            this.PostObservation = (LogicOf<IValueOf<T>>)info.GetValue("PostObservation", typeof(LogicOf<IValueOf<T>>));
+            this.PreObservation = (LogicOf<IValueOf<T>>)info.GetValue("PreObservation", typeof(LogicOf<IValueOf<T>>));
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("PostObservation", this.PostObservation);
+            info.AddValue("PreObservation", this.PreObservation);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion

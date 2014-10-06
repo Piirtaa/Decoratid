@@ -5,7 +5,7 @@ using Decoratid.Core.ValueOfing;
 using System;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Idioms.Observing
+namespace Decoratid.Idioms.Adjusting
 {
     /// <summary>
     /// observes and does something with the logic but doesn't change it
@@ -20,10 +20,10 @@ namespace Decoratid.Idioms.Observing
     /// prevents further decoration
     /// </summary>
     [Serializable]
-    public class ObservingLogicDecoration : DecoratedLogicBase, IObservingLogic
+    public class AdjustingLogicDecoration : DecoratedLogicBase, IObservingLogic
     {
         #region Ctor
-        public ObservingLogicDecoration(ILogic decorated, LogicOf<ILogic> preObservation,
+        public AdjustingLogicDecoration(ILogic decorated, LogicOf<ILogic> preObservation,
             LogicOf<ILogic> postObservation)
             : base(decorated)
         {
@@ -33,7 +33,7 @@ namespace Decoratid.Idioms.Observing
         #endregion
 
         #region ISerializable
-        protected ObservingLogicDecoration(SerializationInfo info, StreamingContext context)
+        protected AdjustingLogicDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.PostObservation = (LogicOf<ILogic>)info.GetValue("PostObservation", typeof(LogicOf<ILogic>));
@@ -67,7 +67,7 @@ namespace Decoratid.Idioms.Observing
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            return new ObservingLogicDecoration(thing, this.PreObservation, this.PostObservation);
+            return new AdjustingLogicDecoration(thing, this.PreObservation, this.PostObservation);
         }
         #endregion
     }
@@ -79,10 +79,10 @@ namespace Decoratid.Idioms.Observing
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static ObservingLogicDecoration Observe(this ILogic decorated, LogicOf<ILogic> preObservation,
+        public static AdjustingLogicDecoration Observe(this ILogic decorated, LogicOf<ILogic> preObservation,
             LogicOf<ILogic> postObservation)
         {
-            return new ObservingLogicDecoration(decorated, preObservation, postObservation);
+            return new AdjustingLogicDecoration(decorated, preObservation, postObservation);
         }
     }
 }

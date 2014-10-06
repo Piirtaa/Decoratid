@@ -82,6 +82,8 @@
     <Compile Include="Core\Storing\CommitExtensions.cs" />
     <Compile Include="Core\Storing\GetAllExtensions.cs" />
     <Compile Include="Core\Storing\GetExtensions.cs" />
+    <Compile Include="Idioms\Adjusting\AdjustingConditionDecoration.cs" />
+    <Compile Include="Idioms\Adjusting\AdjustingLogicDecoration.cs" />
     <Compile Include="Idioms\Backgrounding\Interfaces.cs" />
     <Compile Include="Idioms\Backgrounding\PollingConditionDecoration.cs" />
     <Compile Include="Idioms\Backgrounding\PollingLogicDecoration.cs" />
@@ -123,7 +125,7 @@
     <Compile Include="Core\ValueOfing\ValueOf.cs" />
     <Compile Include="Core\Conditional\Of\StrategizedConditionOf.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Idioms\Adjusting\AdjustedValueOfDecoration.cs">
+    <Compile Include="Idioms\Adjusting\AdjustingValueOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Backgrounding\BackgroundHost.cs">
