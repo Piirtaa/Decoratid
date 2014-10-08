@@ -30,19 +30,19 @@ namespace Decoratid.Storidioms.AuditTrail
             Condition.Requires(auditStore).IsNotNull();
             Condition.Requires(auditItemBuildStrategy).IsNotNull();
             this.AuditStore = auditStore;
-            this.AuditItemBuildStrategy = auditItemBuildStrategy;
+            this.AuditItemFactory = auditItemBuildStrategy;
         }
         #endregion
 
         #region IAuditingStore
         public IStoreOf<TAuditPoint> AuditStore { get; private set; }
-        public Func<IHasId, StoredItemAccessMode, TAuditPoint> AuditItemBuildStrategy { get; private set; }
+        public Func<IHasId, StoredItemAccessMode, TAuditPoint> AuditItemFactory { get; private set; }
         #endregion
 
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new AuditingDecoration<TAuditPoint>(this.AuditStore, this.AuditItemBuildStrategy, store);
+            var returnValue = new AuditingDecoration<TAuditPoint>(this.AuditStore, this.AuditItemFactory, store);
             return returnValue;
         }
         #endregion
@@ -71,7 +71,7 @@ namespace Decoratid.Storidioms.AuditTrail
         #region Helpers
         private void BuildAndSaveAuditPoint(StoredItemAccessMode mode, IHasId item)
         {
-            var auditPoint = this.AuditItemBuildStrategy(item, mode);
+            var auditPoint = this.AuditItemFactory(item, mode);
             this.AuditStore.SaveItem(auditPoint);
         }
         #endregion

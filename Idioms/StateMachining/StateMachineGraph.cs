@@ -3,7 +3,10 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Storidioms.StoreOf;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.StateMachining
 {
@@ -12,6 +15,7 @@ namespace Decoratid.Idioms.StateMachining
     /// </summary>
     /// <typeparam name="TState"></typeparam>
     /// <typeparam name="TTrigger"></typeparam>
+    [Serializable]
     public class StateTransition<TState, TTrigger> : IHasId<string>
     {
         #region Ctor
@@ -44,7 +48,7 @@ namespace Decoratid.Idioms.StateMachining
     /// see ServiceBase for an implementation example
     /// </remarks>
     [Serializable]
-    public class StateMachineGraph<TState, TTrigger>
+    public class StateMachineGraph<TState, TTrigger> : ISerializable
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -57,7 +61,7 @@ namespace Decoratid.Idioms.StateMachining
             this.InitialState = initialState;
             this.CurrentState = initialState;
 
-            this.Store = NaturalInMemoryStore.New().IsOf<StateTransition<TState,TTrigger>>();
+            this.Store = NaturalInMemoryStore.New().IsOf<StateTransition<TState, TTrigger>>();
         }
         public StateMachineGraph(TState initialState, IStoreOf<StateTransition<TState, TTrigger>> store)
         {
@@ -70,9 +74,42 @@ namespace Decoratid.Idioms.StateMachining
         }
         #endregion
 
+        #region ISerializable
+        protected StateMachineGraph(SerializationInfo info, StreamingContext context)
+        {
+            this.InitialState = (TState)info.GetValue("InitialState", typeof(TState));
+            this.CurrentState = (TState)info.GetValue("CurrentState", typeof(TState));
+
+            List<StateTransition<TState, TTrigger>> list = (List<StateTransition<TState, TTrigger>>)info.GetValue("list", typeof(List<StateTransition<TState, TTrigger>>));
+            this.Store = NaturalInMemoryStore.New().IsOf<StateTransition<TState, TTrigger>>();
+            var newList = list.ConvertListTo<IHasId, StateTransition<TState, TTrigger>>();
+            this.Store.SaveItems(newList);
+        }
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            ISerializable_GetObjectData(info, context);
+        }
+        /// <summary>
+        /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
+        /// helper function that does the actual implementation of ISerializable, and is called by the
+        /// explicit interface implementation of GetObjectData.  This is the method to be overridden in 
+        /// derived classes.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("InitialState", this.InitialState);
+            info.AddValue("CurrentState", this.CurrentState);
+
+            var list = this.Store.GetAll();
+            info.AddValue("list", list);
+        }
+        #endregion
+
         #region Properties
         public TState InitialState { get; private set; }
-        private IStoreOf<StateTransition<TState,TTrigger>> Store { get;  set; }
+        private IStoreOf<StateTransition<TState, TTrigger>> Store { get; set; }
         public TState CurrentState { get; private set; }
         #endregion
 
@@ -110,7 +147,7 @@ namespace Decoratid.Idioms.StateMachining
         public bool CanTrigger(TTrigger trigger)
         {
             //does this transition from the current state exist?
-            SearchFilterOf<StateTransition<TState,TTrigger>> filter = new SearchFilterOf<StateTransition<TState,TTrigger>>((x)=>
+            SearchFilterOf<StateTransition<TState, TTrigger>> filter = new SearchFilterOf<StateTransition<TState, TTrigger>>((x) =>
             {
                 return x.FromState.Equals(this.CurrentState) && x.TransitionTrigger.Equals(trigger);
             });
@@ -159,6 +196,14 @@ namespace Decoratid.Idioms.StateMachining
             StateMachineGraph<TState, TTrigger> returnValue = new StateMachineGraph<TState, TTrigger>(graph.InitialState, graph.Store);
             returnValue.SetCurrentState(graph.CurrentState);
             return returnValue;
+        }
+        public static StateMachineGraph<TState, TTrigger> New(TState initialState)
+        {
+            return new StateMachineGraph<TState, TTrigger>(initialState);
+        }
+        public static StateMachineGraph<TState, TTrigger> New(TState initialState, IStoreOf<StateTransition<TState, TTrigger>> store)
+        {
+            return new StateMachineGraph<TState, TTrigger>(initialState, store);
         }
         #endregion
     }

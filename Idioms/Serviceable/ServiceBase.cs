@@ -1,5 +1,7 @@
-﻿using Decoratid.Idioms.StateMachineable;
+﻿using Decoratid.Core;
+using Decoratid.Idioms.StateMachining;
 using System;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Serviceable
 {
@@ -10,7 +12,7 @@ namespace Decoratid.Idioms.Serviceable
     /// Initialize().  
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ServiceBase : DisposableBase, IService
+    public abstract class ServiceBase : DisposableBase, IService, ISerializable
     {
 
         #region Declarations
@@ -26,6 +28,29 @@ namespace Decoratid.Idioms.Serviceable
             _stateMachine.AllowTransition(ServiceStateEnum.Initialized, ServiceStateEnum.Started, ServiceTriggersEnum.Start);
             _stateMachine.AllowTransition(ServiceStateEnum.Started, ServiceStateEnum.Stopped, ServiceTriggersEnum.Stop);
             _stateMachine.AllowTransition(ServiceStateEnum.Stopped, ServiceStateEnum.Started, ServiceTriggersEnum.Start);
+        }
+        #endregion
+
+        #region ISerializable
+        protected ServiceBase(SerializationInfo info, StreamingContext context)
+        {
+            this._stateMachine = (StateMachineGraph<ServiceStateEnum, ServiceTriggersEnum>)info.GetValue("_stateMachine", typeof(StateMachineGraph<ServiceStateEnum, ServiceTriggersEnum>));
+        }
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            ISerializable_GetObjectData(info, context);
+        }
+        /// <summary>
+        /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
+        /// helper function that does the actual implementation of ISerializable, and is called by the
+        /// explicit interface implementation of GetObjectData.  This is the method to be overridden in 
+        /// derived classes.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("_stateMachine", this._stateMachine);
         }
         #endregion
 

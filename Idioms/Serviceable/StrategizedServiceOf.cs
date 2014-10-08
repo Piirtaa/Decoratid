@@ -92,5 +92,14 @@ namespace Decoratid.Idioms.Serviceable
             }
         }
         #endregion
+
+        #region Fluent Static
+        public static StrategizedServiceOf<T> New(T context, ILogicOf<T> initStrategy,
+            ILogicOf<T> startStrategy,
+            ILogicOf<T> stopStrategy)
+        {
+            return new StrategizedServiceOf<T>(context, initStrategy, startStrategy, stopStrategy);
+        }
+        #endregion
     }
 }

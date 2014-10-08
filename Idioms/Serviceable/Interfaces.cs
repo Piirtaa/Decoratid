@@ -28,6 +28,13 @@ namespace Decoratid.Idioms.Serviceable
     /// <summary>
     /// interface defining service behaviour
     /// </summary>
+    /// <remarks>
+    /// Services should implement this state machine graph:
+    /// Unit -> Init via Initialize
+    /// Init -> Started via Start
+    /// Started -> Stopped via Stop
+    /// Stopped -> Started via Start
+    /// </remarks>
     public interface IService
     {
         /// <summary>
