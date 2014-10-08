@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
@@ -53,8 +55,6 @@ namespace Decoratid.Storidioms.AuditTrail
         }
         #endregion
 
-        #region Static Fluent
 
-        #endregion
     }
 }

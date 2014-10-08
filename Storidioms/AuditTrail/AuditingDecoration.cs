@@ -1,53 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 using Decoratid.Storidioms.StoreOf;
+using System;
+using System.Collections.Generic;
 using Decoratid.Extensions;
-using Decoratid.Thingness;
-using System.Runtime.Serialization;
-using System.Reflection;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
-    /// <summary>
-    /// the basic data required for a particular audit point (eg. when, who/what, how).  
-    /// </summary>
-    public interface IStoredItemAuditPoint : IHasId
-    {
-        DateTime Date { get; }
-        StoredItemAccessMode Mode { get; }
-        StoredObjectId ObjRef { get; }
-    }
-
-    /// <summary>
-    /// marker interface indicating the store keeps an audit trail of all item changes
-    /// </summary>
-    public interface IAuditingStore<TAuditPoint> : IDecoratedStore
-        where TAuditPoint : IStoredItemAuditPoint
-    {
-        /// <summary>
-        /// the store containing the audit data
-        /// </summary>
-        IStoreOf<TAuditPoint> AuditStore { get; }
-
-        /// <summary>
-        /// the strategy used to convert the item into an audit point
-        /// </summary>
-        Func<IHasId, StoredItemAccessMode, TAuditPoint> AuditItemBuildStrategy { get; }
-    }
-
     /// <summary>
     /// decorates a store such that audit points are written for every item action.  Decoration should be 
     /// applied after all data modifying decorations have been applied.
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
-    public class AuditingDecoration<TAuditPoint> : DecoratedStoreBase, IAuditingStore<TAuditPoint>, IHasHydrationMap
+    public class AuditingDecoration<TAuditPoint> : DecoratedStoreBase, IAuditingStore<TAuditPoint>//, IHasHydrationMap
     where TAuditPoint : IStoredItemAuditPoint
     {
         #region Declarations
@@ -80,26 +47,26 @@ namespace Decoratid.Storidioms.AuditTrail
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<AuditingDecoration<TAuditPoint>>();
-            hydrationMap.RegisterDefault("AuditStore", x => x.AuditStore, (x, y) => { x.AuditStore = y as IStoreOf<TAuditPoint>; });
-            hydrationMap.RegisterDefault("AuditItemBuildStrategy", x => x.AuditItemBuildStrategy, (x, y) => { x.AuditItemBuildStrategy = y as Func<IHasId, StoredItemAccessMode, TAuditPoint>; });
-            return hydrationMap;
-        }
-        #endregion
+        //#region IHasHydrationMap
+        //public virtual IHydrationMap GetHydrationMap()
+        //{
+        //    var hydrationMap = new HydrationMapValueManager<AuditingDecoration<TAuditPoint>>();
+        //    hydrationMap.RegisterDefault("AuditStore", x => x.AuditStore, (x, y) => { x.AuditStore = y as IStoreOf<TAuditPoint>; });
+        //    hydrationMap.RegisterDefault("AuditItemBuildStrategy", x => x.AuditItemBuildStrategy, (x, y) => { x.AuditItemBuildStrategy = y as Func<IHasId, StoredItemAccessMode, TAuditPoint>; });
+        //    return hydrationMap;
+        //}
+        //#endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetHydrationMap().DehydrateValue(this, uow);
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.GetHydrationMap().HydrateValue(this, text, uow);
+        //}
+        //#endregion
 
         #region Helpers
         private void BuildAndSaveAuditPoint(StoredItemAccessMode mode, IHasId item)
@@ -156,5 +123,38 @@ namespace Decoratid.Storidioms.AuditTrail
             });
         }
         #endregion
+    }
+
+    public static class AuditingDecorationExtensions
+    {
+        /// <summary>
+        /// adds an auditing decoration.  Apply after all data modifying decorations.
+        /// </summary>
+        /// <typeparam name="TAuditPoint"></typeparam>
+        /// <param name="decorated"></param>
+        /// <param name="auditStore"></param>
+        /// <param name="auditItemBuildStrategy"></param>
+        /// <returns></returns>
+        public static AuditingDecoration<TAuditPoint> Audit<TAuditPoint>(this IStore decorated,
+            IStoreOf<TAuditPoint> auditStore,
+            Func<IHasId, StoredItemAccessMode, TAuditPoint> auditItemBuildStrategy)
+                where TAuditPoint : IStoredItemAuditPoint
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new AuditingDecoration<TAuditPoint>(auditStore, auditItemBuildStrategy, decorated);
+        }
+        /// <summary>
+        /// adds an auditing decoration of StoredItemAuditPoint.  Apply after all data modifying decorations.
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="auditStore"></param>
+        /// <returns></returns>
+        public static AuditingDecoration<StoredItemAuditPoint> BasicAudit(this IStore decorated,
+     IStoreOf<StoredItemAuditPoint> auditStore)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new AuditingDecoration<StoredItemAuditPoint>(auditStore,
+                StoredItemAuditPoint.GetBuilderFunction(), decorated);
+        }
     }
 }

@@ -288,6 +288,12 @@
     <Compile Include="Idioms\Sealing\SealingValueOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Serviceable\StrategizedService.cs" />
+    <Compile Include="Idioms\Serviceable\Interfaces.cs" />
+    <Compile Include="Idioms\Serviceable\ServiceBase.cs" />
+    <Compile Include="Idioms\Serviceable\StrategizedServiceOf.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\StateMachining\StateMachineGraph.cs" />
     <Compile Include="Idioms\Stringing\DelimitedStringableListDecoration.cs" />
     <Compile Include="Idioms\Stringing\Interfaces.cs">
@@ -340,6 +346,10 @@
     <Compile Include="Idioms\WithValuing\WithValueConditionOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Storidioms\AuditTrail\AuditingDecoration.cs" />
+    <Compile Include="Storidioms\AuditTrail\Interfaces.cs" />
+    <Compile Include="Storidioms\AuditTrail\DecoratidId.cs" />
+    <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />

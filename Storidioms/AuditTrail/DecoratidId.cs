@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
+using Decoratid.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
 
-namespace Decoratid.Core.Storing
+namespace Decoratid.Storidioms.AuditTrail
 {
+    //TODO:  not sure about this anymore.  seems hackish, better suited to an id decoration
 
     /// <summary>
     /// The default Id scheme
