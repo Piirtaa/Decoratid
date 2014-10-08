@@ -352,6 +352,7 @@
     <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
+    <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
     <Compile Include="Storidioms\Masking\MaskingDecoration.cs">

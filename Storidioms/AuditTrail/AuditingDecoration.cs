@@ -6,6 +6,7 @@ using Decoratid.Storidioms.StoreOf;
 using System;
 using System.Collections.Generic;
 using Decoratid.Extensions;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
@@ -14,6 +15,7 @@ namespace Decoratid.Storidioms.AuditTrail
     /// applied after all data modifying decorations have been applied.
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
+    [Serializable]
     public class AuditingDecoration<TAuditPoint> : DecoratedStoreBase, IAuditingStore<TAuditPoint>//, IHasHydrationMap
     where TAuditPoint : IStoredItemAuditPoint
     {
@@ -31,6 +33,22 @@ namespace Decoratid.Storidioms.AuditTrail
             Condition.Requires(auditItemBuildStrategy).IsNotNull();
             this.AuditStore = auditStore;
             this.AuditItemFactory = auditItemBuildStrategy;
+        }
+        #endregion
+
+        #region ISerializable
+        protected AuditingDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            this.AuditItemFactory = (Func<IHasId, StoredItemAccessMode, TAuditPoint>)info.GetValue("AuditItemFactory", typeof(Func<IHasId, StoredItemAccessMode, TAuditPoint>));
+            this.AuditStore = (IStoreOf<TAuditPoint>)info.GetValue("AuditStore", typeof(IStoreOf<TAuditPoint>));
+
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AuditItemFactory", AuditItemFactory);
+            info.AddValue("AuditStore", AuditStore);
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 

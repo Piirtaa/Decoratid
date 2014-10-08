@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Storidioms.Factoried
 {
@@ -30,7 +24,7 @@ namespace Decoratid.Storidioms.Factoried
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class FactoryDecoration : DecoratedStoreBase, IFactoryStore, IHasHydrationMap
+    public class FactoryDecoration : DecoratedStoreBase, IFactoryStore//, IHasHydrationMap
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -42,6 +36,19 @@ namespace Decoratid.Storidioms.Factoried
         {
             Condition.Requires(factory).IsNotNull();
             this.Factory = factory;
+        }
+        #endregion
+
+        #region ISerializable
+        protected FactoryDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            this.Factory = (LogicOfTo<IStoredObjectId, IHasId>)info.GetValue("Factory", typeof(LogicOfTo<IStoredObjectId, IHasId>));
+        }
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Factory", Factory);
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
@@ -58,25 +65,25 @@ namespace Decoratid.Storidioms.Factoried
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<FactoryDecoration>();
-            hydrationMap.RegisterDefault("Factory", x => x.Factory, (x, y) => { x.Factory = y as LogicOfTo<IStoredObjectId, IHasId>; });
-            return hydrationMap;
-        }
-        #endregion
+        //#region IHasHydrationMap
+        //public virtual IHydrationMap GetHydrationMap()
+        //{
+        //    var hydrationMap = new HydrationMapValueManager<FactoryDecoration>();
+        //    hydrationMap.RegisterDefault("Factory", x => x.Factory, (x, y) => { x.Factory = y as LogicOfTo<IStoredObjectId, IHasId>; });
+        //    return hydrationMap;
+        //}
+        //#endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetHydrationMap().DehydrateValue(this, uow);
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.GetHydrationMap().HydrateValue(this, text, uow);
+        //}
+        //#endregion
 
         #region Overrides
         /// <summary>
@@ -107,5 +114,30 @@ namespace Decoratid.Storidioms.Factoried
             return retval;
         }
         #endregion
+    }
+
+    public static class FactoryDecorationExtensions
+    {
+        /// <summary>
+        /// gets the factory layer
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static FactoryDecoration GetFactory(this IStore decorated)
+        {
+            return decorated.FindDecoratorOf<FactoryDecoration>(true);
+        }
+
+        /// <summary>
+        /// provides a factory on the get if an item doesn't exist
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        public static FactoryDecoration HasFactory(this IStore decorated, LogicOfTo<IStoredObjectId, IHasId> factory)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new FactoryDecoration(factory, decorated);
+        }
     }
 }
