@@ -413,7 +413,7 @@ namespace Decoratid.Storidioms.Evicting
             if (store == null)
                 return;
 
-            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(touches);
+            var expiry = EvictionPolicy.BuildTouchLimitExpirable(touches);
 
             store.Commit(new CommitBag().MarkItemSaved(obj), expiry);
         }
@@ -422,7 +422,7 @@ namespace Decoratid.Storidioms.Evicting
             if (store == null)
                 return;
 
-            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(1);
+            var expiry = EvictionPolicy.BuildTouchLimitExpirable(1);
 
             store.Commit(new CommitBag().MarkItemSaved(obj), expiry);
         }

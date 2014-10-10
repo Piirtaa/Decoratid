@@ -167,18 +167,16 @@ namespace Decoratid.Storidioms.Caching
         /// <param name="decorated"></param>
         /// <param name="secondsToCache"></param>
         /// <returns></returns>
-        public static CacheDecoration LocalCaching(this IStore decorated, int secondsToCache)
+        public static CacheDecoration LocalFloatingCaching(this IStore decorated, int secondsToCache, int secondsToFloat)
         {
             Condition.Requires(decorated).IsNotNull();
 
-var expiryFactory = EvictionPolicy.BuildFloatingExpirableFactory(
-            
-    var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
-                LogicOfTo<IHasId, IExpirable>.New((it) =>
-                {
-                    
-                    return new FloatingExpiryCondition(new Thingness.FloatingExpiryInfo(DateTime.UtcNow, secondsToCache));
-                }), 5000);
+            var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
+                        LogicOfTo<IHasId, IExpirable>.New((it) =>
+                        {
+                            var expiry = EvictionPolicy.BuildFloatingExpirable(DateTime.UtcNow.AddSeconds(secondsToCache), secondsToFloat);
+                            return expiry;
+                        }), 5000);
             return new CacheDecoration(evictingStore, decorated);
         }
     }
