@@ -97,6 +97,12 @@ namespace Decoratid.Idioms.Polyfacing
         #endregion
 
         #region Typed Methods
+        /// <summary>
+        /// sets behaviour
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="behaviour"></param>
+        /// <returns></returns>
         public Polyface Is(Type type, object behaviour)
         {
             Condition.Requires(type).IsNotNull();
@@ -112,10 +118,21 @@ namespace Decoratid.Idioms.Polyfacing
             }
             return this;
         }
+        /// <summary>
+        /// sets behavior
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="behaviour"></param>
+        /// <returns></returns>
         public Polyface Is<T>(T behaviour)
         {
             return Is(typeof(T), behaviour);
         }
+        /// <summary>
+        /// gets behaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T As<T>()
         {
             Type type = typeof(T);

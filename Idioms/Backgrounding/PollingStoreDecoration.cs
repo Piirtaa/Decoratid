@@ -163,7 +163,7 @@ namespace Decoratid.Idioms.Backgrounding
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static PollingStoreDecoration GetPollingDecoration(this IStore decorated)
+        public static PollingStoreDecoration GetPoll(this IStore decorated)
         {
             return decorated.FindDecoratorOf<PollingStoreDecoration>(true);
         }
@@ -174,7 +174,7 @@ namespace Decoratid.Idioms.Backgrounding
         /// <param name="backgroundAction"></param>
         /// <param name="backgroundIntervalMSecs"></param>
         /// <returns></returns>
-        public static PollingStoreDecoration DecorateWithPolling(this IStore decorated)
+        public static PollingStoreDecoration Polls(this IStore decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new PollingStoreDecoration(decorated);

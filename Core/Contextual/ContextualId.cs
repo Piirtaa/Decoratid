@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,14 @@ namespace Decoratid.Core.Contextual
                 throw new ArgumentNullException();
 
             return ContextualId<TId, TContext>.New(thing, context);
+        }
+        public static StoredObjectId BuildContextualIdSOID<TId, TContext>(this TId thing)
+        {
+            if (thing == null)
+                throw new ArgumentNullException();
+
+            var rv = StoredObjectId.New(typeof(ContextualId<TId, TContext>), thing);
+            return rv;
         }
     }
 }

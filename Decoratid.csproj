@@ -69,6 +69,7 @@
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Idioms\Polyfacing\PolyfacingIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\DecoratedHasIdBase.cs" />
     <Compile Include="Core\Identifying\Interfaces.cs" />
     <Compile Include="Core\Contextual\Interfaces.cs" />
@@ -105,6 +106,8 @@
     <Compile Include="Idioms\Eventing\EventingConditionDecoration.cs" />
     <Compile Include="Idioms\Eventing\EventingLogicDecoration.cs" />
     <Compile Include="Idioms\Eventing\EventingValueOfDecoration.cs" />
+    <Compile Include="Idioms\Expiring\ConditionalExpirableDecoration.cs" />
+    <Compile Include="Idioms\Expiring\NaturalConditionalExpirable.cs" />
     <Compile Include="Idioms\Expiring\FloatingWindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\WindowExpirableDecoration.cs" />
     <Compile Include="Idioms\Expiring\DateExpirableDecoration.cs" />
@@ -320,6 +323,14 @@
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Touching\TouchableDecorationBase.cs" />
+    <Compile Include="Idioms\Touching\HasTouchable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Touching\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\Touching\StrategizedTouchable.cs" />
     <Compile Include="Idioms\TypeLocating\AssemblyTrackingDecoration.cs" />
     <Compile Include="Idioms\TypeLocating\TheTypeLocator.cs">
       <SubType>Code</SubType>
@@ -352,6 +363,8 @@
     <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
+    <Compile Include="Storidioms\Evicting\EvictingDecoration.cs" />
+    <Compile Include="Storidioms\Evicting\EvictionPolicy.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />

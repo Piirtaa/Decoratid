@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Idioms.Polyfacing;
+using Decoratid.Idioms.Touching;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -13,14 +13,6 @@ namespace Decoratid.Idioms.Expiring
     {
         bool IsExpired();
     }
-
-    /// <summary>
-    /// decorate items that can be touched with this interface
-    /// </summary>
-    public interface ITouchable 
-    {
-        void Touch();
-    }
     /// <summary>
     /// composites Expirable
     /// </summary>
@@ -28,7 +20,5 @@ namespace Decoratid.Idioms.Expiring
     {
         IExpirable Expirable { get; }
     }
-
-
 
 }

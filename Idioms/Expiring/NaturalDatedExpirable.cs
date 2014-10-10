@@ -50,6 +50,13 @@ namespace Decoratid.Idioms.Expiring
         }
         #endregion
 
+
+        #region Fluent Static
+        public static NaturalDatedExpirable New(DateTime expiry)
+        {
+            return new NaturalDatedExpirable(expiry);
+        }
+        #endregion
     }
 
     public static class NaturalDatedExpirableExtensions
