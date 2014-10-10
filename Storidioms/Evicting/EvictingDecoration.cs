@@ -357,7 +357,14 @@ namespace Decoratid.Storidioms.Evicting
 
         #endregion
 
-
+        #region Fluent Static
+        public static EvictingDecoration New(IStore decorated,
+            IStore expirableStore,
+            LogicOfTo<IHasId, IExpirable> expirableFactory)
+        {
+            return new EvictingDecoration(decorated, expirableStore, expirableFactory);
+        }
+        #endregion
     }
 
     public static class EvictingDecorationExtensions
@@ -406,7 +413,7 @@ namespace Decoratid.Storidioms.Evicting
             if (store == null)
                 return;
 
-            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(touches).Invoke(obj);
+            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(touches);
 
             store.Commit(new CommitBag().MarkItemSaved(obj), expiry);
         }
@@ -415,7 +422,7 @@ namespace Decoratid.Storidioms.Evicting
             if (store == null)
                 return;
 
-            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(1).Invoke(obj);
+            var expiry = EvictionPolicy.BuildTouchLimitExpiryCondition(1);
 
             store.Commit(new CommitBag().MarkItemSaved(obj), expiry);
         }

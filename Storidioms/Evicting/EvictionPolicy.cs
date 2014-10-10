@@ -15,60 +15,48 @@ namespace Decoratid.Storidioms.Evicting
     /// </summary>
     public static class EvictionPolicy
     {
-        public static Func<IHasId, IExpirable> BuildImmutableExpiryCondition(DateTime expiry)
+        public static IExpirable BuildImmutableExpirable(DateTime expiry)
         {
-            return (ihasid) =>
-            {
-                var expire = NaturalFalseExpirable.New().ExpiresOn(expiry);
-                return expire;
-            };
-        }
-        public static Func<IHasId, IExpirable> BuildFloatingExpiryCondition(DateTime expiry, int touchIncrementSecs)
-        {
-            return (ihasid) =>
-            {
-                var expire = NaturalFalseExpirable.New().ExpiresOn(expiry).Float(touchIncrementSecs);
-                return expire;
-            };
-        }
-        public static Func<IHasId, IExpirable> BuildNeverExpiringCondition()
-        {
-            return (ihasid) =>
-            {
-                var expire = NaturalFalseExpirable.New();
-                return expire;
-            };
-        }
-        public static Func<IHasId, IExpirable> BuildWithinWindowExpiryCondition(DateTime startDate, DateTime endDate)
-        {
-            return (ihasid) =>
-            {
-                var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate);
-                return expire;
-            };
-        }
-        public static Func<IHasId, IExpirable> BuildWithinFloatingWindowExpiryCondition(DateTime startDate, DateTime endDate, int touchIncrementSecs)
-        {
-            return (ihasid) =>
-            {
-                var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate).Float(touchIncrementSecs);
-                return expire;
-            };
-        }
-        public static Func<IHasId, IExpirable> BuildTouchLimitExpiryCondition(int limit)
-        {
-            return (ihasid) =>
-            {
-                //fluently build something that Counts, and has a condition on that count, and is touchable 
-                var pf = Polyface.New();
-                pf.IsCounter();
-                pf.IsConditionalExpirable(StrategizedConditionOf<Polyface>.New((pf1) => { return pf1.AsCounter().Current > limit; }));
-                pf.IsStrategizedTouchable(LogicOf<Polyface>.New((pf1) => { pf1.AsCounter().Increment(); }));
+            var expire = NaturalFalseExpirable.New().ExpiresOn(expiry);
+            return expire;
 
-                //var expire = NaturalFalseExpirable.New().ExpiresWhen( .InWindow(startDate, endDate);
-                // return expire;
-                return pf.AsConditionalExpirable();
-            };
+        }
+        public static IExpirable BuildFloatingExpirable(DateTime expiry, int touchIncrementSecs)
+        {
+            var expire = NaturalFalseExpirable.New().ExpiresOn(expiry).Float(touchIncrementSecs);
+            return expire;
+
+        }
+        public static IExpirable BuildNeverExpirable()
+        {
+            var expire = NaturalFalseExpirable.New();
+            return expire;
+
+        }
+        public static IExpirable BuildWithinWindowExpirable(DateTime startDate, DateTime endDate)
+        {
+            var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate);
+            return expire;
+
+        }
+        public static IExpirable BuildWithinFloatingWindowExpirable(DateTime startDate, DateTime endDate, int touchIncrementSecs)
+        {
+
+            var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate).Float(touchIncrementSecs);
+            return expire;
+
+        }
+        public static IExpirable BuildTouchLimitExpirable(int limit)
+        {
+            //fluently build something that Counts, and has a condition on that count, and is touchable 
+            var pf = Polyface.New();
+            pf.IsCounter();
+            pf.IsConditionalExpirable(StrategizedConditionOf<Polyface>.New((pf1) => { return pf1.AsCounter().Current > limit; }));
+            pf.IsStrategizedTouchable(LogicOf<Polyface>.New((pf1) => { pf1.AsCounter().Increment(); }));
+
+            //var expire = NaturalFalseExpirable.New().ExpiresWhen( .InWindow(startDate, endDate);
+            // return expire;
+            return pf.AsConditionalExpirable();
         }
     }
 }

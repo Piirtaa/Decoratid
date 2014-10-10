@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
 using Decoratid.Extensions;
+using Decoratid.Idioms.Expiring;
 using Decoratid.Storidioms.Evicting;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using System;
+using System.Linq;
 
 namespace Decoratid.Storidioms.Caching
 {
@@ -30,7 +27,7 @@ namespace Decoratid.Storidioms.Caching
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class CacheDecoration : DecoratedStoreBase, ICachingStore, IHasHydrationMap
+    public class CacheDecoration : DecoratedStoreBase, ICachingStore//, IHasHydrationMap
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -63,25 +60,25 @@ namespace Decoratid.Storidioms.Caching
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<CacheDecoration>();
-            hydrationMap.RegisterDefault("CachingStore", x => x.CachingStore, (x, y) => { x.CachingStore = y as IEvictingStore; });
-            return hydrationMap;
-        }
-        #endregion
+        //#region IHasHydrationMap
+        //public virtual IHydrationMap GetHydrationMap()
+        //{
+        //    var hydrationMap = new HydrationMapValueManager<CacheDecoration>();
+        //    hydrationMap.RegisterDefault("CachingStore", x => x.CachingStore, (x, y) => { x.CachingStore = y as IEvictingStore; });
+        //    return hydrationMap;
+        //}
+        //#endregion
 
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
+        //#region IDecorationHydrateable
+        //public override string DehydrateDecoration(IGraph uow = null)
+        //{
+        //    return this.GetHydrationMap().DehydrateValue(this, uow);
+        //}
+        //public override void HydrateDecoration(string text, IGraph uow = null)
+        //{
+        //    this.GetHydrationMap().HydrateValue(this, text, uow);
+        //}
+        //#endregion
 
         #region Overrides
         public override IHasId Get(IStoredObjectId soId)
@@ -122,4 +119,68 @@ namespace Decoratid.Storidioms.Caching
         }
         #endregion
     }
+
+    public static class CacheDecorationExtensions
+    {
+        /// <summary>
+        /// gets the caching layer
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static ICachingStore GetCache(this IStore decorated)
+        {
+            return decorated.FindDecoratorOf<ICachingStore>(false);
+        }
+
+        /// <summary>
+        /// adds caching to the store, with the cache supplied.  Note: this is how we might inject
+        /// a distributed cache.
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="cachingStore"></param>
+        /// <returns></returns>
+        public static CacheDecoration Caching(this IStore decorated, IEvictingStore cachingStore)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new CacheDecoration(cachingStore, decorated);
+        }
+        /// <summary>
+        /// adds an inmemory cache with the specified policy and ticker resolution
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="defaultItemEvictionConditionFactory"></param>
+        /// <param name="backgroundIntervalMSecs"></param>
+        /// <returns></returns>
+        public static CacheDecoration LocalCaching(this IStore decorated,
+            LogicOfTo<IHasId, IExpirable> defaultItemEvictionConditionFactory,
+            double backgroundIntervalMSecs = 30000)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+            //build the evicting store - notice the very fucking fluent way it works.  ya.  
+            var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(), defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
+            return new CacheDecoration(evictingStore, decorated);
+        }
+        /// <summary>
+        /// adds an inmemory cache with a floating expiry policy
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <param name="secondsToCache"></param>
+        /// <returns></returns>
+        public static CacheDecoration LocalCaching(this IStore decorated, int secondsToCache)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+var expiryFactory = EvictionPolicy.BuildFloatingExpirableFactory(
+            
+    var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
+                LogicOfTo<IHasId, IExpirable>.New((it) =>
+                {
+                    
+                    return new FloatingExpiryCondition(new Thingness.FloatingExpiryInfo(DateTime.UtcNow, secondsToCache));
+                }), 5000);
+            return new CacheDecoration(evictingStore, decorated);
+        }
+    }
+
 }
