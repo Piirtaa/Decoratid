@@ -69,6 +69,9 @@
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Idioms\ObjectGraphing\Values\DecorationHydratableValueManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Polyfacing\PolyfacingIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\DecoratedHasIdBase.cs" />
     <Compile Include="Core\Identifying\Interfaces.cs" />

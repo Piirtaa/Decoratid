@@ -29,6 +29,20 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        private IEnumerable GetDecorationList(object obj)
+        {
+            //get the generic type we're decorating
+            var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
+
+            //get all the decorations via a reflection call 
+            var genTypeDef = typeof(DecorationOfBase<>);
+            var decType = genTypeDef.MakeGenericType(genType);
+            PropertyInfo pi = decType.GetProperty("OutermostToCore", BindingFlags.Instance | BindingFlags.Public);
+            Condition.Requires(pi).IsNotNull();
+            var decList = pi.GetValue(obj);
+            IEnumerable list = decList as IEnumerable;
+            return list;
+        }
         public bool CanHandle(object obj, IGraph uow)
         {
             if (obj == null)
@@ -51,20 +65,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
 
             return true;
         }
-        private IEnumerable GetDecorationList(object obj)
-        {
-            //get the generic type we're decorating
-            var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
 
-            //get all the decorations via a reflection call 
-            var genTypeDef = typeof(DecorationOfBase<>);
-            var decType = genTypeDef.MakeGenericType(genType);
-            PropertyInfo pi = decType.GetProperty("OutermostToCore", BindingFlags.Instance | BindingFlags.Public);
-            Condition.Requires(pi).IsNotNull();
-            var decList = pi.GetValue(obj);
-            IEnumerable list = decList as IEnumerable;
-            return list;
-        }
         public string DehydrateValue(object obj, IGraph uow)
         {
             var list = this.GetDecorationList(obj);
