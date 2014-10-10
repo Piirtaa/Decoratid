@@ -192,7 +192,7 @@ namespace Decoratid.Core.Decorating
         /// </summary>
         /// <returns></returns>
         [ScriptIgnore]
-        public List<T> AllLayers
+        public List<T> OutermostToCore
         {
             get
             {
@@ -264,7 +264,7 @@ namespace Decoratid.Core.Decorating
                 throw new InvalidOperationException("decoration not found");
 
             //get the decorations from the inside out
-            List<T> decorations = this.AllLayers;
+            List<T> decorations = this.OutermostToCore;
             decorations.Reverse();
 
             //iterate to the decoration to remove

@@ -27,21 +27,12 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
-            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow);
-            
-            //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
-            if (mgr != null && mgr is UndeclaredValueManager)
-                return false;
-
+            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, UndeclaredValueManager.ID);
             return mgr != null;
         }
         public string DehydrateValue(object obj, IGraph uow)
         {
-            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow);
-
-            //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
-            if (mgr != null && mgr is UndeclaredValueManager)
-                return null;
+            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, UndeclaredValueManager.ID);
 
             if (mgr == null)
                 return null;
@@ -58,6 +49,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             Condition.Requires(list).HasLength(2);
 
             var mgr = uow.ChainOfResponsibility.GetValueManagerById(list.ElementAt(0));
+
+            if (mgr == null)
+                return null;
+
             //if the chain of responsibility produces This as manager, we're in an infinite loop situation and should back out
             if (mgr != null && mgr is UndeclaredValueManager)
                 return null;

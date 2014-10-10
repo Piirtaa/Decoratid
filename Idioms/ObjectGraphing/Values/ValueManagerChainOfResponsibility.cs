@@ -45,13 +45,14 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public INodeValueManager FindHandlingValueManager(object obj, IGraph graph)
+        public INodeValueManager FindHandlingValueManager(object obj, IGraph graph, params string[] ignoreList)
         {
             INodeValueManager rv = null;
 
             foreach (var each in this.ValueManagers)
             {
-                if (each.Id.Equals(UndeclaredValueManager.ID))
+                //don't look for handling managers from the ignore list
+                if (ignoreList != null && ignoreList.Contains(each.Id))
                     continue;
 
                 if (each.CanHandle(obj, graph))

@@ -13,6 +13,20 @@ using System.Reflection;
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
+    /// responsibility of a decoration to provide (de)hydration for its own layer, for use by DecorationValueManager
+    /// </summary>
+    /// <remarks>
+    /// DecorationValueManager uses the decoration's Apply facility to build up, layer by layer, a
+    /// decoration.  Each decoration need only be responsible for (de)hydrating its individual layer, and doesn't need to 
+    /// consider the decoration chain itself.
+    /// </remarks>
+    public interface IDecorationHydrateable
+    {
+        string DehydrateDecoration(IGraph uow);
+        void HydrateDecoration(string text, IGraph uow);
+    }
+
+    /// <summary>
     /// handles Decorations (instances of DecorationOfBase)
     /// </summary>
     public sealed class DecorationValueManager : INodeValueManager
@@ -34,24 +48,12 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             if (obj == null)
                 return false;
 
-            //if it's not a decoration we can't handle it
             var genTypeDef = typeof(DecorationOfBase<>);
-            if (!genTypeDef.IsInstanceOfGenericType(obj))
-                return false;
 
-            //if any of the layers of the decoration don't have value managers, we can't handle it
-            var list = this.GetDecorationList(obj);
-
-            //define some managers to assist with serializing
-            UndeclaredValueManager undeclaredMgr = new UndeclaredValueManager();
-
-            foreach (var each in list)
-                if (!undeclaredMgr.CanHandle(each, uow))
-                    return false;
-
-            return true;
+            var rv = genTypeDef.IsInstanceOfGenericType(obj);
+            return rv;
         }
-        private IEnumerable GetDecorationList(object obj)
+        public string DehydrateValue(object obj, IGraph uow)
         {
             //get the generic type we're decorating
             var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
@@ -63,14 +65,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             Condition.Requires(pi).IsNotNull();
             var decList = pi.GetValue(obj);
             IEnumerable list = decList as IEnumerable;
-            return list;
-        }
-        public string DehydrateValue(object obj, IGraph uow)
-        {
-            var list = this.GetDecorationList(obj);
 
             //define some managers to assist with serializing
-            UndeclaredValueManager undeclaredMgr = new UndeclaredValueManager();
+            CompoundValueManager compoundMgr = new CompoundValueManager();
 
             //init the list of strings to hold each layer's dehydrated value
             var decTextList = new List<string>();
@@ -78,12 +75,22 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             //for each decoration, dehydrate it
             foreach (var each in list)
             {
-                //test if the layer can be handled
-                if (!undeclaredMgr.CanHandle(each, uow))
-                    throw new InvalidOperationException("cannot locate value manager for decoration layer " + each.GetType());
-
                 var fullType = each.GetType().AssemblyQualifiedName;
-                string dehydLayer = undeclaredMgr.DehydrateValue(each, uow);
+
+                string dehydLayer = string.Empty;
+
+                //use the decoration's behaviour if it's specified
+                if (each is IDecorationHydrateable)
+                {
+                    IDecorationHydrateable hyd = each as IDecorationHydrateable;
+                    dehydLayer = hyd.DehydrateDecoration(uow);
+                }
+                else
+                {
+                    //
+                    //ask the graph to figure out how to dehydrate
+                    dehydLayer = undeclaredMgr.DehydrateValue(each, uow);
+                }
                 decTextList.Add(LengthEncoder.LengthEncodeList(fullType, dehydLayer));
             }
             return LengthEncoder.LengthEncodeList(decTextList.ToArray());
@@ -92,33 +99,46 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         {
             var list0 = LengthEncoder.LengthDecodeList(nodeText);
 
-
             //declare the decoration we're returning
             object rv = null;
 
             //for each decoration starting at the core
             list0.Reverse();
 
-            //define some managers to assist with serializing
-            UndeclaredValueManager undeclaredMgr = new UndeclaredValueManager();
+            object core = null;
 
             list0.WithEach(line =>
             {
-                //hydrate each layer
-                var layer = undeclaredMgr.HydrateValue(line, uow);
-
-                //if we have a returnvalue declared we use the decoration's apply facility to wrap
-                //if we don't have a returnvalue we set it to the layer
-                if (rv == null)
+                //init the core
+                if (core == null)
                 {
-                    rv = layer;
+                    //delegate back to the graph
+                    UndeclaredValueManager mgr = new UndeclaredValueManager();
+                    core = mgr.HydrateValue(line, uow);
+                    rv = core;
                 }
                 else
                 {
+                    var list1 = LengthEncoder.LengthDecodeList(line);
+                    string typeName = list1[0];
+                    Type cType = TheTypeLocator.Instance.Locator.FindAssemblyQualifiedType(typeName);
+                    Condition.Requires(cType).IsNotNull();
+
+                    //create an uninitialized
+                    var obj = ReflectionUtil.CreateUninitializedObject(cType);
+
+                    //if the object is IDecorationHydrateable
+                    if (!(obj is IDecorationHydrateable))
+                        throw new InvalidOperationException("decoration expected");
+
+                    Condition.Requires(list1.Count == 2);
+                    IDecorationHydrateable hyd = obj as IDecorationHydrateable;
+                    hyd.HydrateDecoration(list1[1], uow);
+
                     //apply the decoration
-                    var mi = layer.GetType().GetMethod("ApplyThisDecorationTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var mi = obj.GetType().GetMethod("ApplyThisDecorationTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     object[] args = new object[] { rv };
-                    rv = mi.Invoke(layer, args);
+                    rv = mi.Invoke(obj, args);
                 }
             });
             return rv;
