@@ -15,7 +15,7 @@ namespace Decoratid.Core.Decorating
     /// Note that the implementors of this MUST also derive from T - which really is the whole point of a decoration.
     /// Only c# can't have a generic type inherit from the generic arg type, so it can't be declared here.
     /// </remarks>
-    public interface IDecorationOf<T> //: IDecorationHydrateable 
+    public interface IDecorationOf<T> 
     {
         /// <summary>
         /// in a chain of decorations, it's the core value being decorated
@@ -300,17 +300,6 @@ namespace Decoratid.Core.Decorating
         #region IDecoration
         public abstract IDecorationOf<T> ApplyThisDecorationTo(T thing);
         #endregion
-
-        //#region IDecorationHydrateable
-        //public virtual string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public virtual void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //#endregion
 
         #region Disposable
         protected override void DisposeManaged()

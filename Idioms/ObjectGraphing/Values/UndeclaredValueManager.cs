@@ -2,21 +2,32 @@
 using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// This manager does not itself know how to handle values, but it will take an educated guess, dammit!
-    /// It delegates to Graph's ManagerSet to determine which manager is appropriate, and wraps it.  
-    /// One would use this to serialize things they suspect might be decorated, or when the thing is 
-    /// ambiguous.
+    /// It delegates to Graph's ManagerSet to determine which manager is appropriate.  We can provide hints in the form
+    /// of manager id's to ignore.
     /// </summary>
+    /// <remarks>
+    /// Q. The graphing process determines which value manager to use for each node, so when would this class be used?
+    /// A. It would be used in a situation where the graphing process has selected a value manager (not Undeclared), 
+    /// and within that value manager's operation this class is called.  
+    /// For example, if a HydrationMap exists, and that map specifies a mapping as being unknown.  
+    /// It should NEVER be found in a chain of responsibility, and is validated against this misconfiguration.
+    /// </remarks>
     public sealed class UndeclaredValueManager : INodeValueManager
     {
         public const string ID = "Undeclared";
 
         #region Ctor
-        public UndeclaredValueManager() { }
+        public UndeclaredValueManager(params string[] managerIdsToIgnore)
+        {
+            this.ManagerIdsToIgnore = managerIdsToIgnore;
+        }
         #endregion
 
         #region IHasId
@@ -24,15 +35,45 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         object IHasId.Id { get { return this.Id; } }
         #endregion
 
+        #region Properties
+        public string[] ManagerIdsToIgnore { get; private set; }
+        #endregion
+
+        //#region Methods
+        //public INodeValueManager FindHandlingValueManager(object obj, IGraph uow)
+        //{
+        //    List<string> ignoreMgrIds = new List<string>();
+        //    if (this.ManagerIdsToIgnore != null)
+        //        ignoreMgrIds.AddRange(this.ManagerIdsToIgnore);
+        //    if(!ignoreMgrIds.Contains(UndeclaredValueManager.ID))
+        //        ignoreMgrIds.Add(UndeclaredValueManager.ID);
+            
+        //    var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, ignoreMgrIds.ToArray());
+        //    return mgr;
+        //}
+        //#endregion
+
         #region INodeValueManager
         public bool CanHandle(object obj, IGraph uow)
         {
-            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, UndeclaredValueManager.ID);
+            List<string> ignoreMgrIds = new List<string>();
+            if (this.ManagerIdsToIgnore != null)
+                ignoreMgrIds.AddRange(this.ManagerIdsToIgnore);
+            if (!ignoreMgrIds.Contains(UndeclaredValueManager.ID))
+                ignoreMgrIds.Add(UndeclaredValueManager.ID);
+
+            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, ignoreMgrIds.ToArray());
             return mgr != null;
         }
         public string DehydrateValue(object obj, IGraph uow)
         {
-            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, UndeclaredValueManager.ID);
+            List<string> ignoreMgrIds = new List<string>();
+            if (this.ManagerIdsToIgnore != null)
+                ignoreMgrIds.AddRange(this.ManagerIdsToIgnore);
+            if (!ignoreMgrIds.Contains(UndeclaredValueManager.ID))
+                ignoreMgrIds.Add(UndeclaredValueManager.ID);
+
+            var mgr = uow.ChainOfResponsibility.FindHandlingValueManager(obj, uow, ignoreMgrIds.ToArray());
 
             if (mgr == null)
                 return null;

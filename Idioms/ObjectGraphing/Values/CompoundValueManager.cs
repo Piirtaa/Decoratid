@@ -9,19 +9,30 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
     /// is always the LAST manager in the Chain of Responsibility.  Handles objects that haven't been classified yet ->
-    /// in other words, it onions and we drill into the value's constituents, and continue classifying that way.
+    /// in other words, it recurses and we drill into the value's constituents, and continue classifying that way.
+    /// Has list of "do not recurse" fields when recursing.
     /// </summary>
     public sealed class CompoundValueManager : INodeValueManager
     {
         public const string ID = "Compound";
 
         #region Ctor
-        public CompoundValueManager() { }
+        public CompoundValueManager(params string[] doNotRecurseFields) 
+        {
+            this.DoNotRecurseFields = doNotRecurseFields;
+        }
         #endregion
 
         #region IHasId
         public string Id { get { return ID; } }
         object IHasId.Id { get { return this.Id; } }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// list of fields to ignore when recursing
+        /// </summary>
+        public string[] DoNotRecurseFields { get; private set; }
         #endregion
 
         #region INodeValueManager

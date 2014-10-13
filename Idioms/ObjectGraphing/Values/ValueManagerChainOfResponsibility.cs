@@ -51,6 +51,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
 
             foreach (var each in this.ValueManagers)
             {
+                //ALWAYS ignore UndeclaredValueManager 
+                if (each is UndeclaredValueManager)
+                    continue;
+
                 //don't look for handling managers from the ignore list
                 if (ignoreList != null && ignoreList.Contains(each.Id))
                     continue;
@@ -160,7 +164,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             list.Add(new StringableValueManager());
             list.Add(new ManagedHydrateableValueManager());
             list.Add(new SerializableValueManager());
-            list.Add(new DecorationValueManager());
+           // list.Add(new DecorationValueManager());
             list.Add(new ValueTypeValueManager());
             //list.Add(new HasHydrationMapValueManager());
             list.Add(new CompoundValueManager());//MUST BE LAST!!
