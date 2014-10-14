@@ -69,6 +69,13 @@
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Idioms\Filing\FileDecoration.cs" />
+    <Compile Include="Idioms\Filing\LockingFileDecoration.cs" />
+    <Compile Include="Idioms\Filing\Interfaces.cs" />
+    <Compile Include="Idioms\Filing\FileableStringableDecoration.cs" />
+    <Compile Include="Idioms\Filing\NaturalStringableFileable.cs" />
+    <Compile Include="Idioms\Filing\SecureFile.cs" />
+    <Compile Include="Idioms\Filing\FileableDecorationBase.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationHydratableValueManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -314,13 +321,13 @@
     <Compile Include="Idioms\Stringing\LengthPrefixListDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Stringing\Stringable.cs">
+    <Compile Include="Idioms\Stringing\NaturalStringable.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Stringing\StringableDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Stringing\StringableList.cs">
+    <Compile Include="Idioms\Stringing\NaturalStringableList.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">

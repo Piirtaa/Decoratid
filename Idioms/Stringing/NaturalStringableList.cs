@@ -12,16 +12,16 @@ namespace Decoratid.Idioms.Stringing
     /// the StringableList idiom.  Is stringable and formats as a delimited list.
     /// </summary>
     [Serializable]
-    public class StringableList : List<string>, IStringableList, ISerializable
+    public class NaturalStringableList : List<string>, IStringableList, ISerializable
     {
         public static string ITEM_DELIM = Delim.US.ToString();
 
         #region Ctor
-        public StringableList() : base()
+        public NaturalStringableList() : base()
         {
             
         }
-        public StringableList(params string[] list)
+        public NaturalStringableList(params string[] list)
             : base(list)
         {
 
@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.Stringing
         #endregion
         
         #region ISerializable
-        protected StringableList(SerializationInfo info, StreamingContext context) : base()
+        protected NaturalStringableList(SerializationInfo info, StreamingContext context) : base()
         {
             var data = info.GetString("data");
             this.Parse(data);
@@ -78,31 +78,31 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region Implicit Conversions
-        public static implicit operator string(StringableList o)
+        public static implicit operator string(NaturalStringableList o)
         {
             if (o == null) { return null; }
             return o.GetValue();
         }
-        public static implicit operator StringableList(string text)
+        public static implicit operator NaturalStringableList(string text)
         {
-            var rv =  new StringableList();
+            var rv =  new NaturalStringableList();
             rv.Parse(text);
             return rv;
         }
         #endregion
 
         #region Static Fluent
-        public static StringableList New()
+        public static NaturalStringableList New()
         {
-            return new StringableList();
+            return new NaturalStringableList();
         }
-        public static StringableList New(params string[] list)
+        public static NaturalStringableList New(params string[] list)
         {
-            return new StringableList(list);
+            return new NaturalStringableList(list);
         }
-        public static StringableList ParseNew(string data)
+        public static NaturalStringableList ParseNew(string data)
         {
-            var rv = new StringableList();
+            var rv = new NaturalStringableList();
             rv.Parse(data);
             return rv;
         }
@@ -111,13 +111,13 @@ namespace Decoratid.Idioms.Stringing
 
     public static class StringableListExtensions
     {
-        public static StringableList MakeStringableList(this List<string> list)
+        public static NaturalStringableList MakeStringableList(this List<string> list)
         {
-            return StringableList.New(list.ToArray());
+            return NaturalStringableList.New(list.ToArray());
         }
-        public static StringableList MakeStringableList(this string[] list )
+        public static NaturalStringableList MakeStringableList(this string[] list )
         {
-            return StringableList.New(list);
+            return NaturalStringableList.New(list);
         }
     }
 }

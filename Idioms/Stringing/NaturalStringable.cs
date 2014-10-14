@@ -12,20 +12,20 @@ namespace Decoratid.Idioms.Stringing
     /// the Stringable idiom.
     /// </summary>
     [Serializable]
-    public class Stringable : IStringable, ISerializable
+    public class NaturalStringable : IStringable, ISerializable
     {
         #region Declarations
         private string _value = null;
         #endregion
 
         #region Ctor
-        public Stringable(string text = null)
+        public NaturalStringable(string text = null)
         {
         }
         #endregion
 
         #region ISerializable
-        protected Stringable(SerializationInfo info, StreamingContext context)
+        protected NaturalStringable(SerializationInfo info, StreamingContext context)
         {
             var data = info.GetString("data");
             this.Parse(data);
@@ -60,30 +60,30 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region Implicit Conversions
-        public static implicit operator string(Stringable o)
+        public static implicit operator string(NaturalStringable o)
         {
             if (o == null) { return null; }
             return o.GetValue();
         }
-        public static implicit operator Stringable(string text)
+        public static implicit operator NaturalStringable(string text)
         {
-            return new Stringable(text);
+            return new NaturalStringable(text);
         }
         #endregion
 
         #region Static Fluent 
-        public static Stringable New(string text = null)
+        public static NaturalStringable New(string text = null)
         {
-            return new Stringable(text);
+            return new NaturalStringable(text);
         }
         #endregion
     }
 
     public static class StringableExtensions
     {
-        public static Stringable MakeStringable(this string text)
+        public static NaturalStringable MakeStringable(this string text)
         {
-            return Stringable.New(text);
+            return NaturalStringable.New(text);
         }
     }
 }

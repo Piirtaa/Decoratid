@@ -37,7 +37,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
             get
             {
                 var list = this.Segments.Select((x) => { return x.Path; });
-                var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+                var stringlist = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
 
                 list.WithEach(item =>
                 {
@@ -57,7 +57,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
                 //remove the last element
                 list.RemoveAt(list.Count - 1);
 
-                var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+                var stringlist = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
 
                 list.WithEach(item =>
                 {
@@ -130,7 +130,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
              */ 
             Condition.Requires(text).IsNotNullOrEmpty();
 
-            var stringlist = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+            var stringlist = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
             stringlist.Parse(text);
 
             List<IGraphSegment> list = new List<IGraphSegment>();

@@ -52,7 +52,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         {
             get
             {
-                var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+                var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
                 list.Add(this.Index.ToString());
                 list.Add(this.SegmentType.ToString());
                 return list.GetValue();
@@ -63,7 +63,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         #region Implicit Conversion to string
         public static implicit operator EnumeratedItemSegment(string text)
         {
-            var list = StringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
+            var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
             list.Parse(text);
 
             int index =  int.Parse(list[0]);

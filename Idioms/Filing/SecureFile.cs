@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
 using ServiceStack.Text;
-using Decoratid.Extensions;
+using System;
 using System.IO;
-using System.Security.AccessControl;
 using System.Security;
-using Decoratid.Thingness.File;
-using Decoratid.Utils;
+using System.Security.AccessControl;
+using System.Text;
 
-namespace Decoratid.Idioms
+namespace Decoratid.Utils
 {
     /// <summary>
     /// wraps a file and exposes methods to manipulate the file, but keeps it locked so only this class instance can manipulate 
     /// the file - it's otherwise locked from all other access.  
     /// </summary>
-    public class LockedFile : DisposableBase
+    public class SecureFile : DisposableBase
     {
         #region Declarations
         private readonly object _stateLock = new object();
         #endregion
 
         #region Ctor
-        public LockedFile(string filePath)
+        public SecureFile(string filePath)
         {
             Condition.Requires(filePath).IsNotNullOrEmpty();
 
