@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Communication.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Implementations.Sockets
 {
     /// <summary>
     /// helper class for this socket implementation

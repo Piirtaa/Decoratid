@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
+using Decoratid.Core.Identifying;
 
-namespace Decoratid.Communication
+namespace Decoratid.Idioms.Communicating
 {
     /// <summary>
     /// the location of a wire endpoint
@@ -17,9 +18,9 @@ namespace Decoratid.Communication
     public class EndPoint : IHasId<string>
     {
         #region Ctor
-        public EndPoint()
-        {
-        }
+        //public EndPoint()
+        //{
+        //}
         public EndPoint(IPAddress address, int port)
         {
             Condition.Requires(address).IsNotNull();

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
-using System.Threading;
-using Decoratid.Extensions;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Idioms.Serviceable;
 
-namespace Decoratid.Communication
+namespace Decoratid.Idioms.Communicating
 {
     /// <summary>
     /// base class for an end point host

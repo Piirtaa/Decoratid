@@ -10,7 +10,7 @@ using Decoratid.Extensions;
 using System.IO;
 using ServiceStack.Text;
 
-namespace Decoratid.Communication.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Implementations.Sockets
 {
 
 

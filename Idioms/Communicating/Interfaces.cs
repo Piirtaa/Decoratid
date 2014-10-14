@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Core.Storing;
-using Decoratid.Thingness;
+﻿using Decoratid.Idioms.Serviceable;
+using System;
 
-namespace Decoratid.Communication
+namespace Decoratid.Idioms.Communicating
 {
     ///// <summary>
     ///// builds endpoint hosts(eg. wcf, servicestack, tcp, ice, etc)

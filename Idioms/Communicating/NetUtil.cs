@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace Decoratid.Communication
+namespace Decoratid.Idioms.Communicating
 {
     public static class NetUtil
     {

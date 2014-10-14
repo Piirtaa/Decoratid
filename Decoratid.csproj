@@ -69,6 +69,18 @@
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Idioms\Throttling\Interfaces.cs" />
+    <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />
+    <Compile Include="Idioms\Communicating\EndPoint.cs" />
+    <Compile Include="Idioms\Communicating\EndPointHostBase.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Factory.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Sockets\Client.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Sockets\Host.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Sockets\HostBuilder.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Sockets\Interfaces.cs" />
+    <Compile Include="Idioms\Communicating\Implementations\Sockets\ProtocolUtil.cs" />
+    <Compile Include="Idioms\Communicating\Interfaces.cs" />
+    <Compile Include="Idioms\Communicating\NetUtil.cs" />
     <Compile Include="Idioms\Encrypting\AESGCM.cs" />
     <Compile Include="Idioms\Encrypting\AESThenHMAC.cs" />
     <Compile Include="Idioms\Encrypting\CipherPair.cs" />
@@ -338,6 +350,9 @@
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
+    <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
+    <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
     <Compile Include="Idioms\Touching\TouchableDecorationBase.cs" />
     <Compile Include="Idioms\Touching\HasTouchable.cs">
       <SubType>Code</SubType>

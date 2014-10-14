@@ -10,7 +10,7 @@ using Decoratid.Thingness;
 using ServiceStack.Text;
 using Decoratid.Extensions;
 
-namespace Decoratid.Communication.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Implementations.Sockets
 {
     public class Client : DisposableBase, IEndPointClient
     {
