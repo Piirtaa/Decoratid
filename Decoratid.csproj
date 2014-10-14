@@ -413,6 +413,7 @@
     <Compile Include="Storidioms\ItemValidating\Interfaces.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\ValidatingDecoration.cs" />
+    <Compile Include="Storidioms\StoreSerializer.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
     <Compile Include="Core\Logical\Logic.cs" />

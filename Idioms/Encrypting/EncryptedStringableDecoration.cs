@@ -28,9 +28,11 @@ namespace Decoratid.Idioms.Encrypting
         protected EncryptedStringableDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            this.CipherPair = (SymmetricCipherPair)info.GetValue("CipherPair", typeof(SymmetricCipherPair));
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("CipherPair", this.CipherPair);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion

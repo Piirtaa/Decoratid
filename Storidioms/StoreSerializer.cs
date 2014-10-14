@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Extensions;
+﻿using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
-using Decoratid.Storidioms;
-using ServiceStack.Text;
-using Decoratid.Serialization;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.Hydrating;
+using Decoratid.Extensions;
+using Decoratid.Idioms.ObjectGraphing;
+using Decoratid.Idioms.ObjectGraphing.Values;
+using Decoratid.Idioms.Stringing;
+using System.Collections.Generic;
 
 namespace Decoratid.Storidioms
 {
@@ -25,13 +18,12 @@ namespace Decoratid.Storidioms
         /// <param name="managerSet"></param>
         /// <param name="encodingStrategy"></param>
         /// <returns></returns>
-        public static string SerializeItem(object obj, ValueManagerChainOfResponsibility managerSet = null, Func<string, string> encodingStrategy = null)
+        public static string SerializeItem(object obj, ValueManagerChainOfResponsibility managerSet = null)
         {
             var graph = Graph.Build(obj, managerSet);
-            var text = graph.Dehydrate(); //serialize using graph
-            var encodedData = encodingStrategy == null ? text : encodingStrategy(text);//encode
+            var text = graph.GetValue(); //serialize using graph
             //var valueEncodedData = ValueEncoder.LengthEncode(encodedData);//value encode
-            return encodedData;
+            return text;
         }
         /// <summary>
         /// deserialization complement to SerializeItem
@@ -40,17 +32,16 @@ namespace Decoratid.Storidioms
         /// <param name="managerSet"></param>
         /// <param name="decodingStrategy"></param>
         /// <returns></returns>
-        public static object DeserializeItem(string text, ValueManagerChainOfResponsibility managerSet = null, Func<string, string> decodingStrategy = null)
+        public static object DeserializeItem(string text, ValueManagerChainOfResponsibility managerSet = null)
         {
             //do the reverse of serialize
             //var valueDecodedData = ValueEncoder.LengthDecode(text); //value decode
-            var decodedData = decodingStrategy == null ? text : decodingStrategy(text); //decode
-            var graph = Graph.Parse(decodedData, managerSet); //parse graph
+            var graph = Graph.Parse(text, managerSet); //parse graph
             var item = graph.RootNode.NodeValue;
             return item;
         }  
      
-        public static string SerializeStore(IGetAllableStore store, ValueManagerChainOfResponsibility managerSet = null, Func<string, string> encodingStrategy = null)
+        public static string SerializeStore(IGetAllableStore store, ValueManagerChainOfResponsibility managerSet = null)
         {
             if (store == null)
                 return null;
@@ -59,25 +50,23 @@ namespace Decoratid.Storidioms
             List<string> lines = new List<string>();
             all.WithEach(each =>
             {
-                var line = SerializeItem(each, managerSet, null);
+                var line = SerializeItem(each, managerSet);
                 lines.Add(line);
             });
 
-            var raw= TextDecorator.LengthEncodeList(lines.ToArray());
-            var encodedData = encodingStrategy == null ? raw : encodingStrategy(raw);
-            return encodedData;
+            var raw= LengthEncoder.LengthEncodeList(lines.ToArray());
+            return raw;
         }
-        public static IStore DeserializeStore(string data, ValueManagerChainOfResponsibility managerSet = null, Func<string,string> decodingStrategy =null)
+        public static IStore DeserializeStore(string data, ValueManagerChainOfResponsibility managerSet = null)
         {
             if (string.IsNullOrEmpty(data))
                 return null;
 
-            var decodedData = decodingStrategy == null ? data : decodingStrategy(data);
-            var list = TextDecorator.LengthDecodeList(decodedData);
+            var list = LengthEncoder.LengthDecodeList(data);
             var store = NaturalInMemoryStore.New();
             list.WithEach(each =>
             {
-                var item = DeserializeItem(each, managerSet, null);
+                var item = DeserializeItem(each, managerSet);
                 IHasId obj = item as IHasId;
                 store.SaveItem(obj);
             });

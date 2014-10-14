@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Communication;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.Extensions;
-using Decoratid.Tasks;
-using Decoratid.Core.Storing;
-using Decoratid.Crypto;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
-using Decoratid.Core.ValueOfing;
+using System;
 
 namespace Decoratid.Messaging.StoreProtocol
 {
