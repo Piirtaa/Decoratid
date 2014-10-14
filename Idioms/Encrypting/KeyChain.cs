@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
+using Decoratid.Core.Identifying;
+using Decoratid.Storidioms.StoreOf;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.Core.Storing.Products;
-using Decoratid.Thingness;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     /// <summary>
     /// An item (eg. id and cipherpair) in a keychain

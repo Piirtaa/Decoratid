@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core.Storing;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     /// <summary>
     /// interface defining a provider of one-way hashing functions.  Has an id to facilitate brokering via a store.

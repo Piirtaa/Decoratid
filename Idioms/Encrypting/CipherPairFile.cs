@@ -10,7 +10,7 @@ using Decoratid.Extensions;
 using CuttingEdge.Conditions;
 using Decoratid.Thingness.File;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     /// <summary>
     /// "Locked File" that stores a cipher pair (serialized).  It is plaintext.

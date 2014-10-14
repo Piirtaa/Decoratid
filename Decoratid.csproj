@@ -69,12 +69,17 @@
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Idioms\Encrypting\AESGCM.cs" />
+    <Compile Include="Idioms\Encrypting\AESThenHMAC.cs" />
+    <Compile Include="Idioms\Encrypting\CipherPair.cs" />
+    <Compile Include="Idioms\Encrypting\EncryptedStringableDecoration.cs" />
+    <Compile Include="Idioms\Encrypting\Interfaces.cs" />
+    <Compile Include="Idioms\Encrypting\SymmetricCipherPair.cs" />
     <Compile Include="Idioms\Filing\FileDecoration.cs" />
     <Compile Include="Idioms\Filing\LockingFileDecoration.cs" />
     <Compile Include="Idioms\Filing\Interfaces.cs" />
     <Compile Include="Idioms\Filing\FileableStringableDecoration.cs" />
     <Compile Include="Idioms\Filing\NaturalStringableFileable.cs" />
-    <Compile Include="Idioms\Filing\SecureFile.cs" />
     <Compile Include="Idioms\Filing\FileableDecorationBase.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationHydratableValueManager.cs">
       <SubType>Code</SubType>

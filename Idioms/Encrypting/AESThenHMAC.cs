@@ -10,7 +10,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     public static class AESThenHMAC
     {

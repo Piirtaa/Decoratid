@@ -15,7 +15,7 @@ using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
 
     public static class AESGCM

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     /// <summary>
     /// singleton container of applevel keychain

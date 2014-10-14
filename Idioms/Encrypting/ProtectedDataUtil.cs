@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     /// <summary>
     /// uses the DPAPI to encrypt data

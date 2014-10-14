@@ -1,17 +1,10 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
 using Decoratid.Core.Decorating;
 using Decoratid.Utils;
-using System;
-using System.IO;
-using System.Runtime.Serialization;
-using CuttingEdge.Conditions;
-using Decoratid.Core;
 using ServiceStack.Text;
 using System;
 using System.IO;
-using System.Security;
-using System.Security.AccessControl;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Decoratid.Idioms.Filing
@@ -149,21 +142,14 @@ namespace Decoratid.Idioms.Filing
             base.DisposeManaged();
         }
         #endregion
+    }
 
-        //#region Helpers
-        ///// <summary>
-        ///// initializes the stream, closing/disposing first
-        ///// </summary>
-        //protected void InitStream()
-        //{
-        //    if (this.Stream != null)
-        //    {
-        //        this.Stream.Close();
-        //        this.Stream.Dispose();
-        //    }
-
-        //    this.Stream = System.IO.File.Open(this.FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-        //}
-        //#endregion
+    public static class LockingFileDecorationExtensions
+    {
+        public static LockingFileDecoration LockingFiling(this IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new LockingFileDecoration(decorated, filePath, options);
+        }
     }
 }

@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Crypto
+namespace Decoratid.Idioms.Encrypting
 {
     public static class CryptoHelper
     {

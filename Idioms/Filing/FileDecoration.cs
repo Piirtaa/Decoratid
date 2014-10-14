@@ -107,4 +107,13 @@ namespace Decoratid.Idioms.Filing
 
         #endregion
     }
+
+    public static class FileDecorationExtensions
+    {
+        public static FileDecoration Filing(this IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new FileDecoration(decorated, filePath, options);
+        }
+    }
 }
