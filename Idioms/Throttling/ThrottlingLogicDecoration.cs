@@ -49,6 +49,23 @@ namespace Decoratid.Idioms.Throttling
             return new ThrottlingLogicDecoration(thing, this.Throttle.ConcurrencyLimit);
         }
         #endregion
+
+        #region IThrottle
+        public int ConcurrencyLimit
+        {
+            get { return this.Throttle.ConcurrencyLimit; }
+        }
+
+        public void Reset()
+        {
+            this.Throttle.Reset();
+        }
+
+        public void Perform(Action action)
+        {
+            this.Throttle.Perform(action);
+        }
+        #endregion
     }
 
     public static class ThrottlingLogicDecorationExtensions

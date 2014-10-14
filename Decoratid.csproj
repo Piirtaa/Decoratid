@@ -73,10 +73,8 @@
     <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />
     <Compile Include="Idioms\Communicating\EndPoint.cs" />
     <Compile Include="Idioms\Communicating\EndPointHostBase.cs" />
-    <Compile Include="Idioms\Communicating\Implementations\Factory.cs" />
     <Compile Include="Idioms\Communicating\Implementations\Sockets\Client.cs" />
     <Compile Include="Idioms\Communicating\Implementations\Sockets\Host.cs" />
-    <Compile Include="Idioms\Communicating\Implementations\Sockets\HostBuilder.cs" />
     <Compile Include="Idioms\Communicating\Implementations\Sockets\Interfaces.cs" />
     <Compile Include="Idioms\Communicating\Implementations\Sockets\ProtocolUtil.cs" />
     <Compile Include="Idioms\Communicating\Interfaces.cs" />

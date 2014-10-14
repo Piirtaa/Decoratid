@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
+using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
-using ServiceStack.Text;
-using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.Communicating.Implementations.Sockets
 {

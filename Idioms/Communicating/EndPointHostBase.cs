@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.Serviceable;
 
 namespace Decoratid.Idioms.Communicating
@@ -14,7 +15,7 @@ namespace Decoratid.Idioms.Communicating
         /// </summary>
         /// <param name="ep"></param>
         /// <param name="strategy"></param>
-        public EndPointHostBase(EndPoint ep, IEndPointLogic logic)
+        public EndPointHostBase(EndPoint ep, LogicOfTo<string,string> logic)
             : base()
         {
             Condition.Requires(ep).IsNotNull();
@@ -31,7 +32,7 @@ namespace Decoratid.Idioms.Communicating
 
         #region IEndPointHost
         public EndPoint EndPoint { get; set; }
-        public IEndPointLogic Logic { get; set; }
+        public LogicOfTo<string, string> Logic { get; set; }
         #endregion
 
 

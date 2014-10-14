@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Decoratid.Logging;
+﻿using Decoratid.Core.Logical;
+using Decoratid.Core.ValueOfing;
 using Decoratid.Extensions;
-using System.IO;
-using ServiceStack.Text;
+using System;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace Decoratid.Idioms.Communicating.Implementations.Sockets
 {
@@ -19,12 +14,10 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
         #region Declarations
         private readonly object _stateLock = new object();
         TcpListener _listener = null;
-        //protected AutoResetEvent _startMRE = null;
-
         #endregion
 
         #region Ctor
-        public Host(EndPoint ep, IEndPointLogic logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
+        public Host(EndPoint ep, LogicOfTo<string, string> logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
             : base(ep, logic)
         {
             this.ValidateClientEndPointStrategy = validateClientEndPointStrategy;
@@ -77,7 +70,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
             }
             catch (Exception ex)
             {
-                this.Logger.Log(LogLevel.LOGLEVEL_ERROR, ex.Message, this, ex);
+
             }
         }
 
@@ -95,7 +88,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Log(LogLevel.LOGLEVEL_ERROR, ex.Message, this, ex);
+
                     }
                 }
             }
@@ -111,7 +104,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
         private void ProcessClient(object state)
         {
             System.Net.Sockets.TcpClient client = state as System.Net.Sockets.TcpClient;
-            
+
             try
             {
                 if (this.ValidateClientEndPoint((System.Net.IPEndPoint)client.Client.RemoteEndPoint))
@@ -121,7 +114,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
                     {
                         var input = ProtocolUtil.ProtocolRead(ns);
 
-                        string response = this.Logic.HandleRequest(input);
+                        string response = this.Logic.CloneAndPerform(input.AsNaturalValue());
 
                         // Write a message to the client.
                         ProtocolUtil.ProtocolWrite(ns, response);
@@ -231,7 +224,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
         //#endregion
 
         #region Static Methods
-        public static Host New(EndPoint ep, IEndPointLogic logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
+        public static Host New(EndPoint ep, LogicOfTo<string, string> logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
         {
             Host host = new Host(ep, logic, validateClientEndPointStrategy);
             return host;
