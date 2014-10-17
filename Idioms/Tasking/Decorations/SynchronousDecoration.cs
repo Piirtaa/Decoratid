@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
+using System;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// indicates the task is synchronous. marker interface.  
@@ -54,34 +48,18 @@ namespace Decoratid.Tasks.Decorations
             return rv;
         }
         #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return string.Empty;
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-        }
-        #endregion
     }
 
-    public static partial class Extensions
+    public static class SynchronousDecorationExtensions
     {
         /// <summary>
         /// indicates the task is synchronous
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static ISynchronousDecoration DecorateAsSynchronous(this ITask task)
+        public static ISynchronousDecoration IsSynchronous(this ITask task)
         {
             Condition.Requires(task).IsNotNull();
-
-            if (task is ISynchronousDecoration)
-            {
-                var rTask = task as ISynchronousDecoration;
-                return rTask;
-            }
             return new SynchronousDecoration(task);
         }
     }

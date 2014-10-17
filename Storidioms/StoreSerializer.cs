@@ -18,7 +18,7 @@ namespace Decoratid.Storidioms
         /// <param name="managerSet"></param>
         /// <param name="encodingStrategy"></param>
         /// <returns></returns>
-        public static string SerializeItem(object obj, ValueManagerChainOfResponsibility managerSet = null)
+        private static string SerializeItem(object obj, ValueManagerChainOfResponsibility managerSet)
         {
             var graph = Graph.Build(obj, managerSet);
             var text = graph.GetValue(); //serialize using graph
@@ -32,7 +32,7 @@ namespace Decoratid.Storidioms
         /// <param name="managerSet"></param>
         /// <param name="decodingStrategy"></param>
         /// <returns></returns>
-        public static object DeserializeItem(string text, ValueManagerChainOfResponsibility managerSet = null)
+        private static object DeserializeItem(string text, ValueManagerChainOfResponsibility managerSet)
         {
             //do the reverse of serialize
             //var valueDecodedData = ValueEncoder.LengthDecode(text); //value decode
@@ -41,7 +41,7 @@ namespace Decoratid.Storidioms
             return item;
         }  
      
-        public static string SerializeStore(IGetAllableStore store, ValueManagerChainOfResponsibility managerSet = null)
+        public static string SerializeStore(IGetAllableStore store, ValueManagerChainOfResponsibility managerSet)
         {
             if (store == null)
                 return null;
@@ -57,7 +57,7 @@ namespace Decoratid.Storidioms
             var raw= LengthEncoder.LengthEncodeList(lines.ToArray());
             return raw;
         }
-        public static IStore DeserializeStore(string data, ValueManagerChainOfResponsibility managerSet = null)
+        public static IStore DeserializeStore(string data, ValueManagerChainOfResponsibility managerSet)
         {
             if (string.IsNullOrEmpty(data))
                 return null;

@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph;
-using Decoratid.Idioms.ObjectGraph.Values;
+using Decoratid.Core.Decorating;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// flags a task as being asynchronous
@@ -23,19 +15,19 @@ namespace Decoratid.Tasks.Decorations
     /// Decoration that flags a task as being asynchronous and provides the conditions needed to trigger completion and error.
     /// Automatically decorates with TriggerConditions.
     /// </summary>
-    public class AsynchronousDecoration : DecoratedTaskBase, IAsynchronousDecoration, IHasHydrationMap
+    public class AsynchronousDecoration : DecoratedTaskBase, IAsynchronousDecoration
     {
         #region Ctor
         public AsynchronousDecoration(ITask decorated, ICondition markCompleteCondition, ICondition markErrorCondition)
-            : base(decorated.DecorateWithTriggerConditions())
+            : base(decorated.Triggered())
         {
             Condition.Requires(markErrorCondition).IsNotNull();
 
             IHasConditionalTaskTriggers dec = this.FindDecoratorOf<IHasConditionalTaskTriggers>(false);
             if (markCompleteCondition != null)
-                dec.ANDCompleteCondition(markCompleteCondition);
+                dec.ANDCompleteWhen(markCompleteCondition);
             if (markErrorCondition != null)
-                dec.ANDFailCondition(markErrorCondition);
+                dec.ANDFailWhen(markErrorCondition);
 
             //set placeholders so the decoration can be cloned via ApplyThisDecorationTo
             //we can't pull the conditions from the decoration as the decorated task may itself have existing conditions
@@ -61,30 +53,9 @@ namespace Decoratid.Tasks.Decorations
             return new AsynchronousDecoration(task, this.MarkCompleteCondition, this.MarkErrorCondition);
         }
         #endregion
-
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var map = new HydrationMapValueManager<AsynchronousDecoration>();
-            map.RegisterDefault("MarkCompleteCondition", x => x.MarkCompleteCondition, (x, y) => { x.MarkCompleteCondition = y as ICondition; });
-            map.RegisterDefault("MarkErrorCondition", x => x.MarkErrorCondition, (x, y) => { x.MarkErrorCondition = y as ICondition; });
-            return map;
-        }
-        #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
     }
 
-    public static partial class Extensions
+    public static class AsynchronousDecorationExtensions
     {
         /// <summary>
         /// Decoration that flags a task as being asynchronous and provides the conditions needed to trigger completion and error.
@@ -92,7 +63,7 @@ namespace Decoratid.Tasks.Decorations
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static IAsynchronousDecoration DecorateAsAsynchronous(this ITask task, ICondition markCompleteCondition, ICondition markErrorCondition)
+        public static IAsynchronousDecoration IsAsynchronous(this ITask task, ICondition markCompleteCondition, ICondition markErrorCondition)
         {
             Condition.Requires(task).IsNotNull();
 

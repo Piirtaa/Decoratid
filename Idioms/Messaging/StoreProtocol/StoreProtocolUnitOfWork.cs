@@ -1,6 +1,9 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
+using Decoratid.Idioms.Eventing;
+using Decoratid.Idioms.Logging;
+using Decoratid.Storidioms.AuditTrail;
 using System;
 
 namespace Decoratid.Messaging.StoreProtocol
@@ -21,7 +24,7 @@ namespace Decoratid.Messaging.StoreProtocol
         {
             Condition.Requires(requestStore).IsNotNull();
             this.RequestStore = requestStore;
-            this.ResponseStore = new InMemoryStore().DecorateWithEvents();
+            this.ResponseStore = NaturalInMemoryStore.New().DecorateWithEvents(StoreLogger.NewInMemory());
             this.Id = new DecoratidId();
         }
         #endregion

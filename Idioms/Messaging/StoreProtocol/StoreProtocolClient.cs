@@ -1,6 +1,8 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.Communicating;
+using Decoratid.Idioms.Encrypting;
+using Decoratid.Storidioms;
 using System;
 
 namespace Decoratid.Messaging.StoreProtocol
@@ -16,19 +18,14 @@ namespace Decoratid.Messaging.StoreProtocol
     public class StoreProtocolClient : IStoreProtocolClient
     {
         #region Ctor
-        public StoreProtocolClient(Func<string, string> encodingStrategy,
-            Func<string, string> decodingStrategy, IEndPointClient client)
+        public StoreProtocolClient(IEndPointClient client)
         {
             Condition.Requires(client).IsNotNull();
-            this.EncodingStrategy = encodingStrategy;
-            this.DecodingStrategy = decodingStrategy;
             this.Client = client;
         }
         #endregion
 
         #region Properties
-        public Func<string, string> EncodingStrategy { get; protected set; }
-        public Func<string, string> DecodingStrategy { get; protected set; }
         public IEndPointClient Client { get; protected set; }
         #endregion
 
@@ -36,7 +33,7 @@ namespace Decoratid.Messaging.StoreProtocol
         public IStore Send(IStore request)
         {
             //encode the store to send over the wire
-            var requestText = StoreSerializer.SerializeStore(request, null, this.EncodingStrategy);
+            var requestText = StoreSerializer.SerializeStore(request, null);
             
             //send it
             var respData = this.Client.Send(requestText);

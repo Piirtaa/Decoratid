@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
-using Decoratid.Core.Conditional.Common;
-using Decoratid.Tasks.Core;
-using Decoratid.Tasks.Decorations;
-using Decoratid.Core.Logical;
+using Decoratid.Idioms.Tasking.Decorations;
+using System.Linq;
+using Decoratid.Core.Storing;
 
-namespace Decoratid.Tasks.Core
+namespace Decoratid.Idioms.Tasking
 {
-    public static class Extensions
-    {       
+    public static partial  class Extensions
+    {
         #region IHasConditionalTaskTrigger Get Set Helpers
         /// <summary>
         /// returns the specified trigger condition on the provided task
@@ -120,6 +114,28 @@ namespace Decoratid.Tasks.Core
             return task;
         }
         #endregion
+
+        /// <summary>
+        /// saves the task in the task's task store
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public static ITask Save(this ITask task)
+        {
+            Condition.Requires(task).IsNotNull();
+            Condition.Requires(task.TaskStore).IsNotNull();
+            task.TaskStore.SaveItem(task);
+            return task;
+        }
+        public static ITask GetTask(this ITask task, string id)
+        {
+            var list = task.TaskStore.GetAllById<ITask>(id);
+
+            return list.FirstOrDefault();
+        }
+
+
+
 
     }
 }

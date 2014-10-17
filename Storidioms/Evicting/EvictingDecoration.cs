@@ -396,7 +396,14 @@ namespace Decoratid.Storidioms.Evicting
 
             return new EvictingDecoration(decorated, evictionConditionStore, defaultItemEvictionConditionFactory);
         }
+        public static EvictingDecoration EvictingInMemory(this IStore decorated,
+    LogicOfTo<IHasId, IExpirable> defaultItemEvictionConditionFactory,
+    double backgroundIntervalMSecs = 30000)
+        {
+            Condition.Requires(decorated).IsNotNull();
 
+            return new EvictingDecoration(decorated, NaturalInMemoryStore.New(), defaultItemEvictionConditionFactory);
+        }
         #region General Eviction
         public static void SaveEvictingItem(this IEvictingStore store, IHasId obj, IExpirable evictingCondition)
         {

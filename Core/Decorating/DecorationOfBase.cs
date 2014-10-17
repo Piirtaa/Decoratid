@@ -15,7 +15,7 @@ namespace Decoratid.Core.Decorating
     /// Note that the implementors of this MUST also derive from T - which really is the whole point of a decoration.
     /// Only c# can't have a generic type inherit from the generic arg type, so it can't be declared here.
     /// </remarks>
-    public interface IDecorationOf<T> 
+    public interface IDecorationOf<T>
     {
         /// <summary>
         /// in a chain of decorations, it's the core value being decorated
@@ -151,41 +151,44 @@ namespace Decoratid.Core.Decorating
 
             return default(T);
         }
+        public Tdec FindDecoratorOf<Tdec>(bool exactTypeMatch)
+    where Tdec : T
+        {
+            var rv = FindDecoratorOf(typeof(Tdec), exactTypeMatch);
+            if (rv == null)
+                return default(Tdec);
+
+            return (Tdec)rv;
+        }
         /// <summary>
         /// walks the decorator hierarchy to find the one of the provided type, and matching the filter
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public Tdec FindDecoratorOf<Tdec>(bool exactTypeMatch, Func<T, bool> filter = null)
-            where Tdec : T
+        public T FindDecoratorOf(Type decType, bool exactTypeMatch)
         {
             var match = this.WalkLayers((dec) =>
             {
                 //do type level filtering first
 
                 //if we're exact matching, the decoration has to be the same type
-                if (exactTypeMatch && typeof(Tdec).Equals(dec.GetType()) == false)
+                if (exactTypeMatch && decType.Equals(dec.GetType()) == false)
                     return false;
 
                 //if we're not exact matching, the decoration has to be Of the same type
-                if (exactTypeMatch == false && (!(dec is Tdec)) )
+                if (exactTypeMatch == false && (!(decType.IsAssignableFrom(dec.GetType()))))
                     return false;
 
-                //if we don't have a filter we're matching
-                if (filter == null)
-                    return true;
-
-                //use the filter to determine the match
-                return filter(dec);
+                return true;
 
             });
 
             if (match == null)
             {
-                return default(Tdec);
+                return default(T);
             }
 
-            return (Tdec)match;
+            return match;
         }
         /// <summary>
         /// walks the decorations from outermost to core
@@ -218,7 +221,7 @@ namespace Decoratid.Core.Decorating
         {
             if (decorated == null)
                 throw new InvalidOperationException("null decoration injection");
-           
+
             if (decorated is ISealedDecoration)
                 throw new InvalidOperationException("Cannot decorate a SealedDecoration");
 
@@ -243,23 +246,13 @@ namespace Decoratid.Core.Decorating
         {
             Condition.Requires(decorationStrategy).IsNotNull();
             var newDec = decorationStrategy(this.Decorated);
-            this.SetDecorated( newDec);
+            this.SetDecorated(newDec);
         }
 
-        /// <summary>
-        /// looks for the provided decoration layer and tries to build the same store without this decoration.
-        /// </summary>
-        /// <remarks>
-        /// if there is a dependency of one layer upon the other, and the dependency is removed, the ctor 
-        /// chain should kack - we provide the same checks as a ctor does, in this method. 
-        /// </remarks>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Undecorate<Tdec>(bool exactTypeMatch, Func<T, bool> filter = null)
-            where Tdec : T
+        public T Undecorate(Type decType, bool exactTypeMatch)
         {
             //find the decoration we want to remove
-            T decorationToRemove = this.FindDecoratorOf<Tdec>(exactTypeMatch, filter);
+            T decorationToRemove = this.FindDecoratorOf(decType, exactTypeMatch);
             if (decorationToRemove == null)
                 throw new InvalidOperationException("decoration not found");
 
@@ -294,6 +287,20 @@ namespace Decoratid.Core.Decorating
             }
 
             return wrappee;
+        }
+        /// <summary>
+        /// looks for the provided decoration layer and tries to build the same store without this decoration.
+        /// </summary>
+        /// <remarks>
+        /// if there is a dependency of one layer upon the other, and the dependency is removed, the ctor 
+        /// chain should kack - we provide the same checks as a ctor does, in this method. 
+        /// </remarks>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Undecorate<Tdec>(bool exactTypeMatch)
+            where Tdec : T
+        {
+            return Undecorate(typeof(Tdec), exactTypeMatch);
         }
         #endregion
 

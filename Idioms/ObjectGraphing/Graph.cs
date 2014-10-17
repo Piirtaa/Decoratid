@@ -31,13 +31,8 @@ namespace Decoratid.Idioms.ObjectGraphing
     public class Graph : IGraph, IStringable
     {
         #region Ctor
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="chainOfResponsibility">if null the default set is used</param>
-        private Graph(ValueManagerChainOfResponsibility chainOfResponsibility = null)
+        private Graph(ValueManagerChainOfResponsibility chainOfResponsibility)
         {
-            this.ChainOfResponsibility = chainOfResponsibility == null ? ValueManagerChainOfResponsibility.NewDefault() : chainOfResponsibility;
         }
         #endregion
 
@@ -313,10 +308,10 @@ namespace Decoratid.Idioms.ObjectGraphing
         #region Static Fluent
         public static Graph NewDefault()
         {
-            Graph graph = new Graph();
+            Graph graph = new Graph(ValueManagerChainOfResponsibility.NewDefault());
             return graph;
         }
-        public static Graph New(ValueManagerChainOfResponsibility managerSet = null)
+        public static Graph New(ValueManagerChainOfResponsibility managerSet)
         {
             Graph graph = new Graph(managerSet);
             return graph;
@@ -327,7 +322,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// <param name="obj"></param>
         /// <param name="valueManagers">if null, the Default managers are used</param>
         /// <returns></returns>
-        public static Graph Build(object obj, ValueManagerChainOfResponsibility managerSet = null, Func<object, GraphPath, bool> skipFilter = null)
+        public static Graph Build(object obj, ValueManagerChainOfResponsibility managerSet, Func<object, GraphPath, bool> skipFilter = null)
         {
             Graph graph = new Graph(managerSet);
             graph.BuildGraph(obj, skipFilter);
@@ -340,7 +335,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// <param name="text"></param>
         /// <param name="valueManagers">if null, the Default managers are used</param>
         /// <returns></returns>
-        public static Graph Parse(string text, ValueManagerChainOfResponsibility managerSet = null)
+        public static Graph Parse(string text, ValueManagerChainOfResponsibility managerSet)
         {
             Graph graph = new Graph(managerSet);
             graph.Parse(text);

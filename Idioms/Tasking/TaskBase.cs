@@ -1,77 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
-
-using Decoratid.Thingness;
-using Decoratid.Idioms.Dependencies;
-using Decoratid.Extensions;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.Core.Storing.Decorations.Evicting;
+using Decoratid.Idioms.StateMachining;
+using System;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Decoratid.Tasks
+namespace Decoratid.Idioms.Tasking
 {
-    /*The design:
-     *  -have a named, storeable/persistent "unit of work" (eg. argument and operation results).  thus IHasId<string> and IHasContext 
-     *  -support task dependencies. thus IHasDependencyOf string.  (using names/id to define dependency)
-     *  -support for async/long-running tasks.  thus the well defined state-machine
-     *  -be cancellable
-     *  -have trigger conditions on each state transition, for when we want the automaton to run on its own and initiate
-     *      state transitions automatically.
-     *  -have expiry (ie. unit of work is in expiring store).  thus the Job type/store idiom.
-     *  -have throttling in terms of units of work (eg. throttled store commits).  thus store idiom 
-     *  -has some event raising, so we can fire notifications
-     *  
-     * In other words, we want a generic task framework that will do a bunch of stuff (eg. a job) on its own, and when it
-     * succeeds or fails, or is cancelled we're notified. 
-     * 
-     * Also we want to be able to leverage this subsystem in messaging, where a handler will package off a bunch of work to be done.
-
-     */
-
-    /// <summary>
-    /// the task states
-    /// </summary>
-    public enum DecoratidTaskStatusEnum { Pending, InProcess, Cancelled, Complete, Errored }
-    /// <summary>
-    /// the task state transitions
-    /// </summary>
-    public enum DecoratidTaskTransitionEnum { Perform, MarkComplete, MarkErrored, Cancel }
-
-    /// <summary>
-    /// a task store is a store that is: storeof itask, unique id constrained, and evicting 
-    /// </summary>
-    public interface ITaskStore : IStoreOfUniqueId<ITask>, IEvictingStore 
-    { 
-    }
-
-    /// <summary>
-    /// a task.  
-    /// </summary>
-    /// <remarks>
-    /// -IHasId -> persistence
-    /// -IHasDependencyOf string -> dependency on other tasks, aggregated, uses id as proxy
-    /// </remarks>
-    public interface ITask : IHasId<string>, IHasSettableId<string>
-    {
-        //actual transition methods
-        bool Perform();
-        bool Cancel();
-        bool MarkComplete();
-        bool MarkError(Exception ex);
-        DecoratidTaskStatusEnum Status { get; }
-        Exception Error { get; }
-
-        /// <summary>
-        /// reference to the store of tasks this task belongs to
-        /// </summary>
-        ITaskStore TaskStore { get; set; }
-    }
 
     /// <summary>
     /// Abstract template implementation of ITask

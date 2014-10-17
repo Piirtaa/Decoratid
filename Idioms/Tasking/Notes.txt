@@ -1,0 +1,14 @@
+﻿A task is some logicOf<TArg,TResult> that is wrapped in a state machine (Pending|InProcess|Completed|Errored|Cancelled),
+and given an Id and a backreference to a store of ITasks.
+
+Using decorations, additional behaviour is added to tasks such as:
+    -introducing a task dependency.     eg.  ITask.DependsOn(task ids)
+    -events                             eg.  ITask.Eventing
+    -conditional triggers               eg.  ITask.Triggered
+                                            or ITask.ANDCancelWhen, .ANDPerformWhen, .ANDCompleteWhen, .ANDFailWhen
+    -indicate the task is synchronous   eg.  ITask.IsSynchronous
+    -indicate the task is asynchronous  eg.  ITask.IsAsynchronous(completeWhen, failWhen)
+
+A master task, JobTask, runs the whole deal, iterating thru the tasks in the task store and firing them off.
+It itself is implemented as a task that has a dependency on all the other tasks.  
+            

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Tasks.Decorations;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Contextual;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
-using Decoratid.Core.ValueOfing.Decorations;
 
-namespace Decoratid.Tasks.Core
+namespace Decoratid.Idioms.Tasking.Core
 {
     /// <summary>
     /// uses contextual ILogic strategies to implement a task
@@ -68,15 +61,15 @@ namespace Decoratid.Tasks.Core
         {
             var rv = new StrategizedTaskOf<Targ>(id,context ,performLogic, cancelLogic );
 
-            //now some fancy stuff...
-            //if the context is IConditionalValueOf<T>, it means there's a condition that prevents the getting of the context value
-            //apply a conditional constraint to the task's Perform indicating this condition must be true
-            if (context is IConditionalValueOf<Targ>)
-            {
-                IConditionalValueOf<Targ> cContext = context as IConditionalValueOf<Targ>;
-                var rTask = rv.ANDPerformCondition(cContext.CheckCondition);
-                return rTask;
-            }
+            ////now some fancy stuff...
+            ////if the context is IConditionalValueOf<T>, it means there's a condition that prevents the getting of the context value
+            ////apply a conditional constraint to the task's Perform indicating this condition must be true
+            //if (context is IConditionalValueOf<Targ>)
+            //{
+            //    IConditionalValueOf<Targ> cContext = context as IConditionalValueOf<Targ>;
+            //    var rTask = rv.ANDPerformCondition(cContext.CheckCondition);
+            //    return rTask;
+            //}
 
             return rv;
         }

@@ -1,26 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Storing;
-using Decoratid.Core.Storing.Decorations.Polling;
-using Decoratid.Core.Storing.Decorations.StoreOf;
-using Decoratid.Thingness;
-using Decoratid.Extensions;
-using Decoratid.Core.Storing.Decorations.Evicting;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
-using Decoratid.Core.Conditional.Common;
-using Decoratid.Tasks.Core;
-using Decoratid.Tasks.Decorations;
-using Decoratid.Core.ValueOfing;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
-using System.Threading;
 using Decoratid.Core.Storing;
-using Decoratid.Idioms.Decorating;
+using Decoratid.Extensions;
+using Decoratid.Idioms.Expiring;
+using Decoratid.Idioms.Tasking.Core;
+using Decoratid.Idioms.Tasking.Decorations;
+using System;
+using System.Threading;
 
-namespace Decoratid.Tasks
+namespace Decoratid.Idioms.Tasking
 {
     /// <summary>
     /// An asynchronous task that itself is a collection of tasks.  Is the "managing task" of all the tasks it has.
@@ -41,7 +32,7 @@ namespace Decoratid.Tasks
         /// provide store (with defined eviction strategies)
         /// </summary>
         /// <param name="store"></param>
-        public JobTask(string id, LogicOfTo<IHasId, ICondition> evictionPolicy)
+        public JobTask(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
             : base(StrategizedTask.NewBlank(id))
         {
             /*Overall process:
@@ -69,7 +60,7 @@ namespace Decoratid.Tasks
              */
 
             //create new in memory store for the tasks to live in
-            var taskStore = InMemoryStore.New().DecorateAsTaskStore(evictionPolicy);
+            var taskStore = NaturalInMemoryStore.New().MakeTaskStore(evictionPolicy);
             this.TaskStore = taskStore;
 
             //get the core task (is also the Decorated property as we're a 2-layer cake at this point)
@@ -103,13 +94,13 @@ namespace Decoratid.Tasks
             };
 
             //now decorate this core task with the layers described above
-            
+
             //decorate as asynch (under the hood this will decorate with Trigger Conditions). Also implies that we need a polling process to check the conditions
-            ITask decoratedTask = coreTask.DecorateAsAsynchronous(
-                        ConditionBuilder.New(() => { return this.AreTasksComplete(); }),
-                        ConditionBuilder.New(() => { return this.HaveTasksErrored(); }));
+            ITask decoratedTask = coreTask.IsAsynchronous(
+                        StrategizedCondition.New(() => { return this.AreTasksComplete(); }),
+                        StrategizedCondition.New(() => { return this.HaveTasksErrored(); }));
             //decorate with event handlers to flip the wait handle
-            decoratedTask = decoratedTask.DecorateWithEvents().DoOnTaskCancelled(flipWaitHandle).DoOnTaskCompleted(flipWaitHandle).DoOnTaskErrored(flipWaitHandle);
+            decoratedTask = decoratedTask.Eventing().DoOnTaskCancelled(flipWaitHandle).DoOnTaskCompleted(flipWaitHandle).DoOnTaskErrored(flipWaitHandle);
             //decorate with polling without a polling strategy
             decoratedTask = decoratedTask.DecorateWithPolling();
 
@@ -124,7 +115,7 @@ namespace Decoratid.Tasks
             });
 
             //subscribe to eviction event where we initiate a cancel if it happens
-            this.TaskStore.GetEvictingDecoration().ItemEvicted += Job_ItemEvicted;
+            this.TaskStore.ItemEvicted += Job_ItemEvicted;
         }
         #endregion
 
@@ -134,7 +125,7 @@ namespace Decoratid.Tasks
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Job_ItemEvicted(object sender, EventArgOf<Tuple<IHasId, ICondition>> e)
+        void Job_ItemEvicted(object sender, EventArgOf<Tuple<IHasId, IExpirable>> e)
         {
             this.Cancel();
         }
@@ -149,7 +140,7 @@ namespace Decoratid.Tasks
                 return (x.Status == DecoratidTaskStatusEnum.Errored || x.Status == DecoratidTaskStatusEnum.Cancelled);
             }));
 
-            return list.Count() > 0;
+            return list.Count > 0;
         }
         private bool AreTasksComplete()
         {
@@ -238,7 +229,7 @@ namespace Decoratid.Tasks
         #region Overrides
         public override IDecorationOf<ITask> ApplyThisDecorationTo(ITask thing)
         {
-            JobTask rv = new JobTask(this.Id, this.TaskStore.DefaultItemEvictionConditionFactory);
+            JobTask rv = new JobTask(this.Id, this.TaskStore.ExpirableFactory);
             //copy the store over
             rv.TaskStore = this.TaskStore;
             return rv;
@@ -287,7 +278,7 @@ namespace Decoratid.Tasks
                 tasks.WithEach(eachtask =>
                 {
                     //wraplace the task
-                    var wrappedTask = eachtask.DecorateWithDependency(interruptTask.Id);
+                    var wrappedTask = eachtask.DependsOn(interruptTask.Id);
                     wrappedTask.Save();
                 });
             }
@@ -301,13 +292,9 @@ namespace Decoratid.Tasks
                 var tasks = this.TaskStore.GetAll<ITask>();
                 tasks.WithEach(eachtask =>
                 {
-                    if (eachtask is DecoratedTaskBase)
-                    {
-                        DecoratedTaskBase dTask = eachtask as DecoratedTaskBase;
-                        var depTask = dTask.FindDecoratorOf<DependencyDecoration>(false);
-                        var undec = depTask.Undecorate<IHasTaskDependency>(false, (x) => { return x.Id.Equals(interruptTaskId); });
-                        undec.Save();
-                    }
+                    //wraplace the task
+                    var wrappedTask = eachtask.DoesNotDependOn(interruptTaskId);
+                    wrappedTask.Save();
                 });
             }
             return this;
@@ -315,7 +302,7 @@ namespace Decoratid.Tasks
         #endregion
 
         #region Static Fluent Methods
-        public static ITask New(string id, LogicOfTo<IHasId, ICondition> evictionPolicy)
+        public static ITask New(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
         {
             return new JobTask(id, evictionPolicy);
         }

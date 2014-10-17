@@ -42,6 +42,10 @@ namespace Decoratid.Idioms.Logging
         {
             return new StoreLogger(store);
         }
+        public static StoreLogger NewInMemory()
+        {
+            return new StoreLogger(NaturalInMemoryStore.New());
+        }
         #endregion
     }
 

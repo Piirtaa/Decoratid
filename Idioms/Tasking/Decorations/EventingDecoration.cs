@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
-using Decoratid.Tasks.Core;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
 using Decoratid.Extensions;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph;
+using System;
+using System.Collections.Generic;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// task decoration that fires an event when a task state transition happens.  Keeps a list of actions to
@@ -56,17 +49,6 @@ namespace Decoratid.Tasks.Decorations
             this.OnTaskCompletedActions = new List<Action>();
             this.OnTaskErroredActions = new List<Action>();
             this.OnTaskStartedActions = new List<Action>();
-        }
-        #endregion
-
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return string.Empty;
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
         }
         #endregion
 
@@ -170,7 +152,7 @@ namespace Decoratid.Tasks.Decorations
         #endregion
     }
 
-    public static partial class Extensions
+    public static class EventingDecorationExtensions
     {
         /// <summary>
         /// decorates with task events.  fires an event when a task state transition happens.  Keeps a list of actions to
@@ -178,13 +160,9 @@ namespace Decoratid.Tasks.Decorations
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static IEventingTask DecorateWithEvents(this ITask task)
+        public static IEventingTask Eventing(this ITask task)
         {
             Condition.Requires(task).IsNotNull();
-
-            if (task is IEventingTask)
-                return task as IEventingTask;
-
             return new EventingDecoration(task);
         }
 

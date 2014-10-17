@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
-using Decoratid.Tasks.Core;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using Decoratid.Core.Decorating;
+using System;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// Defines triggers (as ICondition) that can cause task state transitions.
@@ -50,7 +41,7 @@ namespace Decoratid.Tasks.Decorations
     /// Decorates with triggers (as ICondition) for task state transitions.  Does not change the behaviour at all, just adds new behaviour
     /// in CheckTriggers that will examine the trigger conditions and perform a state transition method if the condition is true.
     /// </summary>
-    public class ConditionalTriggerDecoration : DecoratedTaskBase, IHasConditionalTaskTriggers, IHasHydrationMap
+    public class ConditionalTriggerDecoration : DecoratedTaskBase, IHasConditionalTaskTriggers
     {
         #region Ctor
         /// <summary>
@@ -61,29 +52,6 @@ namespace Decoratid.Tasks.Decorations
             : base(decorated)
         {
 
-        }
-        #endregion
-
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var map = new HydrationMapValueManager<ConditionalTriggerDecoration>();
-            map.RegisterDefault("PerformTrigger", x => x.PerformTrigger, (x, y) => { x.PerformTrigger = y as ICondition; });
-            map.RegisterDefault("CancelTrigger", x => x.CancelTrigger, (x, y) => { x.CancelTrigger = y as ICondition; });
-            map.RegisterDefault("MarkCompleteTrigger", x => x.MarkCompleteTrigger, (x, y) => { x.MarkCompleteTrigger = y as ICondition; });
-            map.RegisterDefault("MarkErrorTrigger", x => x.MarkErrorTrigger, (x, y) => { x.MarkErrorTrigger = y as ICondition; });
-            return map;
-        }
-        #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
         }
         #endregion
 
@@ -145,7 +113,7 @@ namespace Decoratid.Tasks.Decorations
         #endregion
     }
 
-    public static partial class Extensions
+    public static class ConditionalTriggerDecorationExtensions
     {
         /// <summary>
         /// Decorates with triggers (as ICondition) for task state transitions.  Does not change the behaviour at all, just adds new behaviour
@@ -153,7 +121,7 @@ namespace Decoratid.Tasks.Decorations
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static IHasConditionalTaskTriggers DecorateWithTriggerConditions(this ITask task)
+        public static IHasConditionalTaskTriggers Triggered(this ITask task)
         {
             Condition.Requires(task).IsNotNull();
 
@@ -168,11 +136,11 @@ namespace Decoratid.Tasks.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDCancelCondition(this ITask task, ICondition condition)
+        public static ITask ANDCancelWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
             Condition.Requires(condition).IsNotNull();
-            var rTask = task.DecorateWithTriggerConditions();
+            var rTask = task.Triggered();
             rTask.CancelTrigger = rTask.CancelTrigger.And(condition);
             return rTask;
         }
@@ -182,11 +150,11 @@ namespace Decoratid.Tasks.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDPerformCondition(this ITask task, ICondition condition)
+        public static ITask ANDPerformWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
             Condition.Requires(condition).IsNotNull();
-            var rTask = task.DecorateWithTriggerConditions();
+            var rTask = task.Triggered();
             rTask.PerformTrigger = rTask.PerformTrigger.And(condition);
             return rTask;
         }
@@ -196,11 +164,11 @@ namespace Decoratid.Tasks.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDCompleteCondition(this ITask task, ICondition condition)
+        public static ITask ANDCompleteWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
             Condition.Requires(condition).IsNotNull();
-            var rTask = task.DecorateWithTriggerConditions();
+            var rTask = task.Triggered();
             rTask.MarkCompleteTrigger = rTask.MarkCompleteTrigger.And( condition);
             return rTask;
         }
@@ -210,11 +178,11 @@ namespace Decoratid.Tasks.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDFailCondition(this ITask task, ICondition condition)
+        public static ITask ANDFailWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
             Condition.Requires(condition).IsNotNull();
-            var rTask = task.DecorateWithTriggerConditions();
+            var rTask = task.Triggered();
             rTask.MarkErrorTrigger = rTask.MarkErrorTrigger.And( condition);
             return rTask;
         }

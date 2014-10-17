@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.Logical;
+using Decoratid.Idioms.Backgrounding;
 using Decoratid.Core.ValueOfing;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// decorates with a polling background action
@@ -25,7 +18,7 @@ namespace Decoratid.Tasks.Decorations
     /// <summary>
     /// decorates with a polling background action
     /// </summary>
-    public class PollingDecoration : DecoratedTaskBase, IPollingDecoration, IHasHydrationMap
+    public class PollingDecoration : DecoratedTaskBase, IPollingDecoration
     {
         #region Declarations
         #endregion
@@ -53,27 +46,6 @@ namespace Decoratid.Tasks.Decorations
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var hydrationMap = new HydrationMapValueManager<PollingDecoration>();
-            hydrationMap.RegisterDefault("Background", (x) => { return x.Background; }, (x, y) => { x.Background = y as BackgroundHost; });
-
-            return hydrationMap;
-        }
-        #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
-
         #region  IPollingDecoration
         public IPollingDecoration ClearBackgroundAction()
         {
@@ -93,7 +65,7 @@ namespace Decoratid.Tasks.Decorations
         public IPollingDecoration SetBackgroundAction(ILogicOf<ITask> backgroundAction, double backgroundIntervalMSecs = 30000)
         {
             this.ClearBackgroundAction();
-            backgroundAction.Context = (this as ITask).ValueOf();
+            backgroundAction.Context = (this as ITask).AsNaturalValue();
 
             this.Background = new BackgroundHost(true, backgroundIntervalMSecs, backgroundAction);
 

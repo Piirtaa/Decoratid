@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Core.Conditional;
+﻿using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
-using Decoratid.Thingness;
-using Decoratid.Idioms.Dependencies;
-using Decoratid.Idioms.Decorating;
+using System;
+using System.Linq;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking
 {
     /// <summary>
     /// decoration interface

@@ -1,20 +1,13 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
+using Decoratid.Idioms.Depending;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Idioms.Dependencies;
 using Decoratid.Extensions;
-using Decoratid.Tasks.Core;
-using Decoratid.Core.Conditional;
-using Decoratid.Thingness;
-using Decoratid.Core.Logical;
-using Decoratid.Idioms.Decorating;
-using Decoratid.Idioms.ObjectGraph.Values;
-using Decoratid.Idioms.ObjectGraph;
+using Decoratid.Core.Decorating;
+using System;
 
-namespace Decoratid.Tasks.Decorations
+namespace Decoratid.Idioms.Tasking.Decorations
 {
     /// <summary>
     /// indicates the task has a dependency on other tasks in the same store
@@ -27,13 +20,19 @@ namespace Decoratid.Tasks.Decorations
     /// decorate a task indicating it needs the provided tasks to complete before starting.
     /// Automatically decorates with ConditionalTriggers to accomplish this.
     /// </summary>
-    public class DependencyDecoration : DecoratedTaskBase, IHasTaskDependency, IHasConditionalTaskTriggers, IHasHydrationMap
+    public class DependencyDecoration : DecoratedTaskBase, IHasTaskDependency, IHasConditionalTaskTriggers
     {
         #region Ctor
         public DependencyDecoration(ITask decorated, List<string> prerequisiteTaskIds)
-            : base(decorated.DecorateWithTriggerConditions())
+            : base(decorated.Triggered())
         {
             //^^^^ notice how we have applied the trigger decoration in the base CTOR.  this gives us conditions to add our dependency to
+
+            //we can only have one dependency decoration per cake
+            if (DecorationUtils.HasDecoration<DependencyDecoration>(decorated))
+            {
+                throw new InvalidOperationException("already decorated");
+            }
 
             this.Dependency = new DependencyOf<string>(this.Id);
             prerequisiteTaskIds.WithEach(x => { this.Dependency.Prerequisites.Add(x); });
@@ -45,26 +44,6 @@ namespace Decoratid.Tasks.Decorations
         }
         #endregion
 
-        #region IHasHydrationMap
-        public virtual IHydrationMap GetHydrationMap()
-        {
-            var map = new HydrationMapValueManager<DependencyDecoration>();
-            map.RegisterDefault("Dependency", x => x.Dependency, (x, y) => { x.Dependency = y as IDependencyOf<string>; });
-            return map;
-        }
-        #endregion
-
-        #region IDecorationHydrateable
-        public override string DehydrateDecoration(IGraph uow = null)
-        {
-            return this.GetHydrationMap().DehydrateValue(this, uow);
-        }
-        public override void HydrateDecoration(string text, IGraph uow = null)
-        {
-            this.GetHydrationMap().HydrateValue(this, text, uow);
-        }
-        #endregion
-        
         #region IDecoratedTask
         public override IDecorationOf<ITask> ApplyThisDecorationTo(ITask task)
         {
@@ -150,13 +129,9 @@ namespace Decoratid.Tasks.Decorations
             return returnValue;
         }
         #endregion
-
-
-
-
     }
 
-    public static partial class Extensions
+    public static class DependencyDecorationExtensions
     {
         /// <summary>
         /// decorate a task indicating it needs the provided tasks to complete before starting.
@@ -164,31 +139,38 @@ namespace Decoratid.Tasks.Decorations
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static IHasTaskDependency DecorateWithDependency(this ITask task, params string[] prerequisiteTaskIds)
+        /// <remarks>
+        /// There can only be one dependency decoration per task layer cake
+        /// </remarks>
+        public static IHasTaskDependency DependsOn(this ITask task, params string[] prerequisiteTaskIds)
         {
             Condition.Requires(task).IsNotNull();
 
-            if (task is IHasTaskDependency)
+            //we can only have one dependency decoration per cake, so go grab that one and update it
+            if (DecorationUtils.HasDecoration<DependencyDecoration>(task))
             {
-                var rTask = task as IHasTaskDependency;
-                rTask.Dependency.Prerequisites.AddRange(prerequisiteTaskIds);
-                return rTask;
+                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(task);
+                dec.Dependency.Prerequisites.AddRange(prerequisiteTaskIds);
+                return dec;
             }
 
             return new DependencyDecoration(task, prerequisiteTaskIds.ToList());
         }
-        /// <summary>
-        /// Removes the outermost IHasTaskDependency decoration and returns the decorated value.
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="prerequisiteTaskIds"></param>
-        /// <returns></returns>
-        public static ITask RemoveDependencyDecoration(this IHasTaskDependency task)
+        public static ITask DoesNotDependOn(this ITask task, params string[] prerequisiteTaskIds)
         {
             Condition.Requires(task).IsNotNull();
+            if (DecorationUtils.HasDecoration<DependencyDecoration>(task))
+            {
+                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(task);
+                prerequisiteTaskIds.WithEach(pre =>
+                {
+                    dec.Dependency.Prerequisites.Remove(pre);
+                });
 
-            //wrap task
-            return task.Decorated;
+                return dec;
+            }
+
+            return task;
         }
 
     }

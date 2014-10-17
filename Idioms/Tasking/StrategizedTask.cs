@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Decoratid.Thingness;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Logical;
 
-namespace Decoratid.Tasks.Core
+namespace Decoratid.Idioms.Tasking.Core
 {
     /// <summary>
     /// uses ILogic strategies to implement a task

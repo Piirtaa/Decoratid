@@ -151,7 +151,7 @@ namespace Decoratid.Storidioms.Caching
         /// <param name="defaultItemEvictionConditionFactory"></param>
         /// <param name="backgroundIntervalMSecs"></param>
         /// <returns></returns>
-        public static CacheDecoration LocalCaching(this IStore decorated,
+        public static CacheDecoration CachingInMemory(this IStore decorated,
             LogicOfTo<IHasId, IExpirable> defaultItemEvictionConditionFactory,
             double backgroundIntervalMSecs = 30000)
         {
@@ -167,7 +167,7 @@ namespace Decoratid.Storidioms.Caching
         /// <param name="decorated"></param>
         /// <param name="secondsToCache"></param>
         /// <returns></returns>
-        public static CacheDecoration LocalFloatingCaching(this IStore decorated, int secondsToCache, int secondsToFloat)
+        public static CacheDecoration FloatingCachingInMemory(this IStore decorated, int secondsToCache, int secondsToFloat)
         {
             Condition.Requires(decorated).IsNotNull();
 
