@@ -11,4 +11,13 @@ Using decorations, additional behaviour is added to tasks such as:
 
 A master task, JobTask, runs the whole deal, iterating thru the tasks in the task store and firing them off.
 It itself is implemented as a task that has a dependency on all the other tasks.  
+
+An example:
+
+var job = Job.New()  or Job.New(EvictionPolicy
+
+
+
+var logic.MakeTask("task1").PerformWhen(condition);
+
             

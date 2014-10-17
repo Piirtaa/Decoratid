@@ -82,7 +82,7 @@
     <Compile Include="Idioms\Tasking\Decorations\PollingDecoration.cs" />
     <Compile Include="Idioms\Tasking\Decorations\SynchronousDecoration.cs" />
     <Compile Include="Idioms\Tasking\Extensions.cs" />
-    <Compile Include="Idioms\Tasking\JobTask.cs" />
+    <Compile Include="Idioms\Tasking\Job.cs" />
     <Compile Include="Idioms\Tasking\TaskBase.cs" />
     <Compile Include="Idioms\Tasking\TaskStore.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />

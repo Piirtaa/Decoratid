@@ -21,7 +21,7 @@ namespace Decoratid.Idioms.Tasking
     /// the processing of the tasks.  In this way we can just add instances to scale out.  However, I imagine this should
     /// only be done when you're dealing with long complicated jobs where you might want to take advantage of parallelization.
     /// </remarks>
-    public class JobTask : DecoratedTaskBase
+    public class Job : DecoratedTaskBase
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -32,7 +32,7 @@ namespace Decoratid.Idioms.Tasking
         /// provide store (with defined eviction strategies)
         /// </summary>
         /// <param name="store"></param>
-        public JobTask(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
+        public Job(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
             : base(StrategizedTask.NewBlank(id))
         {
             /*Overall process:
@@ -229,7 +229,7 @@ namespace Decoratid.Idioms.Tasking
         #region Overrides
         public override IDecorationOf<ITask> ApplyThisDecorationTo(ITask thing)
         {
-            JobTask rv = new JobTask(this.Id, this.TaskStore.ExpirableFactory);
+            Job rv = new Job(this.Id, this.TaskStore.ExpirableFactory);
             //copy the store over
             rv.TaskStore = this.TaskStore;
             return rv;
@@ -255,7 +255,7 @@ namespace Decoratid.Idioms.Tasking
 
         #region Fluent Methods
 
-        public JobTask AddTask(ITask task)
+        public Job AddTask(ITask task)
         {
             Condition.Requires(task).IsNotNull();
             task.TaskStore = this.TaskStore;
@@ -267,7 +267,7 @@ namespace Decoratid.Idioms.Tasking
         /// </summary>
         /// <param name="interruptTask"></param>
         /// <returns></returns>
-        public JobTask AddInterruptingTask(ITask interruptTask)
+        public Job AddInterruptingTask(ITask interruptTask)
         {
             lock (this._stateLock)
             {
@@ -285,7 +285,7 @@ namespace Decoratid.Idioms.Tasking
             return this;
         }
 
-        public JobTask RemoveInterruptingTask(string interruptTaskId)
+        public Job RemoveInterruptingTask(string interruptTaskId)
         {
             lock (this._stateLock)
             {
@@ -304,7 +304,7 @@ namespace Decoratid.Idioms.Tasking
         #region Static Fluent Methods
         public static ITask New(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
         {
-            return new JobTask(id, evictionPolicy);
+            return new Job(id, evictionPolicy);
         }
         #endregion
     }
