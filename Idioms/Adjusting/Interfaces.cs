@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Adjusting
 {
+    /// <summary>
+    /// defines logic that adjusts something
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IAdjustment<T>
     {
         LogicOfTo<T, T> AdjustmentLogic { get; }
-        T AdjustedValue { get; }
     }
 
     /// <summary>

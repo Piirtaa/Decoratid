@@ -33,7 +33,6 @@ namespace Decoratid.Idioms.Adjusting
 
         #region IAdjustment
         public LogicOfTo<T, T> AdjustmentLogic { get { return this.Adjustment.AdjustmentLogic; } }
-        public T AdjustedValue { get { return this.Adjustment.AdjustedValue; } }
         #endregion
     }
 

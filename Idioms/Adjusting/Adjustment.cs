@@ -45,7 +45,6 @@ namespace Decoratid.Idioms.Adjusting
 
         #region IAdjustment
         public LogicOfTo<T, T> AdjustmentLogic { get; private set; }
-        public T AdjustedValue { get { return this.AdjustmentLogic.Result; } }
         #endregion
 
     }

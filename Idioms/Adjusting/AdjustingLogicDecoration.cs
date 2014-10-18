@@ -29,7 +29,6 @@ namespace Decoratid.Idioms.Adjusting
             : base(info, context)
         {
             this.AdjustmentLogic = (LogicOfTo<ILogic, ILogic>)info.GetValue("Adjustment", typeof(LogicOfTo<ILogic, ILogic>));
-            this.AdjustedValue = (ILogic)info.GetValue("AdjustedValue", typeof(ILogic));
         }
         /// <summary>
         /// since we don't want to expose ISerializable concerns publicly, we use a virtual protected
@@ -42,7 +41,6 @@ namespace Decoratid.Idioms.Adjusting
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Adjustment", this.AdjustmentLogic);
-            info.AddValue("AdjustedValue", this.AdjustedValue);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
@@ -50,15 +48,15 @@ namespace Decoratid.Idioms.Adjusting
 
         #region IAdjustingLogic
         public LogicOfTo<ILogic, ILogic> AdjustmentLogic { get; private set; }
-        public ILogic AdjustedValue { get; private set; }
         #endregion
 
         #region Methods
         public override void Perform()
         {
-            var adjustment = this.AdjustmentLogic.CloneAndPerform(this.Decorated.AsNaturalValue());
-            this.AdjustedValue = adjustment;
-            this.AdjustedValue.Perform(); 
+            this.AdjustmentLogic.Context = this.Decorated.AsNaturalValue();
+            this.AdjustmentLogic.Perform();
+            var adjusted = this.AdjustmentLogic.Result;
+            adjusted.Perform();
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
