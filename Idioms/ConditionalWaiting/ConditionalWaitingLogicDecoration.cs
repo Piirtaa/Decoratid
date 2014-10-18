@@ -12,7 +12,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
     /// </summary>
     /// 
     [Serializable]
-    public class ConditionalWaitingLogicDecoration : DecoratedLogicBase, IHasWaitCondition
+    public class ConditionalWaitingLogicDecoration : DecoratedLogicBase, IHasConditionalWaiter
     {
         #region Ctor
         public ConditionalWaitingLogicDecoration(ILogic decorated, ICondition waitCondition, ICondition stopWaitingCondition)
@@ -35,10 +35,11 @@ namespace Decoratid.Idioms.ConditionalWaiting
         }
         #endregion
 
-        #region IHasWaitCondition
-        private ConditionalWaiter Waiter { get; set; }
+        #region IHasConditionalWaiter
+        public IConditionalWaiter Waiter { get; set; }
         public ICondition WaitCondition { get { return this.Waiter.WaitCondition; } }
         public ICondition StopWaitingCondition { get { return this.Waiter.StopWaitingCondition; } }
+        public bool WaitAround() { return this.Waiter.WaitAround(); }
         #endregion
 
         #region Methods

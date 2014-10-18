@@ -17,6 +17,9 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
     }
 
+    /// <summary>
+    /// defines something that waits
+    /// </summary>
     public interface IConditionalWaiter : IHasWaitCondition
     {
         /// <summary>
@@ -24,5 +27,13 @@ namespace Decoratid.Idioms.ConditionalWaiting
         /// if stop waiting condition is true, will return false.  
         /// </summary>
         bool WaitAround();
+    }
+
+    /// <summary>
+    /// Has A interface for IConditionalWaiter
+    /// </summary>
+    public interface IHasConditionalWaiter : IConditionalWaiter
+    {
+        IConditionalWaiter Waiter { get; set; }
     }
 }

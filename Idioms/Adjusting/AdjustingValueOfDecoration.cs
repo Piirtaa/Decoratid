@@ -20,10 +20,8 @@ namespace Decoratid.Idioms.Adjusting
     /// Also can be repurposed for audit and any general decoration.
     /// </remarks>
     /// <typeparam name="T"></typeparam>
-    public interface IAdjustingValueOf<T> : IValueOf<T>
+    public interface IAdjustingValueOf<T> : IValueOf<T>, IAdjustment<T>
     {
-        LogicOfTo<T, T> Adjustment { get; }
-        T AdjustedValue { get; }
     }
 
     /// <summary>
@@ -37,7 +35,7 @@ namespace Decoratid.Idioms.Adjusting
             : base(decorated)
         {
             Condition.Requires(adjustment).IsNotNull();
-            this.Adjustment = adjustment;
+            this.AdjustmentLogic = adjustment;
         }
         #endregion
 
@@ -45,7 +43,7 @@ namespace Decoratid.Idioms.Adjusting
         protected AdjustingValueOfDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.Adjustment = (LogicOfTo<T, T>)info.GetValue("Adjustment", typeof(LogicOfTo<T, T>));
+            this.AdjustmentLogic = (LogicOfTo<T, T>)info.GetValue("Adjustment", typeof(LogicOfTo<T, T>));
             this.AdjustedValue = (T)info.GetValue("AdjustedValue", typeof(T));
         }
         /// <summary>
@@ -58,14 +56,14 @@ namespace Decoratid.Idioms.Adjusting
         /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Adjustment", this.Adjustment);
+            info.AddValue("Adjustment", this.AdjustmentLogic);
             info.AddValue("AdjustedValue", this.AdjustedValue);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
         #region Properties
-        public LogicOfTo<T, T> Adjustment { get; private set; }
+        public LogicOfTo<T, T> AdjustmentLogic { get; private set; }
         public T AdjustedValue { get; private set; }
         #endregion
 
@@ -73,13 +71,13 @@ namespace Decoratid.Idioms.Adjusting
         public override T GetValue()
         {
             var oldValue = Decorated.GetValue();
-            var rv = this.Adjustment.CloneAndPerform(oldValue.AsNaturalValue());
+            var rv = this.AdjustmentLogic.CloneAndPerform(oldValue.AsNaturalValue());
             this.AdjustedValue = rv;
             return rv;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new AdjustingValueOfDecoration<T>(thing, this.Adjustment);
+            return new AdjustingValueOfDecoration<T>(thing, this.AdjustmentLogic);
         }
         #endregion
     }

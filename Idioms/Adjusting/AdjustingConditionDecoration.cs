@@ -8,10 +8,8 @@ using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Adjusting
 {
-    public interface IAdjustingCondition : IDecoratedCondition
+    public interface IAdjustingCondition : IDecoratedCondition, IAdjustment<ICondition>
     {
-        LogicOfTo<ICondition, ICondition> Adjustment { get; }
-        ICondition AdjustedValue { get; }
     }
 
     [Serializable]
@@ -22,7 +20,7 @@ namespace Decoratid.Idioms.Adjusting
             : base(decorated)
         {
             Condition.Requires(adjustment).IsNotNull();
-            this.Adjustment = adjustment;
+            this.AdjustmentLogic = adjustment;
         }
         #endregion
 
@@ -30,7 +28,7 @@ namespace Decoratid.Idioms.Adjusting
         protected AdjustingConditionDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.Adjustment = (LogicOfTo<ICondition, ICondition>)info.GetValue("Adjustment", typeof(LogicOfTo<ICondition, ICondition>));
+            this.AdjustmentLogic = (LogicOfTo<ICondition, ICondition>)info.GetValue("Adjustment", typeof(LogicOfTo<ICondition, ICondition>));
             this.AdjustedValue = (ICondition)info.GetValue("AdjustedValue", typeof(ICondition));
         }
         /// <summary>
@@ -43,28 +41,28 @@ namespace Decoratid.Idioms.Adjusting
         /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Adjustment", this.Adjustment);
+            info.AddValue("Adjustment", this.AdjustmentLogic);
             info.AddValue("AdjustedValue", this.AdjustedValue);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
         #region IAdjustingCondition
-        public LogicOfTo<ICondition, ICondition> Adjustment { get; private set; }
+        public LogicOfTo<ICondition, ICondition> AdjustmentLogic { get; private set; }
         public ICondition AdjustedValue { get; private set; }
         #endregion
 
         #region Methods
         public override bool? Evaluate()
         {
-            var adjustment = this.Adjustment.CloneAndPerform(this.Decorated.AsNaturalValue());
+            var adjustment = this.AdjustmentLogic.CloneAndPerform(this.Decorated.AsNaturalValue());
             this.AdjustedValue = adjustment;
             var rv = this.AdjustedValue.Evaluate();
             return rv;
         }
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            return new AdjustingConditionDecoration(thing, this.Adjustment);
+            return new AdjustingConditionDecoration(thing, this.AdjustmentLogic);
         }
         #endregion
     }

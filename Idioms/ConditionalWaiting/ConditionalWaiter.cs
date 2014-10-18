@@ -110,6 +110,13 @@ namespace Decoratid.Idioms.ConditionalWaiting
                 this._background.Dispose();
         }
         #endregion
+
+        #region Fluent Static
+        public static ConditionalWaiter New(ICondition waitCondition, ICondition stopWaitingCondition)
+        {
+            return new ConditionalWaiter(waitCondition, stopWaitingCondition);
+        }
+        #endregion
     }
 
     public static class ConditionalWaiterExtensions
