@@ -16,10 +16,10 @@ namespace Decoratid.Idioms.ConditionalWaiting
     public class ConditionalWaitingValueOfDecoration<T> : DecoratedValueOfBase<T>, IHasConditionalWaiter
     {
         #region Ctor
-        public ConditionalWaitingValueOfDecoration(IValueOf<T> decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public ConditionalWaitingValueOfDecoration(IValueOf<T> decorated, ICondition Condition, ICondition stopWaitingCondition = null)
             : base(decorated)
         {
-            this.Waiter = new ConditionalWaiter(waitCondition, stopWaitingCondition);
+            this.Waiter = new ConditionalWaiter(Condition, stopWaitingCondition);
         }
         #endregion
 
@@ -38,9 +38,6 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
         #region IHasConditionalWaiter
         public IConditionalWaiter Waiter { get; set; }
-        public ICondition WaitCondition { get { return this.Waiter.WaitCondition; } }
-        public ICondition StopWaitingCondition { get { return this.Waiter.StopWaitingCondition; } }
-        public bool WaitAround() { return this.Waiter.WaitAround(); }
         #endregion
 
         #region Methods
@@ -54,16 +51,16 @@ namespace Decoratid.Idioms.ConditionalWaiting
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new ConditionalWaitingValueOfDecoration<T>(thing, this.WaitCondition, this.StopWaitingCondition);
+            return new ConditionalWaitingValueOfDecoration<T>(thing, this.Waiter.Condition, this.Waiter.StopWaitingCondition);
         }
         #endregion
     }
 
     public static class ConditionalWaitingValueOfDecorationExtensions
     {
-        public static ConditionalWaitingValueOfDecoration<T> KackUnless<T>(IValueOf<T> decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingValueOfDecoration<T> WaitUntil<T>(IValueOf<T> decorated, ICondition Condition, ICondition stopWaitingCondition)
         {
-            return new ConditionalWaitingValueOfDecoration<T>(decorated, waitCondition, stopWaitingCondition);
+            return new ConditionalWaitingValueOfDecoration<T>(decorated, Condition, stopWaitingCondition);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Decoratid.Idioms.Adjusting
     /// <summary>
     /// composites IAdjustment
     /// </summary>
-    public interface IHasAdjustment<T> : IAdjustment<T>
+    public interface IHasAdjustment<T> 
     {
         IAdjustment<T> Adjustment { get; set; }
     }

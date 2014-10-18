@@ -15,10 +15,10 @@ namespace Decoratid.Idioms.ConditionalWaiting
     public class ConditionalWaitingLogicDecoration : DecoratedLogicBase, IHasConditionalWaiter
     {
         #region Ctor
-        public ConditionalWaitingLogicDecoration(ILogic decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public ConditionalWaitingLogicDecoration(ILogic decorated, ICondition Condition, ICondition stopWaitingCondition =null)
             : base(decorated)
         {
-            this.Waiter = new ConditionalWaiter(waitCondition, stopWaitingCondition);
+            this.Waiter = new ConditionalWaiter(Condition, stopWaitingCondition);
         }
         #endregion
 
@@ -37,9 +37,6 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
         #region IHasConditionalWaiter
         public IConditionalWaiter Waiter { get; set; }
-        public ICondition WaitCondition { get { return this.Waiter.WaitCondition; } }
-        public ICondition StopWaitingCondition { get { return this.Waiter.StopWaitingCondition; } }
-        public bool WaitAround() { return this.Waiter.WaitAround(); }
         #endregion
 
         #region Methods
@@ -53,16 +50,16 @@ namespace Decoratid.Idioms.ConditionalWaiting
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            return new ConditionalWaitingLogicDecoration(thing, this.WaitCondition, this.StopWaitingCondition);
+            return new ConditionalWaitingLogicDecoration(thing,  this.Waiter.Condition, this.Waiter.StopWaitingCondition);
         }
         #endregion
     }
 
     public static class ConditionalWaitingLogicDecorationExtensions
     {
-        public static ConditionalWaitingLogicDecoration WaitUntil(ILogic decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingLogicDecoration WaitUntil(ILogic decorated, ICondition Condition, ICondition stopWaitingCondition)
         {
-            return new ConditionalWaitingLogicDecoration(decorated, waitCondition, stopWaitingCondition);
+            return new ConditionalWaitingLogicDecoration(decorated, Condition, stopWaitingCondition);
         }
     }
 }

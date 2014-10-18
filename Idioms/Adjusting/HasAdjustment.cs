@@ -30,10 +30,6 @@ namespace Decoratid.Idioms.Adjusting
         #region IHasAdjustment
         public IAdjustment<T> Adjustment { get; set; }
         #endregion
-
-        #region IAdjustment
-        public LogicOfTo<T, T> AdjustmentLogic { get { return this.Adjustment.AdjustmentLogic; } }
-        #endregion
     }
 
     public static class HasAdjustmentExtensions

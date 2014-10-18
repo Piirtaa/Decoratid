@@ -26,10 +26,10 @@ namespace Decoratid.Idioms.ConditionalWaiting
         #endregion
 
         #region Ctor
-        public ConditionalWaiter(ICondition waitCondition, ICondition stopWaitingCondition) : base()
+        public ConditionalWaiter(ICondition condition, ICondition stopWaitingCondition = null) : base()
         {
-            Condition.Requires(waitCondition).IsNotNull();
-            this.WaitCondition = waitCondition;
+            CuttingEdge.Conditions.Condition.Requires(condition).IsNotNull();
+            this.Condition = Condition;
             this.StopWaitingCondition = stopWaitingCondition;
 
             this._background = new BackgroundHost(true, 1000,
@@ -37,7 +37,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
                 {
                     lock (_stateLock)
                     {
-                        if (WaitCondition.Evaluate().GetValueOrDefault())
+                        if (Condition.Evaluate().GetValueOrDefault())
                         {
                             this._isResolved = true;
                             Monitor.Pulse(_stateLock);
@@ -55,12 +55,12 @@ namespace Decoratid.Idioms.ConditionalWaiting
         #region ISerializable
         private ConditionalWaiter(SerializationInfo info, StreamingContext context)
         {
-            this.WaitCondition = (ICondition)info.GetValue("WaitCondition", typeof(ICondition));
-            this.WaitCondition = (ICondition)info.GetValue("StopWaitingCondition", typeof(ICondition));
+            this.Condition = (ICondition)info.GetValue("Condition", typeof(ICondition));
+            this.Condition = (ICondition)info.GetValue("StopWaitingCondition", typeof(ICondition));
         }
         private void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("WaitCondition", this.WaitCondition);
+            info.AddValue("Condition", this.Condition);
             info.AddValue("StopWaitingCondition", this.StopWaitingCondition);
         }
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
@@ -73,8 +73,8 @@ namespace Decoratid.Idioms.ConditionalWaiting
         Polyface IPolyfacing.RootFace { get; set; }
         #endregion
 
-        #region IHasWaitCondition
-        public ICondition WaitCondition { get; private set; }
+        #region IHasCondition
+        public ICondition Condition { get; set; }
         public ICondition StopWaitingCondition { get; private set; }
         #endregion
 
@@ -89,7 +89,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
                 while (this._isResolved== null)
                 {
-                    if (WaitCondition.Evaluate().GetValueOrDefault())
+                    if (Condition.Evaluate().GetValueOrDefault())
                         this._isResolved = true;
 
                     if (this.StopWaitingCondition != null && this.StopWaitingCondition.Evaluate().GetValueOrDefault() == true)
@@ -112,19 +112,19 @@ namespace Decoratid.Idioms.ConditionalWaiting
         #endregion
 
         #region Fluent Static
-        public static ConditionalWaiter New(ICondition waitCondition, ICondition stopWaitingCondition)
+        public static ConditionalWaiter New(ICondition Condition, ICondition stopWaitingCondition)
         {
-            return new ConditionalWaiter(waitCondition, stopWaitingCondition);
+            return new ConditionalWaiter(Condition, stopWaitingCondition);
         }
         #endregion
     }
 
     public static class ConditionalWaiterExtensions
     {
-        public static Polyface IsConditionalWaiter(this Polyface root, ICondition waitCondition, ICondition stopWaitingCondition)
+        public static Polyface IsConditionalWaiter(this Polyface root, ICondition condition, ICondition stopWaitingCondition)
         {
             Condition.Requires(root).IsNotNull();
-            var bg = new ConditionalWaiter(waitCondition, stopWaitingCondition);
+            var bg = new ConditionalWaiter(condition, stopWaitingCondition);
             root.Is(bg);
             return root;
         }
@@ -134,7 +134,6 @@ namespace Decoratid.Idioms.ConditionalWaiting
             var rv = root.As<ConditionalWaiter>();
             return rv;
         }
-
 
 
 

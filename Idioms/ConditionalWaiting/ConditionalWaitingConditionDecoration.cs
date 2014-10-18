@@ -37,9 +37,6 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
         #region IHasConditionalWaiter
         public IConditionalWaiter Waiter { get; set; }
-        public ICondition WaitCondition { get { return this.Waiter.WaitCondition; } }
-        public ICondition StopWaitingCondition { get { return this.Waiter.StopWaitingCondition; } }
-        public bool WaitAround() { return this.Waiter.WaitAround(); }
         #endregion
 
 
@@ -54,14 +51,14 @@ namespace Decoratid.Idioms.ConditionalWaiting
         }
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            return new ConditionalWaitingConditionDecoration(thing, this.WaitCondition, this.StopWaitingCondition);
+            return new ConditionalWaitingConditionDecoration(thing, this.Waiter.Condition, this.Waiter.StopWaitingCondition);
         }
         #endregion
     }
 
     public static class ConditionalWaitingConditionDecorationExtensions
     {
-        public static ConditionalWaitingConditionDecoration WaitUntil(ICondition decorated, ICondition waitCondition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingConditionDecoration WaitUntil(ICondition decorated, ICondition waitCondition, ICondition stopWaitingCondition = null)
         {
             return new ConditionalWaitingConditionDecoration(decorated, waitCondition, stopWaitingCondition);
         }

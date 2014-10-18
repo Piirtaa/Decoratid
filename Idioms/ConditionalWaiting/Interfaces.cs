@@ -10,9 +10,8 @@ namespace Decoratid.Idioms.ConditionalWaiting
     /// <summary>
     /// will delay performing operation until wait condition is met
     /// </summary>
-    public interface IHasWaitCondition
+    public interface IHasWaitCondition : IHasCondition
     {
-        ICondition WaitCondition { get; }
         ICondition StopWaitingCondition { get; }
 
     }
@@ -32,7 +31,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
     /// <summary>
     /// Has A interface for IConditionalWaiter
     /// </summary>
-    public interface IHasConditionalWaiter : IConditionalWaiter
+    public interface IHasConditionalWaiter 
     {
         IConditionalWaiter Waiter { get; set; }
     }

@@ -22,4 +22,11 @@ namespace Decoratid.Core.Conditional
         ICondition Clone();
     }
 
+    /// <summary>
+    /// HasA implementation
+    /// </summary>
+    public interface IHasCondition
+    {
+        ICondition Condition { get; set; }
+    }
 }

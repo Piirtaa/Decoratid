@@ -96,5 +96,21 @@ namespace Decoratid.Core.Conditional
             And and = cond as And;
             return and.Conditions.ToList();
         }
+
+        /// <summary>
+        /// fluent And 
+        /// </summary>
+        /// <param name="cond"></param>
+        /// <param name="conds"></param>
+        /// <returns></returns>
+        public static IHasCondition And(this IHasCondition cond, params ICondition[] conds)
+        {
+            if (cond == null)
+                return cond;
+
+            cond.Condition = cond.Condition.And(conds);
+
+            return cond;
+        }
     }
 }

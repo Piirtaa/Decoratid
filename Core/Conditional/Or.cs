@@ -101,5 +101,15 @@ namespace Decoratid.Core.Conditional
             Or or = cond as Or;
             return or.Conditions.ToList();
         }
+
+        public static IHasCondition Or(this IHasCondition cond, params ICondition[] conds)
+        {
+            if (cond == null)
+                return cond;
+
+            cond.Condition = cond.Condition.Or(conds);
+
+            return cond;
+        }
     }
 }
