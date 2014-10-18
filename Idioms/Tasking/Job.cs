@@ -306,6 +306,9 @@ namespace Decoratid.Idioms.Tasking
         {
             return new Job(id, evictionPolicy);
         }
+        
+        //Job.New("job", LogicOfTo<IHasId, IExpirable>.New((x) => { return EvictionPolicy.BuildNeverExpirable(); }));
+
         #endregion
     }
 }

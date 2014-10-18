@@ -35,4 +35,16 @@ Fluently decorated as: (note: they all follow the IHasExpirable composition)
 	logic.HasExpirable(expirable);
 	condition.HasExpirable(expirable);
 
-  
+
+The "HasA" approach.
+-define HasA interface, IHasExpirable, that wraps Expirable
+-define HasExpirable container that implements IHasExpirable
+-implement IHasExpirable on the appropriate Core types
+-define fluent methods that have a "this" of IHasExpirable, for each decoration
+	-these fluent methods will decorate the Expirable property of IHasExpirable.  In other words, wraplace the wrapped instance.
+-define a single fluent method, HasExpirable() that will decorate with IHasExpirable.
+	-the parameterless Expires method sets IHasExpirable.Expirable to the default expirable (NaturalFalseExpirable)
+	-Expires also has an overload with a single parameter, which lets us specify the expirable we're using
+
+The use of a container (eg. HasExpirable) to hold the behaviour allows us to easily wraplace/decorate, and to do so fluently.
+It also gives us consistency in the application of decorations whether using Core types or Polyface.

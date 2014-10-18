@@ -6,11 +6,11 @@ using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Expiring
 {
-    public interface IHasExpiryDate
+    public interface IHasExpiryDate : IExpirable
     {
         DateTime ExpiryDate { get; }
     }
-    public interface IHasSettableExpiryDate
+    public interface IHasSettableExpiryDate : IHasExpiryDate
     {
         void SetExpiryDate(DateTime dt);
     }
@@ -79,10 +79,18 @@ namespace Decoratid.Idioms.Expiring
 
     public static class DateExpirableDecorationExtensions
     {
-        public static DateExpirableDecoration ExpiresOn(this IExpirable thing, DateTime expiryDate)
+        public static DateExpirableDecoration DecorateWithDateExpirable(this IExpirable thing, DateTime expiryDate)
         {
             Condition.Requires(thing).IsNotNull();
             return new DateExpirableDecoration(thing, expiryDate);
         }
+        public static IHasExpirable On(this IHasExpirable thing, DateTime expiryDate)
+        {
+            Condition.Requires(thing).IsNotNull();
+            thing.Expirable = thing.Expirable.DecorateWithDateExpirable(expiryDate);
+
+            return thing;
+        }
+
     }
 }

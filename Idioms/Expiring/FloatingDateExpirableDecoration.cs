@@ -70,10 +70,21 @@ namespace Decoratid.Idioms.Expiring
 
     public static class FloatingDateExpirableDecorationExtensions
     {
-        public static FloatingDateExpirableDecoration Float(this DateExpirableDecoration thing, int touchIncrementSecs)
+        public static FloatingDateExpirableDecoration DecorateWithFloatingDateExpirable(this DateExpirableDecoration thing, int touchIncrementSecs)
         {
             Condition.Requires(thing).IsNotNull();
             return new FloatingDateExpirableDecoration(thing, touchIncrementSecs);
+        }
+        public static IHasExpirable Float(this IHasExpirable thing, int touchIncrementSecs)
+        {
+            Condition.Requires(thing).IsNotNull();
+            if (!(thing.Expirable is DateExpirableDecoration))
+                throw new InvalidOperationException("expirable must be DateExpirableDecoration");
+
+            var dateExpire = thing.Expirable as DateExpirableDecoration;
+            thing.Expirable = dateExpire.DecorateWithFloatingDateExpirable(touchIncrementSecs);
+
+            return thing;
         }
     }
 }

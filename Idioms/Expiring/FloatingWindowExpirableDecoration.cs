@@ -73,10 +73,22 @@ namespace Decoratid.Idioms.Expiring
 
     public static class FloatingWindowExpirableDecorationExtensions
     {
-        public static FloatingWindowExpirableDecoration Float(this WindowExpirableDecoration thing, int touchIncrementSecs)
+        public static FloatingWindowExpirableDecoration DecorateWithFloatingWindowExpirable(this WindowExpirableDecoration thing, int touchIncrementSecs)
         {
             Condition.Requires(thing).IsNotNull();
             return new FloatingWindowExpirableDecoration(thing, touchIncrementSecs);
+        }
+
+        public static IHasExpirable Float(this IHasExpirable thing, int touchIncrementSecs)
+        {
+            Condition.Requires(thing).IsNotNull();
+            if (!(thing.Expirable is WindowExpirableDecoration))
+                throw new InvalidOperationException("expirable must be WindowExpirableDecoration");
+
+            var dateExpire = thing.Expirable as WindowExpirableDecoration;
+            thing.Expirable = dateExpire.DecorateWithFloatingWindowExpirable(touchIncrementSecs);
+
+            return thing;
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Decoratid.Idioms.Expiring
         #endregion
 
         #region IHasExpirable
-        public IExpirable Expirable { get; private set; }
+        public IExpirable Expirable { get; set; }
         #endregion
 
         #region IExpirable
@@ -67,6 +67,11 @@ namespace Decoratid.Idioms.Expiring
         {
             Condition.Requires(decorated).IsNotNull();
             return new ExpiringConditionDecoration(decorated, expirable);
+        }
+        public static ExpiringConditionDecoration HasExpirable(ICondition decorated)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new ExpiringConditionDecoration(decorated, NaturalFalseExpirable.New());
         }
     }
 }

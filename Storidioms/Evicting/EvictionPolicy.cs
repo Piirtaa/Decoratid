@@ -17,13 +17,13 @@ namespace Decoratid.Storidioms.Evicting
     {
         public static IExpirable BuildImmutableExpirable(DateTime expiry)
         {
-            var expire = NaturalFalseExpirable.New().ExpiresOn(expiry);
+            var expire = NaturalFalseExpirable.New().DecorateWithDateExpirable(expiry);
             return expire;
 
         }
         public static IExpirable BuildFloatingExpirable(DateTime expiry, int touchIncrementSecs)
         {
-            var expire = NaturalFalseExpirable.New().ExpiresOn(expiry).Float(touchIncrementSecs);
+            var expire = NaturalFalseExpirable.New().DecorateWithDateExpirable(expiry).DecorateWithFloatingDateExpirable(touchIncrementSecs);
             return expire;
 
         }
@@ -35,14 +35,14 @@ namespace Decoratid.Storidioms.Evicting
         }
         public static IExpirable BuildWithinWindowExpirable(DateTime startDate, DateTime endDate)
         {
-            var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate);
+            var expire = NaturalFalseExpirable.New().DecorateWithWindowExpirable(startDate, endDate);
             return expire;
 
         }
         public static IExpirable BuildWithinFloatingWindowExpirable(DateTime startDate, DateTime endDate, int touchIncrementSecs)
         {
 
-            var expire = NaturalFalseExpirable.New().InWindow(startDate, endDate).Float(touchIncrementSecs);
+            var expire = NaturalFalseExpirable.New().DecorateWithWindowExpirable(startDate, endDate).DecorateWithFloatingWindowExpirable(touchIncrementSecs);
             return expire;
 
         }

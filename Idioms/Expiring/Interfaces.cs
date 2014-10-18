@@ -13,12 +13,13 @@ namespace Decoratid.Idioms.Expiring
     {
         bool IsExpired();
     }
+
     /// <summary>
     /// composites Expirable
     /// </summary>
     public interface IHasExpirable : IExpirable
     {
-        IExpirable Expirable { get; }
+        IExpirable Expirable { get; set; }
     }
 
 }

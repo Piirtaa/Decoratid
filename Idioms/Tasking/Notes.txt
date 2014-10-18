@@ -14,9 +14,14 @@ It itself is implemented as a task that has a dependency on all the other tasks.
 
 An example:
 
-var job = Job.New()  or Job.New(EvictionPolicy
+//job store has eviction but each item is default no eviction
+//  add item by item eviction decoration
+    job.Expires().On.Floating()...etc.  the Expires() call returns IExpirable decoration.  each decoration fluent call must wrapplace
 
 
+var job = Job.New()  or Job.New
+
+    
 
 var logic.MakeTask("task1").PerformWhen(condition);
 

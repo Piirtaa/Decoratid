@@ -6,12 +6,12 @@ using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Expiring
 {
-    public interface IHasWindow
+    public interface IHasWindow : IExpirable
     {
         DateTime StartDate { get; }
         DateTime EndDate {get;}
     }
-    public interface IHasSettableWindow
+    public interface IHasSettableWindow : IHasWindow
     {
         void SetWindow(DateTime start, DateTime end);
     }
@@ -87,10 +87,18 @@ namespace Decoratid.Idioms.Expiring
 
     public static class WindowExpirableDecorationExtensions
     {
-        public static WindowExpirableDecoration InWindow(this IExpirable thing, DateTime startDate, DateTime endDate)
+        public static WindowExpirableDecoration DecorateWithWindowExpirable(this IExpirable thing, DateTime startDate, DateTime endDate)
         {
             Condition.Requires(thing).IsNotNull();
             return new WindowExpirableDecoration(thing, startDate, endDate);
+        }
+
+        public static IHasExpirable InWindow(this IHasExpirable thing, DateTime startDate, DateTime endDate)
+        {
+            Condition.Requires(thing).IsNotNull();
+            thing.Expirable = thing.Expirable.DecorateWithWindowExpirable(startDate, endDate);
+
+            return thing;
         }
     }
 }

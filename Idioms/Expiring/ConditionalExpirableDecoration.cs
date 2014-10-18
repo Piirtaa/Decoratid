@@ -81,10 +81,17 @@ namespace Decoratid.Idioms.Expiring
 
     public static class ConditionalExpirableDecorationExtensions
     {
-        public static ConditionalExpirableDecoration ExpiresWhen(this IExpirable thing, ICondition condition)
+        public static ConditionalExpirableDecoration DecorateWithConditionalExpirable(this IExpirable thing, ICondition condition)
         {
             Condition.Requires(thing).IsNotNull();
             return new ConditionalExpirableDecoration(thing, condition);
+        }
+        public static IHasExpirable When(this IHasExpirable thing, ICondition condition)
+        {
+            Condition.Requires(thing).IsNotNull();
+            thing.Expirable = thing.Expirable.DecorateWithConditionalExpirable(condition);
+
+            return thing;
         }
     }
 }
