@@ -103,7 +103,7 @@ namespace Decoratid.Core.Conditional
         /// <param name="cond"></param>
         /// <param name="conds"></param>
         /// <returns></returns>
-        public static IHasCondition And(this IHasCondition cond, params ICondition[] conds)
+        public static IHasCondition AppendAnd(this IHasCondition cond, params ICondition[] conds)
         {
             if (cond == null)
                 return cond;

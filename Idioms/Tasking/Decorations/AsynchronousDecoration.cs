@@ -23,11 +23,8 @@ namespace Decoratid.Idioms.Tasking.Decorations
         {
             Condition.Requires(markErrorCondition).IsNotNull();
 
-            IHasConditionalTaskTriggers dec = this.FindDecoratorOf<IHasConditionalTaskTriggers>(false);
-            if (markCompleteCondition != null)
-                dec.ANDCompleteWhen(markCompleteCondition);
-            if (markErrorCondition != null)
-                dec.ANDFailWhen(markErrorCondition);
+            this.CompleteWhen(markCompleteCondition);
+            this.FailWhen(markErrorCondition);
 
             //set placeholders so the decoration can be cloned via ApplyThisDecorationTo
             //we can't pull the conditions from the decoration as the decorated task may itself have existing conditions

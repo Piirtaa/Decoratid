@@ -23,16 +23,16 @@ namespace Decoratid.Idioms.Tasking
             switch (transition)
             {
                 case DecoratidTaskTransitionEnum.Cancel:
-                    condition = task.CancelTrigger;
+                    condition = task.CancelTrigger.Condition;
                     break;
                 case DecoratidTaskTransitionEnum.MarkComplete:
-                    condition = task.MarkCompleteTrigger;
+                    condition = task.MarkCompleteTrigger.Condition;
                     break;
                 case DecoratidTaskTransitionEnum.MarkErrored:
-                    condition = task.MarkErrorTrigger;
+                    condition = task.MarkErrorTrigger.Condition;
                     break;
                 case DecoratidTaskTransitionEnum.Perform:
-                    condition = task.PerformTrigger;
+                    condition = task.PerformTrigger.Condition;
                     break;
             }
             return condition;
@@ -49,16 +49,16 @@ namespace Decoratid.Idioms.Tasking
             switch (transition)
             {
                 case DecoratidTaskTransitionEnum.Cancel:
-                    task.CancelTrigger = condition;
+                    task.CancelTrigger.AppendAnd(condition);
                     break;
                 case DecoratidTaskTransitionEnum.MarkComplete:
-                    task.MarkCompleteTrigger = condition;
+                    task.MarkCompleteTrigger.AppendAnd(condition);
                     break;
                 case DecoratidTaskTransitionEnum.MarkErrored:
-                    task.MarkErrorTrigger = condition;
+                    task.MarkErrorTrigger.AppendAnd(condition);
                     break;
                 case DecoratidTaskTransitionEnum.Perform:
-                    task.PerformTrigger = condition;
+                    task.PerformTrigger.AppendAnd(condition);
                     break;
             }
         }

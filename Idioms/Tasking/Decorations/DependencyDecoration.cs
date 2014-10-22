@@ -38,8 +38,8 @@ namespace Decoratid.Idioms.Tasking.Decorations
             prerequisiteTaskIds.WithEach(x => { this.Dependency.Prerequisites.Add(x); });
 
             //wire the dependency condition
-            this.PerformTrigger = this.PerformTrigger.And(StrategizedCondition.New((() => { return this.AreAllPrerequisiteTasksComplete(); })));
-            this.CancelTrigger = this.CancelTrigger.And(StrategizedCondition.New((() => { return this.AreAnyPrerequisiteTasksCancelledOrErrored(); })));
+            this.PerformTrigger.AppendAnd(StrategizedCondition.New((() => { return this.AreAllPrerequisiteTasksComplete(); })));
+            this.CancelTrigger.AppendAnd(StrategizedCondition.New((() => { return this.AreAnyPrerequisiteTasksCancelledOrErrored(); })));
 
         }
         #endregion
@@ -60,22 +60,22 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// If set, defines the condition that will trigger a Perform().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition PerformTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
+        public HasCondition PerformTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a Cancel().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition CancelTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
+        public HasCondition CancelTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkComplete().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition MarkCompleteTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
+        public HasCondition MarkCompleteTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkError().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition MarkErrorTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
+        public HasCondition MarkErrorTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
 
         public void CheckTriggers() { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CheckTriggers(); }
 

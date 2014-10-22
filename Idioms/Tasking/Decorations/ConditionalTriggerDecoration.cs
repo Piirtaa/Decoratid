@@ -14,22 +14,22 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// If set, defines the condition that will trigger a Perform().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        ICondition PerformTrigger { get; set; }
+        HasCondition PerformTrigger { get; set; }
         /// <summary>
         /// If set, defines the condition that will trigger a Cancel().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        ICondition CancelTrigger { get; set; }
+        HasCondition CancelTrigger { get; set; }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkComplete().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        ICondition MarkCompleteTrigger { get; set; }
+        HasCondition MarkCompleteTrigger { get; set; }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkError().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        ICondition MarkErrorTrigger { get; set; }
+        HasCondition MarkErrorTrigger { get; set; }
 
         /// <summary>
         /// evaluates the trigger conditions and executes the transition, if met
@@ -41,6 +41,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
     /// Decorates with triggers (as ICondition) for task state transitions.  Does not change the behaviour at all, just adds new behaviour
     /// in CheckTriggers that will examine the trigger conditions and perform a state transition method if the condition is true.
     /// </summary>
+    [Serializable]
     public class ConditionalTriggerDecoration : DecoratedTaskBase, IHasConditionalTaskTriggers
     {
         #region Ctor
@@ -51,7 +52,10 @@ namespace Decoratid.Idioms.Tasking.Decorations
         public ConditionalTriggerDecoration(ITask decorated)
             : base(decorated)
         {
-
+            this.PerformTrigger = new HasCondition();
+            this.CancelTrigger = new HasCondition();
+            this.MarkErrorTrigger = new HasCondition();
+            this.MarkCompleteTrigger = new HasCondition();
         }
         #endregion
 
@@ -60,29 +64,29 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// If set, defines the condition that will trigger a Perform().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition PerformTrigger { get; set; }
+        public HasCondition PerformTrigger { get; set; }
         /// <summary>
-        /// If set, defines the condition that will trigger a Cancel().
+        /// If set, defines the condition that will trigger a Cancel().+
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition CancelTrigger { get; set; }
+        public HasCondition CancelTrigger { get; set; }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkComplete().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition MarkCompleteTrigger { get; set; }
+        public HasCondition MarkCompleteTrigger { get; set; }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkError().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public ICondition MarkErrorTrigger { get; set; }
+        public HasCondition MarkErrorTrigger { get; set; }
         #endregion
 
         #region Methods
-        public  bool IsPerformTriggered() { return this.PerformTrigger == null ? false : this.PerformTrigger.Evaluate().GetValueOrDefault(); }
-        public  bool IsCancelTriggered() { return this.CancelTrigger == null ? false : this.CancelTrigger.Evaluate().GetValueOrDefault(); }
-        public  bool IsMarkCompleteTriggered() { return this.MarkCompleteTrigger == null ? false : this.MarkCompleteTrigger.Evaluate().GetValueOrDefault(); }
-        public  bool IsMarkErrorTriggered() { return this.MarkErrorTrigger == null ? false : this.MarkErrorTrigger.Evaluate().GetValueOrDefault(); }
+        public bool IsPerformTriggered() { return (this.PerformTrigger == null || this.PerformTrigger.Condition == null) ? false : this.PerformTrigger.Condition.Evaluate().GetValueOrDefault(); }
+        public bool IsCancelTriggered() { return (this.CancelTrigger == null || this.CancelTrigger.Condition == null) ? false : this.CancelTrigger.Condition.Evaluate().GetValueOrDefault(); }
+        public bool IsMarkCompleteTriggered() { return (this.MarkCompleteTrigger == null || this.MarkCompleteTrigger.Condition == null) ? false : this.MarkCompleteTrigger.Condition.Evaluate().GetValueOrDefault(); }
+        public bool IsMarkErrorTriggered() { return (this.MarkErrorTrigger == null || this.MarkErrorTrigger.Condition == null) ? false : this.MarkErrorTrigger.Condition.Evaluate().GetValueOrDefault(); }
 
         public void CheckTriggers()
         {
@@ -125,10 +129,11 @@ namespace Decoratid.Idioms.Tasking.Decorations
         {
             Condition.Requires(task).IsNotNull();
 
-            if (task is IHasConditionalTaskTriggers)
-                return task as IHasConditionalTaskTriggers;
+            var rv = DecorationUtils.GetDecoration<ConditionalTriggerDecoration>(task);
+            if (rv == null)
+                rv = new ConditionalTriggerDecoration(task);
 
-            return new ConditionalTriggerDecoration(task);
+            return rv;
         }
         /// <summary>
         /// ANDs the cancel condition.  If a task doesn't have triggers, it decorates with them first.
@@ -136,12 +141,11 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDCancelWhen(this ITask task, ICondition condition)
+        public static ITask CancelWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
-            Condition.Requires(condition).IsNotNull();
             var rTask = task.Triggered();
-            rTask.CancelTrigger = rTask.CancelTrigger.And(condition);
+            rTask.CancelTrigger.AppendAnd(condition);
             return rTask;
         }
         /// <summary>
@@ -150,12 +154,11 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDPerformWhen(this ITask task, ICondition condition)
+        public static ITask PerformWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
-            Condition.Requires(condition).IsNotNull();
             var rTask = task.Triggered();
-            rTask.PerformTrigger = rTask.PerformTrigger.And(condition);
+            rTask.PerformTrigger.AppendAnd(condition);
             return rTask;
         }
         /// <summary>
@@ -164,12 +167,11 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDCompleteWhen(this ITask task, ICondition condition)
+        public static ITask CompleteWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
-            Condition.Requires(condition).IsNotNull();
             var rTask = task.Triggered();
-            rTask.MarkCompleteTrigger = rTask.MarkCompleteTrigger.And( condition);
+            rTask.MarkCompleteTrigger.AppendAnd(condition);
             return rTask;
         }
         /// <summary>
@@ -178,12 +180,11 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// <param name="task"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static ITask ANDFailWhen(this ITask task, ICondition condition)
+        public static ITask FailWhen(this ITask task, ICondition condition)
         {
             Condition.Requires(task).IsNotNull();
-            Condition.Requires(condition).IsNotNull();
             var rTask = task.Triggered();
-            rTask.MarkErrorTrigger = rTask.MarkErrorTrigger.And( condition);
+            rTask.MarkErrorTrigger.AppendAnd(condition);
             return rTask;
         }
     }

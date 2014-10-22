@@ -102,7 +102,7 @@ namespace Decoratid.Core.Conditional
             return or.Conditions.ToList();
         }
 
-        public static IHasCondition Or(this IHasCondition cond, params ICondition[] conds)
+        public static IHasCondition AppendOr(this IHasCondition cond, params ICondition[] conds)
         {
             if (cond == null)
                 return cond;

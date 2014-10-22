@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Decoratid.Idioms.ConditionalWaiting
 {
     /// <summary>
-    /// will delay performing operation until wait condition is met
+    /// will delay performing operation until the Wait Condition, aka the IHasCondition, is met
     /// </summary>
     public interface IHasWaitCondition : IHasCondition
     {

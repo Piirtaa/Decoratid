@@ -12,7 +12,7 @@ namespace Decoratid.Idioms.Expiring
     /// wraps an expirable
     /// </summary>
     [Serializable]
-    public sealed class HasExpirable : IHasExpirable, IExpirable, IPolyfacing
+    public sealed class HasExpirable : IHasExpirable, IPolyfacing
     {
         #region Ctor
         public HasExpirable(IExpirable expirable)
