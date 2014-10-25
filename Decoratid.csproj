@@ -79,7 +79,6 @@
     <Compile Include="Idioms\Tasking\Interfaces.cs" />
     <Content Include="Idioms\Tasking\Notes.txt" />
     <Compile Include="Idioms\Tasking\StrategizedTask.cs" />
-    <Compile Include="Idioms\Tasking\StrategizedTaskOf.cs" />
     <Compile Include="Idioms\Tasking\Decorations\AsynchronousDecoration.cs" />
     <Compile Include="Idioms\Tasking\DecoratedTaskBase.cs" />
     <Compile Include="Idioms\Tasking\Decorations\DependencyDecoration.cs" />

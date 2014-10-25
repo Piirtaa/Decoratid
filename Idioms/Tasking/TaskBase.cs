@@ -51,7 +51,7 @@ namespace Decoratid.Idioms.Tasking
         #endregion
 
         #region ITask Methods
-        public abstract bool perform();
+        protected abstract bool perform();
         public bool Perform()
         {
             bool returnValue = false;
@@ -78,7 +78,7 @@ namespace Decoratid.Idioms.Tasking
             return returnValue;
         }
 
-        public virtual bool cancel() { return true; }
+        protected virtual bool cancel() { return true; }
         public bool Cancel()
         {
             bool returnValue = false;
@@ -105,7 +105,7 @@ namespace Decoratid.Idioms.Tasking
             return returnValue;
         }
 
-        public virtual bool markComplete() { return true; }
+        protected virtual bool markComplete() { return true; }
         public bool MarkComplete()
         {
             bool returnValue = false;
@@ -131,7 +131,7 @@ namespace Decoratid.Idioms.Tasking
             }
             return returnValue;
         }
-        public virtual bool markError(Exception ex) { return true; }
+        protected virtual bool markError(Exception ex) { return true; }
         public bool MarkError(Exception ex)
         {
             bool returnValue = false;
@@ -156,20 +156,6 @@ namespace Decoratid.Idioms.Tasking
                 }
             }
             return returnValue;
-        }
-        #endregion
-
-        #region Helpers
-        protected ITask Save()
-        {
-            Condition.Requires(this.TaskStore).IsNotNull();
-            this.TaskStore.SaveItem(this);
-            return this;
-        }
-        protected ITask GetTask(string id)
-        {
-            var list = this.TaskStore.GetAllById<ITask>(id);
-            return list.FirstOrDefault();
         }
         #endregion
     }

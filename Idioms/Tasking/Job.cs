@@ -7,6 +7,7 @@ using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Expiring;
 using Decoratid.Idioms.Tasking.Decorations;
+using Decoratid.Storidioms.Evicting;
 using System;
 using System.Threading;
 
@@ -66,7 +67,7 @@ namespace Decoratid.Idioms.Tasking
             StrategizedTask coreTask = this.Core as StrategizedTask;
 
             //define the Perform and Cancel Logic
-            coreTask.PerformLogic = Logic.New(
+            coreTask.Performs( Logic.New(
                () =>
                {
                    //the perform task is to turn on the polling process
@@ -77,8 +78,8 @@ namespace Decoratid.Idioms.Tasking
                                this.checkTriggers();
                            })
                        );
-               });
-            coreTask.CancelLogic = Logic.New(() => { this.CancelTasks(); });
+               }));
+            coreTask.Cancels( Logic.New(() => { this.CancelTasks(); }));
 
             //define the action to flip the waithandle that is waited on in RunToCompletion 
             Action flipWaitHandle = () =>
@@ -301,12 +302,15 @@ namespace Decoratid.Idioms.Tasking
         #endregion
 
         #region Static Fluent Methods
-        public static ITask New(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
+        public static Job New(string id, LogicOfTo<IHasId, IExpirable> evictionPolicy)
         {
             return new Job(id, evictionPolicy);
         }
-        
-        //Job.New("job", LogicOfTo<IHasId, IExpirable>.New((x) => { return EvictionPolicy.BuildNeverExpirable(); }));
+        public static Job NewWithNeverExpireDefault(string id)
+        {
+            return new Job(id, LogicOfTo<IHasId, IExpirable>.New((x) => { return EvictionPolicy.BuildNeverExpirable(); }));
+        }
+
 
         #endregion
     }

@@ -19,7 +19,8 @@ namespace Decoratid.Idioms.Tasking
     public abstract class DecoratedTaskBase : DecorationOfBase<ITask>, IDecoratedTask
     {
         #region Ctor
-        public DecoratedTaskBase(ITask decorated) : base(decorated)
+        public DecoratedTaskBase(ITask decorated)
+            : base(decorated)
         {
         }
         #endregion
@@ -43,17 +44,6 @@ namespace Decoratid.Idioms.Tasking
         public void SetId(string id) { this.Decorated.SetId(id); }
         void SetId(object id) { this.SetId(id as string); }
         #endregion
-
-        #region Helpers
-        protected ITask GetTask(string id)
-        {
-            var list = this.TaskStore.GetAllById<ITask>(id);
-
-            return list.FirstOrDefault();
-        }
-        #endregion
-
-
 
     }
 }

@@ -20,19 +20,19 @@ namespace Decoratid.Idioms.Tasking
         #endregion
 
         #region Properties
-        public ILogic PerformLogic { get; set; }
-        public ILogic CancelLogic { get; set; }
+        private ILogic PerformLogic { get; set; }
+        private ILogic CancelLogic { get; set; }
+
         #endregion
 
         #region Overrides
-
-        public override bool perform()
+        protected override bool perform()
         {
             this.PerformLogic.Perform();
 
             return true;
         }
-        public override bool cancel()
+        protected override bool cancel()
         {
             if (this.CancelLogic == null)
                 return true;
@@ -51,7 +51,7 @@ namespace Decoratid.Idioms.Tasking
         public StrategizedTask Performs(ILogic logic)
         {
             Condition.Requires(logic).IsNotNull();
-            this.PerformLogic = logic;  
+            this.PerformLogic = logic;
             return this;
         }
         /// <summary>

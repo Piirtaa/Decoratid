@@ -37,7 +37,7 @@ namespace Decoratid.Idioms.Tasking
         /// unless we have an async decoration, we presume the perform is synchronous and upon successful completion we markcomplete
         /// </summary>
         /// <returns></returns>
-        public override bool perform()
+        protected override bool perform()
         {
             Condition.Requires(this.Context).IsNotNull();
 
@@ -47,7 +47,7 @@ namespace Decoratid.Idioms.Tasking
             this.MarkComplete();
             return true;
         }
-        public override bool cancel()
+        protected override bool cancel()
         {
             if (this.CancelLogic == null)
                 return true;

@@ -88,10 +88,15 @@ namespace Decoratid.Idioms.WithValuing
         /// <param name="condOf"></param>
         /// <param name="val"></param>
         /// <returns></returns>
-        public static ICondition WithValue<T>(this IConditionOf<T> condOf, IValueOf<T> val)
+        public static WithValueConditionOfDecoration<T> WithValue<T>(this IConditionOf<T> condOf, IValueOf<T> val)
         {
             Condition.Requires(condOf).IsNotNull();
             return WithValueConditionOfDecoration<T>.New(condOf, val);
+        }
+        public static WithValueConditionOfDecoration<T> WithValue<T>(this IConditionOf<T> condOf, T val)
+        {
+            Condition.Requires(condOf).IsNotNull();
+            return WithValueConditionOfDecoration<T>.New(condOf, val.AsNaturalValue());
         }
     }
 }

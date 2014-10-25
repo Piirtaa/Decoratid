@@ -38,35 +38,39 @@ namespace Decoratid.Core.Storing
             store.Commit(new CommitBag().MarkItemsSaved(objs));
         }
 
-        public static void SaveItem(this IWriteableStore store, IHasId obj)
+        public static IWriteableStore SaveItem(this IWriteableStore store, IHasId obj)
         {
             if (store == null)
-                return;
+                return store;
 
             store.Commit(CommitBag.New().MarkItemSaved(obj));
+            return store;
         }
-        public static void SaveItems(this IWriteableStore store, List<IHasId> objs)
+        public static IWriteableStore SaveItems(this IWriteableStore store, List<IHasId> objs)
         {
             if (store == null)
-                return;
+                return store;
 
             store.Commit(new CommitBag().MarkItemsSaved(objs));
+            return store;
         }
-        public static void DeleteItem(this IWriteableStore store, StoredObjectId soid)
+        public static IWriteableStore DeleteItem(this IWriteableStore store, StoredObjectId soid)
         {
             if (store == null)
-                return;
+                return store;
 
             store.Commit(new CommitBag().MarkItemDeleted(soid));
+            return store;
         }
-        public static void DeleteItems(this IWriteableStore store, List<StoredObjectId> objs)
+        public static IWriteableStore DeleteItems(this IWriteableStore store, List<StoredObjectId> objs)
         {
             if (store == null)
-                return;
+                return store;
             
             var commitBag = CommitBag.New();
             commitBag.MarkItemsDeleted(objs);
             store.Commit(commitBag);
+            return store;
         }
     }
 }
