@@ -71,6 +71,7 @@
     <Compile Include="Core\Decorating\DecorationUtils.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Core\Logical\LogicUtils.cs" />
     <Compile Include="Idioms\Adjusting\Adjustment.cs" />
     <Compile Include="Idioms\Adjusting\HasAdjustment.cs" />
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />

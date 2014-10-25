@@ -60,7 +60,10 @@ namespace Decoratid.Idioms.Tasking.Decorations
         public static ISynchronousDecoration IsSynchronous(this ITask task)
         {
             Condition.Requires(task).IsNotNull();
-            return new SynchronousDecoration(task);
+            var rv = DecorationUtils.GetDecoration<SynchronousDecoration>(task);
+            if (rv == null)
+                rv = new SynchronousDecoration(task);
+            return rv;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Decoratid.Idioms.Tasking
     /// the task states
     /// </summary>
     public enum DecoratidTaskStatusEnum { Pending, InProcess, Cancelled, Complete, Errored }
+
     /// <summary>
     /// the task state transitions
     /// </summary>

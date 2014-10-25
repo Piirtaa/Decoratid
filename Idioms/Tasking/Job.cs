@@ -6,7 +6,6 @@ using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Expiring;
-using Decoratid.Idioms.Tasking.Core;
 using Decoratid.Idioms.Tasking.Decorations;
 using System;
 using System.Threading;

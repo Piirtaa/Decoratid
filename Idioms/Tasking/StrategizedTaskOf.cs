@@ -3,7 +3,7 @@ using Decoratid.Core.Contextual;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 
-namespace Decoratid.Idioms.Tasking.Core
+namespace Decoratid.Idioms.Tasking
 {
     /// <summary>
     /// uses contextual ILogic strategies to implement a task
@@ -39,6 +39,8 @@ namespace Decoratid.Idioms.Tasking.Core
         /// <returns></returns>
         public override bool perform()
         {
+            Condition.Requires(this.Context).IsNotNull();
+
             this.PerformLogic.Context = this.Context;
             this.PerformLogic.Perform();
             //unless we have an async decoration, we presume the perform is synchronous and upon successful completion we markcomplete
@@ -56,8 +58,33 @@ namespace Decoratid.Idioms.Tasking.Core
         }
         #endregion
 
+        #region Fluent Methods
+        /// <summary>
+        /// fluently sets the perform logic
+        /// </summary>
+        /// <param name="logic"></param>
+        /// <returns></returns>
+        public StrategizedTaskOf<T> Performs(ILogicOf<T> logic)
+        {
+            Condition.Requires(logic).IsNotNull();
+            this.PerformLogic = logic;
+            return this;
+        }
+        /// <summary>
+        /// fluently sets the cancel logic
+        /// </summary>
+        /// <param name="logic"></param>
+        /// <returns></returns>
+        public StrategizedTaskOf<T> Cancels(ILogicOf<T> logic)
+        {
+            Condition.Requires(logic).IsNotNull();
+            this.PerformLogic = logic;
+            return this;
+        }
+        #endregion
+
         #region Fluent Static Methods
-        public static ITask New<Targ>(string id, IValueOf<Targ> context, ILogicOf<Targ> performLogic, ILogicOf<Targ> cancelLogic = null)
+        public static StrategizedTaskOf<Targ> New<Targ>(string id, IValueOf<Targ> context, ILogicOf<Targ> performLogic, ILogicOf<Targ> cancelLogic = null)
         {
             var rv = new StrategizedTaskOf<Targ>(id,context ,performLogic, cancelLogic );
 
@@ -78,7 +105,7 @@ namespace Decoratid.Idioms.Tasking.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static ITask NewBlank<Targ>(string id)
+        public static StrategizedTaskOf<Targ> NewBlank<Targ>(string id)
         {
             return new StrategizedTaskOf<Targ>(id,null, LogicOf<Targ>.New((x) => { }));
         }

@@ -1,7 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Logical;
 
-namespace Decoratid.Idioms.Tasking.Core
+namespace Decoratid.Idioms.Tasking
 {
     /// <summary>
     /// uses ILogic strategies to implement a task
@@ -42,8 +42,33 @@ namespace Decoratid.Idioms.Tasking.Core
         }
         #endregion
 
+        #region Fluent Methods
+        /// <summary>
+        /// fluently sets the perform logic
+        /// </summary>
+        /// <param name="logic"></param>
+        /// <returns></returns>
+        public StrategizedTask Performs(ILogic logic)
+        {
+            Condition.Requires(logic).IsNotNull();
+            this.PerformLogic = logic;  
+            return this;
+        }
+        /// <summary>
+        /// fluently sets the cancel logic
+        /// </summary>
+        /// <param name="logic"></param>
+        /// <returns></returns>
+        public StrategizedTask Cancels(ILogic logic)
+        {
+            Condition.Requires(logic).IsNotNull();
+            this.PerformLogic = logic;
+            return this;
+        }
+        #endregion
+
         #region Static Fluent Methods
-        public static ITask New(string id, ILogic performLogic, ILogic cancelLogic = null)
+        public static StrategizedTask New(string id, ILogic performLogic, ILogic cancelLogic = null)
         {
             return new StrategizedTask(id, performLogic, cancelLogic);
         }
@@ -52,7 +77,7 @@ namespace Decoratid.Idioms.Tasking.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static ITask NewBlank(string id)
+        public static StrategizedTask NewBlank(string id)
         {
             return new StrategizedTask(id, Logic.New(() => { }));
         }
