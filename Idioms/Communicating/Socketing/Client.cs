@@ -4,7 +4,7 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Decoratid.Idioms.Communicating.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Socketing
 {
     public class Client : DisposableBase, IEndPointClient
     {
@@ -35,9 +35,9 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
                 // get the stream to talk to the server on
                 using (NetworkStream ns = client.GetStream())
                 {
-                    ProtocolUtil.ProtocolWrite(ns, data);
+                    ProtocolUtil.Write(ns, data);
 
-                    var resp = ProtocolUtil.ProtocolRead(ns);
+                    var resp = ProtocolUtil.Read(ns);
 
                     return resp;
                 }

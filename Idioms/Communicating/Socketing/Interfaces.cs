@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Communicating.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Socketing
 {
     /// <summary>
     /// adds an IP filtering strategy to the host

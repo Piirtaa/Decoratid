@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core.Storing;
+using Decoratid.Core.Identifying;
 
-namespace Decoratid.Messaging.StoreProtocol.OperationProtocol
+namespace Decoratid.Idioms.Messaging.OperationProtocoling
 {
     /// <summary>
-    /// a wrapper for data we're storing in the request store
+    /// an operation's Response is stored with this container
     /// </summary>
     [Serializable]
-    public class OperationProtocolRequestItem : IHasId<string>
+    public class OperationResponse : IHasId<string>
     {
         #region Ctor
-        public OperationProtocolRequestItem(string operationName, object data)
+        public OperationResponse(string operationName, object data)
         {
-            this.Id = operationName + OperationProtocolConstants.Request_Suffix;
+            this.Id = operationName;
             this.Data = data;
         }
         #endregion
@@ -31,9 +32,9 @@ namespace Decoratid.Messaging.StoreProtocol.OperationProtocol
         #endregion
 
         #region Static Methods
-        public static OperationProtocolRequestItem New(string operationName, object data)
+        public static OperationResponse New(string operationName, object data)
         {
-            OperationProtocolRequestItem item = new OperationProtocolRequestItem(operationName, data);
+            OperationResponse item = new OperationResponse(operationName, data);
             return item;
         }
         #endregion

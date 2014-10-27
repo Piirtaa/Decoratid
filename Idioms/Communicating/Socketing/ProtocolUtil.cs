@@ -5,18 +5,17 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Communicating.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Socketing
 {
     /// <summary>
-    /// helper class for this socket implementation
+    /// helper class that conforms stream reading/writing to a protocol
     /// </summary>
     internal static class ProtocolUtil
     {
         internal const string SIZE_PREFIX_DELIM = "|";
 
-        internal static void ProtocolWrite(NetworkStream stream, string data)
+        internal static void Write(NetworkStream stream, string data)
         {
-            
             //prepend the length of the data to the message, and convert to bytes
             byte[] bytes = Encoding.ASCII.GetBytes(data.Length.ToString() + SIZE_PREFIX_DELIM + data );
 
@@ -24,7 +23,7 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
             stream.Write(bytes, 0, bytes.Length);
         }
 
-        internal static string ProtocolRead(NetworkStream stream)
+        internal static string Read(NetworkStream stream)
         {
             //start with an initially small 50 byte buffer.  
             //This should be sufficient to read the message length, from which we then read the entire message exactly

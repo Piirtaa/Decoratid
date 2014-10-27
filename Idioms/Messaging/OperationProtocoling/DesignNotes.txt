@@ -1,8 +1,8 @@
-﻿The DecoratidEndPointLogic class is an implementation of IEndPoint that treats the request and response
-as instances of DisconnectedStore.  Thus, given the same encoding/decoding strategies, both client and server
-can communicate by exchanging IStores.  
+﻿The operation protocol sits on top of the store protocol.  It's an agreement on how the request payload (ie. IStore) 
+is to be interpreted, handled, and on how the results will be saved to the response store.
 
-The standard protocol sits on top of this.  It's an agreement on how the request payload (ie. IStore) is to be interpreted.
+An Operation is 
+
 Each end point has a set of handlers, each of which corresponds to a message type that can be handled.
 Each message type is uniquely identified by a key, which also id's the Request's payload, and id's the handler.
 Handlers respond by writing entries in {Key}_Response.

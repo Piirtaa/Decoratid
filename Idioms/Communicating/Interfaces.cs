@@ -4,6 +4,31 @@ using System;
 
 namespace Decoratid.Idioms.Communicating
 {
+    /// <summary>
+    /// something that has an ipaddress and a port (AKA an "endpoint", mkay)
+    /// </summary>
+    public interface IHasEndPoint
+    {
+        EndPoint EndPoint { get; }
+    }
+
+    public interface IHasEndPointLogic
+    {
+        LogicOfTo<string,string> Logic { get; set; }
+    }
+
+    /// <summary>
+    /// a service host(ie. it initializes, starts and stops) on an endpoint that contains logic for request/response handling.
+    /// </summary>
+    public interface IEndPointHost : IService, IDisposable, IHasEndPoint, IHasEndPointLogic
+    {
+    }
+
+    public interface IEndPointClient : IHasEndPoint, IDisposable
+    {
+        string Send(string request);
+    }
+
     ///// <summary>
     ///// builds endpoint hosts(eg. wcf, servicestack, tcp, ice, etc)
     ///// </summary>
@@ -12,25 +37,4 @@ namespace Decoratid.Idioms.Communicating
     //    IEndPointHost BuildEndPointHost(EndPoint endpoint, IEndPointLogic service);
     //    IEndPointClient BuildClient(EndPoint endpoint);
     //}
-
-    /// <summary>
-    /// a service host(ie. it initializes, starts and stops) on an endpoint that contains logic for request/response handling.
-    /// </summary>
-    public interface IEndPointHost : IService, IDisposable
-    {
-        /// <summary>
-        /// the server endpoint
-        /// </summary>
-        EndPoint EndPoint { get; }
-        LogicOfTo<string,string> Logic { get; }
-    }
-
-    public interface IEndPointClient : IDisposable
-    {
-        /// <summary>
-        /// the server endpoint
-        /// </summary>
-        EndPoint EndPoint { get; }
-        string Send(string request);
-    }
 }

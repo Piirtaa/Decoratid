@@ -5,7 +5,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Decoratid.Idioms.Communicating.Implementations.Sockets
+namespace Decoratid.Idioms.Communicating.Socketing
 {
 
 
@@ -112,12 +112,12 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
                     //get the stream 
                     using (NetworkStream ns = client.GetStream())
                     {
-                        var input = ProtocolUtil.ProtocolRead(ns);
+                        var input = ProtocolUtil.Read(ns);
 
                         string response = this.Logic.CloneAndPerform(input.AsNaturalValue());
 
                         // Write a message to the client.
-                        ProtocolUtil.ProtocolWrite(ns, response);
+                        ProtocolUtil.Write(ns, response);
                     }
                 }
             }
@@ -227,6 +227,11 @@ namespace Decoratid.Idioms.Communicating.Implementations.Sockets
         public static Host New(EndPoint ep, LogicOfTo<string, string> logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
         {
             Host host = new Host(ep, logic, validateClientEndPointStrategy);
+            return host;
+        }
+        public static Host NewEchoing(EndPoint ep, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
+        {
+            Host host = new Host(ep, LogicOfTo<string, string>.New((x) => { return x; }), validateClientEndPointStrategy);
             return host;
         }
         #endregion

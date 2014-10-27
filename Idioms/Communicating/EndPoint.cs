@@ -12,15 +12,12 @@ using Decoratid.Core.Identifying;
 namespace Decoratid.Idioms.Communicating
 {
     /// <summary>
-    /// the location of a wire endpoint
+    /// an IP and port
     /// </summary>
     [Serializable]
     public class EndPoint : IHasId<string>
     {
         #region Ctor
-        //public EndPoint()
-        //{
-        //}
         public EndPoint(IPAddress address, int port)
         {
             Condition.Requires(address).IsNotNull();

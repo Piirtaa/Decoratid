@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Storing;
-using Decoratid.Core.Storing;
+using Decoratid.Idioms.Messaging.StoreProtocoling;
 
-namespace Decoratid.Messaging.StoreProtocol.OperationProtocol
+namespace Decoratid.Idioms.Messaging.OperationProtocoling
 {
     /// <summary>
     /// prepares and sends the operation protocol requests
@@ -19,7 +14,7 @@ namespace Decoratid.Messaging.StoreProtocol.OperationProtocol
         {
             Condition.Requires(storeProtocolClient).IsNotNull();
             this.StoreProtocolClient = storeProtocolClient;
-            this.RequestStore = InMemoryStore.New();
+            this.RequestStore = NaturalInMemoryStore.New();
         }
         #endregion
 
@@ -38,16 +33,16 @@ namespace Decoratid.Messaging.StoreProtocol.OperationProtocol
         /// <param name="arg"></param>
         public void AppendOperation<TArg>(string operationName, TArg arg)
         {
-            this.RequestStore.SaveItem(OperationProtocolRequestItem.New(operationName, arg));
+            this.RequestStore.SaveItem(OperationRequest.New(operationName, arg));
         }
         public IStore Perform()
         {
             this.ResponseStore = this.StoreProtocolClient.Send(this.RequestStore);
             return this.ResponseStore;
         }
-        public OperationProtocolResponseItem GetOperationResult(string operationName)
+        public OperationResponse GetOperationResult(string operationName)
         {
-            return this.ResponseStore.Get<OperationProtocolResponseItem>(operationName + OperationProtocolConstants.Response_Suffix);
+            return this.ResponseStore.Get<OperationResponse>(operationName);
         }
         #endregion
 
