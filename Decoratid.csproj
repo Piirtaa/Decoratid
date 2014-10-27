@@ -77,6 +77,12 @@
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
+    <Compile Include="Idioms\Identifying\HasVersionDecoration.cs" />
+    <Compile Include="Idioms\Identifying\HasRandomStringDecoration.cs" />
+    <Compile Include="Idioms\Identifying\HasDateLastTouchedDecoration.cs" />
+    <Compile Include="Idioms\Identifying\HasDateCreatedDecoration.cs" />
+    <Compile Include="Idioms\Identifying\HasGUIDDecoration.cs" />
+    <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\DecoratedOperationBase.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Decorations\DependencyDecoration.cs" />
@@ -441,7 +447,7 @@
     </Compile>
     <Compile Include="Storidioms\AuditTrail\AuditingDecoration.cs" />
     <Compile Include="Storidioms\AuditTrail\Interfaces.cs" />
-    <Compile Include="Idioms\Identifying\DecoratidId.cs" />
+    <Compile Include="Idioms\Identifying\DistributedId.cs" />
     <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
     <Compile Include="Storidioms\Caching\CacheDecoration.cs">
       <SubType>Code</SubType>

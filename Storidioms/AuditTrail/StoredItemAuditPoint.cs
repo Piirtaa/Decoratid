@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
+using Decoratid.Idioms.Identifying;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
     /// <summary>
     /// default item audit point definition (ie. the simplest, complete audit point def)
     /// </summary>
-    public class StoredItemAuditPoint : IStoredItemAuditPoint, IHasId<DecoratidId>
+    public class StoredItemAuditPoint : IStoredItemAuditPoint, IHasId<DistributedId>
     {
         #region Ctor
         public StoredItemAuditPoint(StoredItemAccessMode mode, IHasId item)
@@ -23,7 +24,7 @@ namespace Decoratid.Storidioms.AuditTrail
             this.Mode = mode;
 
             this.ObjRef = new StoredObjectId(item);
-            this.Id = new DecoratidId();
+            this.Id = DistributedId.New();
             this.Item = item;
 
             if (mode == StoredItemAccessMode.Delete)
@@ -37,7 +38,7 @@ namespace Decoratid.Storidioms.AuditTrail
         public DateTime Date { get; protected set; }
         public StoredItemAccessMode Mode { get; protected set; }
         public StoredObjectId ObjRef { get; protected set; }
-        public DecoratidId Id { get; protected set; }
+        public DistributedId Id { get; protected set; }
         object IHasId.Id
         {
             get { return this.Id; }

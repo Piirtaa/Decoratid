@@ -2,7 +2,7 @@
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
-using Decoratid.Idioms.IdGenerating;
+using Decoratid.Idioms.Identifying;
 using System;
 
 namespace Decoratid.Idioms.Logging
