@@ -19,12 +19,20 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         Type ResponseType { get; }
         Type RequestType { get; }
 
-        /// <summary>
-        /// the logic we execute.  Because it's a "protocol" we specify an implementation (eg. ILogic) here.
-        /// </summary>
         ICloneableLogic PerformLogic { get; }
-
+       
+        /// <summary>
+        /// is the request present in the store?
+        /// </summary>
+        /// <param name="requestStore"></param>
+        /// <returns></returns>
         bool IsRequested(IStore requestStore);
+        /// <summary>
+        /// Get the task(appropriately decorated) that will execute the PerformLogic
+        /// </summary>
+        /// <param name="requestStore"></param>
+        /// <param name="responseStore"></param>
+        /// <returns></returns>
         ITask GetPerformTask(IStore requestStore, IStore responseStore);
     }
 }

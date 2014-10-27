@@ -77,6 +77,7 @@
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
+    <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\DecoratedOperationBase.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Decorations\DependencyDecoration.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\OperationError.cs" />
@@ -110,7 +111,6 @@
     </Compile>
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\Interfaces.cs" />
-    <Content Include="Idioms\Messaging\OperationProtocoling\DesignNotes.txt" />
     <Content Include="Idioms\Tasking\Notes.txt" />
     <Compile Include="Idioms\Tasking\StrategizedTask.cs" />
     <Compile Include="Idioms\Tasking\Decorations\AsynchronousDecoration.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="Idioms\Expiring\ExpiringConditionDecoration.cs" />
     <Compile Include="Idioms\Expiring\ExpiringLogicDecoration.cs" />
     <Compile Include="Idioms\Expiring\ExpiringValueOfDecoration.cs" />
-    <Compile Include="Idioms\IdGenerating\LongIdBroker.cs">
+    <Compile Include="Idioms\Identifying\LongIdBroker.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Logical\LogicBase.cs" />
@@ -441,7 +441,7 @@
     </Compile>
     <Compile Include="Storidioms\AuditTrail\AuditingDecoration.cs" />
     <Compile Include="Storidioms\AuditTrail\Interfaces.cs" />
-    <Compile Include="Storidioms\AuditTrail\DecoratidId.cs" />
+    <Compile Include="Idioms\Identifying\DecoratidId.cs" />
     <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
     <Compile Include="Storidioms\Caching\CacheDecoration.cs">
       <SubType>Code</SubType>
@@ -531,7 +531,7 @@
     <Content Include="Idioms\ErrorCatching\Notes.txt" />
     <Content Include="Idioms\Eventing\Notes.txt" />
     <Content Include="Idioms\Expiring\Notes.txt" />
-    <Content Include="Idioms\IdGenerating\Notes.txt" />
+    <Content Include="Idioms\Identifying\Notes.txt" />
     <Content Include="Idioms\Intercepting\Notes.txt" />
     <Content Include="Idioms\Logging\Notes.txt" />
     <Content Include="Idioms\ObjectGraphing\GraphingNotes.txt" />

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Decoratid.Storidioms.AuditTrail
+namespace Decoratid.Idioms.Identifying
 {
     //TODO:  not sure about this anymore.  seems hackish, better suited to an id decoration
 

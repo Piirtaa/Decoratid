@@ -8,7 +8,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.Polyfacing;
 
-namespace Decoratid.Idioms.IdGenerating
+namespace Decoratid.Idioms.Identifying
 {
     //inspiration from http://msdn.microsoft.com/en-us/magazine/gg309174.aspx
 
