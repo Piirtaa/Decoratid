@@ -60,30 +60,30 @@ namespace Decoratid.Idioms.Tasking.Decorations
         #endregion
 
         #region Overrides
-        public override bool MarkComplete()
+        public override bool MarkTaskComplete()
         {
-            var rv = base.MarkComplete();
+            var rv = base.MarkTaskComplete();
             if (rv)
                 this.TaskCompleted.BuildAndFireEventArgs<ITask>(this);
             return rv;
         }
-        public override bool MarkError(Exception ex)
+        public override bool MarkTaskError(Exception ex)
         {
-            var rv = base.MarkError(ex);
+            var rv = base.MarkTaskError(ex);
             if (rv)
                 this.TaskErrored.BuildAndFireEventArgs<ITask>(this);
             return rv;
         }
-        public override bool Cancel()
+        public override bool CancelTask()
         {
-            var rv = base.Cancel();
+            var rv = base.CancelTask();
             if (rv)
                 this.TaskCancelled.BuildAndFireEventArgs<ITask>(this);
             return rv;
         }
-        public override bool Perform()
+        public override bool PerformTask()
         {
-            var rv = base.Perform();
+            var rv = base.PerformTask();
             if (rv)
                 this.TaskStarted.BuildAndFireEventArgs<ITask>(this);
             return rv;

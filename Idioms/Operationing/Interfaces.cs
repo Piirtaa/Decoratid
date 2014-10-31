@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Messaging.OperationProtocoling
+namespace Decoratid.Idioms.Operationing
 {
     /// <summary>
     /// defines an the operation

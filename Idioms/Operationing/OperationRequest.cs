@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 using Decoratid.Core.Storing;
 using Decoratid.Core.Identifying;
 
-namespace Decoratid.Idioms.Messaging.OperationProtocoling
+namespace Decoratid.Idioms.Operationing
 {
     /// <summary>
-    /// an operation's Error is stored with this container
+    /// an operation's request is stored with this container
     /// </summary>
     [Serializable]
-    public class OperationError : IHasId<string>
+    public class OperationRequest : IHasId<string>
     {
         #region Ctor
-        public OperationError(string operationName, Exception error)
+        public OperationRequest(string operationName, object data)
         {
             this.Id = operationName;
-            this.Error = error;
+            this.Data = data;
         }
         #endregion
 
         #region Properties
-        public Exception Error { get; set; }
+        public object Data { get; set; }
         #endregion
 
         #region IHasId
@@ -32,9 +32,9 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         #endregion
 
         #region Static Methods
-        public static OperationError New(string operationName, Exception error)
+        public static OperationRequest New(string operationName, object data)
         {
-            OperationError item = new OperationError(operationName, error);
+            OperationRequest item = new OperationRequest(operationName, data);
             return item;
         }
         #endregion

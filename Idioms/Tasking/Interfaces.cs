@@ -33,14 +33,14 @@ namespace Decoratid.Idioms.Tasking
     /// 
     /// -IHasId -> persistence
     /// </remarks>
-    public interface ITask : IHasId<string>, IHasSettableId<string>
+    public interface ITask : IHasId<string>
     {
         
         //actual transition methods
-        bool Perform();
-        bool Cancel();
-        bool MarkComplete();
-        bool MarkError(Exception ex);
+        bool PerformTask();
+        bool CancelTask();
+        bool MarkTaskComplete();
+        bool MarkTaskError(Exception ex);
         DecoratidTaskStatusEnum Status { get; }
         Exception Error { get; }
 

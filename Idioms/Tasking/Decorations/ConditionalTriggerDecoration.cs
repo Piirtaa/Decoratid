@@ -92,19 +92,19 @@ namespace Decoratid.Idioms.Tasking.Decorations
         {
             if (this.IsPerformTriggered())
             {
-                this.Perform();
+                this.PerformTask();
             }
             else if (this.IsMarkCompleteTriggered())
             {
-                this.MarkComplete();
+                this.MarkTaskComplete();
             }
             else if (this.IsCancelTriggered())
             {
-                this.Cancel();
+                this.CancelTask();
             }
             else if (this.IsMarkErrorTriggered())
             {
-                this.MarkError(new ApplicationException("Triggered Error"));
+                this.MarkTaskError(new ApplicationException("Triggered Error"));
             }
         }
         #endregion

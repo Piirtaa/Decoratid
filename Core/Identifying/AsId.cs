@@ -23,7 +23,7 @@ namespace Decoratid.Core.Identifying
         }
         #endregion
 
-        #region Calculated Properties
+        #region Properties
         public TId Id { get; set; }
         object IHasId.Id
         {

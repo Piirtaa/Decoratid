@@ -84,38 +84,10 @@
     <Compile Include="Idioms\Identifying\HasGUIDDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
-    <Compile Include="Idioms\Messaging\OperationProtocoling\DecoratedOperationBase.cs" />
-    <Compile Include="Idioms\Messaging\OperationProtocoling\Decorations\DependencyDecoration.cs" />
-    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationError.cs" />
-    <Compile Include="Idioms\Messaging\OperationProtocoling\Interfaces.cs" />
-    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\StoreProtocoling\Extensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\OperationProtocoling\Operation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolClient.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationRequest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolClient.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
+    <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Tasking\Interfaces.cs" />
     <Content Include="Idioms\Tasking\Notes.txt" />
     <Compile Include="Idioms\Tasking\StrategizedTask.cs" />

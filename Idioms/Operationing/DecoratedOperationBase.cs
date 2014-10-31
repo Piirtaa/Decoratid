@@ -5,7 +5,7 @@ using Decoratid.Idioms.Tasking;
 using System;
 using System.Linq;
 
-namespace Decoratid.Idioms.Messaging.OperationProtocoling
+namespace Decoratid.Idioms.Operationing
 {
     public interface IDecoratedOperation : IOperation, IDecorationOf<IOperation>
     {

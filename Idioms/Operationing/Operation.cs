@@ -8,7 +8,7 @@ using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Tasking;
 using Decoratid.Idioms.Tasking.Decorations;
 
-namespace Decoratid.Idioms.Messaging.OperationProtocoling
+namespace Decoratid.Idioms.Operationing
 {
     /// <summary>
     /// An implementation of IOperation that wraps Logic 

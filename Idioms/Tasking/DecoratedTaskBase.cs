@@ -37,12 +37,10 @@ namespace Decoratid.Idioms.Tasking
         public Exception Error { get { return this.Decorated.Error; } }
         public ITaskStore TaskStore { get { return this.Decorated.TaskStore; } set { this.Decorated.TaskStore = value; } }
         //virtual methods
-        public virtual bool Perform() { return this.Decorated.Perform(); }
-        public virtual bool Cancel() { return this.Decorated.Cancel(); }
-        public virtual bool MarkComplete() { return this.Decorated.MarkComplete(); }
-        public virtual bool MarkError(Exception ex) { return this.Decorated.MarkError(ex); }
-        public void SetId(string id) { this.Decorated.SetId(id); }
-        void SetId(object id) { this.SetId(id as string); }
+        public virtual bool PerformTask() { return this.Decorated.PerformTask(); }
+        public virtual bool CancelTask() { return this.Decorated.CancelTask(); }
+        public virtual bool MarkTaskComplete() { return this.Decorated.MarkTaskComplete(); }
+        public virtual bool MarkTaskError(Exception ex) { return this.Decorated.MarkTaskError(ex); }
         #endregion
 
     }

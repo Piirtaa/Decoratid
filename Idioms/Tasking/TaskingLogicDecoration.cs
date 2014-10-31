@@ -1,20 +1,18 @@
 ﻿using CuttingEdge.Conditions;
-using Decoratid.Core;
+using Decoratid.Core.Conditional;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
-using Decoratid.Core.Storing;
+using Decoratid.Core.Logical;
 using Decoratid.Idioms.StateMachining;
 using System;
-using System.Diagnostics;
-using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.Tasking
 {
-
     /// <summary>
-    /// Abstract template implementation of ITask that enforces the ITask statemachine
+    /// decorates logic with tasking
     /// </summary>
-    [Serializable]
-    public abstract class TaskBase : DisposableBase, ITask
+    public class TaskingLogicDecoration : DecoratedLogicBase, ITask
     {
         #region Declarations
         protected readonly object _stateLock = new object();
@@ -22,10 +20,11 @@ namespace Decoratid.Idioms.Tasking
         #endregion
 
         #region Ctor
-        [DebuggerStepThrough]
-        public TaskBase(string id)
+        public TaskingLogicDecoration(ILogic decorated, string taskId, ILogic cancelLogic = null)
+            : base(decorated)
         {
-            Condition.Requires(id).IsNotNullOrEmpty();
+            Condition.Requires(taskId).IsNotNullOrEmpty();
+            this.Id = taskId;
 
             //define the graph
             _stateMachine = new StateMachineGraph<DecoratidTaskStatusEnum, DecoratidTaskTransitionEnum>(DecoratidTaskStatusEnum.Pending);
@@ -35,23 +34,31 @@ namespace Decoratid.Idioms.Tasking
             _stateMachine.AllowTransition(DecoratidTaskStatusEnum.InProcess, DecoratidTaskStatusEnum.Errored, DecoratidTaskTransitionEnum.MarkErrored);
             _stateMachine.AllowTransition(DecoratidTaskStatusEnum.InProcess, DecoratidTaskStatusEnum.Cancelled, DecoratidTaskTransitionEnum.Cancel);
 
-            this.Id = id;
+            this.CancelLogic = cancelLogic;
         }
         #endregion
 
-        #region ITask Properties
+        #region Properties
         public DecoratidTaskStatusEnum Status { get { return this._stateMachine.CurrentState; } }
         public string Id { get; private set; }
         object IHasId.Id { get { return this.Id; } }
         public ITaskStore TaskStore { get; set; }
         public Exception Error { get; protected set; }
-        public void SetId(string id) { this.Id = id; }
-        void SetId(object id) { this.SetId(id as string); }
-
+        private ILogic CancelLogic { get; set; }
         #endregion
 
-        #region ITask Methods
-        protected abstract bool perform();
+        #region Methods
+        /// <summary>
+        /// the logic decoration.  invokes the task perform
+        /// </summary>
+        public override void Perform()
+        {
+            var b = this.PerformTask();
+        }
+        /// <summary>
+        /// the task perform
+        /// </summary>
+        /// <returns></returns>
         public bool PerformTask()
         {
             bool returnValue = false;
@@ -62,7 +69,8 @@ namespace Decoratid.Idioms.Tasking
                 {
                     try
                     {
-                        returnValue = this.perform();
+                        this.Decorated.Perform();
+                        returnValue = true;
                     }
                     catch (Exception ex)
                     {
@@ -77,8 +85,6 @@ namespace Decoratid.Idioms.Tasking
             }
             return returnValue;
         }
-
-        protected virtual bool cancel() { return true; }
         public bool CancelTask()
         {
             bool returnValue = false;
@@ -89,7 +95,10 @@ namespace Decoratid.Idioms.Tasking
                 {
                     try
                     {
-                        returnValue = this.cancel();
+                        if (this.CancelLogic != null)
+                            this.CancelLogic.Perform();
+
+                        returnValue = true;
                     }
                     catch (Exception ex)
                     {
@@ -104,8 +113,6 @@ namespace Decoratid.Idioms.Tasking
             }
             return returnValue;
         }
-
-        protected virtual bool markComplete() { return true; }
         public bool MarkTaskComplete()
         {
             bool returnValue = false;
@@ -114,24 +121,11 @@ namespace Decoratid.Idioms.Tasking
             {
                 if (this._stateMachine.Trigger(DecoratidTaskTransitionEnum.MarkComplete))
                 {
-                    try
-                    {
-                        returnValue = this.markComplete();
-                    }
-                    catch (Exception ex)
-                    {
-                        this.MarkTaskError(ex);
-                    }
-                    finally
-                    {
-                        if (returnValue)
-                            this.Save();
-                    }
+                    this.Save();
                 }
             }
             return returnValue;
         }
-        protected virtual bool markError(Exception ex) { return true; }
         public bool MarkTaskError(Exception ex)
         {
             bool returnValue = false;
@@ -140,23 +134,25 @@ namespace Decoratid.Idioms.Tasking
             {
                 if (this._stateMachine.Trigger(DecoratidTaskTransitionEnum.MarkErrored))
                 {
-                    try
-                    {
-                        returnValue = this.markError(ex);
-                    }
-                    catch (Exception ex2)
-                    {
-                        this.MarkTaskError(ex2);
-                    }
-                    finally
-                    {
-                        if (returnValue)
-                            this.Save();
-                    }
+                    this.Save();
                 }
             }
             return returnValue;
         }
+        public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
+        {
+            return new TaskingLogicDecoration(thing, this.Id);
+        }
         #endregion
+    }
+
+    public static class TaskingLogicDecorationExtensions
+    {
+        public static TaskingLogicDecoration Tasking(ILogic decorated, string taskId, ILogic cancelLogic = null)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new TaskingLogicDecoration(decorated, taskId, cancelLogic);
+        }
+
     }
 }

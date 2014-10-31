@@ -127,7 +127,7 @@ namespace Decoratid.Idioms.Tasking
         /// <param name="e"></param>
         void Job_ItemEvicted(object sender, EventArgOf<Tuple<IHasId, IExpirable>> e)
         {
-            this.Cancel();
+            this.CancelTask();
         }
         #endregion
 
@@ -169,11 +169,11 @@ namespace Decoratid.Idioms.Tasking
                 {
                     try
                     {
-                        task.Cancel();
+                        task.CancelTask();
                     }
                     catch (Exception ex)
                     {
-                        task.MarkError(new ApplicationException("Task cancellation error", ex));
+                        task.MarkTaskError(new ApplicationException("Task cancellation error", ex));
                     }
                     finally
                     {
@@ -215,7 +215,7 @@ namespace Decoratid.Idioms.Tasking
                     }
                     else
                     {
-                        task.Perform();
+                        task.PerformTask();
                     }
                 });
                 #endregion
@@ -239,7 +239,7 @@ namespace Decoratid.Idioms.Tasking
         #region Run Methods
         public void RunToCompletion()
         {
-            this.Perform();
+            this.PerformTask();
 
             lock (_stateLock)
                 while (this.Status != DecoratidTaskStatusEnum.Cancelled &&

@@ -36,15 +36,15 @@ namespace Decoratid.Idioms.Tasking.Decorations
         #endregion
 
         #region Overrides
-        public override bool Perform()
+        public override bool PerformTask()
         {
-            var rv = base.Perform();
+            var rv = base.PerformTask();
 
             //mark completion on successful performance/error on unsuccessful
             if (rv)
-                this.MarkComplete();
+                this.MarkTaskComplete();
             else
-                this.MarkError(new ApplicationException("Unsuccessful perform"));
+                this.MarkTaskError(new ApplicationException("Unsuccessful perform"));
             return rv;
         }
         #endregion
