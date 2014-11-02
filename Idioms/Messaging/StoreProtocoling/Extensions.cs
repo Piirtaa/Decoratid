@@ -12,7 +12,7 @@ namespace Decoratid.Idioms.Messaging.StoreProtocoling
     public static class Extensions
     {
         /// <summary>
-        /// Fluently sets logic
+        /// Fluently sets endpoint logic
         /// </summary>
         /// <param name="host"></param>
         /// <param name="logic"></param>

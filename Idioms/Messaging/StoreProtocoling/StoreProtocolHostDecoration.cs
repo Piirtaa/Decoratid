@@ -17,10 +17,10 @@ namespace Decoratid.Idioms.Messaging.StoreProtocoling
     /// <summary>
     /// decorates the host by giving it a store protocol implementation
     /// </summary>
-    public class StoreProtocolDecoration : DecoratedEndPointHostBase, IHasStoreProtocolLogic
+    public class StoreProtocolHostDecoration : DecoratedEndPointHostBase, IHasStoreProtocolLogic
     {
         #region Ctor
-        public StoreProtocolDecoration(IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
+        public StoreProtocolHostDecoration(IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
             : base(decorated)
         {
             Condition.Requires(storeProtocolLogic).IsNotNull();
@@ -76,23 +76,23 @@ namespace Decoratid.Idioms.Messaging.StoreProtocoling
         #region Overrides
         public override IDecorationOf<IEndPointHost> ApplyThisDecorationTo(IEndPointHost thing)
         {
-            return new StoreProtocolDecoration(thing, this.StoreProtocolLogic);
+            return new StoreProtocolHostDecoration(thing, this.StoreProtocolLogic);
         }
         #endregion
 
         #region Fluent Static
-        public static StoreProtocolDecoration New(IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
+        public static StoreProtocolHostDecoration New(IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
         {
-            return new StoreProtocolDecoration(decorated, storeProtocolLogic, valueManager);
+            return new StoreProtocolHostDecoration(decorated, storeProtocolLogic, valueManager);
         }
         #endregion
     }
 
-    public static class StoreProtocolDecorationExtensions
+    public static class StoreProtocolHostDecorationExtensions
     {
-        public static StoreProtocolDecoration StoreProtocoling(this IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
+        public static StoreProtocolHostDecoration StoreProtocoling(this IEndPointHost decorated, LogicOf<Tuple<IStore, IStore>> storeProtocolLogic, ValueManagerChainOfResponsibility valueManager = null)
         {
-            var rv = new StoreProtocolDecoration(decorated, storeProtocolLogic, valueManager);
+            var rv = new StoreProtocolHostDecoration(decorated, storeProtocolLogic, valueManager);
             return rv;
         }
     }

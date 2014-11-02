@@ -75,6 +75,7 @@
     <Compile Include="Idioms\Adjusting\Adjustment.cs" />
     <Compile Include="Idioms\Adjusting\HasAdjustment.cs" />
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
+    <Compile Include="Idioms\Communicating\DecoratedEndPointClientBase.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
     <Compile Include="Idioms\Identifying\HasVersionDecoration.cs" />
@@ -84,6 +85,14 @@
     <Compile Include="Idioms\Identifying\HasGUIDDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
+    <Compile Include="Idioms\Messaging\OperationProtocoling\Extensions.cs" />
+    <Compile Include="Idioms\Messaging\OperationProtocoling\Interfaces.cs" />
+    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolClientDecoration.cs" />
+    <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolHostDecoration.cs" />
+    <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolClientDecoration.cs" />
+    <Compile Include="Idioms\Messaging\StoreProtocoling\Extensions.cs" />
+    <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs" />
+    <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolHostDecoration.cs" />
     <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">
       <SubType>Code</SubType>
     </Compile>
