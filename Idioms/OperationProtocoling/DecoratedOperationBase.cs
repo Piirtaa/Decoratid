@@ -1,11 +1,12 @@
 ﻿using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.Tasking;
 using System;
 using System.Linq;
 
-namespace Decoratid.Idioms.Operationing
+namespace Decoratid.Idioms.OperationProtocoling
 {
     public interface IDecoratedOperation : IOperation, IDecorationOf<IOperation>
     {
@@ -27,34 +28,29 @@ namespace Decoratid.Idioms.Operationing
         {
             get { return this.Decorated.Id; }
         }
-
         object IHasId.Id
         {
             get { return this.Id; }
         }
-        public Type ResponseType
+        public Type ArgumentType
         {
-            get { return this.Decorated.ResponseType; }
+            get { return this.Decorated.ArgumentType; }
         }
 
-        public Type RequestType
+        public Type ResultType
         {
-            get { return this.Decorated.RequestType; }
+            get { return this.Decorated.ResultType; }
         }
 
-        public Core.Logical.ICloneableLogic PerformLogic
+        public ILogic OperationLogic
         {
-            get { return this.Decorated.PerformLogic; }
+            get { return this.Decorated.OperationLogic; }
         }
 
-        public virtual ITask GetPerformTask(IStore requestStore, IStore responseStore)
+        public virtual ITask GetTask(IStore requestStore, IStore responseStore)
         {
-            return this.Decorated.GetPerformTask(requestStore, responseStore);
+            return this.Decorated.GetTask(requestStore, responseStore);
         }       
-        public bool IsRequested(IStore requestStore)
-        {
-            return this.Decorated.IsRequested(requestStore);
-        }
         #endregion
 
 

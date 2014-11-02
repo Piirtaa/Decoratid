@@ -143,48 +143,6 @@ namespace Decoratid.Idioms.Tasking
             return list.FirstOrDefault();
         }
 
-        #region Fluent
-        ///// <summary>
-        ///// converts logic into a task
-        ///// </summary>
-        ///// <param name="logic"></param>
-        ///// <param name="id"></param>
-        ///// <returns></returns>
-        //public static ITask MakeTask(this ILogic logic, string id)
-        //{
-        //    Condition.Requires(logic).IsNotNull();
-
-        //    if (logic.IsOfLogic())
-        //    {
-        //        var ofType = logic.GetOfType();
-        //        var ofTaskType = typeof(StrategizedTaskOf<>);
-        //        var genType = ofTaskType.MakeGenericType(ofType);
-        //        var ofTask = Activator.CreateInstance(genType, id, null, logic, null);
-        //        return ofTask as ITask;
-        //    }
-        //    else
-        //    {
-        //        var task = StrategizedTask.New(id, logic);
-        //        return task;
-        //    }
-        //}
-        public static StrategizedTask MakeTask(this Logic logic, string id)
-        {
-            Condition.Requires(logic).IsNotNull();
-
-            var task = StrategizedTask.New(id, logic);
-            return task;
-        }
-        //public static StrategizedTaskOf<TArg> MakeTask<TArg>(this LogicOf<TArg> logic, string id)
-        //{
-        //    Condition.Requires(logic).IsNotNull();
-
-        //    var task = StrategizedTaskOf<TArg>.NewBlank<TArg>(id).Performs(logic);
-
-        //    return task;
-        //}
-        #endregion
-
 
     }
 }

@@ -10,7 +10,7 @@ using Decoratid.Core.Storing;
 using Decoratid.Idioms.Tasking;
 using Decoratid.Idioms.Tasking.Decorations;
 
-namespace Decoratid.Idioms.Messaging.OperationProtocoling.Decorations
+namespace Decoratid.Idioms.OperationProtocoling.Decorations
 {
     /// <summary>
     /// indicates the Operation has a dependency on other Operations in the same store
@@ -40,10 +40,14 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling.Decorations
         }
         #endregion
 
+        #region Properties
+        public IDependencyOf<string> Dependency { get; protected set; }
+        #endregion
+
         #region IDecoratedOperation
-        public override ITask GetPerformTask(IStore requestStore, IStore responseStore)
+        public override ITask GetTask(IStore requestStore, IStore responseStore)
         {
-            var task = base.GetPerformTask(requestStore, responseStore);
+            var task = base.GetTask(requestStore, responseStore);
             task = task.DependsOn(this.Dependency.Prerequisites.ToArray());
             return task;
         }
@@ -52,11 +56,6 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling.Decorations
             return new DependencyDecoration(Operation, this.Dependency.Prerequisites);
         }
         #endregion
-
-        #region Properties
-        public IDependencyOf<string> Dependency { get; protected set; }
-        #endregion
-       
     }
 
     public static class DependencyDecorationExtensions

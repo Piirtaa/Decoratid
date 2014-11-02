@@ -84,6 +84,30 @@
     <Compile Include="Idioms\Identifying\HasGUIDDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
+    <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\Decorations\DependencyDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\OperationError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\OperationLogicDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\OperationManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\OperationRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\OperationProtocoling\OperationResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 using Decoratid.Core.Storing;
 using Decoratid.Core.Identifying;
 
-namespace Decoratid.Idioms.Operationing
+namespace Decoratid.Idioms.OperationProtocoling
 {
-    //i should really integrate this into the logic->task->operation stream, cos they're all really the same thing
-    //but fuck it i want to get it in now, and merge later
-    
     /// <summary>
     /// an operation's Response is stored with this container
     /// </summary>

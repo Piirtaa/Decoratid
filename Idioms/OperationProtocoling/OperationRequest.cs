@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Decoratid.Core.Storing;
 using Decoratid.Core.Identifying;
 
-namespace Decoratid.Idioms.Operationing
+namespace Decoratid.Idioms.OperationProtocoling
 {
     /// <summary>
     /// an operation's request is stored with this container
