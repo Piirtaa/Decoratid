@@ -35,8 +35,10 @@ namespace Decoratid.Idioms.OperationProtocoling
         #endregion
 
         #region Helper Methods
-        private void HandleOperations(IStore requestStore, IStore responseStore)
+        public IStore HandleOperations(IStore requestStore)
         {
+            IStore returnValue = NaturalInMemoryStore.New();
+
             var job = Job.NewWithNeverExpireDefault("job " + DateTime.UtcNow.ToString());
 
             var ops = this.Operations.GetAll();
@@ -44,12 +46,14 @@ namespace Decoratid.Idioms.OperationProtocoling
             {
                 if (this.IsRequested(requestStore, op.Id))
                 {
-                    var task = op.GetTask(requestStore, responseStore);
+                    var task = op.GetTask(requestStore, returnValue);
                     job.AddTask(task);
                 }
             });
 
             job.RunToCompletion();
+
+            return returnValue;
         }
         private bool IsRequested(IStore requestStore, string operationName)
         {
