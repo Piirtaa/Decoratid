@@ -345,4 +345,28 @@ namespace Decoratid.Idioms.ObjectGraphing
 
 
     }
+
+    public static class GraphExtensions
+    {
+        public static string GraphSerialize(this object obj, ValueManagerChainOfResponsibility managerSet, Func<object, GraphPath, bool> skipFilter = null)
+        {
+            var graph = Graph.Build(obj, managerSet, skipFilter);
+            var rv = graph.GetValue();
+            return rv;
+        }
+        public static object GraphDeserialize(this string data, ValueManagerChainOfResponsibility managerSet)
+        {
+            var graph = Graph.Parse(data, managerSet);
+            var rv = graph.RootNode.NodeValue;
+            return rv;
+        }
+        public static string GraphSerializeWithDefaults(this object obj, Func<object, GraphPath, bool> skipFilter = null)
+        {
+            return GraphSerialize(obj, ValueManagerChainOfResponsibility.NewDefault(), skipFilter);
+        }
+        public static object GraphDeserializeWithDefaults(this string data)
+        {
+            return GraphDeserialize(data, ValueManagerChainOfResponsibility.NewDefault());
+        }
+    }
 }

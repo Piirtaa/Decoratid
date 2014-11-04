@@ -55,14 +55,14 @@ namespace Decoratid.Idioms.OperationProtocoling
             Condition.Requires(requestStore).IsNotNull();
             Condition.Requires(responseStore).IsNotNull();
 
-            var req = requestStore.Get<OperationRequest>(this.Id);
+            var req = requestStore.Get<OperationArg>(this.Id);
             TArg reqObj = (TArg)req.Data;
             try
             {
                 LogicOfTo<TArg, TResult> logic = (LogicOfTo<TArg, TResult>)this.OperationLogic;
 
                 var resp = logic.CloneAndPerform(reqObj.AsNaturalValue());
-                responseStore.SaveItem(OperationResponse.New(this.Id, resp));
+                responseStore.SaveItem(OperationResult.New(this.Id, resp));
             }
             catch (Exception ex)
             {

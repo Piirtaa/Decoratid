@@ -13,9 +13,9 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
 {
     public static class Extensions
     {
-        public static OperationResponse GetOperationResult(this IOperationProtocolClient client, string operationName)
+        public static OperationResult GetOperationResult(this IOperationProtocolClient client, string operationName)
         {
-            return client.ResponseStore.Get<OperationResponse>(operationName);
+            return client.ResponseStore.Get<OperationResult>(operationName);
         }
         public static OperationError GetOperationError(this IOperationProtocolClient client, string operationName)
         {
@@ -23,7 +23,7 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         }
         public static void AppendOperation<TArg>(this IOperationProtocolClient client, string operationName, TArg arg)
         {
-            client.RequestStore.SaveItem(OperationRequest.New(operationName, arg));
+            client.RequestStore.SaveItem(OperationArg.New(operationName, arg));
         }
     }
 }

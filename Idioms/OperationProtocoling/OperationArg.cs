@@ -12,10 +12,10 @@ namespace Decoratid.Idioms.OperationProtocoling
     /// an operation's request is stored with this container
     /// </summary>
     [Serializable]
-    public class OperationRequest : IHasId<string>
+    public class OperationArg : IHasId<string>
     {
         #region Ctor
-        public OperationRequest(string operationName, object data)
+        public OperationArg(string operationName, object data)
         {
             this.Id = operationName;
             this.Data = data;
@@ -32,9 +32,9 @@ namespace Decoratid.Idioms.OperationProtocoling
         #endregion
 
         #region Static Methods
-        public static OperationRequest New(string operationName, object data)
+        public static OperationArg New(string operationName, object data)
         {
-            OperationRequest item = new OperationRequest(operationName, data);
+            OperationArg item = new OperationArg(operationName, data);
             return item;
         }
         #endregion

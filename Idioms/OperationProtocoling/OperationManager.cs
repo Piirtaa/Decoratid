@@ -7,6 +7,7 @@ using Decoratid.Idioms.Tasking;
 using Decoratid.Storidioms.StoreOf;
 using System;
 using Decoratid.Extensions;
+using System.Collections.Generic;
 
 namespace Decoratid.Idioms.OperationProtocoling
 {
@@ -34,7 +35,7 @@ namespace Decoratid.Idioms.OperationProtocoling
         }
         #endregion
 
-        #region Helper Methods
+        #region Methods
         public void HandleOperations(IStore requestStore, IStore responseStore)
         {
             var job = Job.NewWithNeverExpireDefault("job " + DateTime.UtcNow.ToString());
@@ -51,11 +52,21 @@ namespace Decoratid.Idioms.OperationProtocoling
 
             job.RunToCompletion();
         }
+        public List<OperationError> GetErrors(IStore responseStore)
+        {
+            var rv = responseStore.GetAll<OperationError>();
+            return rv;
+        }
+        public List<OperationResult> GetResults(IStore responseStore)
+        {
+            var rv = responseStore.GetAll<OperationResult>();
+            return rv;
+        }
+        
         private bool IsRequested(IStore requestStore, string operationName)
         {
             Condition.Requires(requestStore).IsNotNull();
-
-            var req = requestStore.Get<OperationRequest>(operationName);
+            var req = requestStore.Get<OperationArg>(operationName);
             return req != null;
         }
         #endregion

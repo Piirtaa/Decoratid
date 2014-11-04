@@ -28,14 +28,14 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         public OperationProtocolHostDecoration(IEndPointHost decorated, ValueManagerChainOfResponsibility valueManager = null)
             : base(decorated.StoreProtocoling(null, valueManager))
         {
+            this.OperationManager = OperationManager.New();
+
             //replace the store protocol logic
             this.FindDecoratorOf<StoreProtocolHostDecoration>(true).HasStoreProtocolLogic(
                 LogicOf<Tuple<IStore, IStore>>.New((uow) =>
                 {
                     this.OperationManager.HandleOperations(uow.Item1, uow.Item2);
                 }));
-
-            this.OperationManager = OperationManager.New();
         }
         #endregion
 

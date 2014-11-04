@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeManager", "..\YouTub
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decoratid.Tests", "..\Decoratid.Tests\Decoratid.Tests.csproj", "{ABA751A2-6BCE-4D05-949E-5D3BD5409723}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decoratid.System", "..\Decoratid.System\Decoratid.System.csproj", "{85BEAFC2-401C-4E09-A78D-D51DAA5370DC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{ABA751A2-6BCE-4D05-949E-5D3BD5409723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA751A2-6BCE-4D05-949E-5D3BD5409723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA751A2-6BCE-4D05-949E-5D3BD5409723}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85BEAFC2-401C-4E09-A78D-D51DAA5370DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85BEAFC2-401C-4E09-A78D-D51DAA5370DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85BEAFC2-401C-4E09-A78D-D51DAA5370DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85BEAFC2-401C-4E09-A78D-D51DAA5370DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

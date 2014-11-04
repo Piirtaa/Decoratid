@@ -111,12 +111,18 @@
     <Compile Include="Idioms\OperationProtocoling\OperationManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\OperationProtocoling\OperationRequest.cs">
+    <Compile Include="Idioms\OperationProtocoling\OperationArg.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\OperationProtocoling\OperationResponse.cs">
+    <Compile Include="Idioms\OperationProtocoling\OperationResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Smellable\Extensions.cs" />
+    <Compile Include="Idioms\Smellable\SmellException.cs" />
+    <Compile Include="Idioms\Smellable\SmellableConditionDecoration.cs" />
+    <Compile Include="Idioms\Smellable\SmellableLogicDecoration.cs" />
+    <Compile Include="Idioms\Smellable\SmellableValueOfDecoration.cs" />
+    <Compile Include="Idioms\Smellable\Interfaces.cs" />
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>
@@ -134,6 +140,8 @@
     <Compile Include="Idioms\Tasking\Job.cs" />
     <Compile Include="Idioms\Tasking\TaskBase.cs" />
     <Compile Include="Idioms\Tasking\TaskStore.cs" />
+    <Compile Include="Idioms\Testing\Extensions.cs" />
+    <Compile Include="Idioms\Testing\Interfaces.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />
     <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />
     <Compile Include="Idioms\Communicating\EndPoint.cs" />
