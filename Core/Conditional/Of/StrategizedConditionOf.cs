@@ -15,6 +15,10 @@ namespace Decoratid.Core.Conditional.Of
     /// <summary>
     /// A container that implements IConditionOf using a strategy operating on a contextual object of T.
     /// </summary>
+    /// <remarks>
+    /// How is this any different from the ConditionalOfLogicDecoration?  It doesn't expose the ILogic roots,
+    /// and has a tighter, more-defined implementation (eg. it does a CloneAndPerform() under the hood).
+    /// </remarks>
     [Serializable]
     public sealed class StrategizedConditionOf<T> : IConditionOf<T>, ISerializable
     {
