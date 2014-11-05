@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -15,11 +16,11 @@ namespace Decoratid.Idioms.Counting
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
-
-
-
-
+                var newX = x.Counted();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(0);
+                newX.Evaluate();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(1);
+    
             })) 
         { 
         }
@@ -30,11 +31,10 @@ namespace Decoratid.Idioms.Counting
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                //TESTS HERE
-
-
-
-
+                var newX = x.Counted();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(0);
+                newX.GetValue();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(1);
             }))
         {
         }
@@ -45,10 +45,10 @@ namespace Decoratid.Idioms.Counting
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                //TESTS HERE
-
-
-
+                var newX = x.Counted();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(0);
+                newX.Perform();
+                Condition.Requires(newX.Counter.Current).IsEqualTo(1);
 
             }))
         {

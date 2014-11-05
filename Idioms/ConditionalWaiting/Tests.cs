@@ -78,6 +78,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
                 ICondition expCond = StrategizedCondition.New(() => { return DateTime.Now > flagDate.AddSeconds(1); });
 
                 var newX = x.WaitUntil(cond, expCond);
+                newX.Perform();
 
             }))
         {

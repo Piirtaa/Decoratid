@@ -54,7 +54,7 @@ namespace Decoratid.Idioms.Counting
         /// <summary>
         /// Adds a Counter to track number of times evaluation has been invoked
         /// </summary>
-        public static CountingConditionDecoration Counted(ICondition decorated)
+        public static CountingConditionDecoration Counted(this ICondition decorated)
         {
             return new CountingConditionDecoration(decorated);
         }

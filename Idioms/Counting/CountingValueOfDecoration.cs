@@ -54,7 +54,7 @@ namespace Decoratid.Idioms.Counting
         /// <summary>
         /// Adds a Counter to track number of times evaluation has been invoked
         /// </summary>
-        public static CountingValueOfDecoration<T> Counted<T>(IValueOf<T> decorated)
+        public static CountingValueOfDecoration<T> Counted<T>(this IValueOf<T> decorated)
         {
             return new CountingValueOfDecoration<T>(decorated);
         }
