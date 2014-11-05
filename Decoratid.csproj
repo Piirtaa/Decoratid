@@ -74,6 +74,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Contextual\AsContext.cs" />
+    <Compile Include="Core\Contextual\ContextualCondition.cs" />
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Decorating\DecorationUtils.cs" />

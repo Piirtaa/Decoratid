@@ -37,8 +37,16 @@ namespace Decoratid.Core.Conditional
             ILogicTo<bool?> logic = (ILogicTo<bool?>)this.Decorated;
             Condition.Requires(logic).IsNotNull();
 
-            logic.Perform();
-            return logic.Result;
+            ICloneableLogic cloneableLogic = logic as ICloneableLogic;
+            Condition.Requires(cloneableLogic).IsNotNull();
+
+            var newLogic = cloneableLogic.Clone();
+            newLogic.Perform();
+
+            ILogicTo<bool?> newLogicTo = newLogic as ILogicTo<bool?>;
+            Condition.Requires(newLogicTo).IsNotNull();
+
+            return newLogicTo.Result;
         }
         #endregion
 
