@@ -88,6 +88,12 @@ namespace Decoratid.Idioms.Adjusting
             Condition.Requires(adjustment).IsNotNull();
             return new AdjustingValueOfDecoration<T>(valueOf, adjustment);
         }
+        public static AdjustingValueOfDecoration<T> Adjust<T>(this IValueOf<T> valueOf, Func<T, T> adjustment)
+        {
+            Condition.Requires(valueOf).IsNotNull();
+            Condition.Requires(adjustment).IsNotNull();
+            return new AdjustingValueOfDecoration<T>(valueOf, adjustment.MakeLogicOfTo());
+        }
     }
 
 }

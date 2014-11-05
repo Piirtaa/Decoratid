@@ -85,9 +85,17 @@
     <Compile Include="Idioms\Adjusting\Adjustment.cs" />
     <Compile Include="Idioms\Adjusting\HasAdjustment.cs" />
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
+    <Compile Include="Idioms\Adjusting\Tests.cs" />
+    <Compile Include="Idioms\Backgrounding\Tests.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointClientBase.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
+    <Compile Include="Idioms\Communicating\Socketing\Tests.cs" />
+    <Compile Include="Idioms\ConditionalWaiting\Tests.cs" />
+    <Compile Include="Idioms\Counting\Tests.cs" />
+    <Compile Include="Idioms\Eventing\Tests.cs" />
+    <Compile Include="Idioms\Expiring\Tests.cs" />
+    <Compile Include="Idioms\Filing\Tests.cs" />
     <Compile Include="Idioms\Identifying\HasVersionDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasRandomStringDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasDateLastTouchedDecoration.cs" />
@@ -95,6 +103,7 @@
     <Compile Include="Idioms\Identifying\HasGUIDDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
+    <Compile Include="Idioms\Identifying\Tests.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolClientDecoration.cs" />
@@ -103,6 +112,8 @@
     <Compile Include="Idioms\Messaging\StoreProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolHostDecoration.cs" />
+    <Compile Include="Idioms\ObjectGraphing\Tests.cs" />
+    <Compile Include="Idioms\Observing\Tests.cs" />
     <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -127,12 +138,16 @@
     <Compile Include="Idioms\OperationProtocoling\OperationResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Polyfacing\Tests.cs" />
+    <Compile Include="Idioms\Sealing\Tests.cs" />
     <Compile Include="Idioms\Smellable\Extensions.cs" />
     <Compile Include="Idioms\Smellable\SmellException.cs" />
     <Compile Include="Idioms\Smellable\SmellableConditionDecoration.cs" />
     <Compile Include="Idioms\Smellable\SmellableLogicDecoration.cs" />
     <Compile Include="Idioms\Smellable\SmellableValueOfDecoration.cs" />
     <Compile Include="Idioms\Smellable\Interfaces.cs" />
+    <Compile Include="Idioms\Smellable\Tests.cs" />
+    <Compile Include="Idioms\Stringing\Tests.cs" />
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>
@@ -150,8 +165,10 @@
     <Compile Include="Idioms\Tasking\Job.cs" />
     <Compile Include="Idioms\Tasking\TaskBase.cs" />
     <Compile Include="Idioms\Tasking\TaskStore.cs" />
+    <Compile Include="Idioms\Tasking\Tests.cs" />
     <Compile Include="Idioms\Testing\Extensions.cs" />
     <Compile Include="Idioms\Testing\Interfaces.cs" />
+    <Compile Include="Idioms\Testing\TestOf.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />
     <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />
     <Compile Include="Idioms\Communicating\EndPoint.cs" />
@@ -430,6 +447,7 @@
     <Compile Include="Idioms\Stringing\StringableListDecorationBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Throttling\Tests.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
@@ -455,6 +473,7 @@
     <Compile Include="Idioms\Validating\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Idioms\Validating\Tests.cs" />
     <Compile Include="Idioms\Validating\ValidatingConditionDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -471,22 +490,28 @@
     <Compile Include="Storidioms\AuditTrail\Interfaces.cs" />
     <Compile Include="Idioms\Identifying\DistributedId.cs" />
     <Compile Include="Storidioms\AuditTrail\StoredItemAuditPoint.cs" />
+    <Compile Include="Storidioms\AuditTrail\Tests.cs" />
     <Compile Include="Storidioms\Caching\CacheDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Storidioms\Caching\Tests.cs" />
     <Compile Include="Storidioms\DecoratedStoreBase.cs" />
     <Compile Include="Storidioms\DecorationExtensions.cs" />
     <Compile Include="Storidioms\Evicting\EvictingDecoration.cs" />
     <Compile Include="Storidioms\Evicting\EvictionPolicy.cs" />
+    <Compile Include="Storidioms\Evicting\Tests.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
+    <Compile Include="Storidioms\Factoried\Tests.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
+    <Compile Include="Storidioms\ItemValidating\Tests.cs" />
     <Compile Include="Storidioms\Masking\MaskingDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Backgrounding\PollingStoreDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Storidioms\Masking\Tests.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfUniqueIdDecoration.cs" />
@@ -495,6 +520,7 @@
     <Compile Include="Storidioms\ItemValidating\Interfaces.cs" />
     <Compile Include="Storidioms\ItemValidating\IsOfValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\ValidatingDecoration.cs" />
+    <Compile Include="Storidioms\StoreOf\Tests.cs" />
     <Compile Include="Storidioms\StoreSerializer.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />

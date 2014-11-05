@@ -71,5 +71,9 @@ namespace Decoratid.Idioms.Adjusting
         {
             return new AdjustingLogicDecoration(decorated, adjustment);
         }
+        public static AdjustingLogicDecoration Adjust(this ILogic decorated, Func<ILogic, ILogic> adjustment)
+        {
+            return new AdjustingLogicDecoration(decorated, adjustment.MakeLogicOfTo());
+        }
     }
 }

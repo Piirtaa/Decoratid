@@ -12,9 +12,6 @@ using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.Touching
 {
-    /// <summary>
-    /// an immutable expiry date.  implicitly convertable to datetime
-    /// </summary>
     [Serializable]
     public class StrategizedTouchable : ITouchable, IPolyfacing
     {

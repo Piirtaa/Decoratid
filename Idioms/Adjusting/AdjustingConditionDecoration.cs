@@ -71,5 +71,9 @@ namespace Decoratid.Idioms.Adjusting
         {
             return new AdjustingConditionDecoration(decorated, adjustment);
         }
+        public static AdjustingConditionDecoration Adjust(this ICondition decorated, Func<ICondition, ICondition> adjustment)
+        {
+            return new AdjustingConditionDecoration(decorated, adjustment.MakeLogicOfTo());
+        }
     }
 }

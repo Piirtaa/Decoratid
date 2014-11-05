@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Conditional.Of;
 using Decoratid.Core.Decorating;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Decoratid.Core.Contextual
 {
     [Serializable]
-    public class ContextualCondition<T> : DecoratedConditionOfBase<T>, IHasContext<T>
+    public class ContextualCondition<T> : DecoratedConditionOfBase<T>, IHasContext<T>, ICondition
     {
         #region Ctor
         public ContextualCondition(IConditionOf<T> decorated, T context)
@@ -74,14 +75,20 @@ namespace Decoratid.Core.Contextual
         }
         #endregion
 
+        #region ICondition
+        public bool? Evaluate()
+        {
+            var rv = this.Decorated.Evaluate(this.Context);
+            return rv;
+        }
+        #endregion
+
         #region Overrides
         public override IDecorationOf<IConditionOf<T>> ApplyThisDecorationTo(IConditionOf<T> thing)
         {
             return new ContextualCondition<T>(thing, this.Context);
         }
         #endregion
-
-
     }
 
     public static class ContextualConditionExtensions

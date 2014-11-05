@@ -20,4 +20,14 @@ namespace Decoratid.Idioms.Testing
         OperationManager GetTests();
         IStore GenerateTestInput();
     }
+
+    /// <summary>
+    /// marker interface
+    /// </summary>
+    public interface ITest { }
+
+    public interface ITestOf<T>: ITest
+    {
+        void Test(T arg);
+    }
 }
