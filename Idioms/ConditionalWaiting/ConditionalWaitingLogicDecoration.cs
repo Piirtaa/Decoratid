@@ -57,7 +57,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
     public static class ConditionalWaitingLogicDecorationExtensions
     {
-        public static ConditionalWaitingLogicDecoration WaitUntil(ILogic decorated, ICondition Condition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingLogicDecoration WaitUntil(this ILogic decorated, ICondition Condition, ICondition stopWaitingCondition)
         {
             return new ConditionalWaitingLogicDecoration(decorated, Condition, stopWaitingCondition);
         }

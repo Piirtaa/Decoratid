@@ -58,7 +58,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
 
     public static class ConditionalWaitingValueOfDecorationExtensions
     {
-        public static ConditionalWaitingValueOfDecoration<T> WaitUntil<T>(IValueOf<T> decorated, ICondition Condition, ICondition stopWaitingCondition)
+        public static ConditionalWaitingValueOfDecoration<T> WaitUntil<T>(this IValueOf<T> decorated, ICondition Condition, ICondition stopWaitingCondition)
         {
             return new ConditionalWaitingValueOfDecoration<T>(decorated, Condition, stopWaitingCondition);
         }
