@@ -75,7 +75,7 @@ namespace Decoratid.Idioms.Expiring
             Condition.Requires(thing).IsNotNull();
             return new FloatingDateExpirableDecoration(thing, touchIncrementSecs);
         }
-        public static IHasExpirable Float(this IHasExpirable thing, int touchIncrementSecs)
+        public static IHasExpirable ExpiryFloats(this IHasExpirable thing, int touchIncrementSecs)
         {
             Condition.Requires(thing).IsNotNull();
             if (!(thing.Expirable is DateExpirableDecoration))

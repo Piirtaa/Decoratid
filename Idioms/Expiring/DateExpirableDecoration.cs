@@ -84,7 +84,7 @@ namespace Decoratid.Idioms.Expiring
             Condition.Requires(thing).IsNotNull();
             return new DateExpirableDecoration(thing, expiryDate);
         }
-        public static IHasExpirable On(this IHasExpirable thing, DateTime expiryDate)
+        public static IHasExpirable ExpiresOn(this IHasExpirable thing, DateTime expiryDate)
         {
             Condition.Requires(thing).IsNotNull();
             thing.Expirable = thing.Expirable.DecorateWithDateExpirable(expiryDate);

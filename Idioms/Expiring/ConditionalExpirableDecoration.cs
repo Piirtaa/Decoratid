@@ -86,7 +86,7 @@ namespace Decoratid.Idioms.Expiring
             Condition.Requires(thing).IsNotNull();
             return new ConditionalExpirableDecoration(thing, condition);
         }
-        public static IHasExpirable When(this IHasExpirable thing, ICondition condition)
+        public static IHasExpirable ExpiresWhen(this IHasExpirable thing, ICondition condition)
         {
             Condition.Requires(thing).IsNotNull();
             thing.Expirable = thing.Expirable.DecorateWithConditionalExpirable(condition);

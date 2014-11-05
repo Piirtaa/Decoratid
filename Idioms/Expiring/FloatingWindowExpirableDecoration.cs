@@ -79,7 +79,7 @@ namespace Decoratid.Idioms.Expiring
             return new FloatingWindowExpirableDecoration(thing, touchIncrementSecs);
         }
 
-        public static IHasExpirable Float(this IHasExpirable thing, int touchIncrementSecs)
+        public static IHasExpirable WindowFloats(this IHasExpirable thing, int touchIncrementSecs)
         {
             Condition.Requires(thing).IsNotNull();
             if (!(thing.Expirable is WindowExpirableDecoration))

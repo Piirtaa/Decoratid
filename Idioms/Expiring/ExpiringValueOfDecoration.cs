@@ -65,12 +65,12 @@ namespace Decoratid.Idioms.Expiring
 
     public static class ExpiringValueOfDecorationExtensions
     {
-        public static ExpiringValueOfDecoration<T> HasExpirable<T>(IValueOf<T> decorated, IExpirable expirable)
+        public static ExpiringValueOfDecoration<T> HasExpirable<T>(this IValueOf<T> decorated, IExpirable expirable)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ExpiringValueOfDecoration<T>(decorated, expirable);
         }
-        public static ExpiringValueOfDecoration<T> HasExpirable<T>(IValueOf<T> decorated)
+        public static ExpiringValueOfDecoration<T> HasExpirable<T>(this IValueOf<T> decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ExpiringValueOfDecoration<T>(decorated, NaturalFalseExpirable.New());

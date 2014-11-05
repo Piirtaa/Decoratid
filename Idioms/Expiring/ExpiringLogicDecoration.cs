@@ -64,12 +64,12 @@ namespace Decoratid.Idioms.Expiring
 
     public static class ExpiringLogicDecorationExtensions
     {
-        public static ExpiringLogicDecoration HasExpirable(ILogic decorated, IExpirable expirable)
+        public static ExpiringLogicDecoration HasExpirable(this ILogic decorated, IExpirable expirable)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ExpiringLogicDecoration(decorated, expirable);
         }
-        public static ExpiringLogicDecoration HasExpirable(ILogic decorated)
+        public static ExpiringLogicDecoration HasExpirable(this ILogic decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ExpiringLogicDecoration(decorated, NaturalFalseExpirable.New());
