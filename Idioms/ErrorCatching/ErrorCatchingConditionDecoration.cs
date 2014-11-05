@@ -50,7 +50,7 @@ namespace Decoratid.Idioms.ErrorCatching
 
     public static class ErrorCatchingConditionDecorationExtensions
     {
-        public static ErrorCatchingConditionDecoration Trap(ICondition decorated)
+        public static ErrorCatchingConditionDecoration Trap(this ICondition decorated)
         {
             return new ErrorCatchingConditionDecoration(decorated);
         }

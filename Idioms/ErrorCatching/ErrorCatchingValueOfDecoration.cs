@@ -50,7 +50,7 @@ namespace Decoratid.Idioms.ErrorCatching
 
     public static class ErrorCatchingValueOfDecorationExtensions
     {
-        public static ErrorCatchingValueOfDecoration<T> Trap<T>(IValueOf<T> decorated)
+        public static ErrorCatchingValueOfDecoration<T> Trap<T>(this IValueOf<T> decorated)
         {
             return new ErrorCatchingValueOfDecoration<T>(decorated);
         }

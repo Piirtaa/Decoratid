@@ -49,7 +49,7 @@ namespace Decoratid.Idioms.ErrorCatching
 
     public static class ErrorCatchingLogicDecorationExtensions
     {
-        public static ErrorCatchingLogicDecoration Trap(ILogic decorated)
+        public static ErrorCatchingLogicDecoration Trap(this ILogic decorated)
         {
             return new ErrorCatchingLogicDecoration(decorated);
         }
