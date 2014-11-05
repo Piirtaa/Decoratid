@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -10,48 +11,28 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Communicating.Socketing
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class HostTest : TestOf<Host>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public HostTest()
+            : base(LogicOf<Host>.New((x) =>
             {
-                //TESTS HERE
+ 
+                //give the host echo logic
+                x.HasLogic(LogicOfTo<string, string>.New((req) => { return req; }));
+                //start the host
+                x.Start();
 
+                //build a client
+                var client = Client.New(x.EndPoint);
 
-
-
+                //send some data
+                var reqDat = "Hello world";
+                var dat = client.Send(reqDat);
+                Condition.Requires(dat).IsEqualTo(reqDat);
             })) 
         { 
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
+    
 }
