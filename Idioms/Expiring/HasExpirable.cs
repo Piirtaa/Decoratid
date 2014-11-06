@@ -36,6 +36,13 @@ namespace Decoratid.Idioms.Expiring
             return this.Expirable.IsExpired();
         }
         #endregion
+
+        #region Fluent Static
+        public static HasExpirable New(IExpirable exp)
+        {
+            return new HasExpirable(exp);
+        }
+        #endregion
     }
 
     public static class HasExpirableExtensions

@@ -32,10 +32,11 @@ namespace Decoratid.Idioms.Expiring
             get { return ((DateExpirableDecoration)this.Decorated).ExpiryDate; }
         }
 
-        public void Touch()
+        public ITouchable Touch()
         {
             DateExpirableDecoration dec = this.Decorated as DateExpirableDecoration;
             dec.SetExpiryDate(dec.ExpiryDate.AddSeconds(this.TouchIncrementSecs));
+            return this;
         }
         #endregion
 
@@ -83,6 +84,15 @@ namespace Decoratid.Idioms.Expiring
 
             var dateExpire = thing.Expirable as DateExpirableDecoration;
             thing.Expirable = dateExpire.DecorateWithFloatingDateExpirable(touchIncrementSecs);
+
+            return thing;
+        }
+        public static IHasExpirable Touch(this IHasExpirable thing)
+        {
+            Condition.Requires(thing).IsNotNull();
+
+            if (thing.Expirable is ITouchable)
+                ((ITouchable)thing).Touch();
 
             return thing;
         }

@@ -30,7 +30,7 @@ namespace Decoratid.Idioms.Expiring
         #endregion
 
         #region ICanTouch
-        public void Touch()
+        public ITouchable Touch()
         {
             this.LastTouchedDate = DateTime.UtcNow;
 
@@ -38,6 +38,7 @@ namespace Decoratid.Idioms.Expiring
             {
                 this.ExpiryDate = this.ExpiryDate.AddSeconds(this.TouchIncrementSecs);
             }
+            return this;
         }
         #endregion
     }

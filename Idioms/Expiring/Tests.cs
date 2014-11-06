@@ -10,9 +10,108 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Decoratid.Idioms.ErrorCatching;
+using Decoratid.Idioms.ObjectGraphing;
+using Decoratid.Core.Conditional.Of;
+using Decoratid.Core.Contextual;
 
 namespace Decoratid.Idioms.Expiring
 {
+    public class ExpirableTest : TestOf<Nothing>
+    {
+        public ExpirableTest()
+            : base(LogicOf<Nothing>.New((x) =>
+            {
+                #region Expirable
+                //create expirable
+                var expirable = NaturalTrueExpirable.New();
+
+                //test date expirable
+                var dateExp = expirable.DecorateWithDateExpirable(DateTime.Now.AddSeconds(5));
+                Condition.Requires(dateExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(dateExp.IsExpired()).IsTrue();
+
+                //test floating date 
+                var floatDateExp = expirable.DecorateWithDateExpirable(DateTime.Now.AddSeconds(5)).DecorateWithFloatingDateExpirable(1);
+                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
+                floatDateExp.Touch().Touch();
+                Thread.Sleep(6000);
+                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
+                Thread.Sleep(2000);
+                Condition.Requires(floatDateExp.IsExpired()).IsTrue();
+
+                //test window date 
+                var windowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5));
+                Condition.Requires(windowExp.IsExpired()).IsTrue();
+                Thread.Sleep(2000);
+                Condition.Requires(windowExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(windowExp.IsExpired()).IsTrue();
+
+                //test float window date 
+                var floatWindowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5)).DecorateWithFloatingWindowExpirable(1);
+                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
+                Thread.Sleep(2000);
+                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
+                floatWindowExp.Touch().Touch().Touch().Touch(); //touch it back to not expired
+                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+
+                //test conditional expiry
+                var cond = StrategizedConditionOf<bool>.New((o) => { return o; }).AddContext(false);
+                var condExp = expirable.DecorateWithConditionalExpirable(cond);
+                Condition.Requires(condExp.IsExpired()).IsFalse();
+                cond.Context = true;
+                Condition.Requires(condExp.IsExpired()).IsTrue();
+                #endregion
+
+                #region HasA
+                //test HasA 
+                var hasExp = HasExpirable.New(expirable);
+                hasExp.ExpiresOn(DateTime.Now.AddSeconds(5));
+                Condition.Requires(hasExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
+
+                //test floating date 
+                hasExp.ExpiryFloatsrateWithFloatingDateExpirable(1);
+                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
+                floatDateExp.Touch().Touch();
+                Thread.Sleep(6000);
+                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
+                Thread.Sleep(2000);
+                Condition.Requires(floatDateExp.IsExpired()).IsTrue();
+
+                //test window date 
+                var windowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5));
+                Condition.Requires(windowExp.IsExpired()).IsTrue();
+                Thread.Sleep(2000);
+                Condition.Requires(windowExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(windowExp.IsExpired()).IsTrue();
+
+                //test float window date 
+                var floatWindowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5)).DecorateWithFloatingWindowExpirable(1);
+                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
+                Thread.Sleep(2000);
+                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+                Thread.Sleep(6000);
+                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
+                floatWindowExp.Touch().Touch().Touch().Touch(); //touch it back to not expired
+                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+
+                //test conditional expiry
+                var cond = StrategizedConditionOf<bool>.New((o) => { return o; }).AddContext(false);
+                var condExp = expirable.DecorateWithConditionalExpirable(cond);
+                Condition.Requires(condExp.IsExpired()).IsFalse();
+                cond.Context = true;
+                Condition.Requires(condExp.IsExpired()).IsTrue();
+                #endregion
+            }))
+        {
+        }
+    }
     public class ConditionTest : TestOf<ICondition>
     {
         public ConditionTest()
@@ -25,10 +124,10 @@ namespace Decoratid.Idioms.Expiring
                 Thread.Sleep(6000);
 
                 var trapX = newX.Traps();
-                trapX.Evaluate();
-
-            })) 
-        { 
+                var trapVal = trapX.Evaluate();
+                Condition.Requires(trapVal).IsEqualTo(false);
+            }))
+        {
         }
     }
 
@@ -38,14 +137,27 @@ namespace Decoratid.Idioms.Expiring
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
                 var expiry = DateTime.Now.AddSeconds(5);
-                var newX = x.HasExpirable();
-                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; }));
-                newX.GetValue();
+                var newX = x.HasExpirable(); //expire this
+                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; })); //specify how it expires
+                var oldVal = newX.GetValue();//eval. should work fine
                 Thread.Sleep(6000);
 
-                var trapX = newX.Traps();
-                trapX.GetValue();
+                //we've expired so eval should kack
+                var trapX = newX.Traps(); //trap that shit
+                var trapVal = trapX.GetValue();
+                Condition.Requires(trapVal == null).IsTrue();
 
+                //reset the expiry to 5 seconds from now
+                expiry = DateTime.Now.AddSeconds(5);
+                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; }));
+                newX.ExpiryFloats(1); //give it floatability
+                newX.Touch().Touch();//extend it to 7 seconds expiry
+                Thread.Sleep(6000);
+                //should eval fine now
+                var newVal = newX.GetValue();
+
+                //old should be new, now
+                Condition.Requires(newVal.GraphSerializeWithDefaults()).IsEqualTo(oldVal.GraphSerializeWithDefaults());
             }))
         {
         }

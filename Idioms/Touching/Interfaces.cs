@@ -8,7 +8,11 @@ namespace Decoratid.Idioms.Touching
 {   
     public interface ITouchable 
     {
-        void Touch();
+        /// <summary>
+        /// fluent touch
+        /// </summary>
+        /// <returns></returns>
+        ITouchable Touch();
     }
 
     public interface IHasTouchable

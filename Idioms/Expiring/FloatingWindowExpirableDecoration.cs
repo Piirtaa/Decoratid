@@ -35,10 +35,11 @@ namespace Decoratid.Idioms.Expiring
         {
             get { return ((WindowExpirableDecoration)this.Decorated).EndDate; }
         }
-        public void Touch()
+        public ITouchable Touch()
         {
             WindowExpirableDecoration dec = this.Decorated as WindowExpirableDecoration;
             dec.SetWindow(dec.StartDate, dec.EndDate.AddSeconds(this.TouchIncrementSecs));
+            return this;
         }
         #endregion
 

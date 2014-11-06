@@ -32,9 +32,10 @@ namespace Decoratid.Idioms.Touching
         #endregion
 
         #region Overrides
-        public virtual void Touch()
+        public virtual ITouchable Touch()
         {
             base.Decorated.Touch();
+            return this;
         }
         public override ITouchable This
         {

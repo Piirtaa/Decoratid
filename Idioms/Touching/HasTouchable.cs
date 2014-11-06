@@ -31,9 +31,10 @@ namespace Decoratid.Idioms.Touching
         #endregion
 
         #region ITouchable
-        public void Touch()
+        public ITouchable Touch()
         {
             this.Touchable.Touch();
+            return this;
         }
         #endregion
     }
