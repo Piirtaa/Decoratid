@@ -20,10 +20,20 @@ namespace Decoratid.Idioms.Testing
         /// <returns></returns>
         public static List<ITestOf<T>> LocateTests<T>()
         {
-            Type genType = typeof(ITestOf<T>);
+            Type genType = typeof(ITestOf<>);
             var tests = TheTypeLocator.Instance.Locator.Locate((t) =>
             {
-                return t.HasGenericDefinition(genType);
+                if (!t.HasGenericDefinition(genType))
+                    return false;
+
+                var type = t.GetGenericParameterType(genType);
+                var ttype = typeof(T);
+                if(ttype.Equals(type))
+                    return true;
+                if (type.IsSubclassOf(type))
+                    return true;
+
+                return false;
             });
 
             List<ITestOf<T>> rv = new List<ITestOf<T>>();

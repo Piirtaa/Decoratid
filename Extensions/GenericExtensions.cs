@@ -57,7 +57,14 @@ namespace Decoratid.Extensions
 
             return null;
         }
+        public static Type GetGenericParameterType(this Type type, Type genericTypeDefinition)
+        {
+            var genType = type.GetTypeWithGenericDefinition(genericTypeDefinition);
+            if(genType != null)
+                return genType.GetGenericArguments()[0];
 
+            return null;
+        }
         #endregion
 
         
