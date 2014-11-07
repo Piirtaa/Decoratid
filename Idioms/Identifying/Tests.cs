@@ -28,22 +28,24 @@ namespace Decoratid.Idioms.Identifying
                 Condition.Requires(hasDateCreated.DateCreated).IsEqualTo(now);
 
                 var lastTouchedDate = DateTime.Now;
-                var hasLastTouched = hasGuid.HasDateLastTouched(lastTouchedDate);
+                var hasLastTouched = hasDateCreated.HasDateLastTouched(lastTouchedDate);
                 Condition.Requires(hasLastTouched.DateLastTouched).IsEqualTo(lastTouchedDate);
 
                 var localMachineName = NetUtil.GetLocalMachineName();
-                var hasLM = hasGuid.HasLocalMachineName();
+                var hasLM = hasLastTouched.HasLocalMachineName();
                 Condition.Requires(hasLM.MachineName).IsEqualTo(localMachineName);
 
                 var ip = NetUtil.GetLocalIPAddresses().First();
-                var hasIP = hasGuid.HasIP(ip);
+                var hasIP = hasLM.HasIP(ip);
                 Condition.Requires(hasIP.IPAddress.ToString()).IsEqualTo(ip.ToString());
 
-                var hasRS = hasGuid.HasRandomString("blah");
+                var hasRS = hasIP.HasRandomString("blah");
                 Condition.Requires(hasRS.RandomString).IsEqualTo("blah");
 
-                var hasV = hasGuid.HasVersion("v");
+                var hasV = hasRS.HasVersion("v");
                 Condition.Requires(hasV.Version).IsEqualTo("v");
+
+
             })) 
         { 
         }
