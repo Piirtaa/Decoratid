@@ -16,6 +16,9 @@ namespace Decoratid.Idioms.Observing
         LogicOf<ICondition> PostObservation { get; }
     }
 
+    /// <summary>
+    /// adds observing logic
+    /// </summary>
     [Serializable]
     public class ObservingConditionDecoration : DecoratedConditionBase, IObservingCondition
     {
@@ -71,10 +74,13 @@ namespace Decoratid.Idioms.Observing
 
     public static class ObservingConditionDecorationExtensions
     {
+
         /// <summary>
-        /// prevents further decoration
+        /// adds observing logic
         /// </summary>
         /// <param name="decorated"></param>
+        /// <param name="preObservation"></param>
+        /// <param name="postObservation"></param>
         /// <returns></returns>
         public static ObservingConditionDecoration Observe(this ICondition decorated, LogicOf<ICondition> preObservation,
             LogicOf<ICondition> postObservation)

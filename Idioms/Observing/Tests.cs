@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -15,11 +16,17 @@ namespace Decoratid.Idioms.Observing
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
+                var data = "data";
 
+                var observer = x.Observe(LogicOf<ICondition>.New((o) =>
+                {
+                    data = "data1";
+                }), null);
 
-
-
+                Condition.Requires(data).IsEqualTo("data");
+                observer.Evaluate();
+                Condition.Requires(data).IsEqualTo("data1");
+     
             })) 
         { 
         }
@@ -30,10 +37,16 @@ namespace Decoratid.Idioms.Observing
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                //TESTS HERE
+                var data = "data";
 
+                var observer = x.Observe(LogicOf<IValueOf<T>>.New((o) =>
+                {
+                    data = "data1";
+                }), null);
 
-
+                Condition.Requires(data).IsEqualTo("data");
+                observer.GetValue();
+                Condition.Requires(data).IsEqualTo("data1");
 
             }))
         {
@@ -45,11 +58,16 @@ namespace Decoratid.Idioms.Observing
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                //TESTS HERE
+                var data = "data";
 
+                var observer = x.Observe(LogicOf<ILogic>.New((o) =>
+                {
+                    data = "data1";
+                }), null);
 
-
-
+                Condition.Requires(data).IsEqualTo("data");
+                observer.Perform();
+                Condition.Requires(data).IsEqualTo("data1");
             }))
         {
         }

@@ -54,7 +54,34 @@ namespace Decoratid.Idioms.Polyfacing
         public static PolyfacingIHasIdDecoration Polyfacing(this IHasId decorated, Polyface rootFace = null)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new PolyfacingIHasIdDecoration(decorated, rootFace);
+
+            PolyfacingIHasIdDecoration rv = null;
+            /*Summary:
+             * if we spec a root we are setting that root
+             * if the condition is already polyfacing we use that otherwise build new one
+             * if no root is spec'd we create new polyface
+             */
+
+            //if we have polyface in our chain, we return that
+            if (DecorationUtils.HasDecoration<PolyfacingIHasIdDecoration>(decorated))
+            {
+                rv = DecorationUtils.GetDecoration<PolyfacingIHasIdDecoration>(decorated);
+
+                //if we specify a root we are replacing root!!!
+                if (rootFace != null)
+                {
+                    rv.RootFace = rootFace;
+                    return rv;
+                }
+            }
+
+            if (rv == null)
+            {
+                Polyface poly = rootFace == null ? Polyface.New() : rootFace;
+                rv = new PolyfacingIHasIdDecoration(decorated, poly);
+            }
+
+            return rv;
         }
     }
 }

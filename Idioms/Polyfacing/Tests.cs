@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -15,10 +16,9 @@ namespace Decoratid.Idioms.Polyfacing
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
-
-
-
+                var pf = x.Polyfacing();
+                var face = pf.As<ICondition>();
+                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
 
             })) 
         { 
@@ -30,10 +30,9 @@ namespace Decoratid.Idioms.Polyfacing
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                //TESTS HERE
-
-
-
+                var pf = x.Polyfacing();
+                var face = pf.As<IValueOf<T>>();
+                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
 
             }))
         {
@@ -45,10 +44,9 @@ namespace Decoratid.Idioms.Polyfacing
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                //TESTS HERE
-
-
-
+                var pf = x.Polyfacing();
+                var face = pf.As<ILogic>();
+                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
 
             }))
         {

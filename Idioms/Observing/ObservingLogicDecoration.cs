@@ -17,7 +17,7 @@ namespace Decoratid.Idioms.Observing
     }
 
     /// <summary>
-    /// prevents further decoration
+    /// adds observing logic
     /// </summary>
     [Serializable]
     public class ObservingLogicDecoration : DecoratedLogicBase, IObservingLogic
@@ -75,10 +75,8 @@ namespace Decoratid.Idioms.Observing
     public static class ObservingLogicDecorationExtensions
     {
         /// <summary>
-        /// prevents further decoration
+        /// adds observing logic
         /// </summary>
-        /// <param name="decorated"></param>
-        /// <returns></returns>
         public static ObservingLogicDecoration Observe(this ILogic decorated, LogicOf<ILogic> preObservation,
             LogicOf<ILogic> postObservation)
         {

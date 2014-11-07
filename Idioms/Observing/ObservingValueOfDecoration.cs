@@ -18,7 +18,7 @@ namespace Decoratid.Idioms.Observing
     }
 
     /// <summary>
-    /// prevents further decoration
+    /// adds observing logic
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
@@ -78,11 +78,8 @@ namespace Decoratid.Idioms.Observing
     public static class ObservingValueOfDecorationExtensions
     {
         /// <summary>
-        /// prevents further decoration
+        /// adds observing logic
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="decorated"></param>
-        /// <returns></returns>
         public static ObservingValueOfDecoration<T> Observe<T>(this IValueOf<T> decorated, LogicOf<IValueOf<T>> preObservation,
             LogicOf<IValueOf<T>> postObservation)
         {

@@ -70,17 +70,37 @@ namespace Decoratid.Idioms.Polyfacing
         /// <param name="valueOf"></param>
         /// <param name="rootFace"></param>
         /// <returns></returns>
-        public static PolyfacingValueOfDecoration<T> Polyfacing<T>(this IValueOf<T> valueOf, Polyface rootFace = null)
+        public static PolyfacingValueOfDecoration<T> Polyfacing<T>(this IValueOf<T> decorated, Polyface rootFace = null)
         {
-            Condition.Requires(valueOf).IsNotNull();
+            Condition.Requires(decorated).IsNotNull();
 
-            if (valueOf is PolyfacingValueOfDecoration<T>)
+            PolyfacingValueOfDecoration<T> rv = null;
+            /*Summary:
+             * if we spec a root we are setting that root
+             * if the condition is already polyfacing we use that otherwise build new one
+             * if no root is spec'd we create new polyface
+             */
+
+            //if we have polyface in our chain, we return that
+            if (DecorationUtils.HasDecoration<PolyfacingValueOfDecoration<T>>(decorated))
             {
-                var pf = valueOf as PolyfacingValueOfDecoration<T>;
-                return pf;
+                rv = DecorationUtils.GetDecoration<PolyfacingValueOfDecoration<T>>(decorated);
+
+                //if we specify a root we are replacing root!!!
+                if (rootFace != null)
+                {
+                    rv.RootFace = rootFace;
+                    return rv;
+                }
             }
 
-            return new PolyfacingValueOfDecoration<T>(valueOf, rootFace);
+            if (rv == null)
+            {
+                Polyface poly = rootFace == null ? Polyface.New() : rootFace;
+                rv = new PolyfacingValueOfDecoration<T>(decorated, poly);
+            }
+
+            return rv;
         }
     }
 
