@@ -96,6 +96,7 @@
     <Compile Include="Idioms\Eventing\Tests.cs" />
     <Compile Include="Idioms\Expiring\Tests.cs" />
     <Compile Include="Idioms\Filing\Tests.cs" />
+    <Compile Include="Idioms\Identifying\StringableDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasVersionDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasRandomStringDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasDateLastTouchedDecoration.cs" />
@@ -168,6 +169,8 @@
     <Compile Include="Idioms\Tasking\Tests.cs" />
     <Compile Include="Idioms\Testing\Extensions.cs" />
     <Compile Include="Idioms\Testing\Interfaces.cs" />
+    <Compile Include="Idioms\Testing\MockBuilder.cs" />
+    <Compile Include="Idioms\Testing\MockTester.cs" />
     <Compile Include="Idioms\Testing\TestOf.cs" />
     <Compile Include="Idioms\Testing\TestOfTester.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />
