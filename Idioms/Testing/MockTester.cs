@@ -27,6 +27,12 @@ namespace Decoratid.Idioms.Testing
 
             var results4 = TestOfTester.AutomaticTest<IValueOf<IHasId>>(MockBuilder.BuildMockValueOf("id"));
             TestOfTester.LogTestResults(results4, "ValueOfTests.txt");
+
+            //also
+            //Host
+            //IvalueOf<String>
+            //stringable
+            //stringablelist
         }
     }
 }
