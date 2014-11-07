@@ -169,6 +169,7 @@
     <Compile Include="Idioms\Testing\Extensions.cs" />
     <Compile Include="Idioms\Testing\Interfaces.cs" />
     <Compile Include="Idioms\Testing\TestOf.cs" />
+    <Compile Include="Idioms\Testing\TestOfTester.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />
     <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />
     <Compile Include="Idioms\Communicating\EndPoint.cs" />

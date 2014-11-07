@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Tasking
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class JobTest : TestOf<Nothing>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public JobTest()
+            : base(LogicOf<Nothing>.New((x) =>
             {
-                //TESTS HERE
 
 
 
@@ -25,33 +24,6 @@ namespace Decoratid.Idioms.Tasking
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
+    
 
-
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
 }
