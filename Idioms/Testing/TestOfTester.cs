@@ -93,10 +93,5 @@ namespace Decoratid.Idioms.Testing
         }
     }
 
-    public class TestOfResult
-    {
-        public Type TestType { get; set; }
-        public Exception TestError { get; set; }
-        public bool IsTestSuccess { get; set; }
-    }
+
 }

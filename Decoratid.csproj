@@ -172,6 +172,7 @@
     <Compile Include="Idioms\Testing\MockBuilder.cs" />
     <Compile Include="Idioms\Testing\MockTester.cs" />
     <Compile Include="Idioms\Testing\TestOf.cs" />
+    <Compile Include="Idioms\Testing\TestOfResult.cs" />
     <Compile Include="Idioms\Testing\TestOfTester.cs" />
     <Compile Include="Idioms\Throttling\Interfaces.cs" />
     <Compile Include="Idioms\Throttling\NaturalThrottle.cs" />

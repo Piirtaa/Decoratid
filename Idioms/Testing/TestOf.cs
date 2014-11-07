@@ -9,6 +9,10 @@ using Decoratid.Core.ValueOfing;
 
 namespace Decoratid.Idioms.Testing
 {
+    /// <summary>
+    /// container of test logic of T
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class TestOf<T> : ITestOf<T>
     {
         #region Ctor
