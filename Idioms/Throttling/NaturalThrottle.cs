@@ -25,6 +25,13 @@ namespace Decoratid.Idioms.Throttling
         }
         #endregion
 
+        #region Fluent Static
+        public static NaturalThrottle New(int maxConcurrency)
+        {
+            return new NaturalThrottle(maxConcurrency);
+        }
+        #endregion
+
         #region IPolyfacing
         Polyface IPolyfacing.RootFace { get; set; }
         #endregion

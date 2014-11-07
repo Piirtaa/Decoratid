@@ -6,17 +6,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Throttling
 {
+    public class ThrottleTest : TestOf<Nothing>
+    {
+        public ThrottleTest()
+            : base(LogicOf<Nothing>.New((x) =>
+            {
+                NaturalThrottle.New(1);
+
+                var logic = Logic.New(() =>
+                {
+                    Thread.Sleep(1000);
+                });
+
+                int count = 0;
+
+
+                var throttled = logic.Throttle(1);
+
+                //throttled.Perform(
+
+            }))
+        {
+        }
+    }
+
     public class ConditionTest : TestOf<ICondition>
     {
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
-
+                var throttled = x.Throttle(1);
 
 
 

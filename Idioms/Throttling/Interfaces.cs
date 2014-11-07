@@ -20,7 +20,7 @@ namespace Decoratid.Idioms.Throttling
         void Perform(Action action);
     }
 
-    public interface IHasThrottle : IThrottle
+    public interface IHasThrottle 
     {
         IThrottle Throttle { get; }
     }
