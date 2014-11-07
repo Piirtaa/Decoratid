@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
+using CuttingEdge.Conditions;
 
 namespace Decoratid.Idioms.Throttling
 {
@@ -18,64 +20,27 @@ namespace Decoratid.Idioms.Throttling
             {
                 NaturalThrottle.New(1);
 
+                int count = 0;
                 var logic = Logic.New(() =>
                 {
-                    Thread.Sleep(1000);
+                    count++;
+                    Thread.Sleep(2000);
                 });
-
-                int count = 0;
-
 
                 var throttled = logic.Throttle(1);
 
-                //throttled.Perform(
-
+                Action act1 = new Action(() => { throttled.Perform(); });
+                Action act2 = new Action(() => { throttled.Perform(); });
+                act1.EnqueueToThreadPool();
+                act2.EnqueueToThreadPool();
+                Condition.Requires(count).IsEqualTo(1);
+                Thread.Sleep(1000);
+                Condition.Requires(count).IsEqualTo(1);
+                Thread.Sleep(2000);
+                Condition.Requires(count).IsEqualTo(2);
             }))
         {
         }
     }
 
-    public class ConditionTest : TestOf<ICondition>
-    {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
-            {
-                var throttled = x.Throttle(1);
-
-
-
-            })) 
-        { 
-        }
-    }
-
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
 }
