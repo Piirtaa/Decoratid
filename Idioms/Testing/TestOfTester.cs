@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.Identifying;
+using Decoratid.Idioms.Filing;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -90,6 +93,25 @@ namespace Decoratid.Idioms.Testing
             }
 
             return true;
+        }
+
+        public static void LogTestResults(List<TestOfResult> results, string path)
+        {
+            if (results == null)
+                return ;
+            if (results.Count == 0)
+                return ;
+
+            //get something we can write to
+            var list = NaturalStringableList.New().Fileable().Filing(path);
+
+            foreach (var each in results)
+            {
+                var s = each.Stringable();
+                ((NaturalStringableList)list.Decorated).Add(s.GetValue());
+            }
+            list.Write();
+
         }
     }
 

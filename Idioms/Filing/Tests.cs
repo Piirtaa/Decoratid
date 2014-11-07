@@ -24,20 +24,20 @@ namespace Decoratid.Idioms.Filing
 
                 //back to a file
                 var fileable = x.Fileable().Filing("test.test");
-                var readVal = fileable.Read();
-
+                fileable.Read();
+                var readVal = fileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo(val);
 
-
-                fileable.Write("a");
-                readVal = fileable.Read();
+                fileable.Parse("a");
+                fileable.Read();
+                readVal = fileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo("a");
 
 
                 //back to a locked file
                 var lockfileable = x.Fileable().LockingFiling("test2.test");
-                readVal = lockfileable.Read();
-
+                lockfileable.Read();
+                readVal = lockfileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo("a");
                 //todo: more tests
     

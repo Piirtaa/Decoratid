@@ -20,12 +20,11 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region Ctor
-        public LockingFileDecoration(IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        public LockingFileDecoration(IFileable decorated, string filePath)
             : base(decorated)
         {
             Condition.Requires(filePath).IsNotNullOrEmpty();
             this.FilePath = filePath;
-            this.Options = options;
 
             // Create a file using the FileStream class.
             this.Stream = FileUtil.GetLockedStream(this.FilePath);
@@ -37,12 +36,10 @@ namespace Decoratid.Idioms.Filing
         protected LockingFileDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.Options = (FileBackingOptions)info.GetValue("Options", typeof(FileBackingOptions));
             this.FilePath = info.GetString("FilePath");
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Options", this.Options);
             info.AddValue("FilePath", this.FilePath);
             base.ISerializable_GetObjectData(info, context);
         }
@@ -50,7 +47,6 @@ namespace Decoratid.Idioms.Filing
 
         #region Properties
         private FileStream Stream { get; set; }
-        FileBackingOptions Options { get; set; }
         public string FilePath { get; private set; }
         #endregion
 
@@ -62,10 +58,8 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region Overrides
-        public override string Read()
+        public override void Read()
         {
-            if (this.Options == FileBackingOptions.PreExtend)
-                this.Decorated.Read();
 
             string rv = null;
 
@@ -87,17 +81,12 @@ namespace Decoratid.Idioms.Filing
                 throw;
             }
 
-            if (this.Options == FileBackingOptions.PostExtend)
-                this.Decorated.Read();
-
-            return rv;
+            this.Decorated.Parse(rv);
         }
-        public override void Write(string text)
+        public override void Write()
         {
-            if (this.Options == FileBackingOptions.PreExtend)
-                this.Decorated.Write(text);
-
-            byte[] messageByte = Encoding.ASCII.GetBytes(text);
+            var data = this.Decorated.GetValue();
+            byte[] messageByte = Encoding.ASCII.GetBytes(data);
 
             lock (this._stateLock)
             {
@@ -118,9 +107,6 @@ namespace Decoratid.Idioms.Filing
                     this.Stream.Lock(0, this.Stream.Length);
                 }
             }
-
-            if (this.Options == FileBackingOptions.PostExtend)
-                this.Decorated.Write(text);
         }
         protected override void DisposeManaged()
         {
@@ -142,14 +128,26 @@ namespace Decoratid.Idioms.Filing
             base.DisposeManaged();
         }
         #endregion
+
+        #region IStringable
+        public string GetValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Parse(string text)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 
     public static class LockingFileDecorationExtensions
     {
-        public static LockingFileDecoration LockingFiling(this IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        public static LockingFileDecoration LockingFiling(this IFileable decorated, string filePath)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new LockingFileDecoration(decorated, filePath, options);
+            return new LockingFileDecoration(decorated, filePath);
         }
     }
 }

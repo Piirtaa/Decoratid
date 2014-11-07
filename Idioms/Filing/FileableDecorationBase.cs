@@ -32,13 +32,25 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region IFileable
-        public virtual string Read()
+        public virtual void Read()
         {
-            return base.Decorated.Read();
+            base.Decorated.Read();
         }
-        public virtual void Write(string text)
+        public virtual void Write()
         {
-            base.Decorated.Write(text);
+            base.Decorated.Write();
+        }
+        #endregion
+
+        #region IStringable
+        public string GetValue()
+        {
+            return this.Decorated.GetValue();
+        }
+        public void Parse(string text)
+        {
+            this.Decorated.Parse(text);
+            this.Write();
         }
         #endregion
 
@@ -55,6 +67,7 @@ namespace Decoratid.Idioms.Filing
             throw new NotImplementedException();
         }
         #endregion
+
 
     }
 }

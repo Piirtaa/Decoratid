@@ -15,24 +15,6 @@ namespace Decoratid.Idioms.Filing
         string FilePath { get; }
     }
 
-    /// <summary>
-    /// enum indicating whether the decorated functionality is to be extended or completely overridden
-    /// </summary>
-    public enum FileBackingOptions
-    {
-        /// <summary>
-        /// the decorated fileable is ignored
-        /// </summary>
-        Override,
-        /// <summary>
-        /// the decorated fileable is called before the filebacked(ie. overriding) implementation
-        /// </summary>
-        PreExtend,
-        /// <summary>
-        /// the decorated fileable is called after the filebacked(ie. overriding) implementation
-        /// </summary>
-        PostExtend
-    }
 
     /// <summary>
     /// fileable done with a backing file
@@ -46,12 +28,11 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region Ctor
-        public FileDecoration(IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        public FileDecoration(IFileable decorated, string filePath)
             : base(decorated)
         {
             Condition.Requires(filePath).IsNotNullOrEmpty();
             this.FilePath = filePath;
-            this.Options = options;
         }
         #endregion
 
@@ -59,18 +40,16 @@ namespace Decoratid.Idioms.Filing
         protected FileDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.Options = (FileBackingOptions)info.GetValue("Options", typeof(FileBackingOptions));
             this.FilePath = info.GetString("FilePath");
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Options", this.Options);
             info.AddValue("FilePath", this.FilePath);
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
+
         #region Properties
-        FileBackingOptions Options { get; set; }
         public string FilePath { get; private set; }
         #endregion
 
@@ -82,27 +61,15 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region Overrides
-        public override string Read()
+        public override void Read()
         {
-            if (this.Options == FileBackingOptions.PreExtend)
-                this.Decorated.Read();
-
             var data = File.ReadAllText(this.FilePath);
-
-            if (this.Options == FileBackingOptions.PostExtend)
-                this.Decorated.Read();
-
-            return data;
+            this.Decorated.Parse(data);
         }
-        public override void Write(string text)
+        public override void Write()
         {
-            if (this.Options == FileBackingOptions.PreExtend)
-                this.Decorated.Write(text);
-
-            File.WriteAllText(text, this.FilePath);
-
-            if (this.Options == FileBackingOptions.PostExtend)
-                this.Decorated.Write(text);
+            var data = this.Decorated.GetValue();
+            File.WriteAllText(this.FilePath, data);
         }
 
         #endregion
@@ -110,10 +77,10 @@ namespace Decoratid.Idioms.Filing
 
     public static class FileDecorationExtensions
     {
-        public static FileDecoration Filing(this IFileable decorated, string filePath, FileBackingOptions options = FileBackingOptions.Override)
+        public static FileDecoration Filing(this IFileable decorated, string filePath)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new FileDecoration(decorated, filePath, options);
+            return new FileDecoration(decorated, filePath);
         }
     }
 }

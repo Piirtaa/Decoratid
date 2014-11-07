@@ -38,13 +38,13 @@ namespace Decoratid.Idioms.Filing
         #endregion
 
         #region IFileable
-        public string Read()
+        public void Read()
         {
-            return this.GetValue();
+            //do nothing since this decoration doesn't have a backing file yet
         }
-        public void Write(string text)
+        public void Write()
         {
-            this.Parse(text);
+            //do nothing since this decoration doesn't have a backing file yet
         }
         #endregion
 
