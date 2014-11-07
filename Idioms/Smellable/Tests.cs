@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -15,9 +16,8 @@ namespace Decoratid.Idioms.Smellable
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
-
-
+                var o = x.IsSmellable();
+                o.SmellCheck();
 
 
             })) 
@@ -30,7 +30,8 @@ namespace Decoratid.Idioms.Smellable
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                //TESTS HERE
+                var o = x.IsSmellable();
+                o.SmellCheck();
 
 
 
@@ -45,8 +46,8 @@ namespace Decoratid.Idioms.Smellable
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                //TESTS HERE
-
+                var o = x.IsSmellable();
+                o.SmellCheck();
 
 
 

@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.Smellable
 
     public static class SmellableConditionDecorationExtensions
     {
-        public static SmellableConditionDecoration IsSmellable(ICondition decorated)
+        public static SmellableConditionDecoration IsSmellable(this ICondition decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new SmellableConditionDecoration(decorated);

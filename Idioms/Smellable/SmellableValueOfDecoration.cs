@@ -64,7 +64,7 @@ namespace Decoratid.Idioms.Smellable
 
     public static class SmellableValueOfDecorationExtensions
     {
-        public static SmellableValueOfDecoration<T> IsSmellable<T>(IValueOf<T> decorated)
+        public static SmellableValueOfDecoration<T> IsSmellable<T>(this IValueOf<T> decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new SmellableValueOfDecoration<T>(decorated);

@@ -64,7 +64,7 @@ namespace Decoratid.Idioms.Smellable
 
     public static class SmellableLogicDecorationExtensions
     {
-        public static SmellableLogicDecoration IsSmellable(ILogic decorated)
+        public static SmellableLogicDecoration IsSmellable(this ILogic decorated)
         {
             Condition.Requires(decorated).IsNotNull();
             return new SmellableLogicDecoration(decorated);
