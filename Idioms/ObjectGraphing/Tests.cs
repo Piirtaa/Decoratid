@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -7,18 +8,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.Identifying;
+using Decoratid.Core.Identifying;
+using Decoratid.Idioms.Communicating;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class ConditionTest : TestOf<Nothing>
     {
         public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+            : base(LogicOf<Nothing>.New((x) =>
             {
-                //TESTS HERE
 
+                //build an object up
+                var id = "id".BuildAsId();
 
+                var guid = Guid.NewGuid();
+                var hasGuid = id.HasGUID(guid);
+                var now = DateTime.Now;
+                var hasDateCreated = hasGuid.HasDateCreated(now);
+                var lastTouchedDate = DateTime.Now;
+                var hasLastTouched = hasDateCreated.HasDateLastTouched(lastTouchedDate);
+                var localMachineName = NetUtil.GetLocalMachineName();
+                var hasLM = hasLastTouched.HasLocalMachineName();
+                var ip = NetUtil.GetLocalIPAddresses().First();
+                var hasIP = hasLM.HasIP(ip);
+                var hasRS = hasIP.HasRandomString("blah");
+                var hasV = hasRS.HasVersion("v");
+      
+                //graph it
+                var objState1 = hasV.GraphSerializeWithDefaults();
+                var obj2 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
+                Condition.Requires(obj2.Version).IsEqualTo("v");
+                Condition.Requires(obj2.FindDecoratorOf<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
+                Condition.Requires(obj2.FindDecoratorOf<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
+                Condition.Requires(obj2.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName).IsEqualTo("blah");
+                Condition.Requires(obj2.FindDecoratorOf<HasDateLastTouchedDecoration>(true).DateLastTouched).IsEqualTo(lastTouchedDate);
+                Condition.Requires(obj2.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated).IsEqualTo(now);
+                Condition.Requires(obj2.FindDecoratorOf<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
+                Condition.Requires(obj2.Id.ToString()).IsEqualTo("id");
 
+                hasV.Version = "v2";
+                var objState2 = hasV.GraphSerializeWithDefaults();
+                var obj3 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
+                Condition.Requires(obj3.Version).IsEqualTo("v2");
 
             })) 
         { 
