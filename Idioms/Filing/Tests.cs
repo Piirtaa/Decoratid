@@ -1,6 +1,8 @@
-﻿using Decoratid.Core.Conditional;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
+using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.Testing;
 using System;
 using System.Collections.Generic;
@@ -10,48 +12,38 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.Filing
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class FileableTest : TestOf<IStringable>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public FileableTest()
+            : base(LogicOf<IStringable>.New((x) =>
             {
-                //TESTS HERE
 
 
+                //get the string value
+                var val = x.GetValue();
+
+                //back to a file
+                var fileable = x.Fileable().Filing("test.test");
+                var readVal = fileable.Read();
+
+                Condition.Requires(readVal).IsEqualTo(val);
 
 
+                fileable.Write("a");
+                readVal = fileable.Read();
+                Condition.Requires(readVal).IsEqualTo("a");
+
+
+                //back to a locked file
+                var lockfileable = x.Fileable().LockingFiling("test2.test");
+                readVal = lockfileable.Read();
+
+                Condition.Requires(readVal).IsEqualTo("a");
+                //todo: more tests
+    
             })) 
         { 
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
-
-            }))
-        {
-        }
-    }
 }

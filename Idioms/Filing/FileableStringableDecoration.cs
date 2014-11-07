@@ -67,7 +67,7 @@ namespace Decoratid.Idioms.Filing
 
     public static class FileableStringableDecorationExtensions
     {
-        public static FileableStringableDecoration Filing(this IStringable thing)
+        public static FileableStringableDecoration Fileable(this IStringable thing)
         {
             Condition.Requires(thing).IsNotNull();
             return new FileableStringableDecoration(thing);
