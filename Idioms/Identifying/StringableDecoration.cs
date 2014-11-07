@@ -15,8 +15,12 @@ using Decoratid.Idioms.ObjectGraphing;
 namespace Decoratid.Idioms.Identifying
 {
     /// <summary>
-    /// serializes an IHasId using ObjectGraph. Provides us a gateway for serializing state of the object
+    /// serializes an IHasId using ObjectGraph. 
     /// </summary>
+    /// <remarks>
+    /// Provides us a gateway for serializing state of the object and using the stringable decoration tree. For example
+    /// we can provide a backing file to write state to.
+    /// </remarks>
     [Serializable]
     public class StringableDecoration : DecoratedHasIdBase, IStringable
     {
@@ -44,7 +48,6 @@ namespace Decoratid.Idioms.Identifying
         /// <param name="context"></param>
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
@@ -62,7 +65,8 @@ namespace Decoratid.Idioms.Identifying
             Condition.Requires(obj).IsNotNull().IsOfType(typeof(DecoratedHasIdBase));
             DecoratedHasIdBase decObj = obj as DecoratedHasIdBase;
 
-
+            //replace the decorated instance with the decObj
+            this.ReplaceDecorated((x) => { return decObj; });
         }
         #endregion
 
