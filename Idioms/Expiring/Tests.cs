@@ -73,37 +73,34 @@ namespace Decoratid.Idioms.Expiring
                 Condition.Requires(hasExp.IsExpired()).IsFalse();
                 Thread.Sleep(6000);
                 Condition.Requires(hasExp.IsExpired()).IsTrue();
-
                 //test floating date 
-                hasExp.ExpiryFloatsrateWithFloatingDateExpirable(1);
-                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
-                floatDateExp.Touch().Touch();
-                Thread.Sleep(6000);
-                Condition.Requires(floatDateExp.IsExpired()).IsFalse();
+                hasExp.ExpiryFloats(1);
+                hasExp.Touch().Touch();
+                Condition.Requires(hasExp.IsExpired()).IsFalse();
                 Thread.Sleep(2000);
-                Condition.Requires(floatDateExp.IsExpired()).IsTrue();
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
 
                 //test window date 
-                var windowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5));
-                Condition.Requires(windowExp.IsExpired()).IsTrue();
+                hasExp.InWindow(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5));
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
                 Thread.Sleep(2000);
-                Condition.Requires(windowExp.IsExpired()).IsFalse();
+                Condition.Requires(hasExp.IsExpired()).IsFalse();
                 Thread.Sleep(6000);
-                Condition.Requires(windowExp.IsExpired()).IsTrue();
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
 
                 //test float window date 
-                var floatWindowExp = expirable.DecorateWithWindowExpirable(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5)).DecorateWithFloatingWindowExpirable(1);
-                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
+                hasExp.InWindow(DateTime.Now.AddSeconds(1), DateTime.Now.AddSeconds(5)).WindowFloats(1);
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
                 Thread.Sleep(2000);
-                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+                Condition.Requires(hasExp.IsExpired()).IsFalse();
                 Thread.Sleep(6000);
-                Condition.Requires(floatWindowExp.IsExpired()).IsTrue();
-                floatWindowExp.Touch().Touch().Touch().Touch(); //touch it back to not expired
-                Condition.Requires(floatWindowExp.IsExpired()).IsFalse();
+                Condition.Requires(hasExp.IsExpired()).IsTrue();
+                hasExp.Touch().Touch().Touch().Touch(); //touch it back to not expired
+                Condition.Requires(hasExp.IsExpired()).IsFalse();
 
                 //test conditional expiry
-                var cond = StrategizedConditionOf<bool>.New((o) => { return o; }).AddContext(false);
-                var condExp = expirable.DecorateWithConditionalExpirable(cond);
+                hasExp.ExpiresWhen(cond);
+                cond.Context = false;
                 Condition.Requires(condExp.IsExpired()).IsFalse();
                 cond.Context = true;
                 Condition.Requires(condExp.IsExpired()).IsTrue();
@@ -147,17 +144,6 @@ namespace Decoratid.Idioms.Expiring
                 var trapVal = trapX.GetValue();
                 Condition.Requires(trapVal == null).IsTrue();
 
-                //reset the expiry to 5 seconds from now
-                expiry = DateTime.Now.AddSeconds(5);
-                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; }));
-                newX.ExpiryFloats(1); //give it floatability
-                newX.Touch().Touch();//extend it to 7 seconds expiry
-                Thread.Sleep(6000);
-                //should eval fine now
-                var newVal = newX.GetValue();
-
-                //old should be new, now
-                Condition.Requires(newVal.GraphSerializeWithDefaults()).IsEqualTo(oldVal.GraphSerializeWithDefaults());
             }))
         {
         }

@@ -60,7 +60,7 @@ namespace Decoratid.Idioms.Eventing
             {
                 bool checkVal = false;
                 var newX = x.Eventing();
-                newX.Evaluated += delegate(object sender, EventArgOf<ILogic> e)
+                newX.Performed += delegate(object sender, EventArgOf<ILogic> e)
                 {
                     checkVal = true;
                 };
