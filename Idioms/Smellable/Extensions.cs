@@ -9,17 +9,12 @@ namespace Decoratid.Idioms.Smellable
 {
     public static class SmellExtensions
     {
+        /// <summary>
+        /// throws exception if smell is not Good.  So, on bad and indeterminate smells it's kakky
+        /// </summary>
+        /// <param name="smellable"></param>
         public static void SmellCheck(this ISmellable smellable)
         {
-            //On this code:
-            //the expression "does not smell good" is quite literally one of
-            //those stupid human idioms to otherwise say something smells bad.  Fuck it, we're a fussy bunch
-            //of passive agros eh.  This SmellsBad.  Hopefully we can do better as dumbass humans and
-            //just say what we mean.  God Damn.
-            
-            //ps. In the case below it maintains the Smellable idiom in that an indeterminate smell WILL be
-            //an exception circumstance at times, and this call allows us to ask that question.
-
             Condition.Requires(smellable).IsNotNull();
             if (!smellable.SmellsGood().GetValueOrDefault())
                 throw new SmellException("does not smell good");
