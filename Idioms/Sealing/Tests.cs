@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.Polyfacing;
 
 namespace Decoratid.Idioms.Sealing
 {
@@ -15,13 +16,20 @@ namespace Decoratid.Idioms.Sealing
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                //TESTS HERE
+                bool success = false;
+                try
+                {
+                    x.Seal().Polyfacing();
 
-
-
-
-            })) 
-        { 
+                }
+                catch
+                {
+                    success = true;
+                }
+                if (!success)
+                    throw new InvalidOperationException();
+            }))
+        {
         }
     }
 
@@ -30,11 +38,18 @@ namespace Decoratid.Idioms.Sealing
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                //TESTS HERE
+                bool success = false;
+                try
+                {
+                    x.Seal().Polyfacing();
 
-
-
-
+                }
+                catch
+                {
+                    success = true;
+                }
+                if (!success)
+                    throw new InvalidOperationException();
             }))
         {
         }
@@ -45,11 +60,18 @@ namespace Decoratid.Idioms.Sealing
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                //TESTS HERE
+                bool success = false;
+                try
+                {
+                    x.Seal().Polyfacing();
 
-
-
-
+                }
+                catch
+                {
+                    success = true;
+                }
+                if (!success)
+                    throw new InvalidOperationException();
             }))
         {
         }
