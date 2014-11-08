@@ -63,6 +63,9 @@ namespace Decoratid.Idioms.Filing
         #region Overrides
         public override void Read()
         {
+            if (!File.Exists(this.FilePath))
+                return;
+
             var data = File.ReadAllText(this.FilePath);
             this.Decorated.Parse(data);
         }

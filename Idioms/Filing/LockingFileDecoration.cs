@@ -129,17 +129,7 @@ namespace Decoratid.Idioms.Filing
         }
         #endregion
 
-        #region IStringable
-        public string GetValue()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Parse(string text)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
     }
 
     public static class LockingFileDecorationExtensions

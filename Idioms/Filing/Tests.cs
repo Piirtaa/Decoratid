@@ -18,29 +18,33 @@ namespace Decoratid.Idioms.Filing
             : base(LogicOf<IStringable>.New((x) =>
             {
 
-
                 //get the string value
                 var val = x.GetValue();
 
                 //back to a file
                 var fileable = x.Fileable().Filing("test.test");
-                fileable.Read();
+                fileable.Write();
                 var readVal = fileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo(val);
 
                 fileable.Parse("a");
-                fileable.Read();
+                fileable.Write();
                 readVal = fileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo("a");
 
-
                 //back to a locked file
-                var lockfileable = x.Fileable().LockingFiling("test2.test");
+                var lockfileable = x.Fileable().LockingFiling("test.test");
                 lockfileable.Read();
                 readVal = lockfileable.GetValue();
                 Condition.Requires(readVal).IsEqualTo("a");
-                //todo: more tests
-    
+
+                //test the locking
+                fileable = x.Fileable().Filing("test.test");
+                try
+                {
+                    fileable.Read();
+                }
+                catch { }
             })) 
         { 
         }
