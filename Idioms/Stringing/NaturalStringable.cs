@@ -21,6 +21,7 @@ namespace Decoratid.Idioms.Stringing
         #region Ctor
         public NaturalStringable(string text = null)
         {
+            this._value = text;
         }
         #endregion
 
