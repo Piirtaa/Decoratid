@@ -62,16 +62,16 @@ namespace Decoratid.Idioms.Stringing
         public override string GetValue()
         {
             var val = this.Decorated.GetValue();
-                int length = val == null? 0: val.Length;
-                var rv = string.Format("{0}{1}{2}{3}", length.ToString(), DELIM_PRE, val, DELIM_POST);
-                return rv;
+            int length = val == null ? 0 : val.Length;
+            var rv = string.Format("{0}{1}{2}{3}", length.ToString(), DELIM_PRE, val, DELIM_POST);
+            return rv;
         }
         public override void Parse(string text)
         {
             Condition.Requires(text).EndsWith(DELIM_POST);
 
             var length = text.MustGetTo(DELIM_PRE).ConvertToInt();
-            var data = text.MustGetFrom(DELIM_PRE).Substring(0,length); //get data using the length parse
+            var data = text.MustGetFrom(DELIM_PRE).Substring(0, length); //get data using the length parse
             var checkData = text.MustGetFrom(DELIM_PRE);
             checkData = checkData.Substring(0, checkData.Length - 1); //now get data using the delims
             Condition.Requires(data).IsEqualTo(checkData); //they should match

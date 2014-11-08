@@ -17,11 +17,12 @@ namespace Decoratid.Idioms.Testing
         public static void AutoTestMocks()
         {
 
+            var stringableListResults = TestOfTester.AutomaticTest<IStringableList>(NaturalStringableList.New("one","two","three"));
+            TestOfTester.LogTestResults(stringableListResults, "StringableListTests.txt");
+
             var stringableResults = TestOfTester.AutomaticTest<IStringable>(NaturalStringable.New("test"));
             TestOfTester.LogTestResults(stringableResults, "StringableTests.txt");
 
-            var stringableListResults = TestOfTester.AutomaticTest<IStringableList>(NaturalStringableList.New("one","two","three"));
-            TestOfTester.LogTestResults(stringableResults, "StringableListTests.txt");
 
             var results1 = TestOfTester.AutomaticTest<Nothing>(Nothing.VOID);
             TestOfTester.LogTestResults(results1, "VoidTests.txt");

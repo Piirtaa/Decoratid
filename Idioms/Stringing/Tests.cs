@@ -39,11 +39,9 @@ namespace Decoratid.Idioms.Stringing
                 var oldVal = x.GetValue();
                 var lengthstringable = x.DecorateWithLengthPrefixList();
                 var newVal = lengthstringable.GetValue();
+                lengthstringable.Parse(newVal);
 
                 Condition.Requires(oldVal).IsNotEqualTo(newVal);
-                Condition.Requires(newVal).Contains(oldVal);
-
-                lengthstringable.Parse(newVal);
                 var decVal = lengthstringable.Decorated.GetValue();
                 Condition.Requires(decVal).IsEqualTo(oldVal);
             }))
