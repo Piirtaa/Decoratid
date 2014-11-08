@@ -92,7 +92,7 @@ namespace Decoratid.Idioms.Expiring
             Condition.Requires(thing).IsNotNull();
 
             if (thing.Expirable is ITouchable)
-                ((ITouchable)thing).Touch();
+                ((ITouchable)thing.Expirable).Touch();
 
             return thing;
         }

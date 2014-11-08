@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.ConditionalWaiting
         public ConditionalWaiter(ICondition condition, ICondition stopWaitingCondition = null) : base()
         {
             CuttingEdge.Conditions.Condition.Requires(condition).IsNotNull();
-            this.Condition = Condition;
+            this.Condition = condition;
             this.StopWaitingCondition = stopWaitingCondition;
 
             this._background = new BackgroundHost(true, 1000,

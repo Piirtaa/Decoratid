@@ -33,6 +33,7 @@ namespace Decoratid.Idioms.TypeLocating
             decorated.AssemblyRegistered += decorated_AssemblyRegistered;
         }
 
+        [DebuggerStepThrough]
         void decorated_AssemblyRegistered(object sender, EventArgOf<AssemblyName> e)
         {
             lock (this._stateLock)
@@ -44,7 +45,7 @@ namespace Decoratid.Idioms.TypeLocating
                 {
                     if (!x.IsDynamic)
                     {
-                        x.GetExportedTypes().WithEach(type =>
+                        GetExportedTypes(x).WithEach(type =>
                         {
                             if(!this.Types.Contains(type))
                                 this.Types.Add(type);
@@ -52,6 +53,20 @@ namespace Decoratid.Idioms.TypeLocating
                     }
                 });
             }
+        }
+        [DebuggerStepThrough]
+        private List<Type> GetExportedTypes(Assembly a)
+        {
+            try
+            {
+                var rv = a.GetExportedTypes().ToList();
+                return rv;
+            }
+            catch
+            {
+
+            }
+            return null;
         }
         #endregion
 
