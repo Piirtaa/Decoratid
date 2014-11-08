@@ -17,7 +17,7 @@ namespace Decoratid.Core.Decorating
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static Type GetDecorationCoreType(object obj)
+        public static Type GetDecorationLayerType(object obj)
         {
             if (obj == null)
                 return null;
@@ -32,6 +32,39 @@ namespace Decoratid.Core.Decorating
 
             return genType;
         }
+        /// <summary>
+        /// tells us if the object is a decoration
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsDecoration(object obj)
+        {
+            //validate we're on a decoration
+            var genTypeDef = typeof(IDecorationOf<>);
+            return genTypeDef.IsInstanceOfGenericType(obj);
+        }
+        /// <summary>
+        /// if an object is a decoration, returns the first decoration
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static object GetDecorated(object obj)
+        {
+            if (obj == null)
+                return null;
+
+            //validate we're on a decoration
+            var genTypeDef = typeof(IDecorationOf<>);
+            if (!genTypeDef.IsInstanceOfGenericType(obj))
+                return null;
+
+            //use reflection to get the "Decorated" property
+            PropertyInfo pi = obj.GetType().GetProperty("Decorated", BindingFlags.Instance | BindingFlags.Public);
+            Condition.Requires(pi).IsNotNull();
+            var rv = pi.GetValue(obj);
+            return rv;
+        }
+
         /// <summary>
         /// if an object is a decoration, returns the list of decorations outermost to core
         /// </summary>

@@ -122,7 +122,67 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-        #region Iteration Members
+        #region FreeWalk Iteration
+        /// <summary>
+        /// Does a walk, but doesn't restrict the walk to Decorations of T.  Will walk all Decorations regardless of type.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If a decoration chain has a change of layer type (ie. we start off decorating T1 and at some point a decoration
+        /// converts the thing to a T2, which itself is then decorated) this function lets us do that.  It's semantically 
+        /// equivalent to a polyfacing interface search but for decorations.
+        /// </remarks>
+        public object FreeWalk(Func<object, bool> filter)
+        {
+            object currentLayer = this.This;
+
+            //iterate down
+            while (currentLayer != null)
+            {
+                //check filter.  break/return
+                if (filter(currentLayer))
+                {
+                    return currentLayer;
+                }
+
+                //if it's a decoration get the decorated layer
+                if (DecorationUtils.IsDecoration(currentLayer))
+                {
+                    currentLayer = DecorationUtils.GetDecorated(currentLayer);
+                }
+                else
+                {
+                    //not decorated, and fails the filter?  stop here
+                    return null;
+                }
+            }
+
+            return null;
+        }
+        public object FreeWalkFindDecoratorOf(Type decType, bool exactTypeMatch)
+        {
+            var match = this.FreeWalk((dec) =>
+            {
+                //do type level filtering first
+
+                //if we're exact matching, the decoration has to be the same type
+                if (exactTypeMatch && decType.Equals(dec.GetType()) == false)
+                    return false;
+
+                //if we're not exact matching, the decoration has to be Of the same type
+                if (exactTypeMatch == false && (!(decType.IsAssignableFrom(dec.GetType()))))
+                    return false;
+
+                return true;
+
+            });
+
+            return match;
+        }
+        #endregion
+
+        #region Layer Iteration Members
         /// <summary>
         /// returns the first decoration that matches the filter. stops iterating if ever finds a null decorated - 
         /// no chain to traverse!. will never return the core item (layer 0)
