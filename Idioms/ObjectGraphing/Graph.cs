@@ -33,6 +33,8 @@ namespace Decoratid.Idioms.ObjectGraphing
         #region Ctor
         private Graph(ValueManagerChainOfResponsibility chainOfResponsibility)
         {
+            Condition.Requires(chainOfResponsibility).IsNotNull();
+            this.ChainOfResponsibility = chainOfResponsibility;
         }
         #endregion
 
