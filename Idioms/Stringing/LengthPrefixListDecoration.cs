@@ -135,10 +135,6 @@ namespace Decoratid.Idioms.Stringing
         public static LengthPrefixListDecoration DecorateWithLengthPrefixList(this IStringableList thing)
         {
             Condition.Requires(thing).IsNotNull();
-            if (thing is LengthPrefixListDecoration)
-            {
-                return (LengthPrefixListDecoration)thing;
-            }
             return new LengthPrefixListDecoration(thing);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 
@@ -60,7 +61,9 @@ namespace Decoratid.Core.Decorating
     public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable
     {
         #region Declarations
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private T _Decorated;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private T _Core;
         #endregion
 
@@ -99,8 +102,11 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Properties
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Core { get { return this._Core; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public abstract T This { get; }
         #endregion
 
