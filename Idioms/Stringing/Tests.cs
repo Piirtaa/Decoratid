@@ -17,7 +17,7 @@ namespace Decoratid.Idioms.Stringing
             : base(LogicOf<IStringable>.New((x) =>
             {
                 var oldVal = x.GetValue();
-                var lengthstringable = x.DecorateWithLengthPrefix();
+                var lengthstringable = x.DecorateWithLength();
                 var newVal  = lengthstringable.GetValue();
                 lengthstringable.Parse(newVal);
 
@@ -37,7 +37,7 @@ namespace Decoratid.Idioms.Stringing
             : base(LogicOf<IStringableList>.New((x) =>
             {
                 var oldVal = x.GetValue();
-                var lengthstringable = x.DecorateWithLengthPrefixList();
+                var lengthstringable = x.DecorateListWithLength();
                 var newVal = lengthstringable.GetValue();
                 lengthstringable.Parse(newVal);
 

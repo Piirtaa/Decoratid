@@ -13,10 +13,11 @@ namespace Decoratid.Idioms.Stringing
 {
     /// <summary>
     /// marker interface indicating the length prefix decoration is applied
+    /// An encoded string will look like this {RS}Length{US}Data{RS}.  
     /// </summary>
-    public interface ILengthPrefixStringable : IStringable
+    public interface ILengthFormattedStringable : IStringable
     {
-        bool IsLengthPrefixFormatted(string text);
+        bool IsLengthFormatted(string text);
     }
 
     /// <summary>
@@ -34,14 +35,14 @@ namespace Decoratid.Idioms.Stringing
     /// which we do in LengthPrefixList decoration - to put the length of each item in a prefix.
     /// </remarks>
     [Serializable]
-    public class LengthPrefixDecoration : StringableDecorationBase, ILengthPrefixStringable
+    public class LengthDecoration : StringableDecorationBase, ILengthFormattedStringable
     {
         public static string PREFIX = Delim.RS.ToString();
         public static string DELIM = Delim.US.ToString();
         public static string SUFFIX = Delim.RS.ToString();
 
         #region Ctor
-        public LengthPrefixDecoration(IStringable decorated)
+        public LengthDecoration(IStringable decorated)
             : base(decorated)
         {
 
@@ -49,7 +50,7 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region ISerializable
-        protected LengthPrefixDecoration(SerializationInfo info, StreamingContext context)
+        protected LengthDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -60,7 +61,7 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region Overrides
-        public bool IsLengthPrefixFormatted(string text)
+        public bool IsLengthFormatted(string text)
         {
             if (!text.StartsWith(PREFIX))
                 return false;
@@ -92,7 +93,7 @@ namespace Decoratid.Idioms.Stringing
         }
         public override void Parse(string text)
         {
-            if (!IsLengthPrefixFormatted(text))
+            if (!IsLengthFormatted(text))
                 throw new InvalidOperationException("bad format");
 
             var data = text.GetFrom(DELIM).GetTo(SUFFIX);
@@ -102,7 +103,7 @@ namespace Decoratid.Idioms.Stringing
         }
         public override IDecorationOf<IStringable> ApplyThisDecorationTo(IStringable thing)
         {
-            return new LengthPrefixDecoration(thing);
+            return new LengthDecoration(thing);
         }
 
         #endregion
@@ -110,16 +111,16 @@ namespace Decoratid.Idioms.Stringing
 
     public static class LengthPrefixDecorationExtensions
     {
-        public static LengthPrefixDecoration DecorateWithLengthPrefix(this IStringable thing)
+        public static LengthDecoration DecorateWithLength(this IStringable thing)
         {
             Condition.Requires(thing).IsNotNull();
-            return new LengthPrefixDecoration(thing);
+            return new LengthDecoration(thing);
         }
 
-        public static bool IsLengthPrefixFormatted(this string text)
+        public static bool IsLengthFormatted(this string text)
         {
-            var stringable = text.MakeStringable().DecorateWithLengthPrefix();
-            return stringable.IsLengthPrefixFormatted(text);
+            var stringable = text.MakeStringable().DecorateWithLength();
+            return stringable.IsLengthFormatted(text);
         }
     }
 }

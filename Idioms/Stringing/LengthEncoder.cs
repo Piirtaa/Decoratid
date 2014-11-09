@@ -20,7 +20,7 @@ namespace Decoratid.Idioms.Stringing
         /// <returns></returns>
         public static string LengthEncode(string text)
         {
-            var stringable = NaturalStringable.New(text).DecorateWithLengthPrefix();
+            var stringable = NaturalStringable.New(text).DecorateWithLength();
             var rv = stringable.GetValue();
             return rv;
         }
@@ -31,7 +31,7 @@ namespace Decoratid.Idioms.Stringing
         /// <returns></returns>
         public static string LengthDecode(string text)
         {
-            var stringable = NaturalStringable.New().DecorateWithLengthPrefix();
+            var stringable = NaturalStringable.New().DecorateWithLength();
             stringable.Parse(text);
             var rv = stringable.Decorated.GetValue();
             return rv;
@@ -43,7 +43,7 @@ namespace Decoratid.Idioms.Stringing
         /// <returns></returns>
         public static string LengthEncodeList(params string[] items)
         {
-            var stringable = NaturalStringableList.New(items).DecorateWithLengthPrefixList();
+            var stringable = NaturalStringableList.New(items).DecorateListWithLength();
             var rv =  stringable.GetValue();
             return rv;
         }
@@ -54,8 +54,10 @@ namespace Decoratid.Idioms.Stringing
         /// <returns></returns>
         public static List<string> LengthDecodeList(string text)
         {
-            var stringable = NaturalStringableList.ParseNew(text);
-            var rv =  stringable.ToList();
+            var stringable = NaturalStringableList.New().DecorateListWithLength();
+            stringable.Parse(text);
+            List<string> rv = new List<string>();
+            rv.AddRange(stringable);
             return rv;
         }
     }

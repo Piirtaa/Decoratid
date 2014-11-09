@@ -436,10 +436,10 @@
     <Compile Include="Idioms\Stringing\LengthEncoder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Stringing\LengthPrefixDecoration.cs">
+    <Compile Include="Idioms\Stringing\LengthDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Stringing\LengthPrefixListDecoration.cs">
+    <Compile Include="Idioms\Stringing\LengthListDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Stringing\NaturalStringable.cs">
