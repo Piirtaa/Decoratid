@@ -28,7 +28,7 @@ namespace Decoratid.Idioms.Testing
 
                 var type = t.GetGenericParameterType(genType);
                 var ttype = typeof(T);
-                if(ttype.Equals(type))
+                if (ttype.Equals(type))
                     return true;
                 if (type.IsSubclassOf(type))
                     return true;
@@ -59,11 +59,11 @@ namespace Decoratid.Idioms.Testing
             try
             {
                 test.Test(item);
-                return new TestOfResult() { IsTestSuccess = true, TestType = test.GetType() };
+                return new TestOfResult(test.GetType(), null);
             }
             catch (Exception ex)
             {
-                return new TestOfResult() { TestError=ex, TestType = test.GetType() };
+                return new TestOfResult(test.GetType(), ex);
             }
         }
 
@@ -108,9 +108,9 @@ namespace Decoratid.Idioms.Testing
         public static void LogTestResults(List<TestOfResult> results, string path)
         {
             if (results == null)
-                return ;
+                return;
             if (results.Count == 0)
-                return ;
+                return;
 
             //get something we can write to
             var list = NaturalStringableList.New().Fileable().Filing(path);

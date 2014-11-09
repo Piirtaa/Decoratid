@@ -9,17 +9,24 @@ namespace Decoratid.Idioms.Testing
 {
     public class TestOfResult : IHasId<string>
     {
-        public Type TestType { get; set; }
+        public TestOfResult(Type type, Exception ex)
+        {
+            this.Id = type.Name;
+            this.TestError = ex;
+
+        }
         public Exception TestError { get; set; }
-        public bool IsTestSuccess { get; set; }
+        public bool IsTestSuccess { get { return this.TestError == null; } }
 
         public string Id
         {
-            get { return this.TestType.Name; }
+            get;
+            private set;
         }
         object IHasId.Id
         {
             get { return this.Id; }
         }
+
     }
 }
