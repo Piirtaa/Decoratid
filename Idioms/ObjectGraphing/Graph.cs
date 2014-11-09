@@ -286,6 +286,12 @@ namespace Decoratid.Idioms.ObjectGraphing
         public string GetValue()
         {
             var storeText = this.NodeStore.DehydrateNodeStore();
+
+            //var graph = Graph.Build(this.Decorated, ValueManagerChainOfResponsibility.NewDefault()).Formats();
+            //var dat = graph.GetStoreText();
+            ////append this to file
+            //File.AppendAllText("stringabledump.txt", dat + Environment.NewLine);
+
             var managerText = this.ChainOfResponsibility.GetValue();
             string rv = LengthEncoder.LengthEncodeList(managerText, storeText);
             return rv;

@@ -16,12 +16,12 @@ namespace Decoratid.Idioms.Stringing
     /// </summary>
     public interface ILengthPrefixStringable : IStringable
     {
-
+        bool IsLengthPrefixFormatted(string text);
     }
 
     /// <summary>
     /// encodes a string with a length prefix, delimited with rarechar.
-    /// An encoded string will look like this Length{US}Data{RS}.  
+    /// An encoded string will look like this {RS}Length{US}Data{RS}.  
     /// </summary>
     /// <remarks>
     /// This decoration does the following:
@@ -36,8 +36,9 @@ namespace Decoratid.Idioms.Stringing
     [Serializable]
     public class LengthPrefixDecoration : StringableDecorationBase, ILengthPrefixStringable
     {
-        public static string DELIM_PRE = Delim.US.ToString();
-        public static string DELIM_POST = Delim.RS.ToString();
+        public static string PREFIX = Delim.RS.ToString();
+        public static string DELIM = Delim.US.ToString();
+        public static string SUFFIX = Delim.RS.ToString();
 
         #region Ctor
         public LengthPrefixDecoration(IStringable decorated)
@@ -59,22 +60,42 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region Overrides
+        public bool IsLengthPrefixFormatted(string text)
+        {
+            if (!text.StartsWith(PREFIX))
+                return false;
+            
+            if (!text.EndsWith(SUFFIX))
+                return false;
+
+            var length = text.GetFrom(PREFIX).GetTo(DELIM).ConvertToInt();
+            if (length < 0)
+                return false;
+
+            //validate payload by length parse, and by delim parse
+            var payloadByCount = text.GetFrom(DELIM).Substring(length);
+            if (payloadByCount.Length != length)
+                return false;
+            
+            var payloadByDelim = text.GetFrom(DELIM).GetTo(SUFFIX);
+            if (!payloadByCount.Equals(payloadByDelim))
+                return false;
+
+            return true;
+        }
         public override string GetValue()
         {
             var val = this.Decorated.GetValue();
             int length = val == null ? 0 : val.Length;
-            var rv = string.Format("{0}{1}{2}{3}", length.ToString(), DELIM_PRE, val, DELIM_POST);
+            var rv = string.Format("{0}{1}{2}{3}{4}", PREFIX, length.ToString(), DELIM, val, SUFFIX);
             return rv;
         }
         public override void Parse(string text)
         {
-            Condition.Requires(text).EndsWith(DELIM_POST);
+            if (!IsLengthPrefixFormatted(text))
+                throw new InvalidOperationException("bad format");
 
-            var length = text.MustGetTo(DELIM_PRE).ConvertToInt();
-            var data = text.MustGetFrom(DELIM_PRE).Substring(0, length); //get data using the length parse
-            var checkData = text.MustGetFrom(DELIM_PRE);
-            checkData = checkData.Substring(0, checkData.Length - 1); //now get data using the delims
-            Condition.Requires(data).IsEqualTo(checkData); //they should match
+            var data = text.GetFrom(DELIM).GetTo(SUFFIX);
 
             //recursively, along the decoration chain, parse
             this.Decorated.Parse(data);
@@ -93,6 +114,12 @@ namespace Decoratid.Idioms.Stringing
         {
             Condition.Requires(thing).IsNotNull();
             return new LengthPrefixDecoration(thing);
+        }
+
+        public static bool IsLengthPrefixFormatted(this string text)
+        {
+            var stringable = text.MakeStringable().DecorateWithLengthPrefix();
+            return stringable.IsLengthPrefixFormatted(text);
         }
     }
 }

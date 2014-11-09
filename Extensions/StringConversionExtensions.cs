@@ -170,7 +170,12 @@ namespace Decoratid.Extensions
             var rv = text.Substring(startPos, endPos - startPos);
             return rv;
         }
-
+        /// <summary>
+        /// parses value to the substring.  if not found returns self
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="substring"></param>
+        /// <returns></returns>
         public static string GetTo(this string text, string substring)
         {
             if (text == null)

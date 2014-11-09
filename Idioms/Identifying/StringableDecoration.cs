@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Idioms.ObjectGraphing;
 using Decoratid.Idioms.ObjectGraphing.Values;
+using System.IO;
 
 namespace Decoratid.Idioms.Identifying
 {
@@ -56,9 +57,6 @@ namespace Decoratid.Idioms.Identifying
         #region IStringable
         public string GetValue()
         {
-            var graph = Graph.Build(this.Decorated, ValueManagerChainOfResponsibility.NewDefault()).Formats();
-            var dat = graph.GetStoreText();
-
             var rv= this.GraphSerializeWithDefaults();
             return rv;
         }
