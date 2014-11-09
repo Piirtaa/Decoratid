@@ -113,6 +113,8 @@
     <Compile Include="Idioms\Messaging\StoreProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolHostDecoration.cs" />
+    <Compile Include="Idioms\ObjectGraphing\DecoratedGraphBase.cs" />
+    <Compile Include="Idioms\ObjectGraphing\FormattingGraphDecoration.cs" />
     <Compile Include="Idioms\ObjectGraphing\Tests.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
     <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">

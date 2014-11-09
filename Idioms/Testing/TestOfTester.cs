@@ -114,11 +114,14 @@ namespace Decoratid.Idioms.Testing
 
             //get something we can write to
             var list = NaturalStringableList.New().Fileable().Filing(path);
+            IStringableList iList = list.FreeWalkFindDecoratorOf(typeof(IStringableList), false) as IStringableList;
 
             foreach (var each in results)
             {
                 var s = each.Stringable();
-                ((NaturalStringableList)list.Decorated).Add(s.GetValue());
+                //cos we've changed our decorated type from stringablelist to stringable we have to grab the list decoration
+                var eVal = s.GetValue();
+                iList.Add(eVal);
             }
             list.Write();
 

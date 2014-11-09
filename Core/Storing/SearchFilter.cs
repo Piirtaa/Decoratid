@@ -77,7 +77,7 @@ namespace Decoratid.Core.Storing
         #endregion
 
         #region Properties
-        public Func<T, bool> GenericFilter { get; set; }
+        public Func<T, bool> GenericFilter { get; private set; }
         #endregion
 
         #region Conversions

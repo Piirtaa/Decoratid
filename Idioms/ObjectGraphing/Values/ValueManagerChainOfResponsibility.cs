@@ -161,9 +161,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             list.Add(new DuplicateValueManager());
             list.Add(new DelegateValueManager());
             list.Add(new PrimitiveValueManager());
-            list.Add(new StringableValueManager());
+            //list.Add(new StringableValueManager());
             list.Add(new ManagedHydrateableValueManager());
-            list.Add(new SerializableValueManager());
+           // list.Add(new SerializableValueManager());
            // list.Add(new DecorationValueManager());
             list.Add(new ValueTypeValueManager());
             //list.Add(new HasHydrationMapValueManager());

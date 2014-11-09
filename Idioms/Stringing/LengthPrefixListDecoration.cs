@@ -76,6 +76,7 @@ namespace Decoratid.Idioms.Stringing
                 {
                     lengths.Add("0");
                 }
+                else
                 {
                     lengths.Add(x.Length.ToString());
                 }

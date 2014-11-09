@@ -178,7 +178,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             Condition.Requires(nodeStore).IsNotNull();
             this.NodeStore = nodeStore;
 
-            //iterate over all of the non-duplicate values and Reconste these nodes
+            //iterate over all of the non-duplicate values and Reconstitute these nodes
             var nodes = NodeStore.GetAll();
             nodes.WithEach(node =>
             {
