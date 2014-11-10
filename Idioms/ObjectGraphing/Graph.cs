@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using Decoratid.Extensions;
 using System.IO;
+using Decoratid.Idioms.Depending;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -62,7 +63,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// given the object to graph, builds a graph
         /// </summary>
         /// <param name="obj"></param>
-        private void BuildGraph(object obj, Func<object, GraphPath, bool> skipFilter = null )
+        private void BuildGraph(object obj, Func<object, GraphPath, bool> skipFilter = null)
         {
             /*
              *  We walk each object in the graph and convert that into a GraphNode (ie. GraphPath + ManagedValue + Sequence) 
@@ -70,7 +71,7 @@ namespace Decoratid.Idioms.ObjectGraphing
              */
 
             Condition.Requires(obj).IsNotNull();
-            
+
             this.NodeStore = NaturalInMemoryStore.New().IsOf<GraphNode>();
             this.Counter = new Counter();
             this.SkipFilter = skipFilter;
@@ -102,7 +103,7 @@ namespace Decoratid.Idioms.ObjectGraphing
 
             //using the manager, serialize node value, and build the node
             var val = manager.DehydrateValue(nodeValue, this);
-            
+
             var node = GraphNode.New(nodePath, nodeValue, this.Counter.Current, manager.Id, val);
 
             //save the node
@@ -170,6 +171,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             var root = nodeStore.GetRootNode();
             return root.NodeValue;
         }
+
         /// <summary>
         /// given a parent node and a store of nodes, identifies the children of the parent and wires
         /// their values to the parent node's value
@@ -185,9 +187,8 @@ namespace Decoratid.Idioms.ObjectGraphing
             if (skipFilter.Contains(parentNode.ValueManagerId))
                 return;
 
-            var fields = ReflectionUtil.GetFieldInfosIncludingBaseClasses(parentNode.NodeValue.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
             var children = nodeStore.GetImmediateChildNodes(parentNode.Path).OrderBy((x) => { return x.Path.EnumeratedSegmentIndex; }).ToList();
+            var fields = GraphingUtil.GetNestingNotatedFieldInfos(parentNode.NodeValue.GetType());
 
             foreach (var each in children)
             {
@@ -221,11 +222,11 @@ namespace Decoratid.Idioms.ObjectGraphing
                 {
                     //get the matching field
                     GraphSegment gSeg = each.Path.CurrentSegment as GraphSegment;
-                    var matches = fields.Filter((x) => { return x.DeclaringType == gSeg.DeclaringType && x.Name.Equals(gSeg.SegmentName); });
+                    var matches = fields.Filter((x) => { return x.Item1 == gSeg.Path; });
                     Condition.Requires(matches).IsNotNull().HasLength(1);
 
                     var fi = matches.First();
-                    fi.SetValue(parentNode.NodeValue, each.NodeValue);
+                    fi.Item2.SetValue(parentNode.NodeValue, each.NodeValue);
                 }
             }
         }

@@ -266,6 +266,9 @@ namespace Decoratid.Extensions
         #region Padding
         public static string RepeatString(this string text, int times)
         {
+            if (times <= 0)
+                return string.Empty;
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < times; i++)
             {

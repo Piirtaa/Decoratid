@@ -4,65 +4,28 @@ using Decoratid.Idioms.TypeLocating;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.ObjectGraphing.Path
 {
-    /// <summary>
-    /// </summary>
-    /// <remarks>
-    /// </remarks>
     public sealed class GraphSegment : IGraphSegment
     {
-        public const string PREFIX = "(";
-        public const string SUFFIX = ")";
-        public const string DELIM = ",";
-
         #region Ctor
-        private GraphSegment(Type declaringType, string segmentName)
+        private GraphSegment(string path)
         {
-            this.DeclaringType = declaringType;
-            this.SegmentName = segmentName;
+            Condition.Requires(path).IsNotNullOrEmpty();
+            this.Path = path;
         }
-        #endregion
-
-        #region Key Properties
-        /// <summary>
-        /// the type that declares the field
-        /// </summary>
-        public Type DeclaringType { get; private set; }
-        /// <summary>
-        /// the name of the field that holds the node(s).  
-        /// </summary>
-        public string SegmentName { get; private set; }
         #endregion
 
         #region IGraphPath
-        public string Path
-        {
-            get
-            {
-                var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
-                list.Add(this.DeclaringType.Name);
-                list.Add(this.SegmentName);
-                return list.GetValue();
-            }
-        }
+        public string Path{ get; private set; }
         #endregion
 
         #region Implicit Conversion to string
         public static implicit operator GraphSegment(string text)
         {
-            var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
-            list.Parse(text);
-
-            string declaringTypeName = list[0];
-            string segmentName = list[1];
-
-            var types = TheTypeLocator.Instance.Locator.Locate((x) => { return x.Name == declaringTypeName; });
-            Condition.Requires(types).IsNotNull().IsNotEmpty();
-            Condition.Requires(segmentName).IsNotNullOrEmpty();
-
-            GraphSegment rv = new GraphSegment(types.FirstOrDefault(), segmentName);
+            GraphSegment rv = new GraphSegment(text);
             return rv;
         }
         public static implicit operator string(GraphSegment obj)
@@ -75,9 +38,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         #endregion
 
         #region Fluent Static
-        public static GraphSegment New(Type declaringType, string segmentName)
+        public static GraphSegment New(string segmentName)
         {
-            return new GraphSegment(declaringType, segmentName);
+            return new GraphSegment(segmentName);
         }
         #endregion
     }

@@ -17,7 +17,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
     {
         public const string PREFIX = "";
         public const string SUFFIX = "";
-        public const string DELIM = "|";
+        public const string DELIM = ".";
         
         #region Ctor
         private GraphPath()
@@ -146,7 +146,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
                     EnumeratedItemSegment iSeg = seg;
                     list.Add(iSeg);
                 }
-                else if (seg.StartsWith(GraphSegment.PREFIX))
+                else 
                 {
                     GraphSegment gSeg = seg;
                     list.Add(gSeg);

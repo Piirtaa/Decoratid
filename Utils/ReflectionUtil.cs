@@ -13,6 +13,7 @@ namespace Decoratid.Utils
     public static class ReflectionUtil
     {
         #region Elegant recursive get fields -> need to do this for serialization cos of default c# behav
+
         public static FieldInfo[] GetFieldInfosIncludingBaseClasses(Type type, BindingFlags bindingFlags)
         {
             FieldInfo[] fieldInfos = type.GetFields(bindingFlags);
@@ -42,7 +43,7 @@ namespace Decoratid.Utils
         }
 
 
-        private class FieldInfoComparer : IEqualityComparer<FieldInfo>
+        public class FieldInfoComparer : IEqualityComparer<FieldInfo>
         {
             public bool Equals(FieldInfo x, FieldInfo y)
             {

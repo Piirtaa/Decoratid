@@ -21,9 +21,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         public const string ID = "Compound";
 
         #region Ctor
-        public CompoundValueManager(Func<object, GraphPath, bool> doNotRecurseFilter = null)
+        public CompoundValueManager(Func<object, GraphPath, bool> doNotTraverseFilter = null)
         {
-            this.DoNotRecurseFilter = doNotRecurseFilter;
+            this.DoNotTraverseFilter = doNotTraverseFilter;
         }
         #endregion
 
@@ -33,74 +33,13 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region Properties
-        public Func<object, GraphPath, bool> DoNotRecurseFilter { get; private set; }
+        public Func<object, GraphPath, bool> DoNotTraverseFilter { get; private set; }
         #endregion
 
         #region INodeValueManager
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath nodePath)
         {
-            List<Tuple<object, GraphPath>> rv = new List<Tuple<object, GraphPath>>();
-
-            //if the node is IEnumerable, recurse here
-            if (nodeValue is IEnumerable && (nodeValue is string) == false)
-            {
-                IEnumerable objEnumerable = nodeValue as IEnumerable;
-
-                EnumeratedSegmentType segType = EnumeratedSegmentType.None;
-                if (nodeValue is IDictionary)
-                {
-                    segType = EnumeratedSegmentType.IDictionary;
-                }
-                else if (nodeValue is Stack)
-                {
-                    segType = EnumeratedSegmentType.Stack;
-                }
-                else if (nodeValue is Queue)
-                {
-                    segType = EnumeratedSegmentType.Queue;
-                }
-                else if (nodeValue is IList)
-                {
-                    segType = EnumeratedSegmentType.IList;
-                }
-                int index = 0;
-                foreach (var each in objEnumerable)
-                {
-                    //build the path
-                    var path = GraphPath.New(nodePath);
-                    path.AddSegment(EnumeratedItemSegment.New(index, segType));
-
-                    if (this.DoNotRecurseFilter != null &&
-                        this.DoNotRecurseFilter(each, path))
-                        continue;
-
-                    rv.Add(new Tuple<object, GraphPath>(each, path));
-                    index++;
-                }
-            }
-            else
-            {
-                //recurse the fields           
-                var fields = ReflectionUtil.GetFieldInfosIncludingBaseClasses(nodeValue.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                foreach (FieldInfo field in fields)
-                {
-                    //get field value
-                    var obj = field.GetValue(nodeValue);
-
-                    var path = GraphPath.New(nodePath);
-                    path.AddSegment(GraphSegment.New(field.DeclaringType, field.Name));
-
-                    if (this.DoNotRecurseFilter != null &&
-    this.DoNotRecurseFilter(obj, path))
-                        continue;
-
-                    //build the node and recurse
-                    rv.Add(new Tuple<object, GraphPath>(obj, path));
-
-                }
-            }
-            return rv;
+            return GraphingUtil.GetChildTraversalNodes(nodeValue, nodePath, DoNotTraverseFilter);
         }
         public bool CanHandle(object obj, IGraph uow)
         {
