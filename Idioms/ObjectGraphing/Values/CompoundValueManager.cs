@@ -21,9 +21,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         public const string ID = "Compound";
 
         #region Ctor
-        public CompoundValueManager(params string[] doNotRecurseFields) 
+        public CompoundValueManager(Func<object, GraphPath, bool> doNotRecurseFilter = null)
         {
-            this.DoNotRecurseFields = doNotRecurseFields;
+            this.DoNotRecurseFilter = doNotRecurseFilter;
         }
         #endregion
 
@@ -33,10 +33,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region Properties
-        /// <summary>
-        /// list of fields to ignore when recursing
-        /// </summary>
-        public string[] DoNotRecurseFields { get; private set; }
+        public Func<object, GraphPath, bool> DoNotRecurseFilter { get; private set; }
         #endregion
 
         #region INodeValueManager
@@ -73,6 +70,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                     var path = GraphPath.New(nodePath);
                     path.AddSegment(EnumeratedItemSegment.New(index, segType));
 
+                    if (this.DoNotRecurseFilter != null &&
+                        this.DoNotRecurseFilter(each, path))
+                        continue;
+
                     rv.Add(new Tuple<object, GraphPath>(each, path));
                     index++;
                 }
@@ -90,8 +91,12 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                     var path = GraphPath.New(nodePath);
                     path.AddSegment(GraphSegment.New(field.DeclaringType, field.Name));
 
+                    if (this.DoNotRecurseFilter != null &&
+    this.DoNotRecurseFilter(obj, path))
+                        continue;
+
                     //build the node and recurse
-                    rv.Add(new Tuple<object,GraphPath>(obj, path));
+                    rv.Add(new Tuple<object, GraphPath>(obj, path));
 
                 }
             }
