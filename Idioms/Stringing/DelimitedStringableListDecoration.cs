@@ -19,6 +19,8 @@ namespace Decoratid.Idioms.Stringing
         string Prefix { get; }
         string Delimiter { get; }
         string Suffix { get; }
+
+        bool IsListDelimitedFormatted(string text);
     }
 
     [Serializable]
@@ -49,6 +51,17 @@ namespace Decoratid.Idioms.Stringing
         public string Prefix { get; private set; }
         public string Delimiter { get; private set; }
         public string Suffix { get; private set; }
+        public bool IsListDelimitedFormatted(string text)
+        {
+            if (!string.IsNullOrEmpty(this.Prefix) && !text.StartsWith(Prefix))
+                return false;
+
+            if (!string.IsNullOrEmpty(this.Suffix) && !text.EndsWith(Suffix))
+                return false;
+
+
+            return true;
+        }
         #endregion
 
         #region Overrides
@@ -80,8 +93,8 @@ namespace Decoratid.Idioms.Stringing
             if(!string.IsNullOrEmpty(this.Suffix))
                 Condition.Requires(text).EndsWith(this.Suffix);
             
-            var delimlist = text.MustGetFrom(this.Prefix).MustGetTo(this.Suffix);
-
+            var delimlist = text.MustGetFrom(this.Prefix);
+            delimlist = delimlist.Substring(0, delimlist.Length - this.Suffix.Length);
             var split = new string[] { this.Delimiter };
             var list = delimlist.Split(split, StringSplitOptions.None);
 
@@ -105,6 +118,11 @@ namespace Decoratid.Idioms.Stringing
         {
             Condition.Requires(thing).IsNotNull();
             return new DelimitedStringableListDecoration(thing, prefix, delim, suffix);
+        }
+        public static bool IsListDelimitedFormatted(this string text, string prefix, string delim, string suffix)
+        {
+            var stringable = NaturalStringableList.New().Delimit(prefix, delim, suffix);
+            return stringable.IsListDelimitedFormatted(text);
         }
     }
 }
