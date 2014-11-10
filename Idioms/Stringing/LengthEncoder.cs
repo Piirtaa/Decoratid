@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.Stringing
 {
@@ -13,6 +14,7 @@ namespace Decoratid.Idioms.Stringing
     /// </summary>
     public static class LengthEncoder
     {
+        #region Basic and List
         /// <summary>
         /// encodes with length prefix
         /// </summary>
@@ -44,7 +46,7 @@ namespace Decoratid.Idioms.Stringing
         public static string LengthEncodeList(params string[] items)
         {
             var stringable = NaturalStringableList.New(items).DecorateListWithLength();
-            var rv =  stringable.GetValue();
+            var rv = stringable.GetValue();
             return rv;
         }
         /// <summary>
@@ -60,5 +62,44 @@ namespace Decoratid.Idioms.Stringing
             rv.AddRange(stringable);
             return rv;
         }
+        #endregion
+
+        #region Readable Formatter
+        public static string MakeReadable(string text)
+        {
+            List<string> lines = new List<string>();
+            MakeReadable(text, lines, 0);
+            StringBuilder sb = new StringBuilder();
+            lines.WithEach(x =>
+            {
+                sb.AppendLine(x);
+            });
+
+            var rv = sb.ToString();
+            return rv;
+        }
+        private static void MakeReadable(string text, List<string> lines, int indentLevel = 0)
+        {
+            if (text.IsListLengthFormatted())
+            {
+                var list = LengthDecodeList(text);
+                list.WithEach(line =>
+                {
+                    MakeReadable(line, lines, indentLevel + 1);
+                });
+            }
+            else if (text.IsLengthFormatted())
+            {
+                //recurse 
+                var innerText = LengthDecode(text);
+                MakeReadable(innerText, lines, indentLevel + 1);
+            }
+            else
+            {
+                string indent = "=>".RepeatString(indentLevel);
+                lines.Add(indent + text);
+            }
+        }
+        #endregion
     }
 }

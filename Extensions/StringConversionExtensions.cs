@@ -262,5 +262,18 @@ namespace Decoratid.Extensions
             return rv;
         }
         #endregion
+
+        #region Padding
+        public static string RepeatString(this string text, int times)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < times; i++)
+            {
+                sb.Append(text);
+            }
+
+            return sb.ToString();
+        }
+        #endregion
     }
 }

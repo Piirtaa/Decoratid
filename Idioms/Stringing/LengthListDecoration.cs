@@ -73,7 +73,9 @@ namespace Decoratid.Idioms.Stringing
             if (lengthArr != null && lengthArr.Length > 0)
             {
                 //get the payload data
-                var data = text.GetFrom(ITEM_DELIM).GetTo(SUFFIX);
+                var data = text.GetFrom(ITEM_DELIM);
+                data = data.Substring(0, data.Length - 1);
+
                 if (string.IsNullOrEmpty(data))
                     return false;
 
@@ -129,7 +131,8 @@ namespace Decoratid.Idioms.Stringing
             if (lengthArr != null && lengthArr.Length > 0)
             {
                 //get the payload data
-                var data = text.GetFrom(ITEM_DELIM).GetTo(SUFFIX);
+                var data = text.GetFrom(ITEM_DELIM);
+                data = data.Substring(0, data.Length - 1);
 
                 foreach (var each in lengthArr)
                 {

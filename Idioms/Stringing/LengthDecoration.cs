@@ -78,7 +78,8 @@ namespace Decoratid.Idioms.Stringing
             if (payloadByCount.Length != length)
                 return false;
             
-            var payloadByDelim = text.GetFrom(DELIM).GetTo(SUFFIX);
+            var payloadByDelim = text.GetFrom(DELIM);
+            payloadByDelim = payloadByDelim.Substring(0, payloadByDelim.Length - 1);
             if (!payloadByCount.Equals(payloadByDelim))
                 return false;
 
@@ -96,7 +97,8 @@ namespace Decoratid.Idioms.Stringing
             if (!IsLengthFormatted(text))
                 throw new InvalidOperationException("bad format");
 
-            var data = text.GetFrom(DELIM).GetTo(SUFFIX);
+            var data = text.GetFrom(DELIM);
+            data = data.Substring(0, data.Length - 1);
 
             //recursively, along the decoration chain, parse
             this.Decorated.Parse(data);
