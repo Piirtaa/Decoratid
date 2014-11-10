@@ -171,9 +171,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             //list.Add(new StringableValueManager());
             list.Add(new ManagedHydrateableValueManager());
            // list.Add(new SerializableValueManager());
-           // list.Add(new DecorationValueManager());
+
             list.Add(new ValueTypeValueManager());
             //list.Add(new HasHydrationMapValueManager());
+            list.Add(new DecorationValueManager());
             list.Add(new CompoundValueManager());//MUST BE LAST!!
 
             return list;

@@ -19,6 +19,8 @@ namespace Decoratid.Idioms.ObjectGraphing
 {
     public class GraphingUtil
     {
+        public const string FieldNameDelim = " ";
+
         /// <summary>
         /// for a given type, returns all the fieldinfos as a list of tuples of fieldinfo and a string shortform
         /// indicating the declaring type nesting level in the inheritance tree.  ie.  FieldA0, would indicate
@@ -54,7 +56,7 @@ namespace Decoratid.Idioms.ObjectGraphing
                     level++;
                 }
                 int inheritanceLevel = inheritanceHeight - level;
-                rv.Add(new Tuple<string, FieldInfo>(x.Name + inheritanceLevel, x));
+                rv.Add(new Tuple<string, FieldInfo>(x.Name + FieldNameDelim + inheritanceLevel, x));
             });
             return rv;
         }
