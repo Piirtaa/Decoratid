@@ -65,7 +65,7 @@ namespace Decoratid.Idioms.Stringing
         {
             if (!text.StartsWith(PREFIX))
                 return false;
-            
+
             if (!text.EndsWith(SUFFIX))
                 return false;
 
@@ -74,10 +74,10 @@ namespace Decoratid.Idioms.Stringing
                 return false;
 
             //validate payload by length parse, and by delim parse
-            var payloadByCount = text.GetFrom(DELIM).Substring(length);
+            var payloadByCount = text.GetFrom(DELIM).Substring(0, length);
             if (payloadByCount.Length != length)
                 return false;
-            
+
             var payloadByDelim = text.GetFrom(DELIM);
             payloadByDelim = payloadByDelim.Substring(0, payloadByDelim.Length - 1);
             if (!payloadByCount.Equals(payloadByDelim))
