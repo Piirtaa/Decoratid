@@ -97,73 +97,22 @@ namespace Decoratid.Idioms.ObjectGraphing
             this.Counter.Increment();
 
             //get the manager for this node value
-            var factory = this.ChainOfResponsibility.FindHandlingValueManager(nodeValue, this);
-            Condition.Requires(factory).IsNotNull();
+            var manager = this.ChainOfResponsibility.FindHandlingValueManager(nodeValue, this);
+            Condition.Requires(manager).IsNotNull();
 
             //using the manager, serialize node value, and build the node
-            var val = factory.DehydrateValue(nodeValue, this);
+            var val = manager.DehydrateValue(nodeValue, this);
             
-            var node = GraphNode.New(nodePath, nodeValue, this.Counter.Current, factory.Id, val);
+            var node = GraphNode.New(nodePath, nodeValue, this.Counter.Current, manager.Id, val);
 
             //save the node
             this.NodeStore.SaveItem(node);
 
-            //only recurse if we're on a compound value
-            if (!(factory is CompoundValueManager))
-                return;
-
-            //if the node is IEnumerable, recurse here
-            if (nodeValue is IEnumerable && (nodeValue is string) == false)
+            var traverseList = manager.GetChildTraversalNodes(nodeValue, nodePath);
+            traverseList.WithEach(tuple =>
             {
-                IEnumerable objEnumerable = nodeValue as IEnumerable;
-
-                EnumeratedSegmentType segType = EnumeratedSegmentType.None;
-                if (nodeValue is IDictionary)
-                {
-                    segType = EnumeratedSegmentType.IDictionary;
-                }
-                else if (nodeValue is Stack)
-                {
-                    segType = EnumeratedSegmentType.Stack;
-                }
-                else if (nodeValue is Queue)
-                {
-                    segType = EnumeratedSegmentType.Queue;
-                }
-                else if (nodeValue is IList)
-                {
-                    segType = EnumeratedSegmentType.IList;
-                }
-                int index = 0;
-                foreach (var each in objEnumerable)
-                {
-                    //build the path
-                    var path = GraphPath.New(nodePath);
-                    path.AddSegment(EnumeratedItemSegment.New(index, segType));
-
-                    //build the node and recurse
-                    BuildNode(each, path);
-                    index++;
-                }
-            }
-            else
-            {
-                //recurse the fields           
-                var fields = ReflectionUtil.GetFieldInfosIncludingBaseClasses(nodeValue.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                foreach (FieldInfo field in fields)
-                {
-                    //get field value
-                    var obj = field.GetValue(nodeValue);
-
-                    var path = GraphPath.New(nodePath);
-                    path.AddSegment(GraphSegment.New(field.DeclaringType, field.Name));
-
-                    //build the node and recurse
-                    BuildNode(obj, path);
-
-                }
-            }
+                BuildNode(tuple.Item1, tuple.Item2);
+            });
 
         }
         #endregion

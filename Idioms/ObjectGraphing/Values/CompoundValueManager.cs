@@ -1,9 +1,13 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.TypeLocating;
 using Decoratid.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
@@ -36,6 +40,63 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath nodePath)
+        {
+            List<Tuple<object, GraphPath>> rv = new List<Tuple<object, GraphPath>>();
+
+            //if the node is IEnumerable, recurse here
+            if (nodeValue is IEnumerable && (nodeValue is string) == false)
+            {
+                IEnumerable objEnumerable = nodeValue as IEnumerable;
+
+                EnumeratedSegmentType segType = EnumeratedSegmentType.None;
+                if (nodeValue is IDictionary)
+                {
+                    segType = EnumeratedSegmentType.IDictionary;
+                }
+                else if (nodeValue is Stack)
+                {
+                    segType = EnumeratedSegmentType.Stack;
+                }
+                else if (nodeValue is Queue)
+                {
+                    segType = EnumeratedSegmentType.Queue;
+                }
+                else if (nodeValue is IList)
+                {
+                    segType = EnumeratedSegmentType.IList;
+                }
+                int index = 0;
+                foreach (var each in objEnumerable)
+                {
+                    //build the path
+                    var path = GraphPath.New(nodePath);
+                    path.AddSegment(EnumeratedItemSegment.New(index, segType));
+
+                    rv.Add(new Tuple<object, GraphPath>(each, path));
+                    index++;
+                }
+            }
+            else
+            {
+                //recurse the fields           
+                var fields = ReflectionUtil.GetFieldInfosIncludingBaseClasses(nodeValue.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                foreach (FieldInfo field in fields)
+                {
+                    //get field value
+                    var obj = field.GetValue(nodeValue);
+
+                    var path = GraphPath.New(nodePath);
+                    path.AddSegment(GraphSegment.New(field.DeclaringType, field.Name));
+
+                    //build the node and recurse
+                    rv.Add(new Tuple<object,GraphPath>(obj, path));
+
+                }
+            }
+            return rv;
+        }
         public bool CanHandle(object obj, IGraph uow)
         {
             if (obj == null)

@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.ObjectGraphing.Values.Decorations;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Utils;
@@ -170,6 +171,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
+        {
+            return null;
+        }
         /// <summary>
         /// can only handle the exact same type a T
         /// </summary>

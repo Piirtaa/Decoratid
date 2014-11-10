@@ -1,5 +1,8 @@
 ﻿
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
+using System;
+using System.Collections.Generic;
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
     /// <summary>
@@ -19,6 +22,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
+        {
+            return null;
+        }
         public bool CanHandle(object obj, IGraph uow)
         {
             return obj == null;

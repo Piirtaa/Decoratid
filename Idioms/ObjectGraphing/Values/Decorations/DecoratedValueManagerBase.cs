@@ -1,6 +1,8 @@
 ﻿using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using System;
+using System.Collections.Generic;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values.Decorations
 {
@@ -28,6 +30,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values.Decorations
         #endregion
 
         #region Methods
+        public virtual List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
+        {
+            return base.Decorated.GetChildTraversalNodes(obj, nodePath);
+        }
         public virtual bool CanHandle(object obj, IGraph uow)
         {
             return base.Decorated.CanHandle(obj, uow);

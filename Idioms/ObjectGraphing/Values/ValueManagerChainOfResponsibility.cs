@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.TypeLocating;
 using System;
@@ -16,6 +17,12 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         bool CanHandle(object obj, IGraph uow);
         string DehydrateValue(object obj, IGraph uow);
         object HydrateValue(string nodeText, IGraph uow);
+        /// <summary>
+        /// returns empty list if we don't traverse child branches
+        /// </summary>
+        /// <param name="nodeValue"></param>
+        /// <returns></returns>
+        List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath nodePath);
     }
 
     /// <summary>

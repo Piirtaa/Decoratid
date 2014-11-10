@@ -1,10 +1,12 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
 using Decoratid.Extensions;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.TypeLocating;
 using Decoratid.Utils;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
@@ -25,6 +27,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+
         public override bool CanHandle(object obj, IGraph uow)
         {
             if (obj == null)
