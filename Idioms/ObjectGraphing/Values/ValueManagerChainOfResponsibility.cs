@@ -6,6 +6,7 @@ using Decoratid.Idioms.TypeLocating;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
@@ -169,11 +170,19 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             list.Add(new DelegateValueManager());
             list.Add(new DateValueManager());
             list.Add(new GuidValueManager());
-            
+            list.Add(PrimitiveMapValueManager<IPAddress>.New((o) =>
+            {
+                return o.ToString();
+            }, (t) =>
+            {
+                return IPAddress.Parse(t);
+            }));
+
+
             list.Add(new PrimitiveValueManager());
             //list.Add(new StringableValueManager());
             list.Add(new ManagedHydrateableValueManager());
-           // list.Add(new SerializableValueManager());
+            // list.Add(new SerializableValueManager());
 
             list.Add(new ValueTypeValueManager());
             //list.Add(new HasHydrationMapValueManager());

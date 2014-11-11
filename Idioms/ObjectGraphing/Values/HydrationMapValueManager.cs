@@ -9,66 +9,6 @@ using System.Collections.Generic;
 
 namespace Decoratid.Idioms.ObjectGraphing.Values
 {
-
-
-
-    #region Member Map
-    /// <summary>
-    /// defines a mapping of a member to a value manager
-    /// </summary>
-    public interface IHydrationMemberMapping : IHasId<string>
-    {
-        string MemberName { get; }
-        string ValueManagerId { get; set; }
-    }
-
-    /// <summary>
-    /// Describes Get/Set strategies, and the ValueManager for a member
-    /// </summary>
-    public class MemberMapping<T> : IHydrationMemberMapping
-    {
-        #region Ctor
-        public MemberMapping(string memberName, Func<T, object> getter, Action<T, object> setter, string valueManagerId)
-        {
-            Condition.Requires(memberName).IsNotNullOrEmpty();
-            Condition.Requires(getter).IsNotNull();
-            Condition.Requires(setter).IsNotNull();
-            Condition.Requires(valueManagerId).IsNotNullOrEmpty();
-            this.Id = memberName;
-            this.Getter = getter;
-            this.Setter = setter;
-            this.ValueManagerId = valueManagerId;
-        }
-        #endregion
-
-        #region IHasId
-        public string Id { get; set; }
-        object IHasId.Id { get { return this.Id; } }
-        #endregion
-
-        #region Properties
-        public string MemberName { get { return this.Id; } }
-        public Func<T, object> Getter { get; set; }
-        public Action<T, object> Setter { get; set; }
-        public string ValueManagerId { get; set; }
-        #endregion
-
-        #region Methods
-        public object Get(T obj)
-        {
-            Condition.Requires(this.Getter).IsNotNull();
-            var val = this.Getter(obj);
-            return val;
-        }
-        public void Set(T obj, object val)
-        {
-            Condition.Requires(this.Setter).IsNotNull();
-            this.Setter(obj, val);
-        }
-        #endregion
-    }
-    #endregion
-
     /// <summary>
     /// defines the mapping of value managers to getters/setters for something, implying fulfillment of 
     /// ValueManagement thru delegation to the maps.  TODO: remove implication 
@@ -190,6 +130,8 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         }
         public string DehydrateValue(object obj, IGraph uow)
         {
+            Condition.Requires(obj).IsNotNull();
+
             T tObj = (T)obj;
             IGraph actualUow = null;
             //if we don't have a uow we use the default one
@@ -219,8 +161,69 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
 
             return obj;
         }
-   
+
         #endregion
 
     }
+
+    #region Member Map
+    /// <summary>
+    /// defines a mapping of a member to a value manager
+    /// </summary>
+    public interface IHydrationMemberMapping : IHasId<string>
+    {
+        string MemberName { get; }
+        string ValueManagerId { get; set; }
+    }
+
+    /// <summary>
+    /// Describes Get/Set strategies, and the ValueManager for a member
+    /// </summary>
+    public class MemberMapping<T> : IHydrationMemberMapping
+    {
+        #region Ctor
+        public MemberMapping(string memberName, Func<T, object> getter, Action<T, object> setter, string valueManagerId)
+        {
+            Condition.Requires(memberName).IsNotNullOrEmpty();
+            Condition.Requires(getter).IsNotNull();
+            Condition.Requires(setter).IsNotNull();
+            Condition.Requires(valueManagerId).IsNotNullOrEmpty();
+            this.Id = memberName;
+            this.Getter = getter;
+            this.Setter = setter;
+            this.ValueManagerId = valueManagerId;
+        }
+        #endregion
+
+        #region IHasId
+        public string Id { get; set; }
+        object IHasId.Id { get { return this.Id; } }
+        #endregion
+
+        #region Properties
+        public string MemberName { get { return this.Id; } }
+        public Func<T, object> Getter { get; set; }
+        public Action<T, object> Setter { get; set; }
+        public string ValueManagerId { get; set; }
+        #endregion
+
+        #region Methods
+        public object Get(T obj)
+        {
+            Condition.Requires(this.Getter).IsNotNull();
+            var val = this.Getter(obj);
+            return val;
+        }
+        public void Set(T obj, object val)
+        {
+            Condition.Requires(this.Setter).IsNotNull();
+            this.Setter(obj, val);
+        }
+        #endregion
+    }
+    #endregion
+
+
+
+
 }

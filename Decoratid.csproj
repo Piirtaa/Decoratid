@@ -117,6 +117,7 @@
     <Compile Include="Idioms\ObjectGraphing\DecoratedGraphBase.cs" />
     <Compile Include="Idioms\ObjectGraphing\FormattingGraphDecoration.cs" />
     <Compile Include="Idioms\ObjectGraphing\Tests.cs" />
+    <Compile Include="Idioms\ObjectGraphing\Values\PrimitiveMapValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\GuidValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
