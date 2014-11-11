@@ -10,41 +10,26 @@ using Decoratid.Idioms.Stringing;
 namespace Decoratid.Idioms.ObjectGraphing.Path
 {
     /// <summary>
-    /// describes the type of collection the segment is part of
-    /// </summary>
-    public enum EnumeratedSegmentType
-    {
-        None,
-        IList,
-        IDictionary,
-        Queue,
-        Stack
-    }
-
-    /// <summary>
     /// describes segment from the parent node to one of its enumerable items
     /// </summary>
     /// <remarks>
-    /// dehydrates to [{index},{IList,IDictionary,Queue,Stack}]
+    /// dehydrates to #{index}
     /// </remarks>
     public sealed class EnumeratedItemSegment : IGraphSegment
     {
-        public const string PREFIX = "[";
-        public const string SUFFIX = "]";
-        public const string DELIM = ",";
+        public const string PREFIX = "#";
+
 
         #region Ctor
-        private EnumeratedItemSegment(int index, EnumeratedSegmentType segType)
+        private EnumeratedItemSegment(int index)
         {
             Condition.Requires(index).IsGreaterThan(-1);
             this.Index = index;
-            this.SegmentType = segType;
         }
         #endregion
 
         #region Properties
         public int Index { get; private set; }
-        public EnumeratedSegmentType SegmentType {get; private set;}
         #endregion
 
         #region IGraphPath
@@ -52,10 +37,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         {
             get
             {
-                var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
-                list.Add(this.Index.ToString());
-                list.Add(this.SegmentType.ToString());
-                return list.GetValue();
+                return PREFIX + Index;
            }
         }
         #endregion
@@ -63,13 +45,8 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         #region Implicit Conversion to string
         public static implicit operator EnumeratedItemSegment(string text)
         {
-            var list = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
-            list.Parse(text);
-
-            int index =  int.Parse(list[0]);
-            EnumeratedSegmentType segType = (EnumeratedSegmentType)Enum.Parse(typeof(EnumeratedSegmentType), list[1]);
-            EnumeratedItemSegment rv = new EnumeratedItemSegment(index, segType);
-            return rv;
+            Condition.Requires(text).StartsWith(PREFIX);
+            return new EnumeratedItemSegment(text.Substring(1).ConvertToInt());
         }
         public static implicit operator string(EnumeratedItemSegment obj)
         {
@@ -81,9 +58,9 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         #endregion
 
         #region Fluent Static
-        public static EnumeratedItemSegment New(int index, EnumeratedSegmentType segType)
+        public static EnumeratedItemSegment New(int index)
         {
-            return new EnumeratedItemSegment(index, segType);
+            return new EnumeratedItemSegment(index);
         }
         #endregion
     }

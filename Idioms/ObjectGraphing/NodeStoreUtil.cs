@@ -46,7 +46,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             GraphNode rv = null;
 
             //if we're on a root node, there is no parent
-            if (path.CurrentSegment is RootSegment)
+            if (path.IsRoot)
                 return null;
 
             var parentPath = path.ParentPath;

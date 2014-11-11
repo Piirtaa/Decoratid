@@ -80,6 +80,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region IHydrationMap
+
         public void HydrateValue(object obj, string text, IGraph uow)
         {
             IGraph actualUow = null;
@@ -111,6 +112,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public void RewriteNodePath(GraphPath path, object obj)
+        {
+            GraphingUtil.RewriteBackingFieldNodePath(path);
+        }
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
         {
             return null;

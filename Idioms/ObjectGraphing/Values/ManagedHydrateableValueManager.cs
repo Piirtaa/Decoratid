@@ -34,6 +34,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public void RewriteNodePath(GraphPath path, object obj)
+        {
+            GraphingUtil.RewriteBackingFieldNodePath(path);
+        }
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
         {
             return null;
@@ -68,7 +72,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             if (mgr == null)
                 return null;
 
-            var val =  mgr.DehydrateValue(obj, uow);
+            var val = mgr.DehydrateValue(obj, uow);
 
             return LengthEncoder.LengthEncodeList(mgrId, val);
         }
@@ -78,7 +82,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             Condition.Requires(list).HasLength(2);
 
             //this is where we examine our context to see if we have the value manager required , if not we return null
-            var mgr  = uow.ChainOfResponsibility.GetValueManagerById(list[0]);
+            var mgr = uow.ChainOfResponsibility.GetValueManagerById(list[0]);
             if (mgr != null)
             {
                 var rv = mgr.HydrateValue(list[1], uow);

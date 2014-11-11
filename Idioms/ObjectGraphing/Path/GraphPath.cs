@@ -18,12 +18,11 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         public const string PREFIX = "";
         public const string SUFFIX = "";
         public const string DELIM = ".";
-        
+
         #region Ctor
         private GraphPath()
         {
             this.Segments = new List<IGraphSegment>();
-            this.Segments.Add(RootSegment.New());
         }
         #endregion
 
@@ -32,6 +31,16 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         #endregion
 
         #region Calculated Properties
+        public bool IsRoot
+        {
+            get
+            {
+                if (object.ReferenceEquals(this.CurrentSegment, this.Segments.First()))
+                    return true;
+
+                return false;
+            }
+        }
         public string Path
         {
             get
@@ -92,19 +101,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
                 return -1;
             }
         }
-        /// <summary>
-        /// if the current segment is enumerated returns the type, otherwise IList
-        /// </summary>
-        public EnumeratedSegmentType EnumeratedSegmentType
-        {
-            get
-            {
-                if (this.IsEnumeratedSegment)
-                    return ((EnumeratedItemSegment)this.CurrentSegment).SegmentType;
 
-                return EnumeratedSegmentType.None;
-            }
-        }
         #endregion
 
         #region Methods
@@ -112,41 +109,38 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         {
             Condition.Requires(segment).IsNotNull();
 
-            if (segment is RootSegment)
-                throw new InvalidOperationException();
-
             this.Segments.Add(segment);
 
             return this;
+        }
+        /// <summary>
+        /// only works on 
+        /// </summary>
+        /// <param name="name"></param>
+        public void ChangeCurrentSegmentPath(string path)
+        {
+            if (this.CurrentSegment is GraphSegment)
+            {
+                ((GraphSegment)this.CurrentSegment).SetPath(path);
+            }
         }
         #endregion
 
         #region Implicit Conversion to string
         public static implicit operator GraphPath(string text)
         {
-            /*Note: this parsing scheme depends on unique prefixing of each node type, and unique delim at the graphpath level
-             * 
-             * 
-             */ 
-            Condition.Requires(text).IsNotNullOrEmpty();
-
             var stringlist = NaturalStringableList.New().Delimit(PREFIX, DELIM, SUFFIX);
             stringlist.Parse(text);
 
             List<IGraphSegment> list = new List<IGraphSegment>();
             stringlist.WithEach(seg =>
             {
-                if (seg.StartsWith(RootSegment.PREFIX))
-                {
-                    RootSegment rSeg = seg;
-                    list.Add(rSeg);
-                }
-                else if (seg.StartsWith(EnumeratedItemSegment.PREFIX))
+                if (seg.StartsWith(EnumeratedItemSegment.PREFIX))
                 {
                     EnumeratedItemSegment iSeg = seg;
                     list.Add(iSeg);
                 }
-                else 
+                else
                 {
                     GraphSegment gSeg = seg;
                     list.Add(gSeg);
@@ -174,7 +168,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         {
             Condition.Requires(path).IsNotNull();
             var rv = new GraphPath();
-            var segs = path.Segments.GetRange(1, path.Segments.Count - 1);
+            var segs = path.Segments.GetRange(0, path.Segments.Count);
             segs.WithEach(x =>
             {
                 rv.AddSegment(x);
@@ -184,9 +178,8 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         public static GraphPath New(List<IGraphSegment> paths)
         {
             Condition.Requires(paths).IsNotEmpty();
-            RootSegment rootSeg = paths[0] as RootSegment;
             var rv = new GraphPath();
-            var segs = paths.GetRange(1, paths.Count - 1);
+            var segs = paths.GetRange(0, paths.Count);
             segs.WithEach(x =>
             {
                 rv.AddSegment(x);

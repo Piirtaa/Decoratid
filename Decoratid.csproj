@@ -351,9 +351,6 @@
     <Compile Include="Idioms\ObjectGraphing\Path\Interfaces.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\ObjectGraphing\Path\RootSegment.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Idioms\ObjectGraphing\Values\CompoundValueManager.cs">
       <SubType>Code</SubType>
     </Compile>

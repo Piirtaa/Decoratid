@@ -34,6 +34,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public void RewriteNodePath(GraphPath path, object obj)
+        {
+            GraphingUtil.RewriteBackingFieldNodePath(path);
+        }
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
         {
             return null;
@@ -64,7 +68,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
             var obj = ReflectionUtil.CreateUninitializedObject(cType);
             IHasHydrationMap hasMap = obj as IHasHydrationMap;
             var map = hasMap.GetHydrationMap();
-            map.HydrateValue(obj,list[1], uow);
+            map.HydrateValue(obj, list[1], uow);
             return obj;
         }
         #endregion

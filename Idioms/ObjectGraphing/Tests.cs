@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Decoratid.Idioms.Identifying;
 using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Communicating;
+using Decoratid.Idioms.Stringing;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -38,13 +39,15 @@ namespace Decoratid.Idioms.ObjectGraphing
       
                 //graph it
                 var objState1 = hasV.GraphSerializeWithDefaults();
+                var readable = LengthEncoder.MakeReadable(objState1);
+
                 var obj2 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
                 Condition.Requires(obj2.Version).IsEqualTo("v");
                 Condition.Requires(obj2.FindDecoratorOf<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
                 Condition.Requires(obj2.FindDecoratorOf<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
-                Condition.Requires(obj2.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName).IsEqualTo("blah");
-                Condition.Requires(obj2.FindDecoratorOf<HasDateLastTouchedDecoration>(true).DateLastTouched).IsEqualTo(lastTouchedDate);
-                Condition.Requires(obj2.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated).IsEqualTo(now);
+                Condition.Requires(obj2.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName).IsEqualTo(localMachineName);
+                Condition.Requires(obj2.FindDecoratorOf<HasDateLastTouchedDecoration>(true).DateLastTouched.ToString()).IsEqualTo(lastTouchedDate.ToUniversalTime().ToString());
+                Condition.Requires(obj2.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated.ToString()).IsEqualTo(now.ToUniversalTime().ToString());
                 Condition.Requires(obj2.FindDecoratorOf<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
                 Condition.Requires(obj2.Id.ToString()).IsEqualTo("id");
 

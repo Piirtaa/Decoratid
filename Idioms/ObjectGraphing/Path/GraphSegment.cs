@@ -22,6 +22,14 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         public string Path{ get; private set; }
         #endregion
 
+        #region Methods
+        public void SetPath(string path)
+        {
+            Condition.Requires(path).IsNotNullOrEmpty();
+            this.Path = path;
+        }
+        #endregion
+
         #region Implicit Conversion to string
         public static implicit operator GraphSegment(string text)
         {

@@ -77,7 +77,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             this.SkipFilter = skipFilter;
 
             var rootPath = GraphPath.New();
-
+            rootPath.AddSegment(GraphSegment.New("root"));
             //build the node and recurse, maybe
             BuildNode(obj, rootPath);
         }
@@ -95,15 +95,15 @@ namespace Decoratid.Idioms.ObjectGraphing
             if (this.SkipFilter != null && this.SkipFilter(nodeValue, nodePath))
                 return;
 
-            this.Counter.Increment();
-
             //get the manager for this node value
             var manager = this.ChainOfResponsibility.FindHandlingValueManager(nodeValue, this);
             Condition.Requires(manager).IsNotNull();
 
-            //using the manager, serialize node value, and build the node
-            var val = manager.DehydrateValue(nodeValue, this);
+            //using the manager, get node path, serialize node value, and build the node
+            manager.RewriteNodePath(nodePath, nodeValue);
 
+            var val = manager.DehydrateValue(nodeValue, this);
+            this.Counter.Increment();
             var node = GraphNode.New(nodePath, nodeValue, this.Counter.Current, manager.Id, val);
 
             //save the node
@@ -192,30 +192,29 @@ namespace Decoratid.Idioms.ObjectGraphing
 
             foreach (var each in children)
             {
+                //add the children
                 if (each.Path.IsEnumeratedSegment)
                 {
-                    //add the value to the parent
-                    switch (each.Path.EnumeratedSegmentType)
+                    if (each.NodeValue is IDictionary)
                     {
-                        case EnumeratedSegmentType.None:
-                            break;
-                        case EnumeratedSegmentType.IList:
-                            IList list = parentNode.NodeValue as IList;
-                            list.Add(each.NodeValue);
-                            break;
-                        case EnumeratedSegmentType.Queue:
-                            Queue queue = parentNode.NodeValue as Queue;
-                            queue.Enqueue(each.NodeValue);
-                            break;
-                        case EnumeratedSegmentType.Stack:
-                            Stack stack = parentNode.NodeValue as Stack;
-                            stack.Push(each.NodeValue);
-                            break;
-                        case EnumeratedSegmentType.IDictionary:
-                            IDictionary dict = parentNode.NodeValue as IDictionary;
-                            DictionaryEntry de = (DictionaryEntry)each.NodeValue;
-                            dict.Add(de.Key, de.Value);
-                            break;
+                        IDictionary dict = parentNode.NodeValue as IDictionary;
+                        DictionaryEntry de = (DictionaryEntry)each.NodeValue;
+                        dict.Add(de.Key, de.Value);
+                    }
+                    else if (each.NodeValue is Stack)
+                    {
+                        Stack stack = parentNode.NodeValue as Stack;
+                        stack.Push(each.NodeValue);
+                    }
+                    else if (each.NodeValue is Queue)
+                    {
+                        Queue queue = parentNode.NodeValue as Queue;
+                        queue.Enqueue(each.NodeValue);
+                    }
+                    else if (each.NodeValue is IList)
+                    {
+                        IList list = parentNode.NodeValue as IList;
+                        list.Add(each.NodeValue);
                     }
                 }
                 else

@@ -64,9 +64,9 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// for a given node returns all the child nodes
         /// </summary>
         /// <param name="nodeValue"></param>
-        /// <param name="nodePath"></param>
+        /// <param name="parentNodePath"></param>
         /// <returns></returns>
-        public static List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath nodePath,
+        public static List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath parentNodePath,
             Func<object, GraphPath, bool> doNotTraverseFilter = null)
         {
             List<Tuple<object, GraphPath>> rv = new List<Tuple<object, GraphPath>>();
@@ -76,29 +76,12 @@ namespace Decoratid.Idioms.ObjectGraphing
             {
                 IEnumerable objEnumerable = nodeValue as IEnumerable;
 
-                EnumeratedSegmentType segType = EnumeratedSegmentType.None;
-                if (nodeValue is IDictionary)
-                {
-                    segType = EnumeratedSegmentType.IDictionary;
-                }
-                else if (nodeValue is Stack)
-                {
-                    segType = EnumeratedSegmentType.Stack;
-                }
-                else if (nodeValue is Queue)
-                {
-                    segType = EnumeratedSegmentType.Queue;
-                }
-                else if (nodeValue is IList)
-                {
-                    segType = EnumeratedSegmentType.IList;
-                }
                 int index = 0;
                 foreach (var each in objEnumerable)
                 {
                     //build the path
-                    var path = GraphPath.New(nodePath);
-                    path.AddSegment(EnumeratedItemSegment.New(index, segType));
+                    var path = GraphPath.New(parentNodePath);
+                    path.AddSegment(EnumeratedItemSegment.New(index));
 
                     if (doNotTraverseFilter != null &&
                         doNotTraverseFilter(each, path))
@@ -118,7 +101,7 @@ namespace Decoratid.Idioms.ObjectGraphing
                     //get field value
                     var obj = field.Item2.GetValue(nodeValue);
 
-                    var path = GraphPath.New(nodePath);
+                    var path = GraphPath.New(parentNodePath);
                     path.AddSegment(GraphSegment.New(field.Item1));
 
                     if (doNotTraverseFilter != null &&
@@ -132,7 +115,24 @@ namespace Decoratid.Idioms.ObjectGraphing
             }
             return rv;
         }
+        /// <summary>
+        /// if the current node segment has a backing field naming convention (eg. k__BackingField format), prettify it
+        /// by removing the k__BackingField stuff
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static void RewriteBackingFieldNodePath(GraphPath path)
+        {
+            Condition.Requires(path).IsNotNull();
+
+            if (path.CurrentSegment.Path.Contains(">k__BackingField"))
+            {
+                string fieldName = path.CurrentSegment.Path.Replace(">k__BackingField", "");
+                fieldName = fieldName.Replace("<", "");
+
+                path.ChangeCurrentSegmentPath(fieldName);
+            }
+        }
     }
-
-
 }

@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.TypeLocating;
 using Decoratid.Utils;
@@ -24,6 +25,10 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
+        public void RewriteNodePath(GraphPath path, object obj)
+        {
+            GraphingUtil.RewriteBackingFieldNodePath(path);
+        }
         public override bool CanHandle(object obj, IGraph uow)
         {
             if (obj == null)
