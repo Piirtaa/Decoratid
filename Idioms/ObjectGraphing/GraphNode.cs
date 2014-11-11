@@ -82,7 +82,6 @@ namespace Decoratid.Idioms.ObjectGraphing
         /// </summary>
         private void ValidateIsHydrated()
         {
-            Condition.Requires(this.Context).IsNotNullOrEmpty();
             Condition.Requires(this.Id).IsNotNullOrEmpty();
             Condition.Requires(this.TraversalIndex).IsGreaterThan(-1);
             Condition.Requires(this.ValueManagerId).IsNotNullOrEmpty();
