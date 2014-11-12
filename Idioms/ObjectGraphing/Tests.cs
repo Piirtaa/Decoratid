@@ -12,6 +12,7 @@ using Decoratid.Idioms.Identifying;
 using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Communicating;
 using Decoratid.Idioms.Stringing;
+using Decoratid.Idioms.ObjectGraphing.Values;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -40,6 +41,8 @@ namespace Decoratid.Idioms.ObjectGraphing
                 //graph it
                 var objState1 = hasV.GraphSerializeWithDefaults();
                 var readable = LengthEncoder.MakeReadable(objState1);
+                var graph = Graph.Parse(objState1, ValueManagerChainOfResponsibility.NewDefault());
+                var readable2 = GraphingUtil.ConvertToXML(graph).ToString();
 
                 var obj2 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
                 Condition.Requires(obj2.Version).IsEqualTo("v");

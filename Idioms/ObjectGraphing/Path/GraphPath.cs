@@ -162,6 +162,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Path
         public static GraphPath New()
         {
             var rv = new GraphPath();
+            rv.AddSegment(GraphSegment.New("root"));
             return rv;
         }
         public static GraphPath New(GraphPath path)

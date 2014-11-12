@@ -19,16 +19,16 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         string DehydrateValue(object obj, IGraph uow);
         object HydrateValue(string nodeText, IGraph uow);
 
-        /// <summary>
-        /// rewrites the current node path for the given object and its default path
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Done to allow each manager to rewrite paths for purposes of readability, typically
-        /// </remarks>
-        void RewriteNodePath(GraphPath path, object obj);
+        ///// <summary>
+        ///// rewrites the current node path for the given object and its default path
+        ///// </summary>
+        ///// <param name="path"></param>
+        ///// <param name="obj"></param>
+        ///// <returns></returns>
+        ///// <remarks>
+        ///// Done to allow each manager to rewrite paths for purposes of readability, typically
+        ///// </remarks>
+        //void RewriteNodePath(GraphPath path, object obj);
 
         /// <summary>
         /// returns empty list if we don't traverse child branches

@@ -77,7 +77,6 @@ namespace Decoratid.Idioms.ObjectGraphing
             this.SkipFilter = skipFilter;
 
             var rootPath = GraphPath.New();
-            rootPath.AddSegment(GraphSegment.New("root"));
             //build the node and recurse, maybe
             BuildNode(obj, rootPath);
         }
@@ -99,9 +98,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             var manager = this.ChainOfResponsibility.FindHandlingValueManager(nodeValue, this);
             Condition.Requires(manager).IsNotNull();
 
-            //using the manager, get node path, serialize node value, and build the node
-            manager.RewriteNodePath(nodePath, nodeValue);
-
+            //using the manager, serialize node value, and build the node
             var val = manager.DehydrateValue(nodeValue, this);
             this.Counter.Increment();
             var node = GraphNode.New(nodePath, nodeValue, this.Counter.Current, manager.Id, val);
@@ -190,6 +187,16 @@ namespace Decoratid.Idioms.ObjectGraphing
             var children = nodeStore.GetImmediateChildNodes(parentNode.Path).OrderBy((x) => { return x.Path.EnumeratedSegmentIndex; }).ToList();
             var fields = GraphingUtil.GetNestingNotatedFieldInfos(parentNode.NodeValue.GetType());
 
+            //get the manager for this node value
+            var manager = this.ChainOfResponsibility.FindHandlingValueManager(parentNode.NodeValue, this);
+            Condition.Requires(manager).IsNotNull();
+
+            var traverseList = manager.GetChildTraversalNodes(parentNode.NodeValue, parentNode.Path);
+            traverseList.WithEach(tuple =>
+            {
+                BuildNode(tuple.Item1, tuple.Item2);
+            });
+
             foreach (var each in children)
             {
                 //add the children
@@ -221,6 +228,8 @@ namespace Decoratid.Idioms.ObjectGraphing
                 {
                     //get the matching field
                     GraphSegment gSeg = each.Path.CurrentSegment as GraphSegment;
+
+                    //TODO: refactor implicit contract - that the paths match field names (GraphingUtil.GetNestingNotatedFieldInfos)
                     var matches = fields.Filter((x) => { return x.Item1 == gSeg.Path; });
                     Condition.Requires(matches).IsNotNull().HasLength(1);
 

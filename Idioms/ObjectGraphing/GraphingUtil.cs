@@ -14,6 +14,7 @@ using System.Reflection;
 using Decoratid.Extensions;
 using System.IO;
 using Decoratid.Idioms.Depending;
+using System.Xml.Linq;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -60,6 +61,7 @@ namespace Decoratid.Idioms.ObjectGraphing
             });
             return rv;
         }
+
         /// <summary>
         /// for a given node returns all the child nodes
         /// </summary>
@@ -115,24 +117,63 @@ namespace Decoratid.Idioms.ObjectGraphing
             }
             return rv;
         }
-        /// <summary>
-        /// if the current node segment has a backing field naming convention (eg. k__BackingField format), prettify it
-        /// by removing the k__BackingField stuff
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static void RewriteBackingFieldNodePath(GraphPath path)
+        ///// <summary>
+        ///// if the current node segment has a backing field naming convention (eg. k__BackingField format), prettify it
+        ///// by removing the k__BackingField stuff
+        ///// </summary>
+        ///// <param name="path"></param>
+        ///// <param name="obj"></param>
+        ///// <returns></returns>
+        private static string ScrubBackingFieldName(string path)
         {
             Condition.Requires(path).IsNotNull();
 
-            if (path.CurrentSegment.Path.Contains(">k__BackingField"))
+            if (path.Contains(">k__BackingField"))
             {
-                string fieldName = path.CurrentSegment.Path.Replace(">k__BackingField", "");
+                string fieldName = path.Replace(">k__BackingField", "");
                 fieldName = fieldName.Replace("<", "");
-
-                path.ChangeCurrentSegmentPath(fieldName);
+                return fieldName;
             }
+            return path;
         }
+
+        #region Formatting Stuff
+        public static XDocument ConvertToXML(Graph graph)
+        {
+
+            XDocument doc = new XDocument();
+
+            var nodes = graph.NodeStore.GetAll();
+            nodes = nodes.OrderBy((x) => { return x.TraversalIndex; }).ToList();
+
+            XElement parent = null;
+            nodes.WithEach(node =>
+            {
+                var name = ScrubBackingFieldName(node.Path.CurrentSegment.Path);
+                var nameArr = name.Split(new string[] { " " }, StringSplitOptions.None);
+                var nodeName = nameArr[0];
+                var depth = nameArr.Length == 2 ? nameArr[1] : "0";
+
+                var context = LengthEncoder.MakeReadable(node.Context);
+                XElement layer = new XElement(nodeName,
+                    new XAttribute("i", node.TraversalIndex),
+                    new XAttribute("depth", depth),
+                    new XAttribute("mgr", node.ValueManagerId),
+                    context);
+
+                if (parent == null)
+                {
+                    doc.Add(layer);
+                }
+                else
+                {
+                    parent.Add(layer);
+                }
+                parent = layer;
+            });
+
+            return doc;
+        }
+        #endregion
     }
 }

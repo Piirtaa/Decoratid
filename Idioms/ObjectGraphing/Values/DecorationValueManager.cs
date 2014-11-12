@@ -49,24 +49,20 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
-        public void RewriteNodePath(GraphPath path, object obj)
-        {
-            GraphingUtil.RewriteBackingFieldNodePath(path);
+        //public void RewriteNodePath(GraphPath path, object obj)
+        //{
+        //    GraphingUtil.RewriteBackingFieldNodePath(path);
 
-            //hack the path here to change "_Decorated " to the type name
-            if (path.CurrentSegment.Path.Contains("_Decorated "))
-            {
-                path.ChangeCurrentSegmentPath(obj.GetType().Name);
-            }
-        }
+        //    //hack the path here to change "_Decorated " to the type name
+        //    if (path.CurrentSegment.Path.Contains("_Decorated "))
+        //    {
+        //        path.ChangeCurrentSegmentPath(obj.GetType().Name);
+        //    }
+        //}
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object nodeValue, GraphPath nodePath)
         {
             var rv = GraphingUtil.GetChildTraversalNodes(nodeValue, nodePath, DoNotTraverseFilter);
 
-            rv.WithEach(x =>
-            {
-                this.RewriteNodePath(x.Item2, x.Item1);
-            });
             return rv;
         }
         public bool CanHandle(object obj, IGraph uow)

@@ -27,10 +27,6 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         #endregion
 
         #region INodeValueManager
-        public virtual void RewriteNodePath(GraphPath path, object obj)
-        {
-            GraphingUtil.RewriteBackingFieldNodePath(path);
-        }
         public List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
         {
             return null;

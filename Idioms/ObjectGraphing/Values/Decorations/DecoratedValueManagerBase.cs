@@ -30,10 +30,6 @@ namespace Decoratid.Idioms.ObjectGraphing.Values.Decorations
         #endregion
 
         #region Methods
-        public virtual void RewriteNodePath(GraphPath path, object obj)
-        {
-            base.Decorated.RewriteNodePath(path, obj);
-        }
         public virtual List<Tuple<object, GraphPath>> GetChildTraversalNodes(object obj, GraphPath nodePath)
         {
             return base.Decorated.GetChildTraversalNodes(obj, nodePath);

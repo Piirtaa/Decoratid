@@ -17,7 +17,7 @@ namespace Decoratid.Idioms.Testing
         public static void AutoTestMocks()
         {
 
-            //var stringableListResults = TestOfTester.AutomaticTest<IStringableList>(NaturalStringableList.New("one","two","three"));
+            //var stringableListResults = TestOfTester.AutomaticTest<IStringableList>(NaturalStringableList.New("one", "two", "three"));
             //TestOfTester.LogTestResults(stringableListResults, "StringableListTests.txt");
 
             //var stringableResults = TestOfTester.AutomaticTest<IStringable>(NaturalStringable.New("test"));
