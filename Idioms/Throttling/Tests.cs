@@ -33,6 +33,7 @@ namespace Decoratid.Idioms.Throttling
                 Action act2 = new Action(() => { throttled.Perform(); });
                 act1.EnqueueToThreadPool();
                 act2.EnqueueToThreadPool();
+                Thread.Sleep(1000);
                 Condition.Requires(count).IsEqualTo(1);
                 Thread.Sleep(1000);
                 Condition.Requires(count).IsEqualTo(1);

@@ -1,6 +1,7 @@
 ﻿using Decoratid.Core.Decorating;
 using Decoratid.Core.ValueOfing;
 using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.ErrorCatching
@@ -30,6 +31,7 @@ namespace Decoratid.Idioms.ErrorCatching
         #endregion
 
         #region Methods
+        [DebuggerStepThrough]
         public override T GetValue()
         {
             try

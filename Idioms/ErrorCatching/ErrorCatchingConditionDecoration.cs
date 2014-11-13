@@ -1,6 +1,7 @@
 ﻿using Decoratid.Core.Conditional;
 using Decoratid.Core.Decorating;
 using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Decoratid.Idioms.ErrorCatching
@@ -30,6 +31,7 @@ namespace Decoratid.Idioms.ErrorCatching
         #endregion
 
         #region Methods
+        [DebuggerStepThrough]
         public override bool? Evaluate()
         {
             try

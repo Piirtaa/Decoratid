@@ -56,7 +56,7 @@ namespace Decoratid.Idioms.ObjectGraphing
 
                 hasV.Version = "v2";
                 var objState2 = hasV.GraphSerializeWithDefaults();
-                var obj3 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
+                var obj3 = objState2.GraphDeserializeWithDefaults() as HasVersionDecoration;
                 Condition.Requires(obj3.Version).IsEqualTo("v2");
 
             })) 

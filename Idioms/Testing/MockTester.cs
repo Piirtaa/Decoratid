@@ -24,8 +24,8 @@ namespace Decoratid.Idioms.Testing
             //TestOfTester.LogTestResults(stringableResults, "StringableTests.txt");
 
 
-            var results1 = TestOfTester.AutomaticTest<Nothing>(Nothing.VOID);
-            TestOfTester.LogTestResults(results1, "VoidTests.txt");
+            //var results1 = TestOfTester.AutomaticTest<Nothing>(Nothing.VOID);
+            //TestOfTester.LogTestResults(results1, "VoidTests.txt");
 
             var results2 = TestOfTester.AutomaticTest<ILogic>(MockBuilder.BuildMockLogic());
             TestOfTester.LogTestResults(results2, "LogicTests.txt");

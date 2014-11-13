@@ -122,6 +122,8 @@ namespace Decoratid.Core.Decorating
         public static bool HasDecoration(Type decType, object obj)
         {
             var decs = GetDecorationList(obj);
+            if (decs == null)
+                return false;
 
             foreach (var each in decs)
             {
