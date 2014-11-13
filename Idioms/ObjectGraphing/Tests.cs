@@ -40,7 +40,7 @@ namespace Decoratid.Idioms.ObjectGraphing
       
                 //graph it
                 var objState1 = hasV.GraphSerializeWithDefaults();
-                var readable = LengthEncoder.MakeReadable(objState1);
+                var readable = LengthEncoder.MakeReadable(objState1, "\t");
                 var graph = Graph.Parse(objState1, ValueManagerChainOfResponsibility.NewDefault());
                 var readable2 = GraphingUtil.ConvertToXML(graph).ToString();
 

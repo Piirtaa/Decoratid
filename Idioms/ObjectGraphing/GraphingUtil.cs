@@ -117,6 +117,9 @@ namespace Decoratid.Idioms.ObjectGraphing
             }
             return rv;
         }
+
+
+        #region Formatting Stuff
         ///// <summary>
         ///// if the current node segment has a backing field naming convention (eg. k__BackingField format), prettify it
         ///// by removing the k__BackingField stuff
@@ -136,12 +139,13 @@ namespace Decoratid.Idioms.ObjectGraphing
             }
             return path;
         }
-
-        #region Formatting Stuff
         public static XDocument ConvertToXML(Graph graph)
         {
 
             XDocument doc = new XDocument();
+
+            XElement root = new XElement("root");
+            doc.Add(root);
 
             var nodes = graph.NodeStore.GetAll();
             nodes = nodes.OrderBy((x) => { return x.TraversalIndex; }).ToList();
@@ -154,22 +158,25 @@ namespace Decoratid.Idioms.ObjectGraphing
                 var nodeName = nameArr[0];
                 var depth = nameArr.Length == 2 ? nameArr[1] : "0";
 
-                var context = LengthEncoder.MakeReadable(node.Context);
+                var mgr = graph.ChainOfResponsibility.GetValueManagerById(node.ValueManagerId);
+
+                var context = string.Join(",", LengthEncoder.MakeReadable(node.Context, "").ToArray());
+                
                 XElement layer = new XElement(nodeName,
                     new XAttribute("i", node.TraversalIndex),
                     new XAttribute("depth", depth),
                     new XAttribute("mgr", node.ValueManagerId),
                     context);
 
-                if (parent == null)
-                {
-                    doc.Add(layer);
-                }
-                else
-                {
-                    parent.Add(layer);
-                }
-                parent = layer;
+                //if (parent == null)
+                //{
+                    root.Add(layer);
+                //}
+                //else
+                //{
+                //    parent.Add(layer);
+                //}
+                //parent = layer;
             });
 
             return doc;

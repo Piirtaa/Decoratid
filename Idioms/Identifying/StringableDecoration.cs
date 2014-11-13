@@ -58,7 +58,7 @@ namespace Decoratid.Idioms.Identifying
         public string GetValue()
         {
             var rv= this.GraphSerializeWithDefaults();
-            var data = LengthEncoder.MakeReadable(rv);
+            var data = LengthEncoder.MakeReadable(rv, "\t");
             File.AppendAllText("stringabledump.txt", data + Environment.NewLine);
 
             return rv;

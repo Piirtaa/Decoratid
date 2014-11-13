@@ -65,38 +65,31 @@ namespace Decoratid.Idioms.Stringing
         #endregion
 
         #region Readable Formatter
-        public static string MakeReadable(string text)
+        public static List<string> MakeReadable(string text, string indentChar)
         {
             List<string> lines = new List<string>();
-            MakeReadable(text, lines, 0);
-            StringBuilder sb = new StringBuilder();
-            lines.WithEach(x =>
-            {
-                sb.AppendLine(x);
-            });
-
-            var rv = sb.ToString();
-            return rv;
+            MakeReadable(text, lines, indentChar, 0);
+            return lines;
         }
-        private static void MakeReadable(string text, List<string> lines, int indentLevel = 0)
+        private static void MakeReadable(string text, List<string> lines, string indentChar, int indentLevel = 0)
         {
             if (text.IsListLengthFormatted())
             {
                 var list = LengthDecodeList(text);
                 list.WithEach(line =>
                 {
-                    MakeReadable(line, lines, indentLevel + 1);
+                    MakeReadable(line, lines, indentChar, indentLevel + 1);
                 });
             }
             else if (text.IsLengthFormatted())
             {
                 //recurse 
                 var innerText = LengthDecode(text);
-                MakeReadable(innerText, lines, indentLevel + 1);
+                MakeReadable(innerText, lines, indentChar, indentLevel + 1);
             }
             else
             {
-                string indent = "=>".RepeatString(indentLevel);
+                string indent = indentChar.RepeatString(indentLevel);
                 lines.Add(indent + text);
             }
         }
