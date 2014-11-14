@@ -15,11 +15,10 @@ namespace Decoratid.Idioms.Communicating
         /// </summary>
         /// <param name="ep"></param>
         /// <param name="strategy"></param>
-        public EndPointHostBase(EndPoint ep, LogicOfTo<string,string> logic)
+        public EndPointHostBase(EndPoint ep, LogicOfTo<string,string> logic = null)
             : base()
         {
             Condition.Requires(ep).IsNotNull();
-            Condition.Requires(logic).IsNotNull();
 
             //validate the ep is within the current ip list
             var ips = NetUtil.GetLocalIPAddresses();

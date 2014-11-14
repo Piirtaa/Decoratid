@@ -17,10 +17,13 @@ namespace Decoratid.Idioms.Communicating.Socketing
         #endregion
 
         #region Ctor
-        public Host(EndPoint ep, LogicOfTo<string, string> logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
+        public Host(EndPoint ep, LogicOfTo<string, string> logic= null, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
             : base(ep, logic)
         {
             this.ValidateClientEndPointStrategy = validateClientEndPointStrategy;
+
+            this.Initialize();
+            this.Start();
         }
         #endregion
 
@@ -224,7 +227,7 @@ namespace Decoratid.Idioms.Communicating.Socketing
         //#endregion
 
         #region Static Methods
-        public static Host New(EndPoint ep, LogicOfTo<string, string> logic, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
+        public static Host New(EndPoint ep, LogicOfTo<string, string> logic = null, Func<System.Net.IPEndPoint, bool> validateClientEndPointStrategy = null)
         {
             Host host = new Host(ep, logic, validateClientEndPointStrategy);
             return host;
