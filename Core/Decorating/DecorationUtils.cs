@@ -81,7 +81,8 @@ namespace Decoratid.Core.Decorating
                 return null;
 
             //get the generic type we're decorating
-            var objTypeInfo = obj.GetType().GetTypeInfo();
+            var decOfType = obj.GetType().GetTypeWithGenericDefinition(genTypeDef);
+            var objTypeInfo = decOfType.GetTypeInfo();
             var genType = objTypeInfo.GenericTypeArguments[0];
 
             //get all the decorations via a reflection call 
