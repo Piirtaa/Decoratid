@@ -10,6 +10,7 @@ using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Core.Conditional;
 using Decoratid.Core.Contextual;
+using Decoratid.Core.Storing;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -51,6 +52,11 @@ namespace Decoratid.Idioms.Testing
         public static ICondition BuildMockCondition()
         {
             return IsFalse.New();
+        }
+
+        public static IStore BuildMockStore()
+        {
+            return NaturalInMemoryStore.New();
         }
     }
 }

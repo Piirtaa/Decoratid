@@ -11,6 +11,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.Communicating.Socketing;
 using Decoratid.Idioms.Communicating;
+using Decoratid.Core.Storing;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -24,7 +25,6 @@ namespace Decoratid.Idioms.Testing
 
             var stringableResults = TestOfTester.AutomaticTest<IStringable>(NaturalStringable.New("test"));
             TestOfTester.LogTestResults(stringableResults, "StringableTests.txt");
-
 
             var results1 = TestOfTester.AutomaticTest<Nothing>(Nothing.VOID);
             TestOfTester.LogTestResults(results1, "VoidTests.txt");
@@ -42,9 +42,10 @@ namespace Decoratid.Idioms.Testing
             TestOfTester.LogTestResults(results5, "ValueOfStringTests.txt");
 
             var results6 = TestOfTester.AutomaticTest<Host>(Host.New(EndPoint.NewFreeLocalEndPoint()));
-            TestOfTester.LogTestResults(results6, "ValueOfStringTests.txt");
+            TestOfTester.LogTestResults(results6, "HostTests.txt");
 
-
+            var results7 = TestOfTester.AutomaticTest<IStore>(MockBuilder.BuildMockStore());
+            TestOfTester.LogTestResults(results6, "StoreTests.txt");
         }
     }
 }
