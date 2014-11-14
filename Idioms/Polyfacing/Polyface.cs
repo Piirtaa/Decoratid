@@ -200,19 +200,13 @@ namespace Decoratid.Idioms.Polyfacing
             return rv.Is<T>(behaviour);
         }
         /// <summary>
-        /// using the face's Root (if no Root exists, one is created), calls Polyface.As().  In other words,
-        /// it sets behaviour on Root
+        ///gets behaviour
         /// </summary>
         public static T As<T>(this IPolyfacing face)
         {
             Condition.Requires(face).IsNotNull();
-            Polyface rv = face.RootFace;
-            if (rv == null)
-            {
-                rv = Polyface.New();
-                face.RootFace = rv;
-            }
-            return rv.As<T>();
+            Condition.Requires(face.RootFace).IsNotNull();
+            return face.RootFace.As<T>();
         }
         #endregion
 
@@ -242,13 +236,8 @@ namespace Decoratid.Idioms.Polyfacing
         public static object As(this IPolyfacing face, string name)
         {
             Condition.Requires(face).IsNotNull();
-            Polyface rv = face.RootFace;
-            if (rv == null)
-            {
-                rv = Polyface.New();
-                face.RootFace = rv;
-            }
-            return rv.As(name);
+            Condition.Requires(face.RootFace).IsNotNull();
+            return face.RootFace.As(name);
         }
         /// <summary>
         /// Gets the behaviour with the provided name
@@ -259,13 +248,8 @@ namespace Decoratid.Idioms.Polyfacing
         public static T As<T>(this IPolyfacing face, string name)
         {
             Condition.Requires(face).IsNotNull();
-            Polyface rv = face.RootFace;
-            if (rv == null)
-            {
-                rv = Polyface.New();
-                face.RootFace = rv;
-            }
-            return rv.As<T>(name);
+            Condition.Requires(face.RootFace).IsNotNull();
+            return face.RootFace.As<T>(name);
         }
         #endregion
     }

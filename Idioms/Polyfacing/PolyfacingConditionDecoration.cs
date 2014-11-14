@@ -19,7 +19,8 @@ namespace Decoratid.Idioms.Polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PolyfacingConditionDecoration : DecoratedConditionBase, IPolyfacingCondition
+    public class PolyfacingConditionDecoration<Tface> : DecoratedConditionBase, IPolyfacingCondition
+        where Tface : ICondition
     {
         #region Ctor
         public PolyfacingConditionDecoration(ICondition decorated, Polyface rootFace = null)
@@ -28,14 +29,14 @@ namespace Decoratid.Idioms.Polyfacing
             //if no polyface is set we create new one
             this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
             //register the face
-            this.RootFace.Is(this);
+            this.RootFace.Is(typeof(Tface), this);
         }
         #endregion
 
         #region Fluent Static
-        public static PolyfacingConditionDecoration New(ICondition decorated, Polyface rootFace = null)
+        public static PolyfacingConditionDecoration<Tface> New(ICondition decorated, Polyface rootFace = null)
         {
-            return new PolyfacingConditionDecoration(decorated, rootFace);
+            return new PolyfacingConditionDecoration<Tface>(decorated, rootFace);
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace Decoratid.Idioms.Polyfacing
         #region Methods
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)
         {
-            return new PolyfacingConditionDecoration(thing, this.RootFace);
+            return new PolyfacingConditionDecoration<Tface>(thing, this.RootFace);
         }
         #endregion
     }
@@ -73,11 +74,12 @@ namespace Decoratid.Idioms.Polyfacing
         /// <param name="condition"></param>
         /// <param name="rootFace"></param>
         /// <returns></returns>
-        public static PolyfacingConditionDecoration Polyfacing(this ICondition decorated, Polyface rootFace = null)
+        public static PolyfacingConditionDecoration<Tface> Polyfacing<Tface>(this ICondition decorated, Polyface rootFace = null)
+                    where Tface : ICondition
         {
             Condition.Requires(decorated).IsNotNull();
 
-            PolyfacingConditionDecoration rv = null;
+            PolyfacingConditionDecoration<Tface> rv = null;
             /*Summary:
              * if we spec a root we are setting that root
              * if the condition is already polyfacing we use that otherwise build new one
@@ -85,13 +87,13 @@ namespace Decoratid.Idioms.Polyfacing
              */
 
             //if we have polyface in our chain, we return that
-            if (DecorationUtils.HasDecoration<PolyfacingConditionDecoration>(decorated))
+            if (DecorationUtils.HasDecoration<PolyfacingConditionDecoration<Tface>>(decorated))
             {
-                rv = DecorationUtils.GetDecoration<PolyfacingConditionDecoration>(decorated);
+                rv = DecorationUtils.GetDecoration<PolyfacingConditionDecoration<Tface>>(decorated);
             }
             else
             {
-                rv = new PolyfacingConditionDecoration(decorated, rootFace);
+                rv = new PolyfacingConditionDecoration<Tface>(decorated, rootFace);
             }
 
             return rv;

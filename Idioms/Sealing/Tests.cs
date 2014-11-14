@@ -19,7 +19,7 @@ namespace Decoratid.Idioms.Sealing
                 bool success = false;
                 try
                 {
-                    x.Seal().Polyfacing();
+                    x.Seal().Polyfacing<ICondition>();
 
                 }
                 catch
@@ -41,7 +41,7 @@ namespace Decoratid.Idioms.Sealing
                 bool success = false;
                 try
                 {
-                    x.Seal().Polyfacing();
+                    x.Seal().Polyfacing<T,IValueOf<T>>();
 
                 }
                 catch
@@ -63,7 +63,7 @@ namespace Decoratid.Idioms.Sealing
                 bool success = false;
                 try
                 {
-                    x.Seal().Polyfacing();
+                    x.Seal().Polyfacing<ILogic>();
 
                 }
                 catch

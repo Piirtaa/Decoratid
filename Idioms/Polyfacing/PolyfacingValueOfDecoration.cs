@@ -19,7 +19,8 @@ namespace Decoratid.Idioms.Polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PolyfacingValueOfDecoration<T> : DecoratedValueOfBase<T>, IPolyfacingValueOf<T>
+    public class PolyfacingValueOfDecoration<T,Tface> : DecoratedValueOfBase<T>, IPolyfacingValueOf<T>
+                where Tface : IValueOf<T> 
     {
         #region Ctor
         public PolyfacingValueOfDecoration(IValueOf<T> decorated, Polyface rootFace = null)
@@ -28,14 +29,14 @@ namespace Decoratid.Idioms.Polyfacing
             //if no polyface is set we create new one
             this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
             //register the face
-            this.RootFace.Is(this);
+            this.RootFace.Is(typeof(Tface), this);
         }
         #endregion
 
         #region Fluent Static
-        public static PolyfacingValueOfDecoration<T> New(IValueOf<T> decorated, Polyface rootFace = null)
+        public static PolyfacingValueOfDecoration<T,Tface> New(IValueOf<T> decorated, Polyface rootFace = null)
         {
-            return new PolyfacingValueOfDecoration<T>(decorated, rootFace);
+            return new PolyfacingValueOfDecoration<T, Tface>(decorated, rootFace);
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace Decoratid.Idioms.Polyfacing
         #region Methods
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
-            return new PolyfacingValueOfDecoration<T>(thing, this.RootFace);
+            return new PolyfacingValueOfDecoration<T, Tface>(thing, this.RootFace);
         }
         #endregion
     }
@@ -73,20 +74,21 @@ namespace Decoratid.Idioms.Polyfacing
         /// <param name="valueOf"></param>
         /// <param name="rootFace"></param>
         /// <returns></returns>
-        public static PolyfacingValueOfDecoration<T> Polyfacing<T>(this IValueOf<T> decorated, Polyface rootFace = null)
+        public static PolyfacingValueOfDecoration<T, Tface> Polyfacing<T, Tface>(this IValueOf<T> decorated, Polyface rootFace = null)
+                            where Tface : IValueOf<T> 
         {
             Condition.Requires(decorated).IsNotNull();
 
-            PolyfacingValueOfDecoration<T> rv = null;
+            PolyfacingValueOfDecoration<T, Tface> rv = null;
 
             //if we have polyface in our chain, we return that
-            if (DecorationUtils.HasDecoration<PolyfacingValueOfDecoration<T>>(decorated))
+            if (DecorationUtils.HasDecoration<PolyfacingValueOfDecoration<T, Tface>>(decorated))
             {
-                rv = DecorationUtils.GetDecoration<PolyfacingValueOfDecoration<T>>(decorated);
+                rv = DecorationUtils.GetDecoration<PolyfacingValueOfDecoration<T, Tface>>(decorated);
             }
             else
             {
-                rv = new PolyfacingValueOfDecoration<T>(decorated, rootFace);
+                rv = new PolyfacingValueOfDecoration<T, Tface>(decorated, rootFace);
             }
 
             return rv;

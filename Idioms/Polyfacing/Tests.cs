@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
+using Decoratid.Core.Decorating;
 using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
@@ -16,9 +17,10 @@ namespace Decoratid.Idioms.Polyfacing
         public ConditionTest()
             : base(LogicOf<ICondition>.New((x) =>
             {
-                var pf = x.Polyfacing();
+                var pf = x.Polyfacing<ICondition>();
                 var face = pf.As<ICondition>();
-                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
+                var decorated = DecorationUtils.GetDecorated(face);
+                Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             })) 
         { 
@@ -30,9 +32,10 @@ namespace Decoratid.Idioms.Polyfacing
         public ValueOfTest()
             : base(LogicOf<IValueOf<T>>.New((x) =>
             {
-                var pf = x.Polyfacing();
+                var pf = x.Polyfacing<T,IValueOf<T>>();
                 var face = pf.As<IValueOf<T>>();
-                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
+                var decorated = DecorationUtils.GetDecorated(face);
+                Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             }))
         {
@@ -44,9 +47,10 @@ namespace Decoratid.Idioms.Polyfacing
         public LogicTest()
             : base(LogicOf<ILogic>.New((x) =>
             {
-                var pf = x.Polyfacing();
+                var pf = x.Polyfacing<ILogic>();
                 var face = pf.As<ILogic>();
-                Condition.Requires(object.ReferenceEquals(face, x)).IsTrue();
+                var decorated = DecorationUtils.GetDecorated(face);
+                Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             }))
         {

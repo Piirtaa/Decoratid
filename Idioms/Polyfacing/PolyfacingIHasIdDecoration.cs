@@ -7,7 +7,8 @@ using System.Runtime.Serialization;
 namespace Decoratid.Idioms.Polyfacing
 {
     [Serializable]
-    public class PolyfacingIHasIdDecoration : DecoratedHasIdBase, IPolyfacing
+    public class PolyfacingIHasIdDecoration<Tface> : DecoratedHasIdBase, IPolyfacing
+                where Tface : IHasId
     {
         #region Ctor
         public PolyfacingIHasIdDecoration(IHasId decorated, Polyface rootFace = null)
@@ -16,7 +17,7 @@ namespace Decoratid.Idioms.Polyfacing
             //if no polyface is set we create new one
             this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
             //register the face
-            this.RootFace.Is(this);
+            this.RootFace.Is(typeof(Tface), this);
         }
         #endregion
 
@@ -47,18 +48,19 @@ namespace Decoratid.Idioms.Polyfacing
         #region Overrides
         public override IDecorationOf<IHasId> ApplyThisDecorationTo(IHasId thing)
         {
-            return new PolyfacingIHasIdDecoration(thing, this.RootFace);
+            return new PolyfacingIHasIdDecoration<Tface>(thing, this.RootFace);
         }
         #endregion
     }
 
     public static partial class PolyfacingIHasIdDecorationExtensions
     {
-        public static PolyfacingIHasIdDecoration Polyfacing(this IHasId decorated, Polyface rootFace = null)
+        public static PolyfacingIHasIdDecoration<Tface> Polyfacing<Tface>(this IHasId decorated, Polyface rootFace = null)
+                            where Tface : IHasId
         {
             Condition.Requires(decorated).IsNotNull();
 
-            PolyfacingIHasIdDecoration rv = null;
+            PolyfacingIHasIdDecoration<Tface> rv = null;
             /*Summary:
              * if we spec a root we are setting that root
              * if the condition is already polyfacing we use that otherwise build new one
@@ -66,13 +68,13 @@ namespace Decoratid.Idioms.Polyfacing
              */
 
             //if we have polyface in our chain, we return that
-            if (DecorationUtils.HasDecoration<PolyfacingIHasIdDecoration>(decorated))
+            if (DecorationUtils.HasDecoration<PolyfacingIHasIdDecoration<Tface>>(decorated))
             {
-                rv = DecorationUtils.GetDecoration<PolyfacingIHasIdDecoration>(decorated);
+                rv = DecorationUtils.GetDecoration<PolyfacingIHasIdDecoration<Tface>>(decorated);
             }
             else
             {
-                rv = new PolyfacingIHasIdDecoration(decorated, rootFace);
+                rv = new PolyfacingIHasIdDecoration<Tface>(decorated, rootFace);
             }
 
             return rv;

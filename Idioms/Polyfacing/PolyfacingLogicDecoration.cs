@@ -19,7 +19,8 @@ namespace Decoratid.Idioms.Polyfacing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PolyfacingLogicDecoration : DecoratedLogicBase, IPolyfacingLogic
+    public class PolyfacingLogicDecoration<Tface> : DecoratedLogicBase, IPolyfacingLogic
+                where Tface : ILogic
     {
         #region Ctor
         public PolyfacingLogicDecoration(ILogic decorated, Polyface rootFace = null)
@@ -28,14 +29,14 @@ namespace Decoratid.Idioms.Polyfacing
             //if no polyface is set we create new one
             this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
             //register the face
-            this.RootFace.Is(this);
+            this.RootFace.Is(typeof(Tface), this);
         }
         #endregion
 
         #region Fluent Static
-        public static PolyfacingLogicDecoration New(ILogic decorated, Polyface rootFace = null)
+        public static PolyfacingLogicDecoration<Tface> New(ILogic decorated, Polyface rootFace = null)
         {
-            return new PolyfacingLogicDecoration(decorated, rootFace);
+            return new PolyfacingLogicDecoration<Tface>(decorated, rootFace);
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace Decoratid.Idioms.Polyfacing
         #region Methods
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {
-            return new PolyfacingLogicDecoration(thing, this.RootFace);
+            return new PolyfacingLogicDecoration<Tface>(thing, this.RootFace);
         }
         #endregion
     }
@@ -73,11 +74,12 @@ namespace Decoratid.Idioms.Polyfacing
         /// <param name="logic"></param>
         /// <param name="rootFace"></param>
         /// <returns></returns>
-        public static PolyfacingLogicDecoration Polyfacing(this ILogic decorated, Polyface rootFace = null)
+        public static PolyfacingLogicDecoration<Tface> Polyfacing<Tface>(this ILogic decorated, Polyface rootFace = null)
+                            where Tface : ILogic
         {
             Condition.Requires(decorated).IsNotNull();
 
-            PolyfacingLogicDecoration rv = null;
+            PolyfacingLogicDecoration<Tface> rv = null;
             /*Summary:
              * if we spec a root we are setting a face on that root, else we are using a new 
              * if the condition is already polyfacing we use that otherwise build new one
@@ -85,13 +87,13 @@ namespace Decoratid.Idioms.Polyfacing
              */
 
             //if we have polyface in our chain, we return that
-            if (DecorationUtils.HasDecoration<PolyfacingLogicDecoration>(decorated))
+            if (DecorationUtils.HasDecoration<PolyfacingLogicDecoration<Tface>>(decorated))
             {
-                rv = DecorationUtils.GetDecoration<PolyfacingLogicDecoration>(decorated);
+                rv = DecorationUtils.GetDecoration<PolyfacingLogicDecoration<Tface>>(decorated);
             }
             else
             {
-                rv = new PolyfacingLogicDecoration(decorated, rootFace);
+                rv = new PolyfacingLogicDecoration<Tface>(decorated, rootFace);
             }
 
             return rv;
