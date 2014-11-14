@@ -25,7 +25,10 @@ namespace Decoratid.Idioms.Polyfacing
         public PolyfacingValueOfDecoration(IValueOf<T> decorated, Polyface rootFace = null)
             : base(decorated)
         {
-            this.RootFace = rootFace;
+            //if no polyface is set we create new one
+            this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
+            //register the face
+            this.RootFace.Is(this);
         }
         #endregion
 
@@ -75,29 +78,15 @@ namespace Decoratid.Idioms.Polyfacing
             Condition.Requires(decorated).IsNotNull();
 
             PolyfacingValueOfDecoration<T> rv = null;
-            /*Summary:
-             * if we spec a root we are setting that root
-             * if the condition is already polyfacing we use that otherwise build new one
-             * if no root is spec'd we create new polyface
-             */
 
             //if we have polyface in our chain, we return that
             if (DecorationUtils.HasDecoration<PolyfacingValueOfDecoration<T>>(decorated))
             {
                 rv = DecorationUtils.GetDecoration<PolyfacingValueOfDecoration<T>>(decorated);
-
-                //if we specify a root we are replacing root!!!
-                if (rootFace != null)
-                {
-                    rv.RootFace = rootFace;
-                    return rv;
-                }
             }
-
-            if (rv == null)
+            else
             {
-                Polyface poly = rootFace == null ? Polyface.New() : rootFace;
-                rv = new PolyfacingValueOfDecoration<T>(decorated, poly);
+                rv = new PolyfacingValueOfDecoration<T>(decorated, rootFace);
             }
 
             return rv;

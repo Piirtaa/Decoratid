@@ -116,7 +116,7 @@ namespace Decoratid.Idioms.Expiring
             {
                 var expiry = DateTime.Now.AddSeconds(5);
                 var newX = x.HasExpirable();
-                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; }));
+                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now > expiry; }));
                 newX.Evaluate();
                 Thread.Sleep(6000);
 
@@ -135,7 +135,7 @@ namespace Decoratid.Idioms.Expiring
             {
                 var expiry = DateTime.Now.AddSeconds(5);
                 var newX = x.HasExpirable(); //expire this
-                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now < expiry; })); //specify how it expires
+                newX.ExpiresWhen(StrategizedCondition.New(() => { return DateTime.Now > expiry; })); //specify how it expires
                 var oldVal = newX.GetValue();//eval. should work fine
                 Thread.Sleep(6000);
 

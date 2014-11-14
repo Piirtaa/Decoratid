@@ -10,10 +10,13 @@ namespace Decoratid.Idioms.Polyfacing
     public class PolyfacingIHasIdDecoration : DecoratedHasIdBase, IPolyfacing
     {
         #region Ctor
-        public PolyfacingIHasIdDecoration(IHasId decorated,  Polyface rootFace = null)
+        public PolyfacingIHasIdDecoration(IHasId decorated, Polyface rootFace = null)
             : base(decorated)
         {
-            this.RootFace = rootFace;
+            //if no polyface is set we create new one
+            this.RootFace = (rootFace == null) ? Polyface.New() : rootFace;
+            //register the face
+            this.RootFace.Is(this);
         }
         #endregion
 
@@ -66,19 +69,10 @@ namespace Decoratid.Idioms.Polyfacing
             if (DecorationUtils.HasDecoration<PolyfacingIHasIdDecoration>(decorated))
             {
                 rv = DecorationUtils.GetDecoration<PolyfacingIHasIdDecoration>(decorated);
-
-                //if we specify a root we are replacing root!!!
-                if (rootFace != null)
-                {
-                    rv.RootFace = rootFace;
-                    return rv;
-                }
             }
-
-            if (rv == null)
+            else
             {
-                Polyface poly = rootFace == null ? Polyface.New() : rootFace;
-                rv = new PolyfacingIHasIdDecoration(decorated, poly);
+                rv = new PolyfacingIHasIdDecoration(decorated, rootFace);
             }
 
             return rv;
