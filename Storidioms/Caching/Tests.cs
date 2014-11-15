@@ -1,5 +1,6 @@
 ﻿using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
 using System;
@@ -10,45 +11,36 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Storidioms.Caching
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class Test : TestOf<IStore>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public Test()
+            : base(LogicOf<IStore>.New((x) =>
             {
-                //TESTS HERE
+                var thing4 = AsId<string>.New("asId1");
+                var store = NaturalInMemoryStore.New().DecorateWithLocalCaching(5000);
 
+                //save 
+                store.SaveItem(thing4);
 
+                //now pull from the store, itself (not the caching store) and it will repopulate the cache
+                var item = store.Get<AsId<string>>("asId1");
+                Assert.True(item != null);
 
+                //explicitly check the cache
+                item = store.CachingStore.Get<AsId<string>>("asId1");
+                Assert.True(item != null);
 
-            })) 
-        { 
-        }
-    }
+                //wait 5 seconds, and check cache again
+                Thread.Sleep(5000);
+                item = store.CachingStore.Get<AsId<string>>("asId1");
+                Assert.True(item == null);
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
+                //now pull from the store, itself (not the caching store) and it will repopulate the cache
+                item = store.Get<AsId<string>>("asId1");
+                Assert.True(item != null);
 
-
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
+                item = store.CachingStore.Get<AsId<string>>("asId1");
+                Assert.True(item != null);
 
             }))
         {

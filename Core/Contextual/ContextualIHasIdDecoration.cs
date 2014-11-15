@@ -14,7 +14,7 @@ namespace Decoratid.Core.Contextual
     /// extends IHasId with context
     /// </summary>
     [Serializable]
-    public class ContextualIHasIdDecoration : DecoratedHasIdBase, IHasContext
+    public class ContextualIHasIdDecoration : DecoratedHasIdBase, IHasContext, IContextualHasId
     {
         #region Ctor
         public ContextualIHasIdDecoration(IHasId decorated, object context)

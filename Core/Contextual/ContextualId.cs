@@ -16,7 +16,7 @@ namespace Decoratid.Core.Contextual
     /// </summary>
     /// <typeparam name="TId"></typeparam>
     [Serializable]
-    public class ContextualId<TId, TContext> : IHasId<TId>, IHasContext<TContext>
+    public class ContextualId<TId, TContext> : IHasId<TId>, IHasContext<TContext>, IContextualHasId
     {
         #region Ctor
         public ContextualId() { }

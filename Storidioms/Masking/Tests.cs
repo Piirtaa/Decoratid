@@ -1,5 +1,6 @@
 ﻿using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
 using System;
@@ -10,45 +11,69 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Storidioms.Masking
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class Test : TestOf<IStore>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public Test()
+            : base(LogicOf<IStore>.New((x) =>
             {
-                //TESTS HERE
+                var thing4 = AsId<string>.New("asId1");
 
+                //mask commit
+                var store = NaturalInMemoryStore.New().DecorateWithoutCommit();
 
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    store.SaveItem(thing4);
+                });
 
+                //mask get
+                store = NaturalInMemoryStore.New().DecorateWithoutGet();
+                store.SaveItem(thing4);
 
-            })) 
-        { 
-        }
-    }
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    store.Get<AsId<string>>("asId1");
+                });
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
+                //mask search
+                store = NaturalInMemoryStore.New().DecorateWithoutSearch();
+                store.SaveItem(thing4);
+                var itemCopy = store.Get<AsId<string>>("asId1");
 
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var list = store.Search<AsId<string>>(SearchFilter.New((x) => { return x.Id.Equals("asId1"); }));
+                });
 
+                //mask getall
+                store = NaturalInMemoryStore.New().DecorateWithoutGetAll();
+                store.SaveItem(thing4);
+                itemCopy = store.Get<AsId<string>>("asId1");
 
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var list = store.GetAll();
+                });
 
-            }))
-        {
-        }
-    }
+                //mask all of them
+                store = NaturalInMemoryStore.New().DecorateWithoutGetAll().DecorateWithoutCommit().DecorateWithoutGet().DecorateWithoutSearch();
 
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    store.SaveItem(thing4);
+                });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    store.Get<AsId<string>>("asId1");
+                });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var list = store.Search<AsId<string>>(SearchFilter.New((x) => { return x.Id.Equals("asId1"); }));
+                });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var list = store.GetAll();
+                });
 
             }))
         {

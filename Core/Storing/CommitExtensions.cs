@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace Decoratid.Core.Storing
 {
@@ -69,6 +70,16 @@ namespace Decoratid.Core.Storing
             
             var commitBag = CommitBag.New();
             commitBag.MarkItemsDeleted(objs);
+            store.Commit(commitBag);
+            return store;
+        }
+        public static IWriteableStore DeleteItems(this IWriteableStore store, params StoredObjectId[] objs)
+        {
+            if (store == null)
+                return store;
+
+            var commitBag = CommitBag.New();
+            commitBag.MarkItemsDeleted(objs.ToList());
             store.Commit(commitBag);
             return store;
         }

@@ -9,6 +9,11 @@ namespace Decoratid.Core.Storing
 {
     public static class StoreExtensions
     {
+        public static bool Contains(this IStore store, StoredObjectId soId)
+        {
+            var item = store.Get(soId);
+            return item != null;
+        }
         /// <summary>
         /// copies an item from one store to the other
         /// </summary>

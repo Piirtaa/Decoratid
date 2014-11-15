@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Decoratid.Core.Identifying;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Decoratid.Core.Contextual
     }
     #endregion
 
+    public interface IContextualHasId : IHasId, IHasContext { }
  
     
 }

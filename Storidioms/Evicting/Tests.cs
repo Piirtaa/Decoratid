@@ -1,5 +1,6 @@
 ﻿using Decoratid.Core.Conditional;
 using Decoratid.Core.Logical;
+using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Testing;
 using System;
@@ -10,45 +11,46 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Storidioms.Evicting
 {
-    public class ConditionTest : TestOf<ICondition>
+    public class Test : TestOf<IStore>
     {
-        public ConditionTest()
-            : base(LogicOf<ICondition>.New((x) =>
+        public Test()
+            : base(LogicOf<IStore>.New((x) =>
             {
-                //TESTS HERE
+                var thing4 = AsId<string>.New("asId1");
 
+                //1. create an evicting store that always evicts (which means the item cannot be retrieved once it is committed, and it will live
+                //  in the store until the next poll @ 5 second intervals)
+                var store = new NaturalInMemoryStore().DecorateWithEviction(new NaturalInMemoryStore(),
+                LogicOfTo<IHasId, ICondition>.New((it) =>
+                {
+                    return new AlwaysTrueCondition();
+                }), 5000);
 
+                //save 
+                store.SaveItem(thing4);
 
+                //now pull from the store.  it should be null
+                var item = store.Get<AsId<string>>("asId1");
+                Assert.True(item == null);
 
-            })) 
-        { 
-        }
-    }
+                //2. create an evicting store with a 3 second eviction
+                store = new NaturalInMemoryStore().DecorateWithEviction(new NaturalInMemoryStore(),
+                LogicOfTo<IHasId, ICondition>.New((it) =>
+                {
+                    return ImmutableExpiryCondition.New(DateTime.Now.AddSeconds(3));
+                }), 5000);
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
-    {
-        public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
-            {
-                //TESTS HERE
+                //save 
+                store.SaveItem(thing4);
 
+                //now pull from the store.  it should exist
+                item = store.Get<AsId<string>>("asId1");
+                Assert.True(item != null);
 
-
-
-            }))
-        {
-        }
-    }
-
-    public class LogicTest : TestOf<ILogic>
-    {
-        public LogicTest()
-            : base(LogicOf<ILogic>.New((x) =>
-            {
-                //TESTS HERE
-
-
-
+                //wait till expiry (3 seconds) and try to pull again
+                Thread.Sleep(3000);
+                item = store.Get<AsId<string>>("asId1");
+                Assert.True(item == null);
 
             }))
         {

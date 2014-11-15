@@ -61,6 +61,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Conditional\DecoratedConditionBase.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Idioms\Identifying\HasLocalMachineNameDecoration.cs" />
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
     <Compile Include="Idioms\Identifying\Tests.cs" />
+    <Compile Include="Idioms\Intercepting\Tests.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\OperationProtocolClientDecoration.cs" />
@@ -531,6 +535,7 @@
     <Compile Include="Storidioms\ItemValidating\ValidatingDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\Tests.cs" />
     <Compile Include="Storidioms\StoreSerializer.cs" />
+    <Compile Include="Storidioms\BasicStoreTest.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
     <Compile Include="Core\Logical\DecoratedLogicBase.cs" />
     <Compile Include="Core\Logical\Logic.cs" />
