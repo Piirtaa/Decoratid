@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
@@ -11,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
+using Decoratid.Idioms.Logging;
 
 namespace Decoratid.Idioms.Eventing
 {
@@ -83,12 +86,11 @@ namespace Decoratid.Idioms.Eventing
                 var filteredThing = AsId<string>.New("asId2_filtered");
 
                 //1. test save events - don't save items with id's ending in "_filtered"
-                var store = new NaturalInMemoryStore().DecorateWithEvents();
-                store.CommitOperationIntercept.AddNextIntercept("intercept1",
-                LogicOfTo<Onion<ICommitBag>, OnionLayer<ICommitBag>>.New((x) =>
-                {
+                var store = x.DecorateWithEvents(StoreLogger.NewInMemory());
+
+                store.CommitOperationIntercept.AddNextIntercept("intercept1", (o)=>{
                     CommitBag newBag = new CommitBag();
-                    var oldBag = x.LastValue;
+                    var oldBag = o;
                     oldBag.ItemsToSave.WithEach(saveItem =>
                     {
                         string id = saveItem.Id.ToString();
@@ -101,9 +103,9 @@ namespace Decoratid.Idioms.Eventing
                             newBag.MarkItemSaved(saveItem);
                         }
                     });
-                    return OnionLayer<ICommitBag>.New(newBag);
-
-                }), null, null, null);
+                    return newBag;
+                }
+                , null, null, null, null);
 
                 //event flags
                 bool saveFlag = false;
@@ -122,12 +124,12 @@ namespace Decoratid.Idioms.Eventing
                 Assert.True(saveFiltFlag && saveFlag);
 
                 //2. test delete events - don't delete items with ids ending in "_filtered"
-                store = new NaturalInMemoryStore().DecorateWithEvents();
+                store = x.DecorateWithEvents(StoreLogger.NewInMemory());
                 store.CommitOperationIntercept.AddNextIntercept("intercept1",
-                LogicOfTo<Onion<ICommitBag>, OnionLayer<ICommitBag>>.New((x) =>
+                (o) =>
                 {
                     CommitBag newBag = new CommitBag();
-                    var oldBag = x.LastValue;
+                    var oldBag = o;
 
                     oldBag.ItemsToDelete.WithEach(delItem =>
                     {
@@ -141,9 +143,9 @@ namespace Decoratid.Idioms.Eventing
                             newBag.MarkItemDeleted(delItem);
                         }
                     });
-                    return OnionLayer<ICommitBag>.New(newBag);
+                    return newBag;
 
-                }), null, null, null);
+                }, null, null, null, null);
 
                 bool delFlag = false;
                 bool delFiltFlag = false;
@@ -162,23 +164,23 @@ namespace Decoratid.Idioms.Eventing
                 Assert.True(delFiltFlag && delFlag);
 
                 //3. test retrieve events - don't get items with ids ending in "_filtered"
-                store = new NaturalInMemoryStore().DecorateWithEvents();
+                store = x.DecorateWithEvents(StoreLogger.NewInMemory());
 
                 //do get all first
-                store.GetAllOperationIntercept.AddNextIntercept("intercept1", null, null,
-                LogicOfTo<Onion<List<IHasId>>, OnionLayer<List<IHasId>>>.New((x) =>
+                store.GetAllOperationIntercept.AddNextIntercept("intercept1", null, null, null,
+                (o) =>
                 {
                     List<IHasId> newList = new List<IHasId>();
-                    var oldList = x.LastValue;
+                    var oldList = o;
 
                     oldList.WithEach(item =>
                     {
                         if (!item.Id.ToString().EndsWith("_filtered"))
                             newList.Add(item);
                     });
-                    return OnionLayer<List<IHasId>>.New(newList);
+                    return newList;
 
-                }), null);
+                },  null);
                 bool retFlag = false;
                 bool retFiltFlag = false;
                 store.ItemRetrieved += (sender, e) =>
@@ -199,35 +201,35 @@ namespace Decoratid.Idioms.Eventing
                 retFiltFlag = false;
                 retFlag = false;
 
-                store.SearchOperationIntercept.AddNextIntercept("intercept2", null, null,
-                LogicOfTo<Onion<List<IHasId>>, OnionLayer<List<IHasId>>>.New((x) =>
+                store.SearchOperationIntercept.AddNextIntercept("intercept2", null, null, null,
+                (o) =>
                 {
                     List<IHasId> newList = new List<IHasId>();
-                    var oldList = x.LastValue;
+                    var oldList = o;
 
                     oldList.WithEach(item =>
                     {
                         if (!item.Id.ToString().EndsWith("_filtered"))
                             newList.Add(item);
                     });
-                    return OnionLayer<List<IHasId>>.New(newList);
+                    return newList;
 
-                }), null);
+                }, null);
 
-                var filter = SearchFilterOf<AsId<string>>.NewOf((x) => { return true; });
+                var filter = SearchFilterOf<AsId<string>>.NewOf((o) => { return true; });
                 var searchList = store.Search<AsId<string>>(filter);
                 Assert.True(retFiltFlag && retFlag);
 
                 //now test get
-                store.GetOperationIntercept.AddNextIntercept("intercept3", null, null,
-                    LogicOfTo<Onion<IHasId>, OnionLayer<IHasId>>.New((x) =>
+                store.GetOperationIntercept.AddNextIntercept("intercept3", null, null, null,
+                    (o) =>
                     {
                         IHasId newObj = null;
-                        IHasId oldObj = x.LastValue;
+                        IHasId oldObj = o;
                         if (!oldObj.Id.ToString().EndsWith("_filtered"))
                             newObj = oldObj;
-                        return OnionLayer<IHasId>.New(newObj);
-                    }), null);
+                        return newObj;
+                    }, null);
 
                 retFiltFlag = false;
                 retFlag = false;

@@ -1,13 +1,17 @@
 ﻿using Decoratid.Core.Conditional;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
+using Decoratid.Idioms.Expiring;
 using Decoratid.Idioms.Testing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Decoratid.Storidioms.Caching
 {
@@ -17,7 +21,10 @@ namespace Decoratid.Storidioms.Caching
             : base(LogicOf<IStore>.New((x) =>
             {
                 var thing4 = AsId<string>.New("asId1");
-                var store = NaturalInMemoryStore.New().DecorateWithLocalCaching(5000);
+
+                var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New( (o)=>{
+                    return NaturalTrueExpirable.New();
+                }), 5000);
 
                 //save 
                 store.SaveItem(thing4);

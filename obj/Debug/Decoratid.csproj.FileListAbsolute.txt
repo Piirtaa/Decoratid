@@ -14,3 +14,5 @@ C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\ServiceSt
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.dll
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.pdb
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\xunit.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\xunit.xml

@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Conditional;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
@@ -8,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Storidioms.StoreOf;
+using Xunit;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
@@ -16,31 +19,32 @@ namespace Decoratid.Storidioms.AuditTrail
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
-                var thing4 = AsId<string>.New("asId1");
+                var thing = AsId<string>.New("asId1");
+                var soid = thing.GetStoredObjectId();
 
-                var store = NaturalInMemoryStore.New().DecorateWithBasicAuditing(NaturalInMemoryStore.New().IsOf<StoredItemAuditPoint>());
+                var store = x.BasicAudit(NaturalInMemoryStore.New().IsOf<StoredItemAuditPoint>());
 
                 //do some stuff..all of this should be tracked
-                store.SaveItem(thing4);
+                store.SaveItem(thing);
                 var auditItems = store.AuditStore.GetAll();
-                Assert.True(auditItems[0].Mode == StoredItemAccessMode.Save && auditItems[0].ObjRef.Equals(thing4.GetStoredObjectId()));
+                Assert.True(auditItems[0].Mode == StoredItemAccessMode.Save && auditItems[0].ObjRef.Equals(soid));
 
                 var clone = store.Get<AsId<string>>("asId1");
                 auditItems = store.AuditStore.GetAll();
-                Assert.True(auditItems[1].Mode == StoredItemAccessMode.Read && auditItems[1].ObjRef.Equals(thing4.GetStoredObjectId()));
+                Assert.True(auditItems[1].Mode == StoredItemAccessMode.Read && auditItems[1].ObjRef.Equals(soid));
 
-                var list = store.Search<AsId<string>>(SearchFilter.New((x) => { return x.Id.Equals("asId1"); }));
+                var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
                 auditItems = store.AuditStore.GetAll();
-                Assert.True(auditItems[2].Mode == StoredItemAccessMode.Read && auditItems[2].ObjRef.Equals(thing4.GetStoredObjectId()));
+                Assert.True(auditItems[2].Mode == StoredItemAccessMode.Read && auditItems[2].ObjRef.Equals(soid));
 
                 var list2 = store.GetAll();
                 auditItems = store.AuditStore.GetAll();
-                Assert.True(auditItems[3].Mode == StoredItemAccessMode.Read && auditItems[3].ObjRef.Equals(thing4.GetStoredObjectId()));
+                Assert.True(auditItems[3].Mode == StoredItemAccessMode.Read && auditItems[3].ObjRef.Equals(soid));
 
-                store.DeleteItem(thing4.GetStoredObjectId());
+                store.DeleteItem(thing.GetStoredObjectId());
 
                 auditItems = store.AuditStore.GetAll();
-                Assert.True(auditItems[4].Mode == StoredItemAccessMode.Delete && auditItems[4].ObjRef.Equals(thing4.GetStoredObjectId()));
+                Assert.True(auditItems[4].Mode == StoredItemAccessMode.Delete && auditItems[4].ObjRef.Equals(soid));
 
             })) 
         { 

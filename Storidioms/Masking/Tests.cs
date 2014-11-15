@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Conditional;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Decoratid.Storidioms.Masking
 {
@@ -19,7 +21,7 @@ namespace Decoratid.Storidioms.Masking
                 var thing4 = AsId<string>.New("asId1");
 
                 //mask commit
-                var store = NaturalInMemoryStore.New().DecorateWithoutCommit();
+                var store = NaturalInMemoryStore.New().NoCommit();
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
@@ -27,7 +29,7 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask get
-                store = NaturalInMemoryStore.New().DecorateWithoutGet();
+                store = NaturalInMemoryStore.New().NoGet();
                 store.SaveItem(thing4);
 
                 Assert.Throws<InvalidOperationException>(() =>
@@ -36,17 +38,17 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask search
-                store = NaturalInMemoryStore.New().DecorateWithoutSearch();
+                store = NaturalInMemoryStore.New().NoSearch();
                 store.SaveItem(thing4);
                 var itemCopy = store.Get<AsId<string>>("asId1");
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    var list = store.Search<AsId<string>>(SearchFilter.New((x) => { return x.Id.Equals("asId1"); }));
+                    var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
                 });
 
                 //mask getall
-                store = NaturalInMemoryStore.New().DecorateWithoutGetAll();
+                store = NaturalInMemoryStore.New().NoGetAll();
                 store.SaveItem(thing4);
                 itemCopy = store.Get<AsId<string>>("asId1");
 
@@ -56,7 +58,7 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask all of them
-                store = NaturalInMemoryStore.New().DecorateWithoutGetAll().DecorateWithoutCommit().DecorateWithoutGet().DecorateWithoutSearch();
+                store = NaturalInMemoryStore.New().NoGetAll().NoCommit().NoGet().NoSearch();
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
@@ -68,7 +70,7 @@ namespace Decoratid.Storidioms.Masking
                 });
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    var list = store.Search<AsId<string>>(SearchFilter.New((x) => { return x.Id.Equals("asId1"); }));
+                    var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
                 });
                 Assert.Throws<InvalidOperationException>(() =>
                 {

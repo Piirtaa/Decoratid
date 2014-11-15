@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Decoratid.Idioms.Logging;
+using Decoratid.Core.Identifying;
+using Xunit;
 
 namespace Decoratid.Idioms.Intercepting
 {
@@ -21,16 +24,16 @@ namespace Decoratid.Idioms.Intercepting
             : base(LogicOf<IStore>.New((x) =>
             {
 
-                var store = NaturalInMemoryStore.New().DecorateWithInterception();
+                var store = x.Intercepting(StoreLogger.NewInMemory());
 
                 //build a commit interception that:
                 //decorates the arg by appending the character A to the id
                 //validates the arg by checking for the A
                 store.CommitOperationIntercept.AddNextIntercept("intercept1",
-                LogicOfTo<Onion<ICommitBag>, OnionLayer<ICommitBag>>.New((x) =>
+                (o) =>
                 {
                     CommitBag newBag = new CommitBag();
-                    var oldBag = x.LastValue;
+                    var oldBag = o;
 
                     oldBag.ItemsToSave.WithEach(saveItem =>
                     {
@@ -40,11 +43,11 @@ namespace Decoratid.Idioms.Intercepting
                             newBag.MarkItemSaved(newItem);
                         }
                     });
-                    return OnionLayer<ICommitBag>.New(newBag);
+                    return newBag;
 
-                }), LogicOf<Onion<ICommitBag>>.New((x) =>
+                }, (o) =>
                 {
-                    var oldBag = x.LastValue;
+                    var oldBag = o;
                     oldBag.ItemsToSave.WithEach(saveItem =>
                     {
                         if (saveItem is AsId<string>)
@@ -53,7 +56,7 @@ namespace Decoratid.Idioms.Intercepting
                             Assert.True(id.EndsWith("A"));
                         }
                     });
-                }), null, null);
+                }, null, null, null);
 
                 var thing4 = AsId<string>.New("asId1");
                 store.SaveItem(thing4);

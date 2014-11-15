@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Conditional;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Decoratid.Storidioms.Factoried
 {
@@ -16,7 +18,7 @@ namespace Decoratid.Storidioms.Factoried
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
-                var store = NaturalInMemoryStore.New().DecorateWithFactory(LogicOfTo<IStoredObjectId, IHasId>.New((soId) =>
+                var store = x.HasFactory(LogicOfTo<IStoredObjectId, IHasId>.New((soId) =>
                 {
 
                     //the factory produces AsId<string> only
