@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Storidioms.ItemValidating
 {
-    public class Test : TestOf<IStore>
-    {
-        public Test()
-            : base(LogicOf<IStore>.New((x) =>
-            {
+    //public class Test : TestOf<IStore>
+    //{
+    //    public Test()
+    //        : base(LogicOf<IStore>.New((x) =>
+    //        {
 
 
-            }))
-        {
-        }
-    }
+    //        }))
+    //    {
+    //    }
+    //}
 }

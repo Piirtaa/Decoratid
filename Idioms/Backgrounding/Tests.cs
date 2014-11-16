@@ -109,8 +109,8 @@ namespace Decoratid.Idioms.Backgrounding
                 var clone = store.Get<AsId<string>>("asId1");
                 Assert.True(clone != null);
 
-                //wait 5 secs
-                Thread.Sleep(5000);
+                //wait 7 secs
+                Thread.Sleep(7000);
 
                 //now try to read it again - it should be gone
                 clone = store.Get<AsId<string>>("asId1");

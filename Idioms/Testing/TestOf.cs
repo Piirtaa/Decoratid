@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core.ValueOfing;
+using System.Diagnostics;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -30,6 +31,7 @@ namespace Decoratid.Idioms.Testing
         #region ITestOf
         public void Test(T arg)
         {
+            Debug.WriteLine("starting test " + this.GetType());
             this.TestLogic.CloneAndPerform(arg.AsNaturalValue());
         }
         #endregion
