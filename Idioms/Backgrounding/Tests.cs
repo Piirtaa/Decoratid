@@ -38,16 +38,16 @@ namespace Decoratid.Idioms.Backgrounding
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 //give this thing polling, and have the polling job turn a switch on
                 bool switchVal = false;
 
                 var newX = x.Polls();
-                newX.SetBackgroundAction(LogicOf<IValueOf<T>>.New((thing) =>
+                newX.SetBackgroundAction(LogicOf<IValueOf<string>>.New((thing) =>
                 {
                     switchVal = true;
                 }), 1000);

@@ -128,10 +128,10 @@ namespace Decoratid.Idioms.Expiring
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 var expiry = DateTime.Now.AddSeconds(5);
                 var newX = x.HasExpirable(); //expire this

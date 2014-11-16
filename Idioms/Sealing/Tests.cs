@@ -33,15 +33,15 @@ namespace Decoratid.Idioms.Sealing
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 bool success = false;
                 try
                 {
-                    x.Seal().Polyfacing<T,IValueOf<T>>();
+                    x.Seal().Polyfacing<string, IValueOf<string>>();
 
                 }
                 catch

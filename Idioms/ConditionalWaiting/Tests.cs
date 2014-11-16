@@ -48,10 +48,10 @@ namespace Decoratid.Idioms.ConditionalWaiting
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 var flagDate = DateTime.Now.AddSeconds(5);
                 ICondition cond = StrategizedCondition.New(() => { return DateTime.Now < flagDate; });

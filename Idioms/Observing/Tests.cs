@@ -32,14 +32,14 @@ namespace Decoratid.Idioms.Observing
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 var data = "data";
 
-                var observer = x.Observe(LogicOf<IValueOf<T>>.New((o) =>
+                var observer = x.Observe(LogicOf<IValueOf<string>>.New((o) =>
                 {
                     data = "data1";
                 }), null);

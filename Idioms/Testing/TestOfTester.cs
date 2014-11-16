@@ -90,9 +90,9 @@ namespace Decoratid.Idioms.Testing
         public static bool CheckTestResults(List<TestOfResult> results)
         {
             if (results == null)
-                return false;
+                return true;
             if (results.Count == 0)
-                return false;
+                return true;
 
             foreach (var each in results)
             {

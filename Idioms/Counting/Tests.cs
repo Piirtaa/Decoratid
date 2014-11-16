@@ -26,10 +26,10 @@ namespace Decoratid.Idioms.Counting
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 var newX = x.Counted();
                 Condition.Requires(newX.Counter.Current).IsEqualTo(0);

@@ -27,13 +27,13 @@ namespace Decoratid.Idioms.Polyfacing
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
-                var pf = x.Polyfacing<T,IValueOf<T>>();
-                var face = pf.As<IValueOf<T>>();
+                var pf = x.Polyfacing<string, IValueOf<string>>();
+                var face = pf.As<IValueOf<string>>();
                 var decorated = DecorationUtils.GetDecorated(face);
                 Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 

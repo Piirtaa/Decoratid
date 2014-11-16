@@ -36,14 +36,14 @@ namespace Decoratid.Idioms.Eventing
         }
     }
 
-    public class ValueOfTest<T> : TestOf<IValueOf<T>>
+    public class ValueOfTest : TestOf<IValueOf<string>>
     {
         public ValueOfTest()
-            : base(LogicOf<IValueOf<T>>.New((x) =>
+            : base(LogicOf<IValueOf<string>>.New((x) =>
             {
                 bool checkVal = false;
                 var newX = x.Eventing();
-                newX.Evaluated += delegate(object sender, EventArgOf<IValueOf<T>> e)
+                newX.Evaluated += delegate(object sender, EventArgOf<IValueOf<string>> e)
                 {
                     checkVal = true;
                 };
