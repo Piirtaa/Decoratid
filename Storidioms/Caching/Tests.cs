@@ -20,14 +20,16 @@ namespace Decoratid.Storidioms.Caching
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
-                var thing4 = AsId<string>.New("asId1");
+                var thing = AsId<string>.New("asId1");
+                var soid = thing.GetStoredObjectId();
 
+                //build cache that polls every 5 seconds and always expires whatever is in it 
                 var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New( (o)=>{
                     return NaturalTrueExpirable.New();
                 }), 5000);
 
                 //save 
-                store.SaveItem(thing4);
+                store.SaveItem(thing);
 
                 //now pull from the store, itself (not the caching store) and it will repopulate the cache
                 var item = store.Get<AsId<string>>("asId1");
@@ -49,6 +51,8 @@ namespace Decoratid.Storidioms.Caching
                 item = store.CachingStore.Get<AsId<string>>("asId1");
                 Assert.True(item != null);
 
+                //cleanup
+                store.DeleteItem(soid);
             }))
         {
         }

@@ -57,6 +57,8 @@ namespace Decoratid.Storidioms.Evicting
                 item = store.Get<AsId<string>>("asId1");
                 Assert.True(item == null);
 
+                //cleanup
+                x.DeleteItem(soid);
             }))
         {
         }

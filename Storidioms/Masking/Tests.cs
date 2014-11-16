@@ -18,19 +18,20 @@ namespace Decoratid.Storidioms.Masking
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
-                var thing4 = AsId<string>.New("asId1");
+                var thing = AsId<string>.New("asId1");
+                var soid = thing.GetStoredObjectId();
 
                 //mask commit
-                var store = NaturalInMemoryStore.New().NoCommit();
+                IStore store = x.NoCommit();
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    store.SaveItem(thing4);
+                    store.SaveItem(thing);
                 });
 
                 //mask get
-                store = NaturalInMemoryStore.New().NoGet();
-                store.SaveItem(thing4);
+                store = x.NoGet();
+                store.SaveItem(thing);
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
@@ -38,8 +39,8 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask search
-                store = NaturalInMemoryStore.New().NoSearch();
-                store.SaveItem(thing4);
+                store = x.NoSearch();
+                store.SaveItem(thing);
                 var itemCopy = store.Get<AsId<string>>("asId1");
 
                 Assert.Throws<InvalidOperationException>(() =>
@@ -48,8 +49,8 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask getall
-                store = NaturalInMemoryStore.New().NoGetAll();
-                store.SaveItem(thing4);
+                store = x.NoGetAll();
+                store.SaveItem(thing);
                 itemCopy = store.Get<AsId<string>>("asId1");
 
                 Assert.Throws<InvalidOperationException>(() =>
@@ -58,11 +59,11 @@ namespace Decoratid.Storidioms.Masking
                 });
 
                 //mask all of them
-                store = NaturalInMemoryStore.New().NoGetAll().NoCommit().NoGet().NoSearch();
+                store = x.NoGetAll().NoCommit().NoGet().NoSearch();
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    store.SaveItem(thing4);
+                    store.SaveItem(thing);
                 });
                 Assert.Throws<InvalidOperationException>(() =>
                 {
@@ -77,6 +78,8 @@ namespace Decoratid.Storidioms.Masking
                     var list = store.GetAll();
                 });
 
+                //cleanup
+                x.DeleteItem(soid);
             }))
         {
         }

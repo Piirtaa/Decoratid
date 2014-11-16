@@ -45,7 +45,10 @@ namespace Decoratid.Idioms.Testing
             TestOfTester.LogTestResults(results6, "HostTests.txt");
 
             var results7 = TestOfTester.AutomaticTest<IStore>(MockBuilder.BuildMockStore());
-            TestOfTester.LogTestResults(results6, "StoreTests.txt");
+            TestOfTester.LogTestResults(results7, "StoreTests.txt");
+
+            var results8 = TestOfTester.AutomaticTest<Tuple<IStore, IHasId>>(new Tuple<IStore, IHasId>(MockBuilder.BuildMockStore(), MockBuilder.BuildMockIHasId("1")));
+            TestOfTester.LogTestResults(results8, "StoreItemTests.txt");
         }
     }
 }

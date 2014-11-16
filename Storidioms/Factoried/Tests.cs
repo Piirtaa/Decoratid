@@ -41,6 +41,8 @@ namespace Decoratid.Storidioms.Factoried
                 item = store.Get<AsId<string>>("asId1");
                 Assert.True(item != null);
 
+                //cleanup
+                store.DeleteItem(item.GetStoredObjectId());
             }))
         {
         }

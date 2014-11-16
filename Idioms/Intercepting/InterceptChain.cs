@@ -114,7 +114,11 @@ namespace Decoratid.Idioms.Intercepting
         {
             
             var list = this.GetLayers();
-            var last = list.Last();
+            var last = list.LastOrDefault();
+            if (last == null)
+            {
+                return this.AddIntercept(id, argDecorator, argValidator, action, resultDecorator, resultValidator);
+            }
 
             InterceptLayer<TArg, TResult> layer = new InterceptLayer<TArg, TResult>(id, argDecorator, argValidator,
                 action, resultDecorator, resultValidator);
