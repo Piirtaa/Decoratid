@@ -64,17 +64,7 @@ namespace Decoratid.Idioms.Expiring
         }
         #endregion
 
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.ExpiryDate.ToUnixTime().ToString();
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    var unixTime = long.Parse(text);
-        //    this.ExpiryDate = unixTime.FromUnixTime();
-        //}
-        //#endregion
+
     }
 
     public static class DateExpirableDecorationExtensions

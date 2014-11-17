@@ -7,10 +7,10 @@ argument, logic and result.  It transforms the behaviour into a format that can 
 So while decoration applies layers to known things, Interception applies layers to operations.  The "operation" is normalized
 as LogicOfTo.  
 
-I envision things like this.  Polyface fans out distinct verticals of responsibility.  Decorations decorate these
-verticals.  Interception decorates the operationality of operations - it fans into the operation.
+I envision things like this:  Polyface fans out distinct verticals of responsibility;  Decorations decorate these
+verticals;  Interception decorates the operationality of operations - it fans into the operation.
 
-The InterceptChain maintains events that can be subscribed to, and a managing method that will spawn a unit of work.
+The InterceptChain maintains events that can be subscribed to, and a factory method that will spawn a unit of work.
 
 How interception is done:
 	For a given LogicOfTo operation, an interceptChain is created.  Layers are added to this chain.  An intercept layer

@@ -74,24 +74,6 @@ namespace Decoratid.Idioms.Eventing
         }
         #endregion
 
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<EventingStoreDecoration>();
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
         #region IHasLogger
         public ILogger Logger { get { return this.InterceptCore.Logger; } }
         #endregion

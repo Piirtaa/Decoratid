@@ -66,7 +66,8 @@ namespace Decoratid.Storidioms.Evicting
         #region Ctor
         public EvictingDecoration(IStore decorated,
             IStore expirableStore,
-            LogicOfTo<IHasId, IExpirable> expirableFactory)
+            LogicOfTo<IHasId, IExpirable> expirableFactory,
+            double backgroundIntervalMSecs = 30000)
             : base(decorated.Polls())
         {
             Condition.Requires(expirableStore).IsNotNull();
@@ -79,7 +80,7 @@ namespace Decoratid.Storidioms.Evicting
             poller.SetBackgroundAction(LogicOf<IStore>.New((reg) =>
             {
                 this.Evict();
-            }));
+            }), backgroundIntervalMSecs);
         }
         #endregion
 
@@ -104,31 +105,6 @@ namespace Decoratid.Storidioms.Evicting
             return returnValue;
         }
         #endregion
-
-        //#region IHasHydrationMap
-        //public override IHydrationMap GetHydrationMap()
-        //{
-        //    //get the inherited map
-        //    var baseMap = base.GetHydrationMap();
-
-        //    var map = new HydrationMapValueManager<EvictingDecoration>();
-        //    map.RegisterDefault("EvictionConditionStore", x => x.EvictionConditionStore, (x, y) => { x.EvictionConditionStore = y as IStore; });
-        //    map.RegisterDefault("DefaultItemEvictionConditionFactory", x => x.DefaultItemEvictionConditionFactory, (x, y) => { x.DefaultItemEvictionConditionFactory = y as LogicOfTo<IHasId, ICondition>; });
-        //    map.Maps.AddRange(baseMap.Maps);
-        //    return map;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
 
         #region IEvictingStore
         public IStore ExpirableStore { get; set; }
@@ -162,14 +138,14 @@ namespace Decoratid.Storidioms.Evicting
                 cb.ItemsToSave.WithEach(x =>
                 {
                     //save the eviction condition in the eviction store, keyed by the storedobjectid of the item to save
-                    var conditionToSave = ContextualId<StoredObjectId, IExpirable>.New(x.GetStoredObjectId(), evictionCondition);
+                     var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionCondition);
                     conditionCommitBag.MarkItemSaved(conditionToSave);
                 });
 
                 //foreach remove, remove a condition
                 cb.ItemsToDelete.WithEach(x =>
                 {
-                    var delId = x.BuildContextualIdSOID<StoredObjectId, ICondition>();
+                    var delId = StoredObjectId.New(typeof(ContextualIHasIdDecoration), x);
                     conditionCommitBag.MarkItemDeleted(delId);
                 });
 
@@ -197,8 +173,12 @@ namespace Decoratid.Storidioms.Evicting
                     {
                         //generate the eviction condition
                         var evictionCondition = this.ExpirableFactory.CloneAndPerform(x.AsNaturalValue());
+
                         //save the eviction condition in the eviction store, keyed by the storedobjectid of the item to save
-                        var conditionToSave = ContextualId<StoredObjectId, IExpirable>.New(x.GetStoredObjectId(), evictionCondition);
+                        var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionCondition);
+                        //var soid = conditionToSave.GetStoredObjectId();
+                        //var soid2 = StoredObjectId.New(typeof(ContextualIHasIdDecoration), x.GetStoredObjectId());
+                        //bool isEq = soid.Equals(soid2);
                         conditionCommitBag.MarkItemSaved(conditionToSave);
 
                     });
@@ -207,7 +187,7 @@ namespace Decoratid.Storidioms.Evicting
                 //foreach remove, remove a condition
                 cb.ItemsToDelete.WithEach(x =>
                 {
-                    var delId = x.BuildContextualIdSOID<StoredObjectId, ICondition>();
+                    var delId = StoredObjectId.New(typeof(ContextualIHasIdDecoration), x);
                     conditionCommitBag.MarkItemDeleted(delId);
                 });
 
@@ -220,16 +200,17 @@ namespace Decoratid.Storidioms.Evicting
         /// </summary>
         public void Evict()
         {
-            List<ContextualId<StoredObjectId, IExpirable>> itemsToEvict = new List<ContextualId<StoredObjectId, IExpirable>>();
+            List<ContextualIHasIdDecoration> itemsToEvict = new List<ContextualIHasIdDecoration>();
 
             //search the eviction store for evicts
-            var evictions = this.ExpirableStore.GetAll<ContextualId<StoredObjectId, IExpirable>>();
+            var evictions = this.ExpirableStore.GetAll<ContextualIHasIdDecoration>();
 
             foreach (var each in evictions)
             {
                 if (each.Context != null)
                 {
-                    if (each.Context.IsExpired())
+                    IExpirable exp = each.Context as IExpirable;
+                    if (exp.IsExpired())
                     {
                         itemsToEvict.Add(each);
                     }
@@ -240,14 +221,15 @@ namespace Decoratid.Storidioms.Evicting
             var evictCommitBag = new CommitBag();
             itemsToEvict.WithEach(x =>
             {
-                evictCommitBag.MarkItemDeleted(x.Id);
+                StoredObjectId soid = x.Id as StoredObjectId;
+                evictCommitBag.MarkItemDeleted(soid);
             });
             this.Commit(evictCommitBag);
 
             //raise events (outside of state lock)
             itemsToEvict.WithEach(x =>
             {
-                this.OnItemEvicted(x, x.Context);
+                this.OnItemEvicted(x, x.Context as IExpirable);
             });
         }
         #endregion
@@ -394,7 +376,7 @@ namespace Decoratid.Storidioms.Evicting
         {
             Condition.Requires(decorated).IsNotNull();
 
-            return new EvictingDecoration(decorated, evictionConditionStore, defaultItemEvictionConditionFactory);
+            return new EvictingDecoration(decorated, evictionConditionStore, defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
         }
         public static EvictingDecoration EvictingInMemory(this IStore decorated,
     LogicOfTo<IHasId, IExpirable> defaultItemEvictionConditionFactory,
@@ -402,7 +384,7 @@ namespace Decoratid.Storidioms.Evicting
         {
             Condition.Requires(decorated).IsNotNull();
 
-            return new EvictingDecoration(decorated, NaturalInMemoryStore.New(), defaultItemEvictionConditionFactory);
+            return new EvictingDecoration(decorated, NaturalInMemoryStore.New(), defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
         }
         #region General Eviction
         public static void SaveEvictingItem(this IEvictingStore store, IHasId obj, IExpirable evictingCondition)

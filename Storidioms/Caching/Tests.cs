@@ -24,7 +24,8 @@ namespace Decoratid.Storidioms.Caching
                 var soid = thing.GetStoredObjectId();
 
                 //build cache that polls every 5 seconds and always expires whatever is in it 
-                var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New( (o)=>{
+                var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New((o) =>
+                {
                     return NaturalTrueExpirable.New();
                 }), 5000);
 

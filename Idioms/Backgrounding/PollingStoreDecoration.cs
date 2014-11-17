@@ -62,26 +62,7 @@ namespace Decoratid.Idioms.Backgrounding
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<PollDecoration>();
-        //    hydrationMap.RegisterDefault("BackgroundStrategy", x => x.BackgroundStrategy, (x, y) => { x.BackgroundStrategy = y as LogicOf<IStore>; });
-        //    hydrationMap.RegisterDefault("BackgroundHost", x => x.BackgroundHost, (x, y) => { x.BackgroundHost = y as BackgroundHost; });
-        //    return hydrationMap;
-        //}
-        //#endregion
 
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
 
         #region Properties
         protected LogicOf<IStore> BackgroundStrategy { get; set; }

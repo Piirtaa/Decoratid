@@ -31,8 +31,8 @@ namespace Decoratid.Idioms.Eventing
                 newX.Evaluate();
                 Thread.Sleep(50);
                 Condition.Requires(checkVal).IsTrue();
-            })) 
-        { 
+            }))
+        {
         }
     }
 
@@ -88,7 +88,8 @@ namespace Decoratid.Idioms.Eventing
                 //1. test save events - don't save items with id's ending in "_filtered"
                 var store = x.DecorateWithEvents(StoreLogger.NewInMemory());
 
-                store.CommitOperationIntercept.AddNextIntercept("intercept1", (o)=>{
+                store.CommitOperationIntercept.AddNextIntercept("intercept1", (o) =>
+                {
                     CommitBag newBag = new CommitBag();
                     var oldBag = o;
                     oldBag.ItemsToSave.WithEach(saveItem =>
@@ -180,7 +181,7 @@ namespace Decoratid.Idioms.Eventing
                     });
                     return newList;
 
-                },  null);
+                }, null);
                 bool retFlag = false;
                 bool retFiltFlag = false;
                 store.ItemRetrieved += (sender, e) =>

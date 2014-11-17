@@ -3,6 +3,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
+using Decoratid.Extensions;
 using Decoratid.Idioms.Expiring;
 using Decoratid.Idioms.Testing;
 using System;
@@ -29,10 +30,18 @@ namespace Decoratid.Storidioms.Evicting
                 LogicOfTo<IHasId, IExpirable>.New((it) =>
                 {
                     return NaturalTrueExpirable.New();
-                }), 5000);
+                }), 1000);
+
+                //wire to events
+                var checkVal = false;
+                store.ItemEvicted +=  delegate(object sender, EventArgOf<Tuple<IHasId, IExpirable>> e)
+                {
+                    checkVal = true;
+                };
 
                 //save 
                 store.SaveItem(thing);
+                Thread.Sleep(2000);
 
                 //now pull from the store.  it should be null
                 var item = store.Get<AsId<string>>("asId1");
@@ -43,7 +52,7 @@ namespace Decoratid.Storidioms.Evicting
                 LogicOfTo<IHasId, IExpirable>.New((it) =>
                 {
                     return NaturalTrueExpirable.New().DecorateWithDateExpirable(DateTime.Now.AddSeconds(3));
-                }), 5000);
+                }), 1000);
 
                 //save 
                 store.SaveItem(thing);
@@ -53,7 +62,7 @@ namespace Decoratid.Storidioms.Evicting
                 Assert.True(item != null);
 
                 //wait till expiry (3 seconds) and try to pull again
-                Thread.Sleep(3000);
+                Thread.Sleep(5000);
                 item = store.Get<AsId<string>>("asId1");
                 Assert.True(item == null);
 

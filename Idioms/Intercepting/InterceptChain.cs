@@ -119,22 +119,29 @@ namespace Decoratid.Idioms.Intercepting
             {
                 return this.AddIntercept(id, argDecorator, argValidator, action, resultDecorator, resultValidator);
             }
+            else
+            {
+                InterceptLayer<TArg, TResult> layer = new InterceptLayer<TArg, TResult>(id, argDecorator, argValidator,
+                    action, resultDecorator, resultValidator);
+                layer.AddDependency(last.Dependency.Self);
 
-            InterceptLayer<TArg, TResult> layer = new InterceptLayer<TArg, TResult>(id, argDecorator, argValidator,
-                action, resultDecorator, resultValidator);
-            layer.AddDependency(last.Dependency.Self);
-
-            this.Store.SaveItemIfUniqueElseThrow(layer);
+                this.Store.SaveItemIfUniqueElseThrow(layer);
+            }
             return this;
         }
         public InterceptChain<TArg, TResult> AddNextIntercept(InterceptLayer<TArg, TResult> layer)
         {
             var list = this.GetLayers();
-            var last = list.Last();
-
-            layer.AddDependency(last.Dependency.Self);
-
-            this.Store.SaveItemIfUniqueElseThrow(layer);
+            var last = list.LastOrDefault();
+            if (last == null)
+            {
+                return this.AddIntercept(layer);
+            }
+            else
+            {
+                layer.AddDependency(last.Dependency.Self);
+                this.Store.SaveItemIfUniqueElseThrow(layer);
+            }
             return this;
         }
         #endregion

@@ -43,6 +43,7 @@ namespace Decoratid.Storidioms.Factoried
 
                 //cleanup
                 store.DeleteItem(item.GetStoredObjectId());
+                Assert.True(true);
             }))
         {
         }

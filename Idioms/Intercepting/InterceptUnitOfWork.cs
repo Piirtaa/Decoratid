@@ -14,7 +14,7 @@ using Decoratid.Idioms.Observing;
 namespace Decoratid.Idioms.Intercepting
 {
     /// <summary>
-    /// takes an interception chain and converts this into a set of decorations 
+    /// takes an interception chain and builds up a unit of work to perform.  
     /// </summary>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
@@ -69,6 +69,9 @@ namespace Decoratid.Idioms.Intercepting
 
             return this.DecoratedResult.GetValue();
         }
+        /// <summary>
+        /// builds up the arg as a ValueOf with a bunch of adjustments and observers
+        /// </summary>
         private void DecorateArg()
         {
             this.Logger.Do((x) => x.LogVerbose("DecorateArg started", null));
@@ -103,6 +106,9 @@ namespace Decoratid.Idioms.Intercepting
             }
             this.Logger.Do((x) => x.LogVerbose("DecorateArg completed", null));
         }
+        /// <summary>
+        /// builds up the logic as an ILogic with a bunch of adjustments 
+        /// </summary>
         private void DecorateLogic()
         {
             this.Logger.Do((x) => x.LogVerbose("DecorateLogic started", null));
@@ -125,6 +131,9 @@ namespace Decoratid.Idioms.Intercepting
 
             this.Logger.Do((x) => x.LogVerbose("DecorateLogic completed", null));
         }
+        /// <summary>
+        /// invokes the arg decorations, then the logic decorations, then invokes the logic
+        /// </summary>
         private void PerformDecorated()
         {
             this.Logger.Do((x) => x.LogVerbose("PerformDecorated started", null));
@@ -176,7 +185,7 @@ namespace Decoratid.Idioms.Intercepting
 
 
                 this.DecoratedResult = resultOf;
-                var decRes = resultOf.GetValue();
+                var decRes = resultOf.GetValue(); //invoke the decorations
 
                 this.Logger.Do((x) => x.LogVerbose("DecoratedResult", decRes));
             }

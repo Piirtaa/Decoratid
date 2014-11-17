@@ -49,12 +49,12 @@ namespace Decoratid.Idioms.Observing
         }
         #endregion
 
-
         #region IObservingValueOf
         public LogicOf<IValueOf<T>> PreObservation { get; private set; }
         public LogicOf<IValueOf<T>> PostObservation { get; private set; }
 
         #endregion
+
         #region Methods
         public override T GetValue()
         {

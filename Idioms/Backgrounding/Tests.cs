@@ -33,8 +33,8 @@ namespace Decoratid.Idioms.Backgrounding
                 //wait 2 seconds and the switch should be true
                 Thread.Sleep(2000);
                 Condition.Requires(switchVal).IsTrue();
-            })) 
-        { 
+            }))
+        {
         }
     }
 
@@ -94,14 +94,15 @@ namespace Decoratid.Idioms.Backgrounding
                 store.SetBackgroundAction(LogicOf<IStore>.New((s) =>
                 {
                     //the poll action deletes all items in the store
-                    var items = x.GetAll();
+                    var items = s.GetAll();
                     items.WithEach(item =>
                     {
-                        x.DeleteItem(item.GetStoredObjectId());
+                        s.DeleteItem(item.GetStoredObjectId());
                     });
 
                 }), 5000);
 
+                Thread.Sleep(6000);
                 var thing4 = AsId<string>.New("asId1");
                 store.SaveItem(thing4);
 
@@ -116,6 +117,12 @@ namespace Decoratid.Idioms.Backgrounding
                 clone = store.Get<AsId<string>>("asId1");
                 Assert.True(clone == null);
 
+                //try it again
+                store.SaveItem(thing4);
+
+                //pull from the store, which is empty.  it should factory the item up
+                clone = store.Get<AsId<string>>("asId1");
+                Assert.True(clone != null);
             })) { }
     }
 

@@ -98,29 +98,6 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<InterceptingDecoration>();
-        //    hydrationMap.RegisterDefault("GetOperationIntercept", x => x.GetOperationIntercept, (x, y) => { x.GetOperationIntercept = y as DecoratingInterceptChain<IStoredObjectId, IHasId>; });
-        //    hydrationMap.RegisterDefault("SearchOperationIntercept", x => x.SearchOperationIntercept, (x, y) => { x.SearchOperationIntercept = y as DecoratingInterceptChain<Tuple<Type, SearchFilter>, List<IHasId>>; });
-        //    hydrationMap.RegisterDefault("CommitOperationIntercept", x => x.CommitOperationIntercept, (x, y) => { x.CommitOperationIntercept = y as DecoratingInterceptChain<ICommitBag, Decoratid.Thingness.Nothing>; });
-        //    hydrationMap.RegisterDefault("GetAllOperationIntercept", x => x.GetAllOperationIntercept, (x, y) => { x.GetAllOperationIntercept = y as DecoratingInterceptChain<Decoratid.Thingness.Nothing, List<IHasId>>; });
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
-
         #region IHasLogger
         public ILogger Logger { get; set; }
         #endregion

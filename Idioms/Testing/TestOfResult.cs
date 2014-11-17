@@ -11,7 +11,7 @@ namespace Decoratid.Idioms.Testing
     {
         public TestOfResult(Type type, Exception ex)
         {
-            this.Id = type.Name;
+            this.Id = type.FullName;
             this.TestError = ex;
 
         }

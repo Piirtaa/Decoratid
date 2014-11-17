@@ -60,26 +60,6 @@ namespace Decoratid.Storidioms.Caching
         }
         #endregion
 
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<CacheDecoration>();
-        //    hydrationMap.RegisterDefault("CachingStore", x => x.CachingStore, (x, y) => { x.CachingStore = y as IEvictingStore; });
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
-
         #region Overrides
         public override IHasId Get(IStoredObjectId soId)
         {
@@ -157,7 +137,7 @@ namespace Decoratid.Storidioms.Caching
         {
             Condition.Requires(decorated).IsNotNull();
 
-            //build the evicting store - notice the very fucking fluent way it works.  ya.  
+            //build the evicting store 
             var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(), defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
             return new CacheDecoration(evictingStore, decorated);
         }

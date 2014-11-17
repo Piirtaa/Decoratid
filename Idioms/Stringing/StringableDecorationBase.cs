@@ -61,16 +61,5 @@ namespace Decoratid.Idioms.Stringing
             throw new NotImplementedException();
         }
         #endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetValue();
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.Parse(text);
-        //}
-        //#endregion
     }
 }

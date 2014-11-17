@@ -13,7 +13,7 @@ namespace Decoratid.Storidioms.Masking
     /// </summary>
     public interface IMaskingStore : IDecoratedStore
     {
-        StoreOperation Mask { get; }
+        StoreOperation AllowedOperations { get; }
     }
 
     /// <summary>
@@ -31,12 +31,12 @@ namespace Decoratid.Storidioms.Masking
         public MaskingDecoration(IStore decorated, StoreOperation mask)
             : base(decorated)
         {
-            this.Mask = mask;
+            this.AllowedOperations = mask;
         }
         #endregion
 
         #region Properties
-        public StoreOperation Mask { get; private set; }
+        public StoreOperation AllowedOperations { get; private set; }
         #endregion
 
         //#region IHasHydrationMap
@@ -62,7 +62,7 @@ namespace Decoratid.Storidioms.Masking
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new MaskingDecoration(store, this.Mask);
+            var returnValue = new MaskingDecoration(store, this.AllowedOperations);
 
             return returnValue;
         }
@@ -71,28 +71,28 @@ namespace Decoratid.Storidioms.Masking
         #region Overrides
         public override IHasId Get(IStoredObjectId soId)
         {
-            if (!this.Mask.Has(StoreOperation.Get))
+            if (!this.AllowedOperations.Has(StoreOperation.Get))
                 throw new InvalidOperationException("operation masked");
 
             return this.Decorated.Get(soId);
         }
         public override List<T> Search<T>(SearchFilter filter)
         {
-            if (!this.Mask.Has(StoreOperation.Search))
+            if (!this.AllowedOperations.Has(StoreOperation.Search))
                 throw new InvalidOperationException("operation masked");
 
             return this.Decorated.Search<T>(filter);
         }
         public override void Commit(ICommitBag bag)
         {
-            if (!this.Mask.Has(StoreOperation.Commit))
+            if (!this.AllowedOperations.Has(StoreOperation.Commit))
                 throw new InvalidOperationException("operation masked");
 
             this.Decorated.Commit(bag);
         }
         public override List<IHasId> GetAll()
         {
-            if (!this.Mask.Has(StoreOperation.GetAll))
+            if (!this.AllowedOperations.Has(StoreOperation.GetAll))
                 throw new InvalidOperationException("operation masked");
 
             return this.Decorated.GetAll();

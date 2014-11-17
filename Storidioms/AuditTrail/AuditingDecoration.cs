@@ -65,27 +65,6 @@ namespace Decoratid.Storidioms.AuditTrail
         }
         #endregion
 
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<AuditingDecoration<TAuditPoint>>();
-        //    hydrationMap.RegisterDefault("AuditStore", x => x.AuditStore, (x, y) => { x.AuditStore = y as IStoreOf<TAuditPoint>; });
-        //    hydrationMap.RegisterDefault("AuditItemBuildStrategy", x => x.AuditItemBuildStrategy, (x, y) => { x.AuditItemBuildStrategy = y as Func<IHasId, StoredItemAccessMode, TAuditPoint>; });
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
-
         #region Helpers
         private void BuildAndSaveAuditPoint(StoredItemAccessMode mode, IHasId item)
         {
