@@ -55,6 +55,7 @@ namespace Decoratid.Idioms.Testing
 
             var results7 = TestOfTester.AutomaticTest<IStore>(MockBuilder.BuildMockStore());
             TestOfTester.LogTestResults(results7, "StoreTests.txt");
+            bool good = TestOfTester.CheckTestResults(results7);
             Condition.Requires(TestOfTester.CheckTestResults(results7)).IsTrue();
 
             //var results8 = TestOfTester.AutomaticTest<Tuple<IStore, IHasId>>(new Tuple<IStore, IHasId>(MockBuilder.BuildMockStore(), MockBuilder.BuildMockIHasId("1")));

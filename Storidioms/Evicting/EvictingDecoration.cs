@@ -138,7 +138,7 @@ namespace Decoratid.Storidioms.Evicting
                 cb.ItemsToSave.WithEach(x =>
                 {
                     //save the eviction condition in the eviction store, keyed by the storedobjectid of the item to save
-                     var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionCondition);
+                    var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionCondition);
                     conditionCommitBag.MarkItemSaved(conditionToSave);
                 });
 
@@ -269,29 +269,23 @@ namespace Decoratid.Storidioms.Evicting
             //if the eviction condition is touchable, touch it
             if (record != null && record.Context != null)
             {
-                //set return value to current condition status 
-                if (record.Context != null)
-                {
-                    isExpired = record.Context.IsExpired();
+                isExpired = record.Context.IsExpired();
 
-                    //if the expirable is touchable, touch it
-                    if (record.Context is ITouchable)
+                //if the expirable is touchable, touch it
+                if (record.Context is ITouchable)
+                {
+                    ITouchable touch = (ITouchable)record.Context;
+                    touch.Touch();
+                }
+                else if (record.Context is IPolyfacing) //or if it's polyfacing with a touchable face
+                {
+                    IPolyfacing poly = (IPolyfacing)record.Context;
+                    var touch = poly.RootFace.AsHasTouchable();
+                    if (touch != null)
                     {
-                        ITouchable touch = (ITouchable)record.Context;
                         touch.Touch();
                     }
-                    else if (record.Context is IPolyfacing) //or if it's polyfacing with a touchable face
-                    {
-                        IPolyfacing poly = (IPolyfacing)record.Context;
-                        var touch = poly.RootFace.AsHasTouchable();
-                        if (touch != null)
-                        {
-                            touch.Touch();
-                        }
-                    }
                 }
-
-
             }
             return !isExpired;
         }

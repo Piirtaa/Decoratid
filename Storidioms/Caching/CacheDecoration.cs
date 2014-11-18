@@ -27,7 +27,7 @@ namespace Decoratid.Storidioms.Caching
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class CacheDecoration : DecoratedStoreBase, ICachingStore//, IHasHydrationMap
+    public class CacheDecoration : DecoratedStoreBase, ICachingStore
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -39,8 +39,7 @@ namespace Decoratid.Storidioms.Caching
         /// </summary>
         /// <param name="decorated"></param>
         /// <param name="backgroundIntervalMSecs"></param>
-        public CacheDecoration(IEvictingStore cachingStore,
-            IStore decorated)
+        public CacheDecoration(IStore decorated, IEvictingStore cachingStore)
             : base(decorated)
         {
             Condition.Requires(cachingStore).IsNotNull();
@@ -55,7 +54,7 @@ namespace Decoratid.Storidioms.Caching
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new CacheDecoration(this.CachingStore, store);
+            var returnValue = new CacheDecoration(store, this.CachingStore);
             return returnValue;
         }
         #endregion
@@ -84,17 +83,11 @@ namespace Decoratid.Storidioms.Caching
         }
         public override void Commit(ICommitBag bag)
         {
-            //for delete items, clear cache
-            var delItems = bag.ItemsToDelete.ToList();
-            var cacheCommitBag = CommitBag.New();
-            delItems.WithEach(id =>
-            {
-                cacheCommitBag.ItemsToDelete.Add(id);
-            });
-            this.CachingStore.Commit(cacheCommitBag);
+            //update the cache
+            this.CachingStore.Commit(bag);
 
             //do reg commit
-            base.Commit(bag);
+            this.Decorated.Commit(bag);
 
         }
         #endregion
@@ -122,7 +115,7 @@ namespace Decoratid.Storidioms.Caching
         public static CacheDecoration Caching(this IStore decorated, IEvictingStore cachingStore)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new CacheDecoration(cachingStore, decorated);
+            return new CacheDecoration(decorated, cachingStore);
         }
         /// <summary>
         /// adds an inmemory cache with the specified policy and ticker resolution
@@ -138,27 +131,27 @@ namespace Decoratid.Storidioms.Caching
             Condition.Requires(decorated).IsNotNull();
 
             //build the evicting store 
-            var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(), defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
-            return new CacheDecoration(evictingStore, decorated);
+            var evictingStore = new NaturalInMemoryStore().EvictingInMemory(defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
+            return new CacheDecoration(decorated, evictingStore);
         }
-        /// <summary>
-        /// adds an inmemory cache with a floating expiry policy
-        /// </summary>
-        /// <param name="decorated"></param>
-        /// <param name="secondsToCache"></param>
-        /// <returns></returns>
-        public static CacheDecoration FloatingCachingInMemory(this IStore decorated, int secondsToCache, int secondsToFloat)
-        {
-            Condition.Requires(decorated).IsNotNull();
+        ///// <summary>
+        ///// adds an inmemory cache with a floating expiry policy
+        ///// </summary>
+        ///// <param name="decorated"></param>
+        ///// <param name="secondsToCache"></param>
+        ///// <returns></returns>
+        //public static CacheDecoration FloatingCachingInMemory(this IStore decorated, int secondsToCache, int secondsToFloat)
+        //{
+        //    Condition.Requires(decorated).IsNotNull();
 
-            var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
-                        LogicOfTo<IHasId, IExpirable>.New((it) =>
-                        {
-                            var expiry = EvictionPolicy.BuildFloatingExpirable(DateTime.UtcNow.AddSeconds(secondsToCache), secondsToFloat);
-                            return expiry;
-                        }), 5000);
-            return new CacheDecoration(evictingStore, decorated);
-        }
+        //    var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
+        //                LogicOfTo<IHasId, IExpirable>.New((it) =>
+        //                {
+        //                    var expiry = EvictionPolicy.BuildFloatingExpirable(DateTime.UtcNow.AddSeconds(secondsToCache), secondsToFloat);
+        //                    return expiry;
+        //                }), 5000);
+        //    return new CacheDecoration(decorated, evictingStore);
+        //}
     }
 
 }

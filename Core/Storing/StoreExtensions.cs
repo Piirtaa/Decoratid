@@ -9,6 +9,18 @@ namespace Decoratid.Core.Storing
 {
     public static class StoreExtensions
     {
+        /// <summary>
+        /// deletes all of the entries
+        /// </summary>
+        /// <param name="store"></param>
+        public static void Clear(this IStore store)
+        {
+            var items = store.GetAll();
+            items.WithEach(x =>
+            {
+                store.DeleteItem(x.GetStoredObjectId());
+            });
+        }
         public static bool Contains(this IStore store, StoredObjectId soId)
         {
             var item = store.Get(soId);

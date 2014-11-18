@@ -2,7 +2,10 @@
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
+using Decoratid.Extensions;
+using System.Threading;
 
 namespace Decoratid.Storidioms
 {
@@ -38,7 +41,6 @@ namespace Decoratid.Storidioms
         }
         #endregion
 
-
         #region Properties
         public override IStore This { get { return this; } }
         #endregion
@@ -46,19 +48,59 @@ namespace Decoratid.Storidioms
         #region IStore
         public virtual IHasId Get(IStoredObjectId soId)
         {
-            return this.Decorated.Get(soId);
+#if DEBUG
+            Debug.WriteLine(string.Format("{0} {1} Store getting {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, soId.With(x => x.ToString())));
+#endif
+
+            var rv = this.Decorated.Get(soId);
+
+#if DEBUG
+            Debug.WriteLine(string.Format("{0} {1} Store get returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, rv.With(x => x.GetStoredObjectId().ToString())));
+#endif
+            return rv;
         }
         public virtual List<T> Search<T>(SearchFilter filter) where T : IHasId
         {
-            return this.Decorated.Search<T>(filter);
+#if DEBUG
+            Debug.WriteLine(string.Format("{0} {1} Store searching", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+#endif
+            var rv = this.Decorated.Search<T>(filter);
+#if DEBUG
+            rv.WithEach(x =>
+            {
+                Debug.WriteLine(string.Format("{0} {1} Store search returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+            });
+#endif
+            return rv;
         }
+
         public virtual void Commit(ICommitBag bag)
         {
+#if DEBUG
+            bag.ItemsToSave.WithEach(x =>
+            {
+                Debug.WriteLine(string.Format("{0} {1} Store saving {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+            });
+            bag.ItemsToDelete.WithEach(x =>
+            {
+                Debug.WriteLine(string.Format("{0} {1} Store deleting {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.ToString()));
+            });
+#endif
             this.Decorated.Commit(bag);
         }
         public virtual List<IHasId> GetAll()
         {
-            return this.Decorated.GetAll();
+#if DEBUG
+            Debug.WriteLine(string.Format("{0} {1} Store get all", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+#endif
+            var rv = this.Decorated.GetAll();
+#if DEBUG
+            rv.WithEach(x =>
+            {
+                Debug.WriteLine(string.Format("{0} {1} Store get all returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+            });
+#endif
+            return rv;
         }
         #endregion
 

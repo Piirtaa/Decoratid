@@ -3,6 +3,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
+using Decoratid.Extensions;
 using Decoratid.Idioms.Expiring;
 using Decoratid.Idioms.Testing;
 using System;
@@ -26,12 +27,16 @@ namespace Decoratid.Storidioms.Caching
                 //build cache that polls every 5 seconds and always expires whatever is in it 
                 var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New((o) =>
                 {
-                    return NaturalTrueExpirable.New();
-                }), 5000);
-
+                    return NaturalTrueExpirable.New();//.DecorateWithDateExpirable(DateTime.Now.AddSeconds(5000));
+                }), 1000);
+                var isEvicted = false;
+                store.CachingStore.ItemEvicted += delegate(object sender, EventArgOf<Tuple<IHasId, IExpirable>> e)
+                {
+                    isEvicted = true;
+                };
                 //save 
                 store.SaveItem(thing);
-
+                Thread.Sleep(6000);
                 //now pull from the store, itself (not the caching store) and it will repopulate the cache
                 var item = store.Get<AsId<string>>("asId1");
                 Assert.True(item != null);
@@ -41,7 +46,7 @@ namespace Decoratid.Storidioms.Caching
                 Assert.True(item != null);
 
                 //wait 5 seconds, and check cache again
-                Thread.Sleep(5000);
+                Thread.Sleep(6000);
                 item = store.CachingStore.Get<AsId<string>>("asId1");
                 Assert.True(item == null);
 
