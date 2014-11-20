@@ -84,6 +84,7 @@
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
     <Compile Include="Core\Logical\LogicUtils.cs" />
+    <Compile Include="Core\Storing\NamedNaturalInMemoryStore.cs" />
     <Compile Include="Core\ValueOfing\ValueOfLogicDecoration.cs" />
     <Compile Include="Idioms\Adjusting\Adjustment.cs" />
     <Compile Include="Idioms\Adjusting\HasAdjustment.cs" />
@@ -526,6 +527,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Storidioms\Masking\Tests.cs" />
+    <Compile Include="Storidioms\Named\HasIdDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfUniqueIdDecoration.cs" />

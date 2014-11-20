@@ -56,7 +56,7 @@ namespace Decoratid.Idioms.Testing
 
         public static IStore BuildMockStore()
         {
-            return NaturalInMemoryStore.New();
+            return NamedNaturalInMemoryStore.New("test store");
         }
     }
 }

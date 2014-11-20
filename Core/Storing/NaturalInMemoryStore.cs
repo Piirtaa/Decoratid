@@ -33,19 +33,20 @@ namespace Decoratid.Core.Storing
         #region IStore
         public virtual IHasId Get(IStoredObjectId soId)
         {
-            IHasId obj = null;
+            IHasId rv = null;
 
 #if DEBUG
-            Debug.WriteLine(string.Format("{0} {1} Store getting {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, soId.With(x => x.ToString())));
+            Debug.WriteLine(string.Format("{0} {1} {2} Store getting {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, soId.With(x => x.ToString())));
 #endif
 
-            this.Dictionary.TryGetValue(StoredObjectId.New(soId.ObjectType, soId.ObjectId), out obj);
+            this.Dictionary.TryGetValue(StoredObjectId.New(soId.ObjectType, soId.ObjectId), out rv);
+
 
 #if DEBUG
-            Debug.WriteLine(string.Format("{0} {1} Store get returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, obj.With(x => x.GetStoredObjectId().ToString())));
+            Debug.WriteLine(string.Format("{0} {1} {2} Store get returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, rv.With(x => x.GetStoredObjectId().ToString())));
 #endif
 
-            return obj;
+            return rv;
         }
         public virtual List<T> Search<T>(SearchFilter filter) where T : IHasId
         {
@@ -55,7 +56,7 @@ namespace Decoratid.Core.Storing
             Type filterType = typeof(T);
 
 #if DEBUG
-            Debug.WriteLine(string.Format("{0} {1} Store searching", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("{0} {1} {2} Store searching", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
 
             //lock and retrieve the values
@@ -81,7 +82,7 @@ namespace Decoratid.Core.Storing
 #if DEBUG
             returnValue.WithEach(x =>
             {
-                Debug.WriteLine(string.Format("{0} {1} Store search returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+                Debug.WriteLine(string.Format("{0} {1} {2} Store search returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
 #endif
 
@@ -94,13 +95,12 @@ namespace Decoratid.Core.Storing
 #if DEBUG
             bag.ItemsToSave.WithEach(x =>
             {
-                Debug.WriteLine(string.Format("{0} {1} Store saving {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+                Debug.WriteLine(string.Format("{0} {1} {2} Store saving {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
             bag.ItemsToDelete.WithEach(x =>
             {
-                Debug.WriteLine(string.Format("{0} {1} Store deleting {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.ToString()));
+                Debug.WriteLine(string.Format("{0} {1} {2} Store deleting {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.ToString()));
             });
-
 #endif
 
             //lock the store
@@ -124,13 +124,13 @@ namespace Decoratid.Core.Storing
         public virtual List<IHasId> GetAll()
         {
 #if DEBUG
-            Debug.WriteLine(string.Format("{0} {1} Store get all", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("{0} {1} {2} Store get all", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
             var rv = this.Dictionary.Values.ToList();
 #if DEBUG
             rv.WithEach(x =>
             {
-                Debug.WriteLine(string.Format("{0} {1} Store get all returns {2}", Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
+                Debug.WriteLine(string.Format("{0} {1} {2} Store get all returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
 #endif
             return rv;

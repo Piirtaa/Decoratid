@@ -21,7 +21,7 @@ namespace Decoratid.Storidioms.Masking
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
     [Serializable]
-    public sealed class MaskingDecoration : DecoratedStoreBase, IMaskingStore//, IHasHydrationMap
+    public sealed class MaskingDecoration : DecoratedStoreBase, IMaskingStore
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -38,26 +38,6 @@ namespace Decoratid.Storidioms.Masking
         #region Properties
         public StoreOperation AllowedOperations { get; private set; }
         #endregion
-
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<MaskingDecoration>();
-        //    hydrationMap.RegisterDefault("Mask", x => x.Mask, (x, y) => { x.Mask = (StoreOperation)y; });
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
 
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)

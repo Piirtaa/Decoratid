@@ -1,51 +1,70 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using Sandbox.Conditions;
-using Sandbox.Extensions;
-using Sandbox.Store.Decorations.Named;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
+using Decoratid.Core.Storing;
+using System;
+using System.Runtime.Serialization;
 
-namespace Sandbox.Store.Decorations.Common
+namespace Decoratid.Storidioms.Named
 {
-
-    public class HasIdDecoration : AbstractDecoration, IHasIdStore
+    [Serializable]
+    public class HasIdDecoration : DecoratedStoreBase, IHasId<string>
     {
         #region Declarations
         private readonly object _stateLock = new object();
         #endregion
 
         #region Ctor
-        /// <summary>
-        /// ctor with no default eviction condition factory.  any items added will not be evicted without an eviction being set
-        /// </summary>
-        /// <param name="decorated"></param>
-        /// <param name="backgroundIntervalMSecs"></param>
-        public HasIdDecoration(SandboxId id, 
-            IStore decorated)
+        public HasIdDecoration(IStore decorated, string id)
             : base(decorated)
         {
-
-            if (id.IsEmpty)
-                throw new InvalidOperationException("id is empty");
-
+            Condition.Requires(id).IsNotNullOrEmpty();
             this.Id = id;
         }
         #endregion
 
-        #region IHasIdStore
-        public SandboxId Id
+        #region ISerializable
+        protected HasIdDecoration(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
-            get  ; private set;
+            this.Id = info.GetString("Id");
         }
-
-        object IHasId.Id
+        protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            get { return this.Id; }
+            info.AddValue("Id", this.Id);
+            base.ISerializable_GetObjectData(info, context);
         }
         #endregion
 
+        #region IHasId
+        public string Id { get; set; }
+        object IHasId.Id { get { return this.Id; } }
+        #endregion
+
+        #region Overrides
+        public override Core.Decorating.IDecorationOf<IStore> ApplyThisDecorationTo(IStore thing)
+        {
+            return new HasIdDecoration(thing, this.Id);
+        }
+        #endregion
+    }
+
+    public static class HasIdDecorationExtensions
+    {
+        /// <summary>
+        /// gets the evicting layer
+        /// </summary>
+        /// <param name="decorated"></param>
+        /// <returns></returns>
+        public static HasIdDecoration GetHasIdDecoration(this IStore decorated)
+        {
+            return decorated.FindDecoratorOf<HasIdDecoration>(true);
+        }
+        public static HasIdDecoration HasId(this IStore decorated,
+            string id)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            return new HasIdDecoration(decorated, id);
+        }
+        
     }
 }

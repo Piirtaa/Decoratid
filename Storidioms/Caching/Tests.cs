@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Decoratid.Storidioms.Evicting;
 
 namespace Decoratid.Storidioms.Caching
 {
@@ -25,10 +26,10 @@ namespace Decoratid.Storidioms.Caching
                 var soid = thing.GetStoredObjectId();
 
                 //build cache that polls every 5 seconds and always expires whatever is in it 
-                var store = x.CachingInMemory(LogicOfTo<IHasId, IExpirable>.New((o) =>
+                var store = x.Caching(NamedNaturalInMemoryStore.New("caching store").Evicting(NamedNaturalInMemoryStore.New("eviction condition store"), LogicOfTo<IHasId, IExpirable>.New((o) =>
                 {
                     return NaturalTrueExpirable.New();//.DecorateWithDateExpirable(DateTime.Now.AddSeconds(5000));
-                }), 1000);
+                }), 1000));
                 var isEvicted = false;
                 store.CachingStore.ItemEvicted += delegate(object sender, EventArgOf<Tuple<IHasId, IExpirable>> e)
                 {

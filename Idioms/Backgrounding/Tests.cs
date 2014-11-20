@@ -103,8 +103,8 @@ namespace Decoratid.Idioms.Backgrounding
                 }), 5000);
 
                 Thread.Sleep(6000);
-                var thing4 = AsId<string>.New("asId1");
-                store.SaveItem(thing4);
+                var thing = AsId<string>.New("asId1");
+                store.SaveItem(thing);
 
                 //pull from the store, which is empty.  it should factory the item up
                 var clone = store.Get<AsId<string>>("asId1");
@@ -118,7 +118,7 @@ namespace Decoratid.Idioms.Backgrounding
                 Assert.True(clone == null);
 
                 //try it again
-                store.SaveItem(thing4);
+                store.SaveItem(thing);
 
                 //pull from the store, which is empty.  it should factory the item up
                 clone = store.Get<AsId<string>>("asId1");
