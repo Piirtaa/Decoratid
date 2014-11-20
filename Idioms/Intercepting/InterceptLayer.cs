@@ -41,16 +41,11 @@ namespace Decoratid.Idioms.Intercepting
             Condition.Requires(id).IsNotNullOrEmpty();
             this.Id = id;
             this.Dependency = new DependencyOf<string>(this.Id);
-            if (argDecorator != null)
-                this.ArgDecorator = argDecorator.MakeLogicOfTo();
-            if (argValidator != null)
-                this.ArgValidator = argValidator.MakeLogicOf();
-            if (action != null)
-                this.Action = action.MakeLogicOfTo();
-            if (resultDecorator != null)
-                this.ResultDecorator = resultDecorator.MakeLogicOfTo();
-            if (resultValidator != null)
-                this.ResultValidator = resultValidator.MakeLogicOf();
+            this.SetArgDecoration(argDecorator);
+            this.SetArgValidation(argValidator);
+            this.SetResultDecoration(resultDecorator);
+            this.SetResultValidation(resultValidator);
+            this.SetAction(action);
         }
 
         public InterceptLayer(string id)
@@ -81,7 +76,9 @@ namespace Decoratid.Idioms.Intercepting
         #region Fluent Methods
         public InterceptLayer<TArg, TResult> SetArgDecoration(Func<TArg, TArg> strategy)
         {
-            this.ArgDecorator = strategy.MakeLogicOfTo();
+            if (strategy != null)
+                this.ArgDecorator = strategy.MakeLogicOfTo();
+
             return this;
         }
         public InterceptLayer<TArg, TResult> SetArgDecoration(LogicOfTo<TArg, TArg> strategy)
@@ -91,7 +88,8 @@ namespace Decoratid.Idioms.Intercepting
         }
         public InterceptLayer<TArg, TResult> SetArgValidation(Action<TArg> strategy)
         {
-            this.ArgValidator = strategy.MakeLogicOf();
+            if (strategy != null)
+                this.ArgValidator = strategy.MakeLogicOf();
             return this;
         }
         public InterceptLayer<TArg, TResult> SetArgValidation(LogicOf<TArg> strategy)
@@ -101,7 +99,8 @@ namespace Decoratid.Idioms.Intercepting
         }
         public InterceptLayer<TArg, TResult> SetAction(Func<TArg, TResult> action)
         {
-            this.Action = action.MakeLogicOfTo();
+            if (action != null)
+                this.Action = action.MakeLogicOfTo();
             return this;
         }
         public InterceptLayer<TArg, TResult> SetAction(LogicOfTo<TArg, TResult> action)
@@ -111,7 +110,8 @@ namespace Decoratid.Idioms.Intercepting
         }
         public InterceptLayer<TArg, TResult> SetResultDecoration(Func<TResult, TResult> strategy)
         {
-            this.ResultDecorator = strategy.MakeLogicOfTo();
+            if (strategy != null)
+                this.ResultDecorator = strategy.MakeLogicOfTo();
             return this;
         }
         public InterceptLayer<TArg, TResult> SetResultDecoration(LogicOfTo<TResult, TResult> strategy)
@@ -121,7 +121,8 @@ namespace Decoratid.Idioms.Intercepting
         }
         public InterceptLayer<TArg, TResult> SetResultValidation(Action<TResult> strategy)
         {
-            this.ResultValidator = strategy.MakeLogicOf();
+            if (strategy != null)
+                this.ResultValidator = strategy.MakeLogicOf();
             return this;
         }
         public InterceptLayer<TArg, TResult> SetResultValidation(LogicOf<TResult> strategy)

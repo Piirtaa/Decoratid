@@ -47,6 +47,8 @@ namespace Decoratid.Idioms.Intercepting
         public IValueOf<TArg> DecoratedArg { get; private set; }
         public ILogic DecoratedLogic { get; private set; }
         public IValueOf<TResult> DecoratedResult { get; private set; }
+        public TArg ProcessedArg { get; private set; }
+        public TResult ProcessedResult { get; private set; }
         #endregion
 
         #region Methods
@@ -67,7 +69,7 @@ namespace Decoratid.Idioms.Intercepting
                 throw;
             }
 
-            return this.DecoratedResult.GetValue();
+            return this.ProcessedResult;
         }
         /// <summary>
         /// builds up the arg as a ValueOf with a bunch of adjustments and observers
@@ -134,33 +136,32 @@ namespace Decoratid.Idioms.Intercepting
         /// <summary>
         /// invokes the arg decorations, then the logic decorations, then invokes the logic
         /// </summary>
-        private void PerformDecorated()
+        private TResult PerformDecorated()
         {
             this.Logger.Do((x) => x.LogVerbose("PerformDecorated started", null));
 
             this.Logger.Do((x) => x.LogVerbose("Arg", this.Arg));
-            var arg = this.DecoratedArg.GetValue(); //invoke arg decoration chain
-            this.Logger.Do((x) => x.LogVerbose("DecoratedArg", arg));
+            this.ProcessedArg = this.DecoratedArg.GetValue(); //invoke arg decoration chain
+            this.Logger.Do((x) => x.LogVerbose("ProcessedArg", this.ProcessedArg));
 
             ILogicOf<TArg> logicOf = (ILogicOf<TArg>)this.DecoratedLogic;
-            logicOf.Context = arg.AsNaturalValue();
+            logicOf.Context = this.ProcessedArg.AsNaturalValue();
             this.Logger.Do((x) => x.LogVerbose("Logic context set", null));
 
             ILogicTo<TResult> logicTo = (ILogicTo<TResult>)this.DecoratedLogic;
             logicTo.Perform();
             this.Logger.Do((x) => x.LogVerbose("Logic performed", null));
 
-            var result = logicTo.Result;
-            this.Result = result;
-            this.Logger.Do((x) => x.LogVerbose("Result", result));
+            this.Result = logicTo.Result;
+            this.Logger.Do((x) => x.LogVerbose("Result", this.Result));
 
             //decorate the result
             this.Logger.Do((x) => x.LogVerbose("Decorate result started", null));
             var intercepts = this.InterceptChain.Layers;
 
-            if (result != null)
+            if (this.Result != null)
             {
-                IValueOf<TResult> resultOf = result.AsNaturalValue();
+                IValueOf<TResult> resultOf = this.Result.AsNaturalValue();
 
                 //decorate the adjustments
                 intercepts.WithEach((intercept) =>
@@ -185,11 +186,13 @@ namespace Decoratid.Idioms.Intercepting
 
 
                 this.DecoratedResult = resultOf;
-                var decRes = resultOf.GetValue(); //invoke the decorations
+                this.ProcessedResult = resultOf.GetValue(); //invoke the decorations
 
-                this.Logger.Do((x) => x.LogVerbose("DecoratedResult", decRes));
+                this.Logger.Do((x) => x.LogVerbose("ProcessedResult", this.ProcessedResult));
+
             }
 
+            return this.ProcessedResult;
         }
 
         #endregion

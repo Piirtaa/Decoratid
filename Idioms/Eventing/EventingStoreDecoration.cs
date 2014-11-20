@@ -96,14 +96,14 @@ namespace Decoratid.Idioms.Eventing
             if (uow.Error == null)
             {
                 //if the result is nulled, fire the filtered event
-                if (uow.DecoratedResult.GetValue() == null && uow.Result != null)
+                if (uow.ProcessedResult == null && uow.Result != null)
                 {
                     this.ItemRetrievedFiltered.BuildAndFireEventArgs(uow.Result);
                 }
                 else
                 {
 
-                    this.ItemRetrieved.BuildAndFireEventArgs(uow.DecoratedResult.GetValue());
+                    this.ItemRetrieved.BuildAndFireEventArgs(uow.ProcessedResult);
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace Decoratid.Idioms.Eventing
             {
                 //examine the before and after lists to find deletions
                 var origList = uow.Result;
-                var finalList = uow.DecoratedResult.GetValue();
+                var finalList = uow.ProcessedResult;
 
                 var delItems = origList.FindDeletedItems(finalList);
 
@@ -139,7 +139,7 @@ namespace Decoratid.Idioms.Eventing
             {
                 //examine the before and after lists to find deletions
                 var origList = uow.Result;
-                var finalList = uow.DecoratedResult.GetValue();
+                var finalList = uow.ProcessedResult;
 
                 var delItems = origList.FindDeletedItems(finalList);
 
@@ -162,8 +162,8 @@ namespace Decoratid.Idioms.Eventing
             {
                 var origItemsToSave = uow.Arg.ItemsToSave.ToList();
                 var origItemsToDelete = uow.Arg.ItemsToDelete.ToList();
-                var finalItemsToSave = uow.DecoratedArg.GetValue().ItemsToSave.ToList();
-                var finalItemsToDelete = uow.DecoratedArg.GetValue().ItemsToDelete.ToList();
+                var finalItemsToSave = uow.ProcessedArg.ItemsToSave.ToList();
+                var finalItemsToDelete = uow.ProcessedArg.ItemsToDelete.ToList();
                 var scrubbedItemsToSave = origItemsToSave.FindDeletedItems(finalItemsToSave);
                 var scrubbedItemsToDel = origItemsToDelete.FindDeletedItems(finalItemsToDelete);
 

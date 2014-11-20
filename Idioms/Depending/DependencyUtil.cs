@@ -31,8 +31,8 @@ namespace Decoratid.Idioms.Depending
             {
                 if (x.Dependency != null)
                 {
-                    map[x.Dependency.Self] = x;
-                    deps.Add(x.Dependency);
+                    map[x.Dependency.Self] = x; //key each item by the Self dependency value
+                    deps.Add(x.Dependency); //aggregate list of the dependencies themselves (which we will later sort and then pull values from using the keyed map above)
                 }
             });
 

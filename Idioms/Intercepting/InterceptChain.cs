@@ -21,7 +21,7 @@ namespace Decoratid.Idioms.Intercepting
     /// </summary>
     /// <remarks>
     /// </remarks>
-    public class InterceptChain<TArg, TResult> 
+    public class InterceptChain<TArg, TResult> : IInterceptChain<TArg, TResult>
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -30,7 +30,7 @@ namespace Decoratid.Idioms.Intercepting
         #region Ctor
         public InterceptChain(Func<TArg, TResult> functionToIntercept)
         {
-            this.Store = new NaturalInMemoryStore();
+            this.Store = NaturalInMemoryStore.New();
             Condition.Requires(functionToIntercept).IsNotNull();
             this.FunctionToIntercept = functionToIntercept.MakeLogicOfTo();
         }
@@ -154,7 +154,6 @@ namespace Decoratid.Idioms.Intercepting
 
             return list;
         }
-
         #endregion
 
         #region Methods
