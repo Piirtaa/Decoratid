@@ -21,6 +21,7 @@
 //        public Test()
 //            : base(LogicOf<IStore>.New((x) =>
 //            {
+//                x.Clear();
 //                var thing = AsId<string>.New("asId1");
 //                var soid = thing.GetStoredObjectId();
 
@@ -48,6 +49,7 @@
 //                //now pull from the store.  it should be null
 //                var item = store.Get<AsId<string>>("asId1");
 //                Assert.True(item == null);
+//                store.Dispose();
 
 //                //2. create an evicting store with a 3 second eviction
 //                store = new NaturalInMemoryStore().EvictingInMemory(
@@ -76,8 +78,7 @@
 //                item = store.Get<AsId<string>>("asId1");
 //                Assert.True(item == null);
 
-//                //cleanup
-//                x.DeleteItem(soid);
+//                store.Dispose();
 //            }))
 //        {
 //        }

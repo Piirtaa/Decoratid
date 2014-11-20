@@ -28,7 +28,7 @@ namespace Decoratid.Idioms.Backgrounding
     /// <typeparam name="TValue"></typeparam>
     /// 
     [Serializable]
-    public class PollingStoreDecoration : DecoratedStoreBase, IPollingStore//, IHasHydrationMap
+    public class PollingStoreDecoration : DecoratedStoreBase, IPollingStore
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -51,13 +51,13 @@ namespace Decoratid.Idioms.Backgrounding
         #region ISerializable
         protected PollingStoreDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
-       {
+        {
             this.BackgroundHost = (BackgroundHost)info.GetValue("BackgroundHost", typeof(BackgroundHost));
             this.BackgroundStrategy = (LogicOf<IStore>)info.GetValue("BackgroundStrategy", typeof(LogicOf<IStore>));
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("BackgroundHost",BackgroundHost);
+            info.AddValue("BackgroundHost", BackgroundHost);
             info.AddValue("BackgroundStrategy", BackgroundStrategy);
             base.ISerializable_GetObjectData(info, context);
         }
@@ -110,10 +110,13 @@ namespace Decoratid.Idioms.Backgrounding
                     this.BackgroundHost = null;
                 }
 
-                backgroundAction.Context = (this as IStore).AsNaturalValue();
+                if (backgroundAction != null)
+                {
+                    backgroundAction.Context = (this.Decorated).AsNaturalValue();
 
-                this.BackgroundHost = new BackgroundHost(true, backgroundIntervalMSecs,
-                    backgroundAction);
+                    this.BackgroundHost = new BackgroundHost(true, backgroundIntervalMSecs,
+                        backgroundAction);
+                }
             }
         }
         #endregion

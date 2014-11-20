@@ -89,6 +89,8 @@ namespace Decoratid.Idioms.Backgrounding
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
+
                 //create store that polls every 5 secs
                 var store = x.Polls();
                 store.SetBackgroundAction(LogicOf<IStore>.New((s) =>
@@ -123,6 +125,8 @@ namespace Decoratid.Idioms.Backgrounding
                 //pull from the store, which is empty.  it should factory the item up
                 clone = store.Get<AsId<string>>("asId1");
                 Assert.True(clone != null);
+
+                store.Dispose();
             })) { }
     }
 

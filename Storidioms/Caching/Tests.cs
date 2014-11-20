@@ -22,6 +22,7 @@ namespace Decoratid.Storidioms.Caching
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var thing = AsId<string>.New("asId1");
                 var soid = thing.GetStoredObjectId();
 
@@ -59,7 +60,7 @@ namespace Decoratid.Storidioms.Caching
                 Assert.True(item != null);
 
                 //cleanup
-                store.DeleteItem(soid);
+                store.Dispose();
             }))
         {
         }

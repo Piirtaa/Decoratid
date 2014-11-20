@@ -19,6 +19,7 @@ namespace Decoratid.Storidioms.AuditTrail
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var thing = AsId<string>.New("asId1");
                 var soid = thing.GetStoredObjectId();
 
@@ -46,7 +47,7 @@ namespace Decoratid.Storidioms.AuditTrail
                 auditItems = store.AuditStore.GetAll();
                 Assert.True(auditItems[4].Mode == StoredItemAccessMode.Delete && auditItems[4].ObjRef.Equals(soid));
 
-
+                store.Dispose();
             }))
         {
         }

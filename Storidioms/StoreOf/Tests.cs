@@ -40,6 +40,7 @@ namespace Decoratid.Storidioms.StoreOf
         public StoreOfTest()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var store = x.IsOf<BaseThing>();
 
                 BaseThing thing1 = new BaseThing() { Data = "data", Id = "thing1" };
@@ -67,6 +68,7 @@ namespace Decoratid.Storidioms.StoreOf
         public StoreOfExactlyTest()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var store = x.IsExactlyOf<BaseThing>();
 
                 BaseThing thing1 = new BaseThing() { Data = "data", Id = "thing1" };
@@ -99,6 +101,7 @@ namespace Decoratid.Storidioms.StoreOf
         public StoreOfUniqueIdTest()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var store = x.IsOfUniqueId<BaseThing>();
 
                 BaseThing thing1 = new BaseThing() { Data = "data", Id = "thing1" };
@@ -127,7 +130,7 @@ namespace Decoratid.Storidioms.StoreOf
     //    public Test()
     //        : base(LogicOf<IStore>.New((x) =>
     //        {
-
+    //                x.Clear();
     //            ////create a store of contextual things 
     //            //var storeOf = NaturalInMemoryStore.New().IsOf<IContextualHasId>();
 

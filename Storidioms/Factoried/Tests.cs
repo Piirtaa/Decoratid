@@ -18,6 +18,7 @@ namespace Decoratid.Storidioms.Factoried
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
+                x.Clear();
                 var store = x.HasFactory(LogicOfTo<IStoredObjectId, IHasId>.New((soId) =>
                 {
 
@@ -42,8 +43,7 @@ namespace Decoratid.Storidioms.Factoried
                 Assert.True(item != null);
 
                 //cleanup
-                store.DeleteItem(item.GetStoredObjectId());
-                Assert.True(true);
+                store.Dispose();
             }))
         {
         }

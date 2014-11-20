@@ -81,7 +81,7 @@ namespace Decoratid.Idioms.Eventing
         public Test()
             : base(LogicOf<IStore>.New((x) =>
             {
-
+                x.Clear();
                 var thing = AsId<string>.New("asId1");
                 var filteredThing = AsId<string>.New("asId2_filtered");
 
@@ -123,6 +123,7 @@ namespace Decoratid.Idioms.Eventing
                 store.SaveItem(thing);
                 store.SaveItem(filteredThing);
                 Assert.True(saveFiltFlag && saveFlag);
+                store.Dispose();
 
                 //2. test delete events - don't delete items with ids ending in "_filtered"
                 store = x.DecorateWithEvents(StoreLogger.NewInMemory());
@@ -163,6 +164,7 @@ namespace Decoratid.Idioms.Eventing
                 store.DeleteItem(thing.GetStoredObjectId());
                 store.DeleteItem(filteredThing.GetStoredObjectId());
                 Assert.True(delFiltFlag && delFlag);
+                store.Dispose();
 
                 //3. test retrieve events - don't get items with ids ending in "_filtered"
                 store = x.DecorateWithEvents(StoreLogger.NewInMemory());
@@ -237,6 +239,7 @@ namespace Decoratid.Idioms.Eventing
                 store.Get(thing.GetStoredObjectId());
                 store.Get(filteredThing.GetStoredObjectId());
                 Assert.True(retFiltFlag && retFlag);
+                store.Dispose();
             }))
         {
         }

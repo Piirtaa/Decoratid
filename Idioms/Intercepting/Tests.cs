@@ -23,7 +23,7 @@
 //        public Test()
 //            : base(LogicOf<IStore>.New((x) =>
 //            {
-
+ //               x.Clear();
 //                var store = x.Intercepting(FileLoggerUtil.GetFileLogger("storeinttest.txt"));
 
 //                //build a commit interception that:
@@ -66,6 +66,8 @@
 //                Assert.True(clone != null);
 
 //                //TODO: test all intercepts, not just Commit
+
+//                store.Dispose();
 //            }))
 //        {
 //        }

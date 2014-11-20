@@ -203,29 +203,37 @@ namespace Decoratid.Storidioms.Evicting
             List<ContextualIHasIdDecoration> itemsToEvict = new List<ContextualIHasIdDecoration>();
 
             //search the eviction store for evicts
-            var evictions = this.ExpirableStore.GetAll<ContextualIHasIdDecoration>();
+            var evictions = this.ExpirableStore.GetAll();
 
             foreach (var each in evictions)
             {
-                if (each.Context != null)
+                var eachItem = each as ContextualIHasIdDecoration;
+                if (eachItem != null && eachItem.Context != null)
                 {
-                    IExpirable exp = each.Context as IExpirable;
+                    IExpirable exp = eachItem.Context as IExpirable;
                     if (exp.IsExpired())
                     {
-                        itemsToEvict.Add(each);
+                        itemsToEvict.Add(eachItem);
                     }
                 }
             }
 
             //build deletes and commit them
-            var evictCommitBag = new CommitBag();
+            var mainCommitBag = new CommitBag();
+            var expCommitBag = new CommitBag(); 
             itemsToEvict.WithEach(x =>
             {
                 StoredObjectId soid = x.Id as StoredObjectId;
-                evictCommitBag.MarkItemDeleted(soid);
+                mainCommitBag.MarkItemDeleted(soid);
+                expCommitBag.MarkItemDeleted(x.GetStoredObjectId());
             });
-            this.Commit(evictCommitBag);
 
+            //remove the item specified by the expirable policy.  
+            this.Commit(mainCommitBag);
+
+            //now delete from the expiry store
+            this.ExpirableStore.Commit(expCommitBag);
+            
             //raise events (outside of state lock)
             itemsToEvict.WithEach(x =>
             {
