@@ -15,10 +15,10 @@ namespace Decoratid.Idioms.Identifying
     /// <summary>
     /// holds the next starting id (of type long) to be brokered out from, for an entry of a given generatorId 
     /// </summary>
-    public class LongIdGenerationEntry : IHasId<string>
+    public class LongIdGeneratorState : IHasId<string>
     {
         #region Ctor
-        public LongIdGenerationEntry(string generatorId, Int64 nextId)
+        public LongIdGeneratorState(string generatorId, Int64 nextId)
         {
             Condition.Requires(generatorId).IsNotNullOrEmpty();
             this.Id = generatorId;
@@ -106,11 +106,11 @@ namespace Decoratid.Idioms.Identifying
                 try
                 {
                     //get the id status from the store
-                    LongIdGenerationEntry idEntry = _store.Get<LongIdGenerationEntry>(_generatorId);
+                    LongIdGeneratorState idEntry = _store.Get<LongIdGeneratorState>(_generatorId);
                     if (idEntry == null)
                     {
                         //don't have an id?  make a new one and save it to the store
-                        idEntry = new LongIdGenerationEntry(_generatorId, 1);
+                        idEntry = new LongIdGeneratorState(_generatorId, 1);
                         idEntry.DateCreated = DateTime.UtcNow;
                         _store.SaveItem(idEntry);
                     }

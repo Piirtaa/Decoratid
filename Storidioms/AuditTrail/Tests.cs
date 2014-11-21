@@ -23,7 +23,7 @@ namespace Decoratid.Storidioms.AuditTrail
                 var thing = AsId<string>.New("asId1");
                 var soid = thing.GetStoredObjectId();
 
-                var store = x.BasicAudit(NaturalInMemoryStore.New().IsOf<StoredItemAuditPoint>());
+                var store = x.BasicAudit(NamedNaturalInMemoryStore.New("auditstore").IsOf<StoredItemAuditPoint>());
 
                 //do some stuff..all of this should be tracked
                 store.SaveItem(thing);

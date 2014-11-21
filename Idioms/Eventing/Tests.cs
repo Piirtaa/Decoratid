@@ -86,7 +86,7 @@ namespace Decoratid.Idioms.Eventing
                 var filteredThing = AsId<string>.New("asId2_filtered");
 
                 //1. test save events - don't save items with id's ending in "_filtered"
-                var store = x.DecorateWithEvents(StoreLogger.NewInMemory());
+                var store = x.DecorateWithEvents(DebugLogger.New());
 
                 store.CommitOperationIntercept.AddNextIntercept("intercept1", (o) =>
                 {
@@ -126,7 +126,7 @@ namespace Decoratid.Idioms.Eventing
                 store.Dispose();
 
                 //2. test delete events - don't delete items with ids ending in "_filtered"
-                store = x.DecorateWithEvents(StoreLogger.NewInMemory());
+                store = x.DecorateWithEvents(DebugLogger.New());
                 store.CommitOperationIntercept.AddNextIntercept("intercept1",
                 (o) =>
                 {
@@ -167,7 +167,7 @@ namespace Decoratid.Idioms.Eventing
                 store.Dispose();
 
                 //3. test retrieve events - don't get items with ids ending in "_filtered"
-                store = x.DecorateWithEvents(StoreLogger.NewInMemory());
+                store = x.DecorateWithEvents(DebugLogger.New());
 
                 //do get all first
                 store.GetAllOperationIntercept.AddNextIntercept("intercept1", null, null, null,

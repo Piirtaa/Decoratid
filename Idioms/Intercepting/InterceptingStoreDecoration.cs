@@ -131,16 +131,32 @@ namespace Decoratid.Idioms.Intercepting
         #region IStore Overrides
         public override IHasId Get(IStoredObjectId soId)
         {
-            return this.GetOperationIntercept.Perform(soId, this.Logger);
+            var uow = this.GetOperationIntercept.Perform(soId);
+            if (uow.Error != null)
+            {
+                var errorStack = string.Join(Environment.NewLine, uow.LogEntries.ToArray());
+                this.Logger.LogError("intercept error", errorStack, uow.Error);
+
+                throw new InvalidOperationException("intercept error", uow.Error);
+            }
+
+            return uow.ProcessedResult;
         }
         public override List<T> Search<T>(SearchFilter filter)
         {
             //execute it
-            var list = this.SearchOperationIntercept.Perform(new Tuple<Type, SearchFilter>(typeof(T), filter), this.Logger);
+            var uow = this.SearchOperationIntercept.Perform(new Tuple<Type, SearchFilter>(typeof(T), filter));
+            if (uow.Error != null)
+            {
+                var errorStack = string.Join(Environment.NewLine, uow.LogEntries.ToArray());
+                this.Logger.LogError("intercept error", errorStack, uow.Error);
+
+                throw new InvalidOperationException("intercept error", uow.Error);
+            }
 
             List<T> returnValue = new List<T>();
             //convert to list of T
-            list.WithEach(x =>
+            uow.ProcessedResult.WithEach(x =>
             {
                 returnValue.Add((T)x);
             });
@@ -148,11 +164,26 @@ namespace Decoratid.Idioms.Intercepting
         }
         public override void Commit(ICommitBag bag)
         {
-            this.CommitOperationIntercept.Perform(bag, this.Logger);
+            var uow = this.CommitOperationIntercept.Perform(bag);
+            if (uow.Error != null)
+            {
+                var errorStack = string.Join(Environment.NewLine, uow.LogEntries.ToArray());
+                this.Logger.LogError("intercept error", errorStack, uow.Error);
+
+                throw new InvalidOperationException("intercept error", uow.Error);
+            }
         }
         public override List<IHasId> GetAll()
         {
-            return this.GetAllOperationIntercept.Perform(Nothing.VOID, this.Logger);
+            var uow = this.GetAllOperationIntercept.Perform(Nothing.VOID);
+            if (uow.Error != null)
+            {
+                var errorStack = string.Join(Environment.NewLine, uow.LogEntries.ToArray());
+                this.Logger.LogError("intercept error", errorStack, uow.Error);
+
+                throw new InvalidOperationException("intercept error", uow.Error);
+            }
+            return uow.ProcessedResult;
         }
         #endregion
 

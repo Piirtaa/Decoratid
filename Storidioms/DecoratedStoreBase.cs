@@ -49,7 +49,7 @@ namespace Decoratid.Storidioms
         public virtual IHasId Get(IStoredObjectId soId)
         {
 #if DEBUG
-            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store getting {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, soId.With(x => x.ToString())));
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get starts {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, soId.With(x => x.ToString())));
 #endif
 
             var rv = this.Decorated.Get(soId);
@@ -62,7 +62,7 @@ namespace Decoratid.Storidioms
         public virtual List<T> Search<T>(SearchFilter filter) where T : IHasId
         {
 #if DEBUG
-            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store searching", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
             var rv = this.Decorated.Search<T>(filter);
 #if DEBUG
@@ -70,6 +70,8 @@ namespace Decoratid.Storidioms
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
+
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
             return rv;
         }
@@ -77,6 +79,8 @@ namespace Decoratid.Storidioms
         public virtual void Commit(ICommitBag bag)
         {
 #if DEBUG
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store commit starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+
             bag.ItemsToSave.WithEach(x =>
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store saving {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
@@ -87,11 +91,15 @@ namespace Decoratid.Storidioms
             });
 #endif
             this.Decorated.Commit(bag);
+
+#if DEBUG
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store commit ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+#endif
         }
         public virtual List<IHasId> GetAll()
         {
 #if DEBUG
-            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
             var rv = this.Decorated.GetAll();
 #if DEBUG
@@ -99,6 +107,9 @@ namespace Decoratid.Storidioms
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
+
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+
 #endif
             return rv;
         }

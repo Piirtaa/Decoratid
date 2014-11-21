@@ -4,6 +4,7 @@ using Decoratid.Core.Logical;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Idioms.Depending;
 using System;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.Intercepting
 {
@@ -53,6 +54,20 @@ namespace Decoratid.Idioms.Intercepting
             Condition.Requires(id).IsNotNullOrEmpty();
             this.Id = id;
             this.Dependency = new DependencyOf<string>(this.Id);
+        }
+        #endregion
+
+        #region Clone
+        public InterceptLayer<TArg, TResult> Clone()
+        {
+            InterceptLayer<TArg, TResult> rv = new InterceptLayer<TArg, TResult>(this.Id);
+            rv.ArgDecorator = this.ArgDecorator.With(x => x.Clone() as LogicOfTo<TArg, TArg>);
+            rv.ArgValidator = this.ArgValidator.With(x => x.Clone() as LogicOf<TArg>);
+            rv.Action = this.Action.With(x => x.Clone() as LogicOfTo<TArg, TResult>);
+            rv.ResultDecorator = this.ResultDecorator.With(x => x.Clone() as LogicOfTo<TResult, TResult>);
+            rv.ResultValidator = this.ResultValidator.With(x => x.Clone() as LogicOf<TResult>);
+            rv.Id = this.Id;
+            return rv;
         }
         #endregion
 

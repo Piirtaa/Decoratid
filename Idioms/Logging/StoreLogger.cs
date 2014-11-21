@@ -4,6 +4,8 @@ using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Identifying;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Decoratid.Idioms.Logging
 {
@@ -26,10 +28,26 @@ namespace Decoratid.Idioms.Logging
         public IStore Store { get; private set; }
         #endregion
 
+        #region Calculated Properties
+        public List<string> LogEntries
+        {
+            get
+            {
+                List<string> rv = new List<string>();
+                var items = this.Store.GetAll<LogEntry>().OrderBy(x => x.Id);
+                items.WithEach(x =>
+                {
+                    rv.Add(x.ToString());
+                });
+                return rv;
+            }
+        }
+        #endregion
+
         #region ILogger
         public void Log(int logLevel, string message, object data)
         {
-            this.Store.SaveItem(new LogEntry() { Id=this.IdGen.NextId(), Data = data, LogLevel = logLevel, Message = message });
+            this.Store.SaveItem(new LogEntry() { Id = this.IdGen.NextId(), Data = data, LogLevel = logLevel, Message = message });
         }
         public void Log(int logLevel, string message, object data, Exception ex)
         {
@@ -41,10 +59,6 @@ namespace Decoratid.Idioms.Logging
         public static StoreLogger New(IStore store)
         {
             return new StoreLogger(store);
-        }
-        public static StoreLogger NewInMemory()
-        {
-            return new StoreLogger(NaturalInMemoryStore.New());
         }
         #endregion
     }
@@ -72,6 +86,17 @@ namespace Decoratid.Idioms.Logging
         object IHasId.Id
         {
             get { return this.Id; }
+        }
+        #endregion
+
+        #region Overrides
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
+        }
+        public override string ToString()
+        {
+            return string.Join(",", this.Id, this.UnixTime, this.LogLevel, this.Message, this.Data, this.Exception);
         }
         #endregion
     }

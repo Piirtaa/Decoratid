@@ -117,41 +117,6 @@ namespace Decoratid.Storidioms.Caching
             Condition.Requires(decorated).IsNotNull();
             return new CacheDecoration(decorated, cachingStore);
         }
-        /// <summary>
-        /// adds an inmemory cache with the specified policy and ticker resolution
-        /// </summary>
-        /// <param name="decorated"></param>
-        /// <param name="defaultItemEvictionConditionFactory"></param>
-        /// <param name="backgroundIntervalMSecs"></param>
-        /// <returns></returns>
-        public static CacheDecoration CachingInMemory(this IStore decorated,
-            LogicOfTo<IHasId, IExpirable> defaultItemEvictionConditionFactory,
-            double backgroundIntervalMSecs = 30000)
-        {
-            Condition.Requires(decorated).IsNotNull();
-
-            //build the evicting store 
-            var evictingStore = new NaturalInMemoryStore().EvictingInMemory(defaultItemEvictionConditionFactory, backgroundIntervalMSecs);
-            return new CacheDecoration(decorated, evictingStore);
-        }
-        ///// <summary>
-        ///// adds an inmemory cache with a floating expiry policy
-        ///// </summary>
-        ///// <param name="decorated"></param>
-        ///// <param name="secondsToCache"></param>
-        ///// <returns></returns>
-        //public static CacheDecoration FloatingCachingInMemory(this IStore decorated, int secondsToCache, int secondsToFloat)
-        //{
-        //    Condition.Requires(decorated).IsNotNull();
-
-        //    var evictingStore = new NaturalInMemoryStore().Evicting(new NaturalInMemoryStore(),
-        //                LogicOfTo<IHasId, IExpirable>.New((it) =>
-        //                {
-        //                    var expiry = EvictionPolicy.BuildFloatingExpirable(DateTime.UtcNow.AddSeconds(secondsToCache), secondsToFloat);
-        //                    return expiry;
-        //                }), 5000);
-        //    return new CacheDecoration(decorated, evictingStore);
-        //}
     }
 
 }

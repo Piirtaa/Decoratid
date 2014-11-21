@@ -27,7 +27,7 @@ namespace Decoratid.Storidioms.Evicting
 
                 //1. create an evicting store that always evicts (which means the item cannot be retrieved once it is committed, and it will live
                 //  in the store until the next poll @ .1 second intervals)
-                var store = x.EvictingInMemory(
+                var store = x.Evicting(NamedNaturalInMemoryStore.New("eviction condition store"),
                 LogicOfTo<IHasId, IExpirable>.New((it) =>
                 {
                     return NaturalTrueExpirable.New();
@@ -52,7 +52,7 @@ namespace Decoratid.Storidioms.Evicting
                 store.Dispose();
 
                 //2. create an evicting store with a 3 second eviction
-                store = new NaturalInMemoryStore().EvictingInMemory(
+                store = new NaturalInMemoryStore().Evicting(NamedNaturalInMemoryStore.New("eviction condition store"),
                 LogicOfTo<IHasId, IExpirable>.New((it) =>
                 {
                     return NaturalTrueExpirable.New().DecorateWithDateExpirable(DateTime.Now.AddSeconds(3));

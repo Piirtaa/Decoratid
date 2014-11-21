@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core.ValueOfing;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -31,8 +32,10 @@ namespace Decoratid.Idioms.Testing
         #region ITestOf
         public void Test(T arg)
         {
-            Debug.WriteLine("starting test " + this.GetType());
+            Thread.Sleep(1000);
+            Debug.WriteLine(string.Format("-------- Thread {0} starting test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
             this.TestLogic.CloneAndPerform(arg.AsNaturalValue());
+            Debug.WriteLine(string.Format("-------- Thread {0} ending test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
         }
         #endregion
     }

@@ -110,6 +110,7 @@
     <Compile Include="Idioms\Identifying\HasIPDecoration.cs" />
     <Compile Include="Idioms\Identifying\Tests.cs" />
     <Compile Include="Idioms\Intercepting\Tests.cs" />
+    <Compile Include="Idioms\Logging\DebugLogger.cs" />
     <Compile Include="Idioms\Logging\FileLogger.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\OperationProtocoling\Interfaces.cs" />

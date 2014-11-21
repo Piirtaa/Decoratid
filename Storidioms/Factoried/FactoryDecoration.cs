@@ -24,7 +24,7 @@ namespace Decoratid.Storidioms.Factoried
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class FactoryDecoration : DecoratedStoreBase, IFactoryStore//, IHasHydrationMap
+    public class FactoryDecoration : DecoratedStoreBase, IFactoryStore
     {
         #region Declarations
         private readonly object _stateLock = new object();
@@ -64,26 +64,6 @@ namespace Decoratid.Storidioms.Factoried
             return returnValue;
         }
         #endregion
-
-        //#region IHasHydrationMap
-        //public virtual IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<FactoryDecoration>();
-        //    hydrationMap.RegisterDefault("Factory", x => x.Factory, (x, y) => { x.Factory = y as LogicOfTo<IStoredObjectId, IHasId>; });
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-        //#region IDecorationHydrateable
-        //public override string DehydrateDecoration(IGraph uow = null)
-        //{
-        //    return this.GetHydrationMap().DehydrateValue(this, uow);
-        //}
-        //public override void HydrateDecoration(string text, IGraph uow = null)
-        //{
-        //    this.GetHydrationMap().HydrateValue(this, text, uow);
-        //}
-        //#endregion
 
         #region Overrides
         /// <summary>

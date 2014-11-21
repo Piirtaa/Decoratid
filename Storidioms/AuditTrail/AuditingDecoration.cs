@@ -24,9 +24,9 @@ namespace Decoratid.Storidioms.AuditTrail
         #endregion
 
         #region Ctor
-        public AuditingDecoration(IStoreOf<TAuditPoint> auditStore,
-            Func<IHasId, StoredItemAccessMode, TAuditPoint> auditItemBuildStrategy,
-            IStore decorated)
+        public AuditingDecoration(
+            IStore decorated, IStoreOf<TAuditPoint> auditStore,
+            Func<IHasId, StoredItemAccessMode, TAuditPoint> auditItemBuildStrategy)
             : base(decorated)
         {
             Condition.Requires(auditStore).IsNotNull();
@@ -60,7 +60,7 @@ namespace Decoratid.Storidioms.AuditTrail
         #region IDecoratedStore
         public override IDecorationOf<IStore> ApplyThisDecorationTo(IStore store)
         {
-            var returnValue = new AuditingDecoration<TAuditPoint>(this.AuditStore, this.AuditItemFactory, store);
+            var returnValue = new AuditingDecoration<TAuditPoint>(store, this.AuditStore, this.AuditItemFactory);
             return returnValue;
         }
         #endregion
@@ -138,7 +138,7 @@ namespace Decoratid.Storidioms.AuditTrail
                 where TAuditPoint : IStoredItemAuditPoint
         {
             Condition.Requires(decorated).IsNotNull();
-            return new AuditingDecoration<TAuditPoint>(auditStore, auditItemBuildStrategy, decorated);
+            return new AuditingDecoration<TAuditPoint>(decorated, auditStore, auditItemBuildStrategy);
         }
         /// <summary>
         /// adds an auditing decoration of StoredItemAuditPoint.  Apply after all data modifying decorations.
@@ -150,8 +150,8 @@ namespace Decoratid.Storidioms.AuditTrail
      IStoreOf<StoredItemAuditPoint> auditStore)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new AuditingDecoration<StoredItemAuditPoint>(auditStore,
-                StoredItemAuditPoint.GetBuilderFunction(), decorated);
+            return new AuditingDecoration<StoredItemAuditPoint>(decorated, auditStore,
+                StoredItemAuditPoint.GetBuilderFunction() );
         }
     }
 }

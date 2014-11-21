@@ -6,6 +6,7 @@ using Decoratid.Idioms.Depending;
 using Decoratid.Idioms.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Decoratid.Idioms.Intercepting
@@ -30,21 +31,27 @@ namespace Decoratid.Idioms.Intercepting
         #region Ctor
         public InterceptChain(Func<TArg, TResult> functionToIntercept)
         {
-            this.Store = NaturalInMemoryStore.New();
+            this.Store = NamedNaturalInMemoryStore.New("interceptstore");
             Condition.Requires(functionToIntercept).IsNotNull();
             this.FunctionToIntercept = functionToIntercept.MakeLogicOfTo();
         }
         #endregion
 
-        
+
         #region Properties
-        protected IStore Store { get;  set; }
+        protected IStore Store { get; set; }
         public LogicOfTo<TArg, TResult> FunctionToIntercept { get; private set; }
         public List<InterceptLayer<TArg, TResult>> Layers
         {
             get
             {
-                return this.GetLayers();
+                var layers = this.GetLayers();
+                List<InterceptLayer<TArg, TResult>> rv = new List<InterceptLayer<TArg, TResult>>();
+                layers.WithEach(x =>
+                {
+                    rv.Add(x.Clone());
+                });
+                return rv;
             }
         }
         #endregion
@@ -94,7 +101,7 @@ namespace Decoratid.Idioms.Intercepting
             });
             return this;
         }
-        
+
         /// <summary>
         /// Adds an intercept around the last, currently most dependent intercept
         /// </summary>
@@ -112,7 +119,7 @@ namespace Decoratid.Idioms.Intercepting
                 Func<TResult, TResult> resultDecorator,
                 Action<TResult> resultValidator)
         {
-            
+
             var list = this.GetLayers();
             var last = list.LastOrDefault();
             if (last == null)
@@ -145,7 +152,7 @@ namespace Decoratid.Idioms.Intercepting
             return this;
         }
         #endregion
-        
+
         #region Helpers
         private List<InterceptLayer<TArg, TResult>> GetLayers()
         {
@@ -162,28 +169,27 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public TResult Perform(TArg arg, ILogger logger)
+        public InterceptUnitOfWork<TArg, TResult> Perform(TArg arg)
         {
-            TResult returnValue = default(TResult);
+            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this.Layers,
+                this.FunctionToIntercept.Clone() as LogicOfTo<TArg,TResult>, arg);
 
-            InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this, arg, logger);
+            uow.Perform();
 
-            try
+#if DEBUG
+            if (uow.Error != null)
             {
-                returnValue = uow.Perform();
+                Debug.WriteLine("intercept error");
+                uow.LogEntries.WithEach(x =>
+                {
+                    Debug.WriteLine(x);
+                });
             }
-            catch(Exception ex)
-            {
-                logger.LogError("InterceptChain Perform error", arg, ex);
-                throw;
-            }
-            finally
-            {
-                //fire events
-                this.Completed.BuildAndFireEventArgs(uow);
-            }
+#endif
+            //fire events
+            this.Completed.BuildAndFireEventArgs(uow);
 
-            return returnValue;
+            return uow;
         }
         #endregion
     }

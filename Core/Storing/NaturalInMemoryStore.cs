@@ -56,7 +56,7 @@ namespace Decoratid.Core.Storing
             Type filterType = typeof(T);
 
 #if DEBUG
-            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store searching", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
 
             //lock and retrieve the values
@@ -84,6 +84,8 @@ namespace Decoratid.Core.Storing
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+
 #endif
 
             return returnValue;
@@ -93,6 +95,8 @@ namespace Decoratid.Core.Storing
             Condition.Requires(bag).IsNotNull();
 
 #if DEBUG
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store commit starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+
             bag.ItemsToSave.WithEach(x =>
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store saving {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
@@ -117,6 +121,10 @@ namespace Decoratid.Core.Storing
                     this.Dictionary[x.GetStoredObjectId()] = x;
                 });
             }
+
+#if DEBUG
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store commit ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+#endif
         }
         #endregion
 
@@ -124,7 +132,7 @@ namespace Decoratid.Core.Storing
         public virtual List<IHasId> GetAll()
         {
 #if DEBUG
-            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif
             var rv = this.Dictionary.Values.ToList();
 #if DEBUG
@@ -132,6 +140,8 @@ namespace Decoratid.Core.Storing
             {
                 Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all returns {3}", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName, x.GetStoredObjectId().ToString()));
             });
+            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all ends", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
+
 #endif
             return rv;
         }

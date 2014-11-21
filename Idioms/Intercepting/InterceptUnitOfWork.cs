@@ -18,29 +18,34 @@ namespace Decoratid.Idioms.Intercepting
     /// </summary>
     /// <typeparam name="TArg"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public class InterceptUnitOfWork<TArg, TResult> : IHasLogger
+    public class InterceptUnitOfWork<TArg, TResult> 
     {
         #region Declarations
         private readonly object _stateLock = new object();
         #endregion
 
         #region Ctor
-        public InterceptUnitOfWork(InterceptChain<TArg, TResult> interceptChain, TArg arg, ILogger logger)
+        public InterceptUnitOfWork(List<InterceptLayer<TArg, TResult>> layers, LogicOfTo<TArg, TResult> functionToIntercept, TArg arg)
         {
-            Condition.Requires(interceptChain).IsNotNull();
+            Condition.Requires(layers).IsNotNull().IsNotEmpty();
+            Condition.Requires(functionToIntercept).IsNotNull();
 
-            this.Logger = logger;
-            this.InterceptChain = interceptChain;
+            //if no logger is provided use an in memory store
+            this.Logger = StoreLogger.New(NamedNaturalInMemoryStore.New("intercept log"));
+
+            this.Layers = layers;
+            this.FunctionToIntercept = functionToIntercept;
             this.Arg = arg;
         }
         #endregion
 
         #region IHasLogger
-        public ILogger Logger { get; private set; }
+        public StoreLogger Logger { get; private set; }
         #endregion
 
         #region Properties
-        public InterceptChain<TArg, TResult> InterceptChain { get; private set; }
+        public List<InterceptLayer<TArg, TResult>> Layers { get; private set; }
+        public LogicOfTo<TArg, TResult> FunctionToIntercept { get; private set; }
         public TArg Arg { get; private set; }
         public TResult Result { get; private set; }
         public Exception Error { get; private set; }
@@ -51,9 +56,20 @@ namespace Decoratid.Idioms.Intercepting
         public TResult ProcessedResult { get; private set; }
         #endregion
 
+        #region Calculated Properties
+        public List<string> LogEntries
+        {
+            get
+            {
+                return (this.Logger as StoreLogger).LogEntries;
+            }
+        }
+        #endregion
+
         #region Methods
         public TResult Perform()
         {
+            this.Logger.Do((x) => x.LogVerbose("Unit of work started", null));
             try
             {
                 //run thru the steps
@@ -64,11 +80,12 @@ namespace Decoratid.Idioms.Intercepting
             catch (Exception ex)
             {
                 this.Error = ex;
-                this.Logger.Do((x) => x.LogError("Unit of work error", this));
-
-                throw;
+                this.Logger.Do((x) => x.LogError("Unit of work error", null, ex));
             }
-
+            finally
+            {
+                this.Logger.Do((x) => x.LogVerbose("Unit of work ended", null));
+            }
             return this.ProcessedResult;
         }
         /// <summary>
@@ -77,7 +94,7 @@ namespace Decoratid.Idioms.Intercepting
         private void DecorateArg()
         {
             this.Logger.Do((x) => x.LogVerbose("DecorateArg started", null));
-            var intercepts = this.InterceptChain.Layers;
+            var intercepts = this.Layers;
 
             //decorate the argument
             IValueOf<TArg> argOf = null;
@@ -115,10 +132,10 @@ namespace Decoratid.Idioms.Intercepting
         {
             this.Logger.Do((x) => x.LogVerbose("DecorateLogic started", null));
 
-            var intercepts = this.InterceptChain.Layers;
+            var intercepts = this.Layers;
 
             //decorate the function
-            ILogic logic = this.InterceptChain.FunctionToIntercept;
+            ILogic logic = this.FunctionToIntercept;
             intercepts.WithEach((intercept) =>
             {
                 if (intercept.Action != null)
@@ -157,7 +174,7 @@ namespace Decoratid.Idioms.Intercepting
 
             //decorate the result
             this.Logger.Do((x) => x.LogVerbose("Decorate result started", null));
-            var intercepts = this.InterceptChain.Layers;
+            var intercepts = this.Layers;
 
             if (this.Result != null)
             {
@@ -184,12 +201,10 @@ namespace Decoratid.Idioms.Intercepting
                 });
                 this.Logger.Do((x) => x.LogVerbose("Decorate result completed", null));
 
-
                 this.DecoratedResult = resultOf;
                 this.ProcessedResult = resultOf.GetValue(); //invoke the decorations
 
                 this.Logger.Do((x) => x.LogVerbose("ProcessedResult", this.ProcessedResult));
-
             }
 
             return this.ProcessedResult;
