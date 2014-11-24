@@ -37,15 +37,15 @@ namespace Decoratid.Core.Conditional.Of
         {
             LogicOfTo<T,bool?> logic = (LogicOfTo<T,bool?>)this.Decorated;
             Condition.Requires(logic).IsNotNull();
-            var rv= logic.CloneAndPerform(context.AsNaturalValue());
-            return rv;
+            var rv = logic.Perform(context) as LogicOfTo<T, bool?>; //note we don't bias the logic
+            return rv.Result;
         }
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

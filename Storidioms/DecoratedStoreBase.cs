@@ -98,6 +98,7 @@ namespace Decoratid.Storidioms
         }
         public virtual List<IHasId> GetAll()
         {
+
 #if DEBUG
             Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store get all starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 #endif

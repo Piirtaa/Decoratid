@@ -34,7 +34,7 @@ namespace Decoratid.Idioms.Testing
         {
             Thread.Sleep(1000);
             Debug.WriteLine(string.Format("-------- Thread {0} starting test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
-            this.TestLogic.CloneAndPerform(arg.AsNaturalValue());
+            this.TestLogic.Perform(arg);
             Debug.WriteLine(string.Format("-------- Thread {0} ending test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
         }
         #endregion

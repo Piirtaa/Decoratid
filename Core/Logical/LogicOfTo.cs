@@ -22,7 +22,7 @@ namespace Decoratid.Core.Logical
             Condition.Requires(function).IsNotNull();
             this.Function = function;
         }
-        public LogicOfTo(Func<TOf, TTo> function, IValueOf<TOf> context)
+        public LogicOfTo(Func<TOf, TTo> function, TOf context)
             : base()
         {
             Condition.Requires(function).IsNotNull();
@@ -37,21 +37,15 @@ namespace Decoratid.Core.Logical
             Condition.Requires(function).IsNotNull();
             return new LogicOfTo<TOf, TTo>(function);
         }
-        public static LogicOfTo<TOf, TTo> New(Func<TOf, TTo> function, IValueOf<TOf> context)
-        {
-            Condition.Requires(function).IsNotNull();
-            Condition.Requires(context).IsNotNull();
-            return new LogicOfTo<TOf, TTo>(function, context);
-        }
         #endregion
 
         #region ISerializable
-        protected LogicOfTo(SerializationInfo info, StreamingContext context)
+        private LogicOfTo(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Function = (Func<TOf, TTo>)info.GetValue("_Function", typeof(Func<TOf, TTo>));
             this.Result = (TTo)info.GetValue("_Result", typeof(TTo));
-            this.Context = (IValueOf<TOf>)info.GetValue("_Context", typeof(IValueOf<TOf>));
+            this.Context = (TOf)info.GetValue("_Context", typeof(TOf));
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -63,30 +57,23 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region IHasContext
-        public IValueOf<TOf> Context { get; set; }
-        object IHasContext.Context { get { return this.Context; } set { this.Context = (IValueOf<TOf>)value; } }
+        public TOf Context { get; set; }
+        object IHasContext.Context { get { return this.Context; } set { if (value != null) { this.Context = (TOf)value; } } }
         #endregion
 
         #region Properties
-        private Func<TOf, TTo> Function { get; set; }
+        internal Func<TOf, TTo> Function { get; set; }
         public TTo Result { get; private set; }
         #endregion
 
         #region ILogic
-        public override void Perform()
+        protected override void perform(object context = null)
         {
-            Condition.Requires(this.Context).IsNotNull();
-
-            var arg = this.Context.GetValue();
-            this.Result = Function(arg);
-        }
-        #endregion
-
-        #region ILogicOf
-        public void SetContextAndPerform(IValueOf<TOf> value)
-        {
-            this.Context = value;
-            this.Perform();
+            if (context != null)
+            {
+                this.Context = ((TOf)context);
+            }
+            this.Result = Function(this.Context);
         }
         #endregion
 
@@ -97,16 +84,6 @@ namespace Decoratid.Core.Logical
         }
         #endregion
 
-        #region Clone and Run
-        public TTo CloneAndPerform(IValueOf<TOf> arg)
-        {
-            LogicOfTo<TOf, TTo> clone = (LogicOfTo<TOf, TTo>)this.Clone();
-            clone.Context = arg;
-            clone.Perform();
-            return clone.Result;
-        }
-        #endregion
-
     }
 
     public static class LogicOfToExtensions
@@ -114,24 +91,12 @@ namespace Decoratid.Core.Logical
         public static Func<Targ, Tres> ToFunc<Targ, Tres>(this LogicOfTo<Targ, Tres> logic)
         {
             if (logic == null) { return null; }
-
-            return (x) =>
-            {
-                Tres res = logic.CloneAndPerform(x.AsNaturalValue());
-
-                return res;
-            };
+            return logic.Function;
         }
         public static LogicOfTo<Targ, TRes> MakeLogicOfTo<Targ, TRes>(this Func<Targ, TRes> function)
         {
             Condition.Requires(function).IsNotNull();
             return new LogicOfTo<Targ, TRes>(function);
-        }
-        public static LogicOfTo<Targ, TRes> MakeLogicOfTo<Targ, TRes>(this Func<Targ, TRes> function, IValueOf<Targ> context)
-        {
-            Condition.Requires(function).IsNotNull();
-            Condition.Requires(context).IsNotNull();
-            return new LogicOfTo<Targ, TRes>(function, context);
         }
     }
 }

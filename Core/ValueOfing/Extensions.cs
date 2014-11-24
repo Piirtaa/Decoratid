@@ -19,8 +19,6 @@ namespace Decoratid.Core.ValueOfing
             if (thing is ValueOf<T>)
                 return thing as ValueOf<T>;
 
-            //TODO: IDEA? if thing is already a ValueOf, to just return self? What "is" valueOf exactly other than a decoration?
-            //but for right now, we'll see where this goes
             return new ValueOf<T>(thing);
         }
         /// <summary>

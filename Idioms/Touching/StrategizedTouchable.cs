@@ -49,11 +49,10 @@ namespace Decoratid.Idioms.Touching
 
     public static class StrategizedTouchableExtensions
     {
-
         public static Polyface IsStrategizedTouchable(this Polyface root, ILogicOf<Polyface> logic)
         {
             Condition.Requires(root).IsNotNull();
-            logic.Context = root.AsNaturalValue();
+            logic.Context = root;
             var composited = new StrategizedTouchable(logic);
             root.IsHasTouchable(composited);
             return root;

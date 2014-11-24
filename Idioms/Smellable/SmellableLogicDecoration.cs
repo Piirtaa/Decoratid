@@ -49,11 +49,12 @@ namespace Decoratid.Idioms.Smellable
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             this.SmellCheck();
 
-            Decorated.Perform();
+            var rv = Decorated.Perform(context);
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

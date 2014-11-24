@@ -61,8 +61,8 @@ namespace Decoratid.Idioms.OperationProtocoling
             {
                 LogicOfTo<TArg, TResult> logic = (LogicOfTo<TArg, TResult>)this.OperationLogic;
 
-                var resp = logic.CloneAndPerform(reqObj.AsNaturalValue());
-                responseStore.SaveItem(OperationResult.New(this.Id, resp));
+                var respLogic = logic.Perform(reqObj) as LogicOfTo<TArg, TResult>;
+                responseStore.SaveItem(OperationResult.New(this.Id, respLogic.Result));
             }
             catch (Exception ex)
             {

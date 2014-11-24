@@ -52,10 +52,10 @@ namespace Decoratid.Idioms.Adjusting
         #region Methods
         public override bool? Evaluate()
         {
-            this.AdjustmentLogic.Context = this.Decorated.AsNaturalValue();
-            this.AdjustmentLogic.Perform();
-            var adjusted = this.AdjustmentLogic.Result;
-            var rv = adjusted.Evaluate();
+            //use the logic to create another condition. note that we don't "bias the logic" by setting context
+            var logic = this.AdjustmentLogic.Perform(this.Decorated) as LogicOfTo<ICondition, ICondition>;
+            var adjustedResult = logic.Result;
+            var rv = adjustedResult.Evaluate();
             return rv;
         }
         public override IDecorationOf<ICondition> ApplyThisDecorationTo(ICondition thing)

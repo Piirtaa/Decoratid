@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
+using Decoratid.Extensions;
 
 namespace Decoratid.Core.Decorating
 {
@@ -61,7 +62,7 @@ namespace Decoratid.Core.Decorating
     public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable
     {
         #region Declarations
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private T _Decorated;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private T _Core;
@@ -290,6 +291,18 @@ namespace Decoratid.Core.Decorating
 
             if (decorated is ISealedDecoration)
                 throw new InvalidOperationException("Cannot decorate a SealedDecoration");
+
+            //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
+            //or we'll get a circ reference situation
+            var decorationList = DecorationUtils.GetDecorationList(decorated);
+            if (decorationList != null)
+            {
+                foreach (var each in decorationList)
+                {
+                    if (object.ReferenceEquals(each, this))
+                        throw new InvalidOperationException("circular reference");
+                }
+            }
 
             this._Decorated = decorated;
 

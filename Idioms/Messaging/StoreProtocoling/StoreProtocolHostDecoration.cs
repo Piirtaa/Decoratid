@@ -65,7 +65,7 @@ namespace Decoratid.Idioms.Messaging.StoreProtocoling
             var responseStore = NaturalInMemoryStore.New();
             Tuple<IStore,IStore> uow = new Tuple<IStore,IStore>(requestStore, responseStore);
 
-            this.StoreProtocolLogic.CloneAndPerform(uow.AsNaturalValue());
+            this.StoreProtocolLogic.Perform(uow);
 
             //encode the response
             var responseText = StoreSerializer.SerializeStore(uow.Item2, this.ValueManager);

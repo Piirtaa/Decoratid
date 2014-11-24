@@ -5,7 +5,7 @@ namespace Decoratid.Core.Logical
 {
 
     /// <summary>
-    /// This interface encapsulates the functionality of "Perform", aka go do something.  
+    /// This interface encapsulates the functionality of "Logic", aka "go do something".  
     /// </summary>
     /// <remarks>
     /// Some obvious extensions of the "go do something" logic are:
@@ -20,25 +20,25 @@ namespace Decoratid.Core.Logical
     ///     
     /// Essentially, we are wrapping a delegate.  The wrapping gives us a chance to explicitly control the serialization of the 
     /// delegate, and also to restrict the types of delegates we are expecting (ActionLogic, ActionLogicOf, FunctionLogic, FunctionLogicOf).
+    /// 
+    /// The Perform() method is fluent and returns itself.  In the implementations of ILogic we clone the logic, and the clone, 
+    /// containing the state of the operation, is returned.  Thus we get a stateful container of the operation but the original operation
+    /// logic is stateless.  ILogic is thus ALWAYS STATELESS and should be designed with this in mind.
     /// </remarks>
     public interface ILogic 
     {
-        void Perform();
+        ILogic Perform(object context = null);
     }
 
-    /// <summary>
-    /// Logic that can clone itself
-    /// </summary>
-    public interface ICloneableLogic : ILogic
+    public interface ICloneableLogic: ILogic
     {
         ILogic Clone();
     }
-
     /// <summary>
     /// some logic that requires a context (the Of)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ILogicOf<T> : IHasContext<IValueOf<T>>, ILogic
+    public interface ILogicOf<T> : IHasContext<T>, ILogic
     {
 
     }

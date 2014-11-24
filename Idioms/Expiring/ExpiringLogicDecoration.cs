@@ -48,12 +48,12 @@ namespace Decoratid.Idioms.Expiring
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             if (this.IsExpired())
                 throw new InvalidOperationException("expired");
 
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

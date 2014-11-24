@@ -37,12 +37,15 @@ namespace Decoratid.Idioms.Throttling
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
+            ILogic rv = null;
+
             this.Throttle.Perform(() =>
             {
-                Decorated.Perform();
+                rv = Decorated.Perform(context);
             });
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

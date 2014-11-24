@@ -112,7 +112,7 @@ namespace Decoratid.Idioms.Backgrounding
 
                 if (backgroundAction != null)
                 {
-                    backgroundAction.Context = (this.Decorated).AsNaturalValue();
+                    backgroundAction.Context = this.Decorated;
 
                     this.BackgroundHost = new BackgroundHost(true, backgroundIntervalMSecs,
                         backgroundAction);

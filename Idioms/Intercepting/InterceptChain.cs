@@ -46,12 +46,12 @@ namespace Decoratid.Idioms.Intercepting
             get
             {
                 var layers = this.GetLayers();
-                List<InterceptLayer<TArg, TResult>> rv = new List<InterceptLayer<TArg, TResult>>();
-                layers.WithEach(x =>
-                {
-                    rv.Add(x.Clone());
-                });
-                return rv;
+                //List<InterceptLayer<TArg, TResult>> rv = new List<InterceptLayer<TArg, TResult>>();
+                //layers.WithEach(x =>
+                //{
+                //    rv.Add(x.Clone());
+                //});
+                return layers;
             }
         }
         #endregion

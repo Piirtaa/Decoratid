@@ -38,10 +38,10 @@ namespace Decoratid.Idioms.Counting
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             this.Counter.Increment();
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

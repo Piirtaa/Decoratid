@@ -82,8 +82,8 @@ namespace Decoratid.Storidioms.Factoried
                 //build it
                 lock (this._stateLock)
                 {
-                    retval = this.Factory.CloneAndPerform(soId.AsNaturalValue());
-
+                    var factoryLogic = this.Factory.Perform(soId) as LogicOfTo<IStoredObjectId, IHasId>;
+                    retval = factoryLogic.Result;
                     //save it
                     if (retval != null)
                     {

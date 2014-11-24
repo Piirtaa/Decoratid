@@ -73,9 +73,9 @@ namespace Decoratid.Idioms.Intercepting
             try
             {
                 //run thru the steps
-                this.DecorateArg();
-                this.DecorateLogic();
-                this.PerformDecorated();
+                this.BuildArgDecoration();
+                this.BuildLogicDecoration();
+                this.InvokeDecoratedArgAndLogic();
             }
             catch (Exception ex)
             {
@@ -91,9 +91,9 @@ namespace Decoratid.Idioms.Intercepting
         /// <summary>
         /// builds up the arg as a ValueOf with a bunch of adjustments and observers
         /// </summary>
-        private void DecorateArg()
+        private void BuildArgDecoration()
         {
-            this.Logger.Do((x) => x.LogVerbose("DecorateArg started", null));
+            this.Logger.Do((x) => x.LogVerbose("BuildArgDecoration started", null));
             var intercepts = this.Layers;
 
             //decorate the argument
@@ -117,20 +117,20 @@ namespace Decoratid.Idioms.Intercepting
                     {
                         argOf = argOf.Observe(null, LogicOf<IValueOf<TArg>>.New((x) =>
                         {
-                            intercept.ArgValidator.CloneAndPerform(argOf);
+                            intercept.ArgValidator.Perform(argOf);
                         }));
                     }
                 });
                 this.DecoratedArg = argOf;
             }
-            this.Logger.Do((x) => x.LogVerbose("DecorateArg completed", null));
+            this.Logger.Do((x) => x.LogVerbose("BuildArgDecoration completed", null));
         }
         /// <summary>
         /// builds up the logic as an ILogic with a bunch of adjustments 
         /// </summary>
-        private void DecorateLogic()
+        private void BuildLogicDecoration()
         {
-            this.Logger.Do((x) => x.LogVerbose("DecorateLogic started", null));
+            this.Logger.Do((x) => x.LogVerbose("BuildLogicDecoration started", null));
 
             var intercepts = this.Layers;
 
@@ -148,28 +148,23 @@ namespace Decoratid.Idioms.Intercepting
             });
             this.DecoratedLogic = logic;
 
-            this.Logger.Do((x) => x.LogVerbose("DecorateLogic completed", null));
+            this.Logger.Do((x) => x.LogVerbose("BuildLogicDecoration completed", null));
         }
         /// <summary>
         /// invokes the arg decorations, then the logic decorations, then invokes the logic
         /// </summary>
-        private TResult PerformDecorated()
+        private TResult InvokeDecoratedArgAndLogic()
         {
-            this.Logger.Do((x) => x.LogVerbose("PerformDecorated started", null));
+            this.Logger.Do((x) => x.LogVerbose("InvokeDecoratedArgAndLogic started", null));
 
             this.Logger.Do((x) => x.LogVerbose("Arg", this.Arg));
-            this.ProcessedArg = this.DecoratedArg.GetValue(); //invoke arg decoration chain
+            this.ProcessedArg = this.DecoratedArg.GetValue(); //invoke arg decoration chain (adjusters and observers)
             this.Logger.Do((x) => x.LogVerbose("ProcessedArg", this.ProcessedArg));
 
             ILogicOf<TArg> logicOf = (ILogicOf<TArg>)this.DecoratedLogic;
-            logicOf.Context = this.ProcessedArg.AsNaturalValue();
-            this.Logger.Do((x) => x.LogVerbose("Logic context set", null));
-
-            ILogicTo<TResult> logicTo = (ILogicTo<TResult>)this.DecoratedLogic;
-            logicTo.Perform();
+            var logicResults = logicOf.Perform(this.ProcessedArg) as LogicOfTo<TArg, TResult> ;
             this.Logger.Do((x) => x.LogVerbose("Logic performed", null));
-
-            this.Result = logicTo.Result;
+            this.Result = logicResults.Result;
             this.Logger.Do((x) => x.LogVerbose("Result", this.Result));
 
             //decorate the result
@@ -195,7 +190,7 @@ namespace Decoratid.Idioms.Intercepting
                     {
                         resultOf = resultOf.Observe(null, LogicOf<IValueOf<TResult>>.New((x) =>
                         {
-                            intercept.ResultValidator.CloneAndPerform(resultOf);
+                            intercept.ResultValidator.Perform(resultOf);
                         }));
                     }
                 });

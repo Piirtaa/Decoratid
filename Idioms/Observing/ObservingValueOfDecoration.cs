@@ -59,12 +59,12 @@ namespace Decoratid.Idioms.Observing
         public override T GetValue()
         {
             if (this.PreObservation != null)
-                this.PreObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
+                this.PreObservation.Perform(this.Decorated);
 
             var rv = this.Decorated.GetValue();
 
             if (this.PostObservation != null)
-                this.PostObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
+                this.PostObservation.Perform(this.Decorated);
 
             return rv;
         }

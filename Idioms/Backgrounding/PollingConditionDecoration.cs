@@ -79,7 +79,7 @@ namespace Decoratid.Idioms.Backgrounding
                     this.BackgroundHost = null;
                 }
 
-                backgroundAction.Context = (this as ICondition).AsNaturalValue();
+                backgroundAction.Context = this as ICondition;
 
                 this.BackgroundHost = new BackgroundHost(true, backgroundIntervalMSecs,
                     backgroundAction);

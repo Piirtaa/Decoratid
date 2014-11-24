@@ -86,7 +86,7 @@ namespace Decoratid.Idioms.Adjusting
                 {
                     var adjustedLogic = Logic.New(() =>
                     {
-                        old.Perform();
+                        old.Perform();//do whatever we're wrapping
                         switchVar = true;
                     });
                     return adjustedLogic;

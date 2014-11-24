@@ -37,13 +37,13 @@ namespace Decoratid.Idioms.Logging
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             this.Logger.LogVerbose("Perform started", null);
-
+            ILogic rv = null;
             try
             {
-                Decorated.Perform();
+                rv = Decorated.Perform(context);
             }
             catch (Exception ex)
             {
@@ -54,6 +54,7 @@ namespace Decoratid.Idioms.Logging
             {
                 this.Logger.LogVerbose("Perform completed", null);
             }
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

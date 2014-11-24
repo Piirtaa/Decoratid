@@ -51,9 +51,10 @@ namespace Decoratid.Idioms.Tasking
         /// <summary>
         /// the logic decoration.  invokes the task perform
         /// </summary>
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             var b = this.PerformTask();
+            return this;
         }
         /// <summary>
         /// the task perform

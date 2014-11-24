@@ -40,13 +40,13 @@ namespace Decoratid.Idioms.ConditionalWaiting
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             var waitRV = this.Waiter.WaitAround();
             if (!waitRV)
                 throw new InvalidOperationException("wait stopped");
 
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

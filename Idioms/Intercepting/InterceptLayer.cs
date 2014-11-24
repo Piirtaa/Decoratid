@@ -57,19 +57,19 @@ namespace Decoratid.Idioms.Intercepting
         }
         #endregion
 
-        #region Clone
-        public InterceptLayer<TArg, TResult> Clone()
-        {
-            InterceptLayer<TArg, TResult> rv = new InterceptLayer<TArg, TResult>(this.Id);
-            rv.ArgDecorator = this.ArgDecorator.With(x => x.Clone() as LogicOfTo<TArg, TArg>);
-            rv.ArgValidator = this.ArgValidator.With(x => x.Clone() as LogicOf<TArg>);
-            rv.Action = this.Action.With(x => x.Clone() as LogicOfTo<TArg, TResult>);
-            rv.ResultDecorator = this.ResultDecorator.With(x => x.Clone() as LogicOfTo<TResult, TResult>);
-            rv.ResultValidator = this.ResultValidator.With(x => x.Clone() as LogicOf<TResult>);
-            rv.Id = this.Id;
-            return rv;
-        }
-        #endregion
+        //#region Clone
+        //public InterceptLayer<TArg, TResult> Clone()
+        //{
+        //    InterceptLayer<TArg, TResult> rv = new InterceptLayer<TArg, TResult>(this.Id);
+        //    rv.ArgDecorator = this.ArgDecorator.With(x => x.Clone() as LogicOfTo<TArg, TArg>);
+        //    rv.ArgValidator = this.ArgValidator.With(x => x.Clone() as LogicOf<TArg>);
+        //    rv.Action = this.Action.With(x => x.Clone() as LogicOfTo<TArg, TResult>);
+        //    rv.ResultDecorator = this.ResultDecorator.With(x => x.Clone() as LogicOfTo<TResult, TResult>);
+        //    rv.ResultValidator = this.ResultValidator.With(x => x.Clone() as LogicOf<TResult>);
+        //    rv.Id = this.Id;
+        //    return rv;
+        //}
+        //#endregion
 
         #region IHasId
         public string Id { get; private set; }

@@ -30,15 +30,26 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region Methods
-        public virtual void Perform()
+        public virtual ILogic Perform(object context = null)
         {
-            base.Decorated.Perform();
+            var rv = base.Decorated.Perform(context);
+            return rv;
         }
-
+        /// <summary>
+        /// the default implementation of this invokes ApplyThisDecorationTo its own Decorated
+        /// </summary>
+        /// <returns></returns>
+        public ILogic Clone()
+        {
+            return this.ApplyThisDecorationTo(this.Decorated) as ILogic;
+        }        
         public override ILogic This
         {
             get { return this; }
         }
         #endregion
+
+
+
     }
 }

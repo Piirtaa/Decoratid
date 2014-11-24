@@ -45,18 +45,18 @@ namespace Decoratid.Idioms.Adjusting
         }
         #endregion
 
-
         #region IAdjustingLogic
         public LogicOfTo<ILogic, ILogic> AdjustmentLogic { get; private set; }
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
-            this.AdjustmentLogic.Context = this.Decorated.AsNaturalValue();
-            this.AdjustmentLogic.Perform();
-            var adjusted = this.AdjustmentLogic.Result;
-            adjusted.Perform();
+            //use the logic to create another condition. note that we don't "bias the logic" by setting context
+            var logic = this.AdjustmentLogic.Perform(this.Decorated) as LogicOfTo<ILogic, ILogic>;
+            var adjustedResult = logic.Result;
+            var rv = adjustedResult.Perform();
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

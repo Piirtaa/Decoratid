@@ -3,7 +3,9 @@ using Decoratid.Core;
 using Decoratid.Core.Logical;
 using Decoratid.Idioms.Polyfacing;
 using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Timers;
 
 namespace Decoratid.Idioms.Backgrounding
@@ -132,7 +134,13 @@ namespace Decoratid.Idioms.Backgrounding
             {
                 if (this.BackgroundAction != null)
                 {
+#if DEBUG
+                    Debug.WriteLine(string.Format("Thread:{0} background starts", Thread.CurrentThread.ManagedThreadId));
+#endif
                     this.BackgroundAction.Perform();
+#if DEBUG
+                    Debug.WriteLine(string.Format("Thread:{0} background ends", Thread.CurrentThread.ManagedThreadId));
+#endif
                 }
             }
             catch
@@ -177,22 +185,6 @@ namespace Decoratid.Idioms.Backgrounding
             }
         }
         #endregion
-
-
-        //#region IHasHydrationMap
-        //public IHydrationMap GetHydrationMap()
-        //{
-        //    var hydrationMap = new HydrationMapValueManager<BackgroundHost>();
-        //    hydrationMap.RegisterDefault("BackgroundAction", (x) => { return x.BackgroundAction; }, (x, y) => { x.BackgroundAction = y as ILogic; });
-        //    hydrationMap.Register("_backgroundIntervalMSecs", (x) => { return x._backgroundIntervalMSecs; }, (x, y) => { x._backgroundIntervalMSecs = (double)y; }, PrimitiveValueManager.ID);
-        //    //the setter on this will initialize (which may trigger the InitTimer call)
-        //    hydrationMap.Register("IsEnabled", (x) => { return x._isEnabled; }, (x, y) => { x.IsEnabled = (bool)y; }, PrimitiveValueManager.ID);
-
-        //    return hydrationMap;
-        //}
-        //#endregion
-
-
     }
 
     public static class BackgroundExtensions

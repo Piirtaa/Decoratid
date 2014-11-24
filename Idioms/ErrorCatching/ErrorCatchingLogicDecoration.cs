@@ -32,15 +32,17 @@ namespace Decoratid.Idioms.ErrorCatching
 
         #region Methods
         [DebuggerStepThrough]
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
+            ILogic rv = null;
             try
             {
-                Decorated.Perform();
+                rv = Decorated.Perform(context);
             }
             catch
             {
             }
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

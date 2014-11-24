@@ -37,22 +37,15 @@ namespace Decoratid.Core.ValueOfing
             ILogicTo<T> logic = (ILogicTo<T>)this.Decorated;
             Condition.Requires(logic).IsNotNull();
 
-            ICloneableLogic cloneableLogic = logic as ICloneableLogic;
-            Condition.Requires(cloneableLogic).IsNotNull();
-
-            var newLogic = cloneableLogic.Clone();
-            newLogic.Perform();
-            ILogicTo<T> newLogicTo = newLogic as ILogicTo<T>;
-            Condition.Requires(newLogicTo).IsNotNull();
-
-            return newLogicTo.Result;
+            var logicResults = logic.Perform() as ILogicTo<T>;
+            return logicResults.Result;
         }
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

@@ -36,24 +36,15 @@ namespace Decoratid.Core.Conditional
         {
             ILogicTo<bool?> logic = (ILogicTo<bool?>)this.Decorated;
             Condition.Requires(logic).IsNotNull();
-
-            ICloneableLogic cloneableLogic = logic as ICloneableLogic;
-            Condition.Requires(cloneableLogic).IsNotNull();
-
-            var newLogic = cloneableLogic.Clone();
-            newLogic.Perform();
-
-            ILogicTo<bool?> newLogicTo = newLogic as ILogicTo<bool?>;
-            Condition.Requires(newLogicTo).IsNotNull();
-
-            return newLogicTo.Result;
+            var logicResults = logic.Perform() as ILogicTo<bool?>; //note we don't bias the logic
+            return logicResults.Result;
         }
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
-            Decorated.Perform();
+            return Decorated.Perform(context);
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

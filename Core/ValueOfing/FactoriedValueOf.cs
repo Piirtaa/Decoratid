@@ -9,7 +9,7 @@ namespace Decoratid.Core.ValueOfing
     /// a value of that utilizes a factory
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IFactoriedValueOf<T>: IValueOf<T>
+    public interface IFactoriedValueOf<T> : IValueOf<T>
     {
         /// <summary>
         /// the strategy to build the ValueOf 
@@ -18,7 +18,7 @@ namespace Decoratid.Core.ValueOfing
         /// We use the concrete type LogicTo instead of ILogicTo to explicitly enforce the requirement that the factory
         /// is fully hydrated before using it - put the onus on the setter to conform to LogicTo
         /// </remarks>
-        LogicTo<T> Factory {get;}
+        LogicTo<T> Factory { get; }
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ namespace Decoratid.Core.ValueOfing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <remarks>
-   /// </remarks>
+    /// </remarks>
     [Serializable]
     public sealed class FactoriedValueOf<T> : IValueOf<T>, ISerializable, IEquatable<FactoriedValueOf<T>>
     {
@@ -40,7 +40,7 @@ namespace Decoratid.Core.ValueOfing
         /// before querying it.  If we allowed use of ILogicOfTo in the factory, the context would need to be hydrated.  
         /// Additionally, we use CloneAndPerform as the perform mechanism to ensure the stateless nature of the logic, and LogicTo supports this.
         /// </remarks>
-        public FactoriedValueOf(LogicTo<T> factory) 
+        public FactoriedValueOf(LogicTo<T> factory)
         {
             Condition.Requires(factory).IsNotNull();
             this.Factory = factory;
@@ -53,7 +53,7 @@ namespace Decoratid.Core.ValueOfing
             return new FactoriedValueOf<T>(factory);
         }
         #endregion
-        
+
         #region ISerializable
         private FactoriedValueOf(SerializationInfo info, StreamingContext context)
         {
@@ -72,7 +72,8 @@ namespace Decoratid.Core.ValueOfing
         #region Methods
         public T GetValue()
         {
-            return this.Factory.CloneAndPerform();
+            var logic = this.Factory.Perform() as LogicTo<T>;
+            return logic.Result;
         }
         #endregion
 

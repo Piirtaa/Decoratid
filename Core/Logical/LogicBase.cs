@@ -1,4 +1,5 @@
-﻿using Decoratid.Utils;
+﻿using Decoratid.Core.Contextual;
+using Decoratid.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Decoratid.Core.Logical
     /// base class for ILogic.  Wires up serialization and ToString/Equals plumbing
     /// </summary>
     [Serializable]
-    public abstract class LogicBase : ILogic, ICloneableLogic,  ISerializable
+    public abstract class LogicBase : ILogic, ICloneableLogic, ISerializable
     {
         #region Ctor
         public LogicBase()
@@ -42,19 +43,28 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region ILogic
-        public abstract void Perform();
-        #endregion
-
-        #region ICloneableLogic
+        /// <summary>
+        /// performs the logic.  if it's "Of" logic, the passed context is used, if supplied, else the logic's context
+        /// is used.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ILogic Perform(object context = null)
+        {
+            LogicBase rv = this.Clone() as LogicBase;
+            rv.perform(context);
+            return rv;
+        }
         public abstract ILogic Clone();
+        protected abstract void perform(object context = null);
         #endregion
 
         #region Equals Overrides
         public override bool Equals(object obj)
-        {         
+        {
             if (obj == null)
                 return false;
-            
+
             //if we're dealing with the same reference, we're good
             if (object.ReferenceEquals(this, obj))
                 return true;

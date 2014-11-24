@@ -54,16 +54,18 @@ namespace Decoratid.Idioms.Observing
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             if (this.PreObservation != null)
-                this.PreObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
+                this.PreObservation.Perform(this.Decorated);
 
-            Decorated.Perform();
+            ILogic rv = null;
+            rv = Decorated.Perform(context);
 
             if (this.PostObservation != null)
-                this.PostObservation.CloneAndPerform(this.Decorated.AsNaturalValue());
-            
+                this.PostObservation.Perform(this.Decorated);
+
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

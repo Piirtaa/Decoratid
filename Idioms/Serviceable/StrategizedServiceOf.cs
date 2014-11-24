@@ -71,7 +71,7 @@ namespace Decoratid.Idioms.Serviceable
         {
             if (this.InitStrategy != null)
             {
-                this.InitStrategy.Context = this.Context.AsNaturalValue();
+                this.InitStrategy.Context = this.Context;
                 this.InitStrategy.Perform();
             }
         }
@@ -79,7 +79,7 @@ namespace Decoratid.Idioms.Serviceable
         {
             if (this.StartStrategy != null)
             {
-                this.StartStrategy.Context = this.Context.AsNaturalValue();
+                this.StartStrategy.Context = this.Context;
                 this.StartStrategy.Perform();
             }
         }
@@ -87,7 +87,7 @@ namespace Decoratid.Idioms.Serviceable
         {
             if (this.StopStrategy != null)
             {
-                this.StopStrategy.Context = this.Context.AsNaturalValue();
+                this.StopStrategy.Context = this.Context;
                 this.StopStrategy.Perform();
             }
         }

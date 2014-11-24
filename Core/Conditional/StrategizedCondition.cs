@@ -62,7 +62,8 @@ namespace Decoratid.Core.Conditional
         public bool? Evaluate()
         {
             Condition.Requires(this.ConditionStrategy).IsNotNull();
-            return this.ConditionStrategy.CloneAndPerform();
+            var logic = this.ConditionStrategy.Perform() as LogicTo<bool?>; //note we don't bias the logic
+            return logic.Result;
         }
         public ICondition Clone()
         {

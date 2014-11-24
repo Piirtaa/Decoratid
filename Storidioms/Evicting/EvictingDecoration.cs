@@ -172,10 +172,10 @@ namespace Decoratid.Storidioms.Evicting
                     cb.ItemsToSave.WithEach(x =>
                     {
                         //generate the eviction condition
-                        var evictionCondition = this.ExpirableFactory.CloneAndPerform(x.AsNaturalValue());
+                        var evictionConditionLogic = this.ExpirableFactory.Perform(x) as LogicOfTo<IHasId, IExpirable>;
 
                         //save the eviction condition in the eviction store, keyed by the storedobjectid of the item to save
-                        var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionCondition);
+                        var conditionToSave = x.GetStoredObjectId().BuildAsId().AddContext(evictionConditionLogic.Result);
                         //var soid = conditionToSave.GetStoredObjectId();
                         //var soid2 = StoredObjectId.New(typeof(ContextualIHasIdDecoration), x.GetStoredObjectId());
                         //bool isEq = soid.Equals(soid2);

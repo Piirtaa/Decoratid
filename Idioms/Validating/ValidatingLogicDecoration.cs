@@ -41,13 +41,14 @@ namespace Decoratid.Idioms.Validating
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
             var condVal = this.IsValidCondition.Evaluate();
             if (!condVal.GetValueOrDefault())
                 throw new InvalidOperationException("Condition not ready");
 
-            Decorated.Perform();
+            var rv = Decorated.Perform(context);
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

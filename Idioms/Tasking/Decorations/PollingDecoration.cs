@@ -65,7 +65,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
         public IPollingDecoration SetBackgroundAction(ILogicOf<ITask> backgroundAction, double backgroundIntervalMSecs = 30000)
         {
             this.ClearBackgroundAction();
-            backgroundAction.Context = (this as ITask).AsNaturalValue();
+            backgroundAction.Context = (this as ITask);
 
             this.Background = new BackgroundHost(true, backgroundIntervalMSecs, backgroundAction);
 

@@ -28,7 +28,7 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region ISerializable
-        protected Logic(SerializationInfo info, StreamingContext context)
+        private Logic(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Action = (Action)info.GetValue("_Action", typeof(Action));
@@ -41,11 +41,11 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region Properties
-        private Action Action { get; set; }
+        internal Action Action { get; set; }
         #endregion
 
         #region ILogic
-        public override void Perform()
+        protected override void perform(object context = null)
         {
             Action();
         }
@@ -57,14 +57,6 @@ namespace Decoratid.Core.Logical
             return new Logic(this.Action);
         }
         #endregion
-
-        #region Clone and Run
-        public void CloneAndPerform()
-        {
-            Logic clone = (Logic)this.Clone();
-            clone.Perform();
-        }
-        #endregion
     }
 
     public static class LogicExtensions
@@ -72,8 +64,7 @@ namespace Decoratid.Core.Logical
         public static Action ToAction(this Logic logic)
         {
             if (logic == null) { return null; }
-
-            return () => { logic.CloneAndPerform(); };
+            return logic.Action;
         }
 
         public static Logic MakeLogic(this Action action)

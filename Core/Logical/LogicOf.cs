@@ -19,7 +19,8 @@ namespace Decoratid.Core.Logical
             Condition.Requires(action).IsNotNull();
             this.Action = action;
         }
-        public LogicOf(Action<T> action, IValueOf<T> context) : base()
+        public LogicOf(Action<T> action, T context)
+            : base()
         {
             Condition.Requires(action).IsNotNull();
             this.Action = action;
@@ -33,19 +34,14 @@ namespace Decoratid.Core.Logical
             Condition.Requires(action).IsNotNull();
             return new LogicOf<T>(action);
         }
-        public static LogicOf<T> New(Action<T> action, IValueOf<T> context)
-        {
-            Condition.Requires(action).IsNotNull();
-            Condition.Requires(context).IsNotNull();
-            return new LogicOf<T>(action, context);
-        }
         #endregion
 
         #region ISerializable
-        protected LogicOf(SerializationInfo info, StreamingContext context) : base(info, context)
+        private LogicOf(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {       
             this.Action = (Action<T>)info.GetValue("_Action", typeof(Action<T>));
-            this.Context = (IValueOf<T>)info.GetValue("_Context", typeof(IValueOf<T>)); 
+            this.Context = (T)info.GetValue("_Context", typeof(T)); 
         }
         protected override void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -57,44 +53,30 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region IHasContext
-        public IValueOf<T> Context { get; set; }
-        object IHasContext.Context { get { return this.Context; } set { this.Context = (IValueOf<T>)value; } }
+        public T Context { get; set; }
+        object IHasContext.Context { get { return this.Context; } set { if (value != null) { this.Context = (T)value; } } }
         #endregion
 
         #region Properties
-        private Action<T> Action { get; set; }
+        internal Action<T> Action { get; set; }
         #endregion
 
         #region ILogic
-        public override void Perform()
+        protected override void perform(object context = null)
         {
-            Condition.Requires(this.Context).IsNotNull();
-            var arg = this.Context.GetValue();
-            Action(arg);
-        }
-        #endregion
-
-        #region ILogicOf
-        public void SetContextAndPerform(IValueOf<T> value)
-        {
-            this.Context = value;
-            this.Perform();
+            if (context != null)
+            {
+                this.Context = ((T)context);
+            }
+            Action(this.Context);
         }
         #endregion
 
         #region ICloneableLogic
         public override ILogic Clone()
         {
-            return new LogicOf<T>(this.Action, this.Context);
-        }
-        #endregion
-
-        #region Clone and Run
-        public void CloneAndPerform(IValueOf<T> arg)
-        {
-            LogicOf<T> clone = (LogicOf<T>)this.Clone();
-            clone.Context = arg;
-            clone.Perform();
+            var rv = new LogicOf<T>(this.Action, this.Context);
+            return rv;
         }
         #endregion
     }
@@ -104,19 +86,12 @@ namespace Decoratid.Core.Logical
         public static Action<T> ToAction<T>(this LogicOf<T> logic)
         {
             if (logic == null) { return null; }
-
-            return (x) => { logic.CloneAndPerform(x.AsNaturalValue()); };
+            return logic.Action;
         }
         public static LogicOf<T> MakeLogicOf<T>(this Action<T> action)
         {
             Condition.Requires(action).IsNotNull();
             return new LogicOf<T>(action);
-        }
-        public static LogicOf<T> MakeLogicOf<T>(this Action<T> action, IValueOf<T> context)
-        {
-            Condition.Requires(action).IsNotNull();
-            Condition.Requires(context).IsNotNull();
-            return new LogicOf<T>(action, context);
         }
     }
 }

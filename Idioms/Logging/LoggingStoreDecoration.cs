@@ -18,17 +18,13 @@ namespace Decoratid.Idioms.Logging
     }
 
     [Serializable]
-    public class LoggingStoreDecoration : DecoratedStoreBase, ILoggingStore//, IHasHydrationMap
+    public class LoggingStoreDecoration : DecoratedStoreBase, ILoggingStore
     {
         #region Declarations
         private readonly object _stateLock = new object();
         #endregion
 
         #region ctor
-        /// <summary>
-        /// simple decorator.  To set background action use SetBackgroundAction
-        /// </summary>
-        /// <param name="decorated"></param>
         public LoggingStoreDecoration(IStore decorated, ILogger logger)
             : base(decorated)
         {

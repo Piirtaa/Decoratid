@@ -28,7 +28,7 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region ISerializable
-        protected LogicTo(SerializationInfo info, StreamingContext context)
+        private LogicTo(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             this.Function = (Func<T>)info.GetValue("_Function", typeof(Func<T>));
@@ -43,23 +43,14 @@ namespace Decoratid.Core.Logical
         #endregion
 
         #region Properties
-        private Func<T> Function { get; set; }
+        internal Func<T> Function { get; set; }
         public T Result { get; private set; }
         #endregion
 
-        #region ITaskLogic
-        public override void Perform()
+        #region ILogic
+        protected override void perform(object context = null)
         {
             this.Result = Function();
-        }
-        #endregion
-
-        #region Clone and Run
-        public T CloneAndPerform()
-        {
-            LogicTo<T> clone = (LogicTo<T>)this.Clone();
-            clone.Perform();
-            return clone.Result;
         }
         #endregion
 
@@ -76,8 +67,7 @@ namespace Decoratid.Core.Logical
         public static Func<T> ToFunc<T>(this LogicTo<T> logic)
         {
             if (logic == null) { return null; }
-
-            return () => { return logic.CloneAndPerform(); };
+            return logic.Function;
         }
         public static LogicTo<T> MakeLogicTo<T>(this Func<T> function)
         {

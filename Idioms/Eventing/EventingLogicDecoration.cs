@@ -39,11 +39,12 @@ namespace Decoratid.Idioms.Eventing
         #endregion
 
         #region Methods
-        public override void Perform()
+        public override ILogic Perform(object context = null)
         {
+            ILogic rv = null;
             try
             {
-                this.Decorated.Perform();
+                rv = this.Decorated.Perform(context);
             }
             catch
             {
@@ -53,7 +54,7 @@ namespace Decoratid.Idioms.Eventing
             {
                 this.Performed.BuildAndFireEventArgs(this);
             }
-            
+            return rv;
         }
         public override IDecorationOf<ILogic> ApplyThisDecorationTo(ILogic thing)
         {

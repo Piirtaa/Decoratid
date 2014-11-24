@@ -117,10 +117,10 @@ namespace Decoratid.Idioms.Communicating.Socketing
                     {
                         var input = ProtocolUtil.Read(ns);
 
-                        string response = this.Logic.CloneAndPerform(input.AsNaturalValue());
+                        var logic = this.Logic.Perform(input) as LogicOfTo<string, string>; //not biasing logic
 
                         // Write a message to the client.
-                        ProtocolUtil.Write(ns, response);
+                        ProtocolUtil.Write(ns, logic.Result);
                     }
                 }
             }

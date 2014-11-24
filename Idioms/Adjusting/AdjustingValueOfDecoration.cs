@@ -67,11 +67,13 @@ namespace Decoratid.Idioms.Adjusting
         #region Methods
         public override T GetValue()
         {
-            var oldValue = Decorated.GetValue();
-            this.AdjustmentLogic.Context = oldValue.AsNaturalValue();
-            this.AdjustmentLogic.Perform();
-            var adjusted = this.AdjustmentLogic.Result;
-            return adjusted;
+            //get the current value 
+            var val = this.Decorated.GetValue();
+
+            //use the logic to create another value. note that we don't "bias the logic" by setting context
+            var logic = this.AdjustmentLogic.Perform(val) as LogicOfTo<T, T>;
+            var adjustedResult = logic.Result;
+            return adjustedResult;
         }
         public override IDecorationOf<IValueOf<T>> ApplyThisDecorationTo(IValueOf<T> thing)
         {
@@ -88,7 +90,7 @@ namespace Decoratid.Idioms.Adjusting
             Condition.Requires(adjustment).IsNotNull();
             return new AdjustingValueOfDecoration<T>(valueOf, adjustment);
         }
-        public static AdjustingValueOfDecoration<T> Adjust<T>(this IValueOf<T> valueOf, Func<T, T> adjustment)
+        public static AdjustingValueOfDecoration<T> Adjust<T>(this IValueOf<T> valueOf, Func<T,T> adjustment)
         {
             Condition.Requires(valueOf).IsNotNull();
             Condition.Requires(adjustment).IsNotNull();

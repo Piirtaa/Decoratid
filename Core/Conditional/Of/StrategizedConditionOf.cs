@@ -70,9 +70,8 @@ namespace Decoratid.Core.Conditional.Of
         public bool? Evaluate(T context)
         {
             Condition.Requires(this.ConditionStrategy).IsNotNull();
-            //clone the logic, set context, and run the logic
-            var res = this.ConditionStrategy.CloneAndPerform(context.AsNaturalValue());
-            return res;
+            var logic = this.ConditionStrategy.Perform(context) as LogicOfTo<T, bool?>; //note we don't bias the logic
+            return logic.Result;
         }
         #endregion
     }
