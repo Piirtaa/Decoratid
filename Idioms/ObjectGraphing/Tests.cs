@@ -13,12 +13,14 @@ using Decoratid.Core.Identifying;
 using Decoratid.Idioms.Communicating;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.ObjectGraphing.Values;
+using Decoratid.Extensions;
+using System.Diagnostics;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
-    public class ConditionTest : TestOf<Nothing>
+    public class GraphingTest : TestOf<Nothing>
     {
-        public ConditionTest()
+        public GraphingTest()
             : base(LogicOf<Nothing>.New((x) =>
             {
 
@@ -41,6 +43,9 @@ namespace Decoratid.Idioms.ObjectGraphing
                 //graph it
                 var objState1 = hasV.GraphSerializeWithDefaults();
                 var readable = LengthEncoder.MakeReadable(objState1, "\t");
+                readable.WithEach(i => { Debug.WriteLine(i); });
+
+
                 var graph = Graph.Parse(objState1, ValueManagerChainOfResponsibility.NewDefault());
                 var readable2 = GraphingUtil.ConvertToXML(graph).ToString();
 

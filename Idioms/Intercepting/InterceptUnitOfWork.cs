@@ -27,7 +27,7 @@ namespace Decoratid.Idioms.Intercepting
         #region Ctor
         public InterceptUnitOfWork(List<InterceptLayer<TArg, TResult>> layers, LogicOfTo<TArg, TResult> functionToIntercept, TArg arg)
         {
-            Condition.Requires(layers).IsNotNull().IsNotEmpty();
+            Condition.Requires(layers).IsNotNull();
             Condition.Requires(functionToIntercept).IsNotNull();
 
             //if no logger is provided use an in memory store

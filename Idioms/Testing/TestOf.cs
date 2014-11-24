@@ -32,10 +32,24 @@ namespace Decoratid.Idioms.Testing
         #region ITestOf
         public void Test(T arg)
         {
-            Thread.Sleep(1000);
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+
+
             Debug.WriteLine(string.Format("-------- Thread {0} starting test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
             this.TestLogic.Perform(arg);
             Debug.WriteLine(string.Format("-------- Thread {0} ending test {1}", Thread.CurrentThread.ManagedThreadId, this.GetType()));
+
+            stopWatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopWatch.Elapsed;
+
+            // Format and display the TimeSpan value. 
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            Debug.WriteLine("RunTime " + elapsedTime);
         }
         #endregion
     }

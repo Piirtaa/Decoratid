@@ -172,7 +172,7 @@ namespace Decoratid.Idioms.Intercepting
         public InterceptUnitOfWork<TArg, TResult> Perform(TArg arg)
         {
             InterceptUnitOfWork<TArg, TResult> uow = new InterceptUnitOfWork<TArg, TResult>(this.Layers,
-                this.FunctionToIntercept.Clone() as LogicOfTo<TArg,TResult>, arg);
+                this.FunctionToIntercept, arg);
 
             uow.Perform();
 

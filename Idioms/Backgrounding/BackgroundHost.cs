@@ -134,13 +134,13 @@ namespace Decoratid.Idioms.Backgrounding
             {
                 if (this.BackgroundAction != null)
                 {
-#if DEBUG
-                    Debug.WriteLine(string.Format("Thread:{0} background starts", Thread.CurrentThread.ManagedThreadId));
-#endif
+//#if DEBUG
+//                    Debug.WriteLine(string.Format("Thread:{0} background starts", Thread.CurrentThread.ManagedThreadId));
+//#endif
                     this.BackgroundAction.Perform();
-#if DEBUG
-                    Debug.WriteLine(string.Format("Thread:{0} background ends", Thread.CurrentThread.ManagedThreadId));
-#endif
+//#if DEBUG
+//                    Debug.WriteLine(string.Format("Thread:{0} background ends", Thread.CurrentThread.ManagedThreadId));
+//#endif
                 }
             }
             catch
