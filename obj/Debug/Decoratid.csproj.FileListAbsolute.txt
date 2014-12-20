@@ -13,7 +13,6 @@ C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\protobuf-
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\ServiceStack.Text.xml
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.dll
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.pdb
-C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\xunit.dll
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\xunit.xml
 C:\Users\cf19\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid.dll
