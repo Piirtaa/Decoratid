@@ -34,3 +34,8 @@ C:\Users\cf19\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\xunit.xml
 C:\Users\cf19\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
 C:\Users\cf19\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.dll
 C:\Users\cf19\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.pdb
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Mono.Net.HttpListener.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Mono.Security.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\HttpServer.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\HttpServer.pdb
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\HttpServer.xml

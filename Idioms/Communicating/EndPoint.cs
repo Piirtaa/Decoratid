@@ -70,6 +70,11 @@ namespace Decoratid.Idioms.Communicating
             var port = NetUtil.GetFreeTcpPort(ip);
             return new EndPoint(ip, port);
         }
+        public static EndPoint NewFreeLocalEndPointSpecifyingPort(int port)
+        {
+            var ip = NetUtil.GetLocalIPAddresses().FirstOrDefault();
+            return new EndPoint(ip, port);
+        }
         #endregion
     }
 }
