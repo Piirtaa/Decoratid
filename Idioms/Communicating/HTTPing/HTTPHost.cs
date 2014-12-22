@@ -2,6 +2,7 @@
 using Decoratid.Idioms.Serviceable;
 using Mono.Net;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
@@ -117,6 +118,28 @@ namespace Decoratid.Idioms.Communicating.HTTPing
                     return reader.ReadToEnd();
                 }
             }
+        }
+        public static List<string> DumpHTTPRequest(HttpListenerRequest req)
+        {
+            List<string> rv = new List<string>();
+
+            rv.Add(req.ProtocolVersion.ToString());
+            rv.Add(req.HttpMethod);
+            rv.Add(req.Url.ToString());
+            rv.Add(req.RemoteEndPoint.ToString());
+            rv.Add("Headers");
+            foreach (var key in req.Headers.AllKeys)
+                rv.Add(req.Headers[key]);
+            rv.Add("Cookies");
+            foreach (var cookie in req.Cookies)
+            {
+                rv.Add(cookie.ToString());
+            }
+            rv.Add("Body");
+            var post = GetRequestPostData(req);
+            if(post != null)
+                rv.Add(post);
+            return rv;
         }
         #endregion
     }

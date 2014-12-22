@@ -12,6 +12,7 @@ using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -21,6 +22,41 @@ namespace Decoratid.Utils
 {
     public static class SelfSignedCertUtil
     {
+        public static void CreateCert()
+        {
+            File.WriteAllBytes("Hello.cer", cert.Export(X509ContentType.Cert));
+        }
+        public static void CreateCertPFX()
+        {
+            File.WriteAllBytes("Hello.pfx", cert.Export(X509ContentType.Pkcs12, (string)null));
+        }
+        public static void dfsdfoui9()
+        {
+            //X509Certificate2 cert;
+
+            //save to file
+            var cert = new X509Certificate2(bytes, password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+
+            var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+store.Open(OpenFlags.ReadWrite);
+store.Add(cert);
+store.Close();
+
+            //key goes to C:\Users\Paul\AppData\Roaming\Microsoft\SystemCertificates\My\Keys\62207B818FC553C92CC6D2C2F869603C190544FB 
+
+            //var file = Path.Combine(Path.GetTempPath(), "Octo-" + Guid.NewGuid());
+            try
+            {
+                File.WriteAllBytes(file, bytes);
+                return new X509Certificate2(file, /* ...options... */);
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+
+            store.Remove(cert);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -191,19 +227,37 @@ namespace Decoratid.Utils
 
             try
             {
-                
                 X509Store store = new X509Store(st, sl);
                 store.Open(OpenFlags.ReadWrite);
                 store.Add(cert);
-
                 store.Close();
+                bRet = true;
             }
             catch
             {
-
             }
 
             return bRet;
         }
+
+        public static bool RemoveCertFromStore(System.Security.Cryptography.X509Certificates.X509Certificate2 cert, System.Security.Cryptography.X509Certificates.StoreName st, System.Security.Cryptography.X509Certificates.StoreLocation sl)
+        {
+            bool bRet = false;
+
+            try
+            {
+                X509Store store = new X509Store(st, sl);
+                store.Open(OpenFlags.ReadWrite);
+                store.Remove(cert);
+                store.Close();
+                bRet = true;
+            }
+            catch
+            {
+            }
+
+            return bRet;
+        }
+
     }
 }

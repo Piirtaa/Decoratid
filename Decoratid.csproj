@@ -36,9 +36,6 @@
     <Reference Include="CuttingEdge.Conditions">
       <HintPath>packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
     </Reference>
-    <Reference Include="HttpServer">
-      <HintPath>..\3rdParty\HttpServer.v1.1\HttpServer.dll</HintPath>
-    </Reference>
     <Reference Include="KellermanSoftware.Compare-NET-Objects">
       <HintPath>packages\CompareNETObjects.3.00.0.0\lib\net45\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
     </Reference>
@@ -47,9 +44,6 @@
     </Reference>
     <Reference Include="Mono.Security">
       <HintPath>packages\Mono.Net.HttpListener.1.0.0.0\lib\net45\Mono.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -104,10 +98,11 @@
     <Compile Include="Idioms\Communicating\DecoratedEndPointClientBase.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
+    <Compile Include="Idioms\Communicating\HTTPing\HTTPSHostTest.cs" />
     <Compile Include="Idioms\Communicating\HTTPing\HTTPClient.cs" />
     <Compile Include="Idioms\Communicating\HTTPing\HTTPHost.cs" />
     <Compile Include="Idioms\Communicating\HTTPing\HTTPSHost.cs" />
-    <Compile Include="Idioms\Communicating\HTTPing\Tests.cs" />
+    <Compile Include="Idioms\Communicating\HTTPing\HTTPHostTest.cs" />
     <Compile Include="Idioms\Communicating\Socketing\Tests.cs" />
     <Compile Include="Idioms\ConditionalWaiting\Tests.cs" />
     <Compile Include="Idioms\Counting\Tests.cs" />
@@ -629,6 +624,12 @@
     <Content Include="Idioms\Validating\Notes.txt" />
     <Content Include="Idioms\Vision.txt" />
     <Content Include="Idioms\WithValuing\Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rdParty\webserver-69631\tags\v1.1\HttpServer\HttpServer.csproj">
+      <Project>{455e7d70-1c85-4d7f-9f01-dc801b8b8c34}</Project>
+      <Name>HttpServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
