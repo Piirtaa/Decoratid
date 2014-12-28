@@ -6,24 +6,7 @@ namespace Decoratid.Storidioms
 
     public static class DecorationExtensions
     {
-        /// <summary>
-        /// if the store is decorated, walks the decorations to find one of the specified type
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="store"></param>
-        /// <param name="exactTypeMatch"></param>
-        /// <returns></returns>
-        public static T FindDecoratorOf<T>(this IStore store, bool exactTypeMatch)
-            where T:IDecoratedStore
-        {
-            Condition.Requires(store).IsNotNull();
 
-            if (!(store is DecoratedStoreBase))
-                return default(T);
-
-            DecoratedStoreBase dec = store as DecoratedStoreBase;
-            return dec.FindDecoratorOf<T>(exactTypeMatch);
-        }
 
         ///// <summary>
         ///// provide the interfaces to decorate with

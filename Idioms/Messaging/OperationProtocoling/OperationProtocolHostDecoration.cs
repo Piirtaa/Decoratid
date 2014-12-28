@@ -31,7 +31,7 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
             this.OperationManager = OperationManager.New();
 
             //replace the store protocol logic
-            this.FindDecoratorOf<StoreProtocolHostDecoration>(true).HasStoreProtocolLogic(
+            this.FindDecoration<StoreProtocolHostDecoration>(true).HasStoreProtocolLogic(
                 LogicOf<Tuple<IStore, IStore>>.New((uow) =>
                 {
                     this.OperationManager.HandleOperations(uow.Item1, uow.Item2);
@@ -53,7 +53,7 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         #region Overrides
         public override IDecorationOf<IEndPointHost> ApplyThisDecorationTo(IEndPointHost thing)
         {
-            return new OperationProtocolHostDecoration(thing, this.FindDecoratorOf<StoreProtocolHostDecoration>(true).ValueManager);
+            return new OperationProtocolHostDecoration(thing, this.FindDecoration<StoreProtocolHostDecoration>(true).ValueManager);
         }
         #endregion
 

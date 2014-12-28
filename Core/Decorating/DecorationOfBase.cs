@@ -10,37 +10,6 @@ namespace Decoratid.Core.Decorating
 {
 
 
-    /// <summary>
-    /// a generic decoration
-    /// </summary>
-    /// <remarks>
-    /// Note that the implementors of this MUST also derive from T - which really is the whole point of a decoration.
-    /// Only c# can't have a generic type inherit from the generic arg type, so it can't be declared here.
-    /// </remarks>
-    public interface IDecorationOf<T>
-    {
-        /// <summary>
-        /// in a chain of decorations, it's the core value being decorated
-        /// </summary>
-        T Core { get; }
-        /// <summary>
-        /// the immediate thing we are decorating
-        /// </summary>
-        T Decorated { get; }
-        /// <summary>
-        /// MUST return a reference to this but cast as T.  This gets around the c# generic inheritance language constraint
-        /// </summary>
-        T This { get; }
-
-        /// <summary>
-        /// Essentially is a clone mechanism.  Allow the current decoration to recreate an instance like itself when
-        /// provided with a thing to decorate - think of this as a ctor with only one arg (the thing) and all other args
-        /// coming from the current instance.
-        /// </summary>
-        /// <param name="store"></param>
-        /// <returns></returns>
-        IDecorationOf<T> ApplyThisDecorationTo(T thing);
-    }
 
     /// <summary>
     /// marker interface. If present on a decoration it prevents other decorations from decorating it
@@ -106,6 +75,11 @@ namespace Decoratid.Core.Decorating
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        object IDecoration.Decorated
+        {
+            get { return this.Decorated; }
+        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Core { get { return this._Core; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public abstract T This { get; }
@@ -123,161 +97,6 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-        #region FreeWalk Iteration
-        /// <summary>
-        /// Does a walk, but doesn't restrict the walk to Decorations of T.  Will walk all Decorations regardless of type.
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If a decoration chain has a change of layer type (ie. we start off decorating T1 and at some point a decoration
-        /// converts the thing to a T2, which itself is then decorated) this function lets us do that.  It's semantically 
-        /// equivalent to a polyfacing interface search but for decorations.
-        /// </remarks>
-        public object FreeWalk(Func<object, bool> filter)
-        {
-            object currentLayer = this.This;
-
-            //iterate down
-            while (currentLayer != null)
-            {
-                //check filter.  break/return
-                if (filter(currentLayer))
-                {
-                    return currentLayer;
-                }
-
-                //if it's a decoration get the decorated layer
-                if (DecorationUtils.IsDecoration(currentLayer))
-                {
-                    currentLayer = DecorationUtils.GetDecorated(currentLayer);
-                }
-                else
-                {
-                    //not decorated, and fails the filter?  stop here
-                    return null;
-                }
-            }
-
-            return null;
-        }
-        public object FreeWalkFindDecoratorOf(Type decType, bool exactTypeMatch)
-        {
-            var match = this.FreeWalk((dec) =>
-            {
-                //do type level filtering first
-
-                //if we're exact matching, the decoration has to be the same type
-                if (exactTypeMatch && decType.Equals(dec.GetType()) == false)
-                    return false;
-
-                //if we're not exact matching, the decoration has to be Of the same type
-                if (exactTypeMatch == false && (!(decType.IsAssignableFrom(dec.GetType()))))
-                    return false;
-
-                return true;
-
-            });
-
-            return match;
-        }
-        #endregion
-
-        #region Layer Iteration Members
-        /// <summary>
-        /// returns the first decoration that matches the filter. stops iterating if ever finds a null decorated - 
-        /// no chain to traverse!. will never return the core item (layer 0)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public T WalkLayers(Func<T, bool> filter)
-        {
-            T currentLayer = this.This;
-
-            //iterate down
-            while (currentLayer != null)
-            {
-                //check filter.  break/return
-                if (filter(currentLayer))
-                {
-                    return currentLayer;
-                }
-
-                //recurse if it's decorated
-                if (currentLayer is IDecorationOf<T>)
-                {
-                    IDecorationOf<T> layer = (IDecorationOf<T>)currentLayer;
-                    currentLayer = layer.Decorated;
-                }
-                else
-                {
-                    //not decorated, and fails the filter?  stop here
-                    return default(T);
-                }
-            }
-
-            return default(T);
-        }
-        public Tdec FindDecoratorOf<Tdec>(bool exactTypeMatch)
-    where Tdec : T
-        {
-            var rv = FindDecoratorOf(typeof(Tdec), exactTypeMatch);
-            if (rv == null)
-                return default(Tdec);
-
-            return (Tdec)rv;
-        }
-        /// <summary>
-        /// walks the decorator hierarchy to find the one of the provided type, and matching the filter
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T FindDecoratorOf(Type decType, bool exactTypeMatch)
-        {
-            var match = this.WalkLayers((dec) =>
-            {
-                //do type level filtering first
-
-                //if we're exact matching, the decoration has to be the same type
-                if (exactTypeMatch && decType.Equals(dec.GetType()) == false)
-                    return false;
-
-                //if we're not exact matching, the decoration has to be Of the same type
-                if (exactTypeMatch == false && (!(decType.IsAssignableFrom(dec.GetType()))))
-                    return false;
-
-                return true;
-
-            });
-
-            if (match == null)
-            {
-                return default(T);
-            }
-
-            return match;
-        }
-        /// <summary>
-        /// walks the decorations from outermost to core
-        /// </summary>
-        /// <returns></returns>
-        [ScriptIgnore]
-        public List<T> OutermostToCore
-        {
-            get
-            {
-                List<T> returnValue = new List<T>();
-
-                var match = this.WalkLayers((reg) =>
-                {
-                    returnValue.Add(reg);
-                    return false;
-                });
-
-                return returnValue;
-            }
-        }
-        #endregion
 
         #region Methods
         /// <summary>
@@ -294,7 +113,7 @@ namespace Decoratid.Core.Decorating
 
             //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
             //or we'll get a circ reference situation
-            var decorationList = DecorationUtils.GetDecorationList(decorated);
+            var decorationList =  this.GetAllDecorationsOf();
             if (decorationList != null)
             {
                 foreach (var each in decorationList)
@@ -331,12 +150,12 @@ namespace Decoratid.Core.Decorating
         public T Undecorate(Type decType, bool exactTypeMatch)
         {
             //find the decoration we want to remove
-            T decorationToRemove = this.FindDecoratorOf(decType, exactTypeMatch);
+            T decorationToRemove = this.FindDecorationOf(decType, exactTypeMatch);
             if (decorationToRemove == null)
                 throw new InvalidOperationException("decoration not found");
 
             //get the decorations from the inside out
-            List<T> decorations = this.OutermostToCore;
+            List<T> decorations = this.GetAllDecorationsOf();
             decorations.Reverse();
 
             //iterate to the decoration to remove

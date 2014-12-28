@@ -70,11 +70,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated;
+                return this.FindDecoration<HasDateCreatedDecoration>(true).DateCreated;
             }
             set
             {
-                this.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated = value;
+                this.FindDecoration<HasDateCreatedDecoration>(true).DateCreated = value;
             }
         }
 
@@ -82,11 +82,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoratorOf<HasGUIDDecoration>(true).GUID;
+                return this.FindDecoration<HasGUIDDecoration>(true).GUID;
             }
             set
             {
-                this.FindDecoratorOf<HasGUIDDecoration>(true).GUID = value;
+                this.FindDecoration<HasGUIDDecoration>(true).GUID = value;
             }
         }
 
@@ -94,11 +94,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName;
+                return this.FindDecoration<HasMachineNameDecoration>(true).MachineName;
             }
             set
             {
-                this.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName = value;
+                this.FindDecoration<HasMachineNameDecoration>(true).MachineName = value;
             }
         }
 
@@ -106,11 +106,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoratorOf<HasIPDecoration>(true).IPAddress;
+                return this.FindDecoration<HasIPDecoration>(true).IPAddress;
             }
             set
             {
-                this.FindDecoratorOf<HasIPDecoration>(true).IPAddress = value;
+                this.FindDecoration<HasIPDecoration>(true).IPAddress = value;
             }
         }
         #endregion

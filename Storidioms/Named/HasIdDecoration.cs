@@ -3,6 +3,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using System;
 using System.Runtime.Serialization;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Storidioms.Named
 {
@@ -57,7 +58,7 @@ namespace Decoratid.Storidioms.Named
         /// <returns></returns>
         public static HasIdDecoration GetHasIdDecoration(this IStore decorated)
         {
-            return decorated.FindDecoratorOf<HasIdDecoration>(true);
+            return decorated.FindDecoration<HasIdDecoration>(true);
         }
         public static HasIdDecoration HasId(this IStore decorated,
             string id)

@@ -12,6 +12,9 @@ namespace Decoratid.Idioms.Communicating
         EndPoint EndPoint { get; }
     }
 
+    /// <summary>
+    /// end point that has some logic.  string in, string out.  encoding happens after this layer
+    /// </summary>
     public interface IHasEndPointLogic
     {
         LogicOfTo<string,string> Logic { get; set; }

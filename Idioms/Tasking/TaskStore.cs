@@ -12,6 +12,7 @@ using Decoratid.Idioms.Expiring;
 using Decoratid.Core.Decorating;
 using System.Collections.Generic;
 using Decoratid.Storidioms.ItemValidating;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.Tasking
 {
@@ -57,19 +58,21 @@ namespace Decoratid.Idioms.Tasking
         #region IStoreOfUniqueId<ITask>   
         public ITask GetById(object id)
         {
-            return this.FindDecoratorOf<IStoreOfUniqueId<ITask>>(false).GetById(id);
+            var dec = this.FindDecoration<IStoreOfUniqueId<ITask>>(false);
+            dec.GetById(id);
+            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).GetById(id);
         }
         public new List<ITask> GetAll()
         {
-            return this.FindDecoratorOf<IStoreOfUniqueId<ITask>>(false).GetAll();
+            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).GetAll();
         }
         public List<ITask> Search(SearchFilterOf<ITask> filter)
         {
-            return this.FindDecoratorOf<IStoreOfUniqueId<ITask>>(false).Search(filter);
+            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).Search(filter);
         }
         public IItemValidator ItemValidator
         {
-            get { return this.FindDecoratorOf<IStoreOfUniqueId<ITask>>(false).ItemValidator; }
+            get { return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).ItemValidator; }
         }
         #endregion
 
@@ -78,11 +81,11 @@ namespace Decoratid.Idioms.Tasking
         {
             get
             {
-                return this.FindDecoratorOf<EvictingDecoration>(true).ExpirableStore;
+                return this.FindDecoration<EvictingDecoration>(true).ExpirableStore;
             }
             set
             {
-                this.FindDecoratorOf<EvictingDecoration>(true).ExpirableStore = value;
+                this.FindDecoration<EvictingDecoration>(true).ExpirableStore = value;
             }
         }
 
@@ -90,17 +93,17 @@ namespace Decoratid.Idioms.Tasking
         {
             get
             {
-                return this.FindDecoratorOf<EvictingDecoration>(true).ExpirableFactory;
+                return this.FindDecoration<EvictingDecoration>(true).ExpirableFactory;
             }
             set
             {
-                this.FindDecoratorOf<EvictingDecoration>(true).ExpirableFactory = value;
+                this.FindDecoration<EvictingDecoration>(true).ExpirableFactory = value;
             }
         }
 
         public void Commit(ICommitBag cb, IExpirable expirable)
         {
-            this.FindDecoratorOf<EvictingDecoration>(true).Commit(cb, expirable);
+            this.FindDecoration<EvictingDecoration>(true).Commit(cb, expirable);
         }
 
         public event EventHandler<EventArgOf<Tuple<IHasId, IExpirable>>> ItemEvicted
@@ -108,17 +111,17 @@ namespace Decoratid.Idioms.Tasking
             add
             {
                 //wire to core registry
-                this.FindDecoratorOf<EvictingDecoration>(true).ItemEvicted += value;
+                this.FindDecoration<EvictingDecoration>(true).ItemEvicted += value;
             }
             remove
             {
                 //wire to core registry
-                this.FindDecoratorOf<EvictingDecoration>(true).ItemEvicted -= value;
+                this.FindDecoration<EvictingDecoration>(true).ItemEvicted -= value;
             }
         }
         public void Evict()
         {
-            this.FindDecoratorOf<EvictingDecoration>(true).Evict();
+            this.FindDecoration<EvictingDecoration>(true).Evict();
         }
         #endregion
     }

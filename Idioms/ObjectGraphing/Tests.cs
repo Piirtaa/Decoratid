@@ -15,6 +15,7 @@ using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.ObjectGraphing.Values;
 using Decoratid.Extensions;
 using System.Diagnostics;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.ObjectGraphing
 {
@@ -51,12 +52,12 @@ namespace Decoratid.Idioms.ObjectGraphing
 
                 var obj2 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
                 Condition.Requires(obj2.Version).IsEqualTo("v");
-                Condition.Requires(obj2.FindDecoratorOf<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
-                Condition.Requires(obj2.FindDecoratorOf<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
-                Condition.Requires(obj2.FindDecoratorOf<HasMachineNameDecoration>(true).MachineName).IsEqualTo(localMachineName);
-                Condition.Requires(obj2.FindDecoratorOf<HasDateLastTouchedDecoration>(true).DateLastTouched.ToString()).IsEqualTo(lastTouchedDate.ToUniversalTime().ToString());
-                Condition.Requires(obj2.FindDecoratorOf<HasDateCreatedDecoration>(true).DateCreated.ToString()).IsEqualTo(now.ToUniversalTime().ToString());
-                Condition.Requires(obj2.FindDecoratorOf<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
+                Condition.Requires(obj2.FindDecoration<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
+                Condition.Requires(obj2.FindDecoration<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
+                Condition.Requires(obj2.FindDecoration<HasMachineNameDecoration>(true).MachineName).IsEqualTo(localMachineName);
+                Condition.Requires(obj2.FindDecoration<HasDateLastTouchedDecoration>(true).DateLastTouched.ToString()).IsEqualTo(lastTouchedDate.ToUniversalTime().ToString());
+                Condition.Requires(obj2.FindDecoration<HasDateCreatedDecoration>(true).DateCreated.ToString()).IsEqualTo(now.ToUniversalTime().ToString());
+                Condition.Requires(obj2.FindDecoration<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
                 Condition.Requires(obj2.Id.ToString()).IsEqualTo("id");
 
                 hasV.Version = "v2";

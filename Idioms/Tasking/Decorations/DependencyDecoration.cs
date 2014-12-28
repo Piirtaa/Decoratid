@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
             //^^^^ notice how we have applied the trigger decoration in the base CTOR.  this gives us conditions to add our dependency to
 
             //we can only have one dependency decoration per cake
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(decorated))
+            if (decorated.HasDecoration<DependencyDecoration>())
             {
                 throw new InvalidOperationException("already decorated");
             }
@@ -60,24 +60,24 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// If set, defines the condition that will trigger a Perform().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition PerformTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
+        public HasCondition PerformTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a Cancel().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition CancelTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
+        public HasCondition CancelTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkComplete().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition MarkCompleteTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
+        public HasCondition MarkCompleteTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkError().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition MarkErrorTrigger { get { return this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
+        public HasCondition MarkErrorTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
 
-        public void CheckTriggers() { this.FindDecoratorOf<IHasConditionalTaskTriggers>(false).CheckTriggers(); }
+        public void CheckTriggers() { this.FindDecoration<IHasConditionalTaskTriggers>(false).CheckTriggers(); }
 
         #endregion
 
@@ -147,9 +147,9 @@ namespace Decoratid.Idioms.Tasking.Decorations
             Condition.Requires(task).IsNotNull();
 
             //we can only have one dependency decoration per cake, so go grab that one and update it
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(task))
+            if (task.HasDecoration<DependencyDecoration>())
             {
-                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(task);
+                var dec = task.FindDecoration<DependencyDecoration>();
                 dec.Dependency.Prerequisites.AddRange(prerequisiteTaskIds);
                 return dec;
             }
@@ -159,9 +159,9 @@ namespace Decoratid.Idioms.Tasking.Decorations
         public static ITask DoesNotDependOn(this ITask task, params string[] prerequisiteTaskIds)
         {
             Condition.Requires(task).IsNotNull();
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(task))
+            if (task.HasDecoration<DependencyDecoration>())
             {
-                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(task);
+                var dec = task.FindDecoration<DependencyDecoration>();
                 prerequisiteTaskIds.WithEach(pre =>
                 {
                     dec.Dependency.Prerequisites.Remove(pre);

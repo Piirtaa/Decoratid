@@ -63,7 +63,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
         public static IAsynchronousDecoration IsAsynchronous(this ITask task, ICondition markCompleteCondition, ICondition markErrorCondition)
         {
             Condition.Requires(task).IsNotNull();
-            var rv = DecorationUtils.GetDecoration<AsynchronousDecoration>(task);
+            var rv = task.FindDecoration<AsynchronousDecoration>();
             if (rv == null)
                 rv = new AsynchronousDecoration(task, markCompleteCondition, markErrorCondition);
             return rv;

@@ -8,6 +8,7 @@ using Decoratid.Extensions;
 using Decoratid.Idioms.Stringing;
 using Decoratid.Idioms.Identifying;
 using Decoratid.Idioms.Filing;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.Testing
 {
@@ -114,7 +115,7 @@ namespace Decoratid.Idioms.Testing
 
             //get something we can write to
             var list = NaturalStringableList.New().Fileable().Filing(path);
-            IStringableList iList = list.FreeWalkFindDecoratorOf(typeof(IStringableList), false) as IStringableList;
+            IStringableList iList = list.FindDecoration<IStringableList>(false);
 
             foreach (var each in results)
             {

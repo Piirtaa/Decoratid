@@ -102,7 +102,7 @@ namespace Decoratid.Storidioms.Caching
         /// <returns></returns>
         public static ICachingStore GetCache(this IStore decorated)
         {
-            return decorated.FindDecoratorOf<ICachingStore>(false);
+            return decorated.FindDecoration<ICachingStore>(false);
         }
 
         /// <summary>

@@ -37,14 +37,14 @@ namespace Decoratid.Idioms.Messaging.OperationProtocoling
         #region Methods
         public void Perform()
         {
-            this.ResponseStore = this.FindDecoratorOf<StoreProtocolClientDecoration>(true).Send(this.RequestStore);
+            this.ResponseStore = this.FindDecoration<StoreProtocolClientDecoration>(true).Send(this.RequestStore);
         }
         #endregion
 
         #region Overrides
         public override IDecorationOf<IEndPointClient> ApplyThisDecorationTo(IEndPointClient thing)
         {
-            return new OperationProtocolClientDecoration(thing, this.FindDecoratorOf<StoreProtocolClientDecoration>(true).ValueManager);
+            return new OperationProtocolClientDecoration(thing, this.FindDecoration<StoreProtocolClientDecoration>(true).ValueManager);
         }
         #endregion
 

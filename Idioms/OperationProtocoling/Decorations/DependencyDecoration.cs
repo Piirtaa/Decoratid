@@ -30,7 +30,7 @@ namespace Decoratid.Idioms.OperationProtocoling.Decorations
             : base(decorated)
         {
             //we can only have one dependency decoration per cake
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(decorated))
+            if (decorated.HasDecoration<DependencyDecoration>())
             {
                 throw new InvalidOperationException("already decorated");
             }
@@ -60,26 +60,26 @@ namespace Decoratid.Idioms.OperationProtocoling.Decorations
 
     public static class DependencyDecorationExtensions
     {
-        public static IHasOperationDependency DependsOn(this IOperation Operation, params string[] prerequisiteOperationIds)
+        public static IHasOperationDependency DependsOn(this IOperation operation, params string[] prerequisiteOperationIds)
         {
-            Condition.Requires(Operation).IsNotNull();
+            Condition.Requires(operation).IsNotNull();
 
             //we can only have one dependency decoration per cake, so go grab that one and update it
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(Operation))
+            if (operation.HasDecoration<DependencyDecoration>())
             {
-                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(Operation);
+                var dec = operation.FindDecoration<DependencyDecoration>();
                 dec.Dependency.Prerequisites.AddRange(prerequisiteOperationIds);
                 return dec;
             }
 
-            return new DependencyDecoration(Operation, prerequisiteOperationIds.ToList());
+            return new DependencyDecoration(operation, prerequisiteOperationIds.ToList());
         }
-        public static IOperation DoesNotDependOn(this IOperation Operation, params string[] prerequisiteOperationIds)
+        public static IOperation DoesNotDependOn(this IOperation operation, params string[] prerequisiteOperationIds)
         {
-            Condition.Requires(Operation).IsNotNull();
-            if (DecorationUtils.HasDecoration<DependencyDecoration>(Operation))
+            Condition.Requires(operation).IsNotNull();
+            if (operation.HasDecoration<DependencyDecoration>())
             {
-                var dec = DecorationUtils.GetDecoration<DependencyDecoration>(Operation);
+                var dec = operation.FindDecoration<DependencyDecoration>();
                 prerequisiteOperationIds.WithEach(pre =>
                 {
                     dec.Dependency.Prerequisites.Remove(pre);
@@ -88,7 +88,7 @@ namespace Decoratid.Idioms.OperationProtocoling.Decorations
                 return dec;
             }
 
-            return Operation;
+            return operation;
         }
 
     }

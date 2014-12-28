@@ -39,7 +39,7 @@ namespace Decoratid.Idioms.Communicating.HTTPing
             if (!prefix.EndsWith("/"))
                 prefix = prefix + "/";
             _listener.Prefixes.Add(prefix);
-
+            
             _responderMethod = method;
 
         }

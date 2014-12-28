@@ -19,7 +19,7 @@ namespace Decoratid.Idioms.Polyfacing
             {
                 var pf = x.Polyfacing<ICondition>();
                 var face = pf.As<ICondition>();
-                var decorated = DecorationUtils.GetDecorated(face);
+                var decorated = face.GetDecorated();
                 Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             })) 
@@ -34,7 +34,7 @@ namespace Decoratid.Idioms.Polyfacing
             {
                 var pf = x.Polyfacing<string, IValueOf<string>>();
                 var face = pf.As<IValueOf<string>>();
-                var decorated = DecorationUtils.GetDecorated(face);
+                var decorated = face.GetDecorated();
                 Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             }))
@@ -49,7 +49,7 @@ namespace Decoratid.Idioms.Polyfacing
             {
                 var pf = x.Polyfacing<ILogic>();
                 var face = pf.As<ILogic>();
-                var decorated = DecorationUtils.GetDecorated(face);
+                var decorated = face.GetDecorated();
                 Condition.Requires(object.ReferenceEquals(decorated, x)).IsTrue();
 
             }))
