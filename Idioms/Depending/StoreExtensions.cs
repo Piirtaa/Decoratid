@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Depending;
@@ -18,13 +19,13 @@ namespace Decoratid.Idioms.Depending
         /// <typeparam name="Tobj"></typeparam>
         /// <typeparam name="THasA"></typeparam>
         /// <param name="store"></param>
-        public static List<T> SearchHasADependency<T, THasA>(this ISearchableStore store, SearchFilter filter)
+        public static List<T> SearchHasADependency<T, THasA>(this ISearchableStore store, LogicOfTo<T, bool> filter)
     where T : IHasId, IHasDependencyOf<THasA>
         {
             if (store == null)
                 return null;
 
-            var list = store.Search<T>(filter);
+            var list = store.SearchOf<T>(filter);
 
             List<IHasDependencyOf<THasA>> depList = new List<IHasDependencyOf<THasA>>();
             list.WithEach(x =>

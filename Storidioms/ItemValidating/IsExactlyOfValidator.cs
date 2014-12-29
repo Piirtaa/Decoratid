@@ -12,10 +12,9 @@ using Decoratid.Core.Identifying;
 namespace Decoratid.Storidioms.ItemValidating
 {
     /// <summary>
-    /// validates that an IHasId is exactly of T
+    /// validates that an IHasId is exactly of the specified type
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// 
     [Serializable]
     public class IsExactlyOfValidator : IItemValidator
     {

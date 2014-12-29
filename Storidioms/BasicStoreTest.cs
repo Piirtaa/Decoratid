@@ -53,12 +53,12 @@ namespace Decoratid.Storidioms
                 Assert.True(equivTest(item, item2));
 
                 //search for it & compare it
-                var filter = SearchFilter.New((x) =>
+                var filter = LogicOfTo<IHasId,bool>.New((x) =>
                 {
                     return x.GetStoredObjectId().Equals(itemId);
                 });
 
-                var items = store.Search<IHasId>(filter);
+                var items = store.Search(filter);
                 Assert.True(items.Count == 1);
 
                 //delete it

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Decoratid.Extensions;
 using System.Runtime.Serialization;
+using Decoratid.Core.Logical;
 
 namespace Decoratid.Storidioms.AuditTrail
 {
@@ -83,9 +84,9 @@ namespace Decoratid.Storidioms.AuditTrail
 
             return val;
         }
-        public override List<T> Search<T>(SearchFilter filter)
+        public override List<IHasId> Search(LogicOfTo<IHasId,bool> filter)
         {
-            var val = this.Decorated.Search<T>(filter);
+            var val = this.Decorated.Search(filter);
 
             val.WithEach(x =>
             {

@@ -135,7 +135,7 @@ namespace Decoratid.Idioms.Tasking
         private bool HaveTasksErrored()
         {
             //if there are any error or cancelled tasks, mark error is triggered
-            var list = this.TaskStore.Search<ITask>(new SearchFilterOf<ITask>((x) =>
+            var list = this.TaskStore.SearchOf<ITask>(LogicOfTo<ITask, bool>.New((x) =>
             {
                 return (x.Status == DecoratidTaskStatusEnum.Errored || x.Status == DecoratidTaskStatusEnum.Cancelled);
             }));

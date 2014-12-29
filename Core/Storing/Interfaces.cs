@@ -1,5 +1,6 @@
 ﻿using Decoratid.Core.Contextual;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using System;
 using System.Collections.Generic;
 
@@ -60,13 +61,15 @@ namespace Decoratid.Core.Storing
     public interface ISearchableStore
     {
         /// <summary>
-        /// searches for a matching item (same generic type).  Does an IsA test
+        /// searches for any items that match the filter
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="IHasId"></typeparam>
         /// <param name="filter"></param>
         /// <returns></returns>
-        List<T> Search<T>(SearchFilter filter) where T : IHasId;
+        List<IHasId> Search(LogicOfTo<IHasId, bool> filter);
     }
+
+
     /// <summary>
     /// a store that provides the ability to retrieve the entire store's contents 
     /// </summary>

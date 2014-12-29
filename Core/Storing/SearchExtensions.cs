@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Extensions;
 using System;
 using System.Collections;
@@ -10,32 +11,51 @@ namespace Decoratid.Core.Storing
     public static class SearchExtensions
     {
         /// <summary>
-        /// performs a regular Search amongst types T that also have a IHasDependencyOf THasA,and then sorts 
-        /// by the dependency from least dependent to most
+        /// filters out non-T items, and those that don't pass the explicit filter
         /// </summary>
-        /// <typeparam name="Tobj"></typeparam>
-        /// <typeparam name="THasA"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <param name="store"></param>
-        public static List<IHasId> Search_NonGeneric(this ISearchableStore store, Type type, SearchFilter filter)
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public static List<T> SearchOf<T>(this ISearchableStore store, LogicOfTo<T, bool> filter) where T : IHasId
         {
             if (store == null)
                 return null;
 
-            List<IHasId> returnValue = new List<IHasId>();
-
-            //get the type of the 
-            var mi = store.GetType().GetMethod("Search");
-            MethodInfo generic = mi.MakeGenericMethod(type);
-            var retval = generic.Invoke(store, new object[] { filter });
-
-            IEnumerable list = retval as IEnumerable;
-
-            foreach (var each in list)
+            LogicOfTo<IHasId, bool> filter2 = new LogicOfTo<IHasId, bool>((item) =>
             {
-                returnValue.Add(each as IHasId);
-            }
+                if (!(item is T))
+                    return false;
 
-            return returnValue;
+                T t = (T)item;
+                LogicOfTo<T, bool> logic = filter.Perform(t) as LogicOfTo<T, bool>;
+                return logic.Result;
+            });
+
+            var list = store.Search(filter2);
+
+            return list.ConvertListTo<T, IHasId>();
+        }
+        /// <summary>
+        /// filters out non-type items, and those that don't pass the explicit filter
+        /// </summary>
+        public static List<IHasId> SearchOf(this ISearchableStore store, Type type, LogicOfTo<IHasId,bool> filter)
+        {
+            if (store == null)
+                return null;
+
+            LogicOfTo<IHasId, bool> filter2 = new LogicOfTo<IHasId, bool>((item) =>
+            {
+                if(!type.IsAssignableFrom(item.GetType()))
+                    return false;
+
+                LogicOfTo<IHasId, bool> logic = filter.Perform(item) as LogicOfTo<IHasId, bool>;
+                return logic.Result;
+            });
+
+            var list = store.Search(filter2);
+
+            return list;
         }
     }
 }

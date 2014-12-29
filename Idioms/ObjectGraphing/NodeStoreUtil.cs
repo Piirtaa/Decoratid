@@ -1,5 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.ObjectGraphing.Path;
@@ -50,7 +51,7 @@ namespace Decoratid.Idioms.ObjectGraphing
                 return null;
 
             var parentPath = path.ParentPath;
-            var matches = nodeStore.Search(SearchFilterOf<GraphNode>.NewOf((x) => { return x.Id.Equals(parentPath); }));
+            var matches = nodeStore.SearchOf(LogicOfTo<GraphNode, bool>.New((x) => { return x.Id.Equals(parentPath); }));
             rv = matches.FirstOrDefault();
             return rv;
         }
@@ -62,7 +63,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         public static List<GraphNode> GetImmediateChildNodes(this IStoreOf<GraphNode> nodeStore, GraphPath path)
         {
             Condition.Requires(nodeStore).IsNotNull();
-            var matches = nodeStore.Search(SearchFilterOf<GraphNode>.NewOf((x) => { return x.Path.ParentPath.Equals(path); }));
+            var matches = nodeStore.SearchOf<GraphNode>(LogicOfTo<GraphNode, bool>.New((x) => { return x.Path.ParentPath.Equals(path); }));
             return matches;
         }
         /// <summary>
@@ -73,7 +74,7 @@ namespace Decoratid.Idioms.ObjectGraphing
         public static List<GraphNode> GetChildNodes(this IStoreOf<GraphNode> nodeStore, GraphPath path)
         {
             Condition.Requires(nodeStore).IsNotNull();
-            var matches = nodeStore.Search(SearchFilterOf<GraphNode>.NewOf((x) => { return x.Path.Path.StartsWith(path.Path); }));
+            var matches = nodeStore.SearchOf(LogicOfTo<GraphNode,bool>.New((x) => { return x.Path.Path.StartsWith(path.Path); }));
             return matches;
         }
 

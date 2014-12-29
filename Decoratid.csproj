@@ -536,7 +536,7 @@
     <Compile Include="Storidioms\Evicting\Tests.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\Factoried\Tests.cs" />
-    <Compile Include="Storidioms\ItemValidating\IsOfUniqueIdValidator.cs" />
+    <Compile Include="Storidioms\ItemValidating\UniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\Tests.cs" />
     <Compile Include="Storidioms\Masking\MaskingDecoration.cs">
@@ -586,7 +586,6 @@
     <Compile Include="Core\Storing\NaturalInMemoryStore.cs" />
     <Compile Include="Core\Storing\CommitBag.cs" />
     <Compile Include="Core\Storing\StoredObjectId.cs" />
-    <Compile Include="Core\Storing\SearchFilter.cs" />
     <Compile Include="Core\Storing\StoreExtensions.cs" />
     <Compile Include="Utils\BinarySerializationUtil.cs" />
     <Compile Include="Utils\StringGenerator.cs" />

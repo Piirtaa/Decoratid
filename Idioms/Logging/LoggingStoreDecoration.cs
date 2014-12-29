@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.Logging;
 using Decoratid.Storidioms;
@@ -111,13 +112,13 @@ namespace Decoratid.Idioms.Logging
                 this.Logger.LogVerbose("GetAll completed", null);
             }
         }
-        public override List<T> Search<T>(SearchFilter filter)
+        public override List<IHasId> Search(LogicOfTo<IHasId,bool> filter)
         {
             this.Logger.LogVerbose("Search started", null);
 
             try
             {
-                return Decorated.Search<T>(filter);
+                return Decorated.Search(filter);
             }
             catch (Exception ex)
             {

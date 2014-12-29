@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Core.ValueOfing;
 using Decoratid.Extensions;
@@ -23,9 +24,9 @@ namespace Decoratid.Idioms.Intercepting
         /// </summary>
         InterceptChain<IStoredObjectId, IHasId> GetOperationIntercept { get; set; }
         /// <summary>
-        /// intercept for Search operation.  Takes arg of Tuple:Type,SearchFilter (eg. Search of X), returns list
+        /// intercept for Search operation.  Takes arg of Tuple:Type,LogicOf IHasId:bool (eg. Search of X), returns list
         /// </summary>
-        InterceptChain<Tuple<Type, SearchFilter>, List<IHasId>> SearchOperationIntercept { get; set; }
+        InterceptChain<LogicOfTo<IHasId,bool>, List<IHasId>> SearchOperationIntercept { get; set; }
         /// <summary>
         /// intercept for GetAll operation.  Takes nothing, returns list
         /// </summary>
@@ -79,9 +80,9 @@ namespace Decoratid.Idioms.Intercepting
             });
             this.GetAllOperationIntercept.Completed += GetAllOperationIntercept_Completed;
             
-            this.SearchOperationIntercept = new InterceptChain<Tuple<Type, SearchFilter>, List<IHasId>>((x) =>
+            this.SearchOperationIntercept = new InterceptChain<LogicOfTo<IHasId,bool>, List<IHasId>>((x) =>
             {
-                return this.Decorated.Search_NonGeneric(x.Item1, x.Item2);
+                return this.Decorated.Search(x);
             });
             this.SearchOperationIntercept.Completed += SearchOperationIntercept_Completed;
         }
@@ -123,7 +124,7 @@ namespace Decoratid.Idioms.Intercepting
 
         #region IInterceptingStore
         public InterceptChain<IStoredObjectId, IHasId> GetOperationIntercept { get; set; }
-        public InterceptChain<Tuple<Type, SearchFilter>, List<IHasId>> SearchOperationIntercept { get; set; }
+        public InterceptChain<LogicOfTo<IHasId, bool>, List<IHasId>> SearchOperationIntercept { get; set; }
         public InterceptChain<ICommitBag, Nothing> CommitOperationIntercept { get; set; }
         public InterceptChain<Nothing, List<IHasId>> GetAllOperationIntercept { get; set; }
         #endregion
@@ -142,10 +143,10 @@ namespace Decoratid.Idioms.Intercepting
 
             return uow.ProcessedResult;
         }
-        public override List<T> Search<T>(SearchFilter filter)
+        public override List<IHasId> Search(LogicOfTo<IHasId,bool> filter)
         {
             //execute it
-            var uow = this.SearchOperationIntercept.Perform(new Tuple<Type, SearchFilter>(typeof(T), filter));
+            var uow = this.SearchOperationIntercept.Perform(filter);
             if (uow.Error != null)
             {
                 var errorStack = string.Join(Environment.NewLine, uow.LogEntries.ToArray());
@@ -154,11 +155,11 @@ namespace Decoratid.Idioms.Intercepting
                 throw new InvalidOperationException("intercept error", uow.Error);
             }
 
-            List<T> returnValue = new List<T>();
+            List<IHasId> returnValue = new List<IHasId>();
             //convert to list of T
             uow.ProcessedResult.WithEach(x =>
             {
-                returnValue.Add((T)x);
+                returnValue.Add((IHasId)x);
             });
             return returnValue;
         }
@@ -188,7 +189,7 @@ namespace Decoratid.Idioms.Intercepting
         #endregion
 
         #region UoW Hooks- Event Handlers
-        public virtual void SearchOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<Tuple<Type, SearchFilter>, List<IHasId>>> e)
+        public virtual void SearchOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<LogicOfTo<IHasId,bool>, List<IHasId>>> e)
         {
 
         }

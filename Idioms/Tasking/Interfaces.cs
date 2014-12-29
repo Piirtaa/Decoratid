@@ -53,7 +53,7 @@ namespace Decoratid.Idioms.Tasking
     /// <summary>
     /// a task store is a store that is: storeof itask, unique id constrained, and evicting 
     /// </summary>
-    public interface ITaskStore : IStoreOfUniqueId<ITask>, IEvictingStore
+    public interface ITaskStore : IStoreOf<ITask>, IStoreOfUniqueId, IEvictingStore
     {
     }
 

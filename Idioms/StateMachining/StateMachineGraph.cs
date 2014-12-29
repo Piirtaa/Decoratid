@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Decoratid.Extensions;
+using Decoratid.Core.Logical;
 
 namespace Decoratid.Idioms.StateMachining
 {
@@ -147,12 +148,12 @@ namespace Decoratid.Idioms.StateMachining
         public bool CanTrigger(TTrigger trigger)
         {
             //does this transition from the current state exist?
-            SearchFilterOf<StateTransition<TState, TTrigger>> filter = new SearchFilterOf<StateTransition<TState, TTrigger>>((x) =>
+            LogicOfTo<StateTransition<TState, TTrigger>, bool> filter = LogicOfTo<StateTransition<TState, TTrigger>, bool>.New((x) =>
             {
                 return x.FromState.Equals(this.CurrentState) && x.TransitionTrigger.Equals(trigger);
             });
 
-            var list = this.Store.Search<StateTransition<TState, TTrigger>>(filter);
+            var list = this.Store.SearchOf<StateTransition<TState, TTrigger>>(filter);
             return list != null && list.Count > 0;
         }
 
@@ -166,12 +167,12 @@ namespace Decoratid.Idioms.StateMachining
             lock (this._stateLock)
             {
                 //does this transition from the current state exist?
-                SearchFilterOf<StateTransition<TState, TTrigger>> filter = new SearchFilterOf<StateTransition<TState, TTrigger>>((x) =>
+                LogicOfTo<StateTransition<TState, TTrigger>,bool> filter = LogicOfTo<StateTransition<TState, TTrigger>, bool>.New((x) =>
                 {
                     return x.FromState.Equals(this.CurrentState) && x.TransitionTrigger.Equals(trigger);
                 });
 
-                var list = this.Store.Search<StateTransition<TState, TTrigger>>(filter);
+                var list = this.Store.SearchOf<StateTransition<TState, TTrigger>>(filter);
 
                 if (list == null || list.Count == 0)
                     return false;

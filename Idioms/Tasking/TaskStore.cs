@@ -40,7 +40,7 @@ namespace Decoratid.Idioms.Tasking
     {
         #region Ctor
         public TaskStoreDecoration(IStore store, LogicOfTo<IHasId, IExpirable> evictionPolicy)
-            : base(store.IsOfUniqueId<ITask>().Evicting(NaturalInMemoryStore.New(), evictionPolicy, 1000))
+            : base(store.IsOf<ITask>().IsOfUniqueId().Evicting(NaturalInMemoryStore.New(), evictionPolicy, 1000))
         {
         }
         #endregion
@@ -56,23 +56,21 @@ namespace Decoratid.Idioms.Tasking
         #endregion
 
         #region IStoreOfUniqueId<ITask>   
-        public ITask GetById(object id)
+        public IHasId GetById(object id)
         {
-            var dec = this.FindDecoration<IStoreOfUniqueId<ITask>>(false);
-            dec.GetById(id);
-            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).GetById(id);
+            return this.FindDecoration<IStoreOfUniqueId>(false).GetById(id) as ITask;
         }
         public new List<ITask> GetAll()
         {
-            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).GetAll();
+            return this.FindDecoration<IStoreOf<ITask>>(false).GetAll();
         }
-        public List<ITask> Search(SearchFilterOf<ITask> filter)
+        public List<ITask> SearchOf(LogicOfTo<ITask, bool> filter)
         {
-            return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).Search(filter);
+            return this.SearchOf<ITask>(filter);
         }
         public IItemValidator ItemValidator
         {
-            get { return this.FindDecoration<IStoreOfUniqueId<ITask>>(false).ItemValidator; }
+            get { return this.FindDecoration<IStoreOfUniqueId>(false).ItemValidator; }
         }
         #endregion
 

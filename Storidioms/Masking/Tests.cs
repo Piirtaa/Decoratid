@@ -46,7 +46,7 @@ namespace Decoratid.Storidioms.Masking
 
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
+                    var list = store.SearchOf<AsId<string>>(LogicOfTo<AsId<string>, bool>.New((o) => { return o.Id.Equals("asId1"); }));
                 });
 
                 //mask getall
@@ -72,7 +72,7 @@ namespace Decoratid.Storidioms.Masking
                 });
                 Assert.Throws<InvalidOperationException>(() =>
                 {
-                    var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
+                    var list = store.SearchOf<AsId<string>>(LogicOfTo<AsId<string>, bool>.New((o) => { return o.Id.Equals("asId1"); }));
                 });
                 Assert.Throws<InvalidOperationException>(() =>
                 {

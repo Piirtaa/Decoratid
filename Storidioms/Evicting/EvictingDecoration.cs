@@ -311,11 +311,11 @@ namespace Decoratid.Storidioms.Evicting
             return null;
         }
 
-        public override List<T> Search<T>(SearchFilter filter)
+        public override List<IHasId> Search(LogicOfTo<IHasId,bool> filter)
         {
-            var list = this.Decorated.Search<T>(filter);
+            var list = this.Decorated.Search(filter);
 
-            List<T> returnValue = new List<T>();
+            List<IHasId> returnValue = new List<IHasId>();
 
             list.WithEach(x =>
             {

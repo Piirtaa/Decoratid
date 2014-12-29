@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Conditional.Of;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,15 @@ using System.Threading.Tasks;
 namespace Decoratid.Storidioms.ItemValidating
 {
     /// <summary>
-    /// validates that an IHasId is of T and has a unique id across all other T's
+    /// validates that the item has a unique id within the store
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// 
     [Serializable]
-    public class IsOfUniqueIdValidator : IItemValidator
+    public class UniqueIdValidator : IItemValidator
     {
         #region Ctor
-        public IsOfUniqueIdValidator(Type type, IStore store)
+        public UniqueIdValidator(IStore store)
         {
-            Condition.Requires(type).IsNotNull();
-            this.OfType = type;
             Condition.Requires(store).IsNotNull();
             this.Store = store;
 
@@ -32,14 +30,10 @@ namespace Decoratid.Storidioms.ItemValidating
                 if (x == null)
                     return false;
 
-                //if not of the same type, skip
-                if (!type.IsAssignableFrom(x.GetType()))
-                    return false;
-
                 //see if the store has an item with the same id and not the same type
-                SearchFilter filter = GetFindSameIdSearchFilter(x);
+                var filter = GetFindSameIdDiffTypeSearchFilter(x);
 
-                var list = store.Search_NonGeneric(type, filter);
+                var list = store.Search(filter);
 
                 if (list != null && list.Count > 0)
                     return false;
@@ -61,9 +55,9 @@ namespace Decoratid.Storidioms.ItemValidating
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static SearchFilter GetFindSameIdDiffTypeSearchFilter(IHasId obj)
+        public static LogicOfTo<IHasId,bool> GetFindSameIdDiffTypeSearchFilter(IHasId obj)
         {
-            SearchFilter filter = SearchFilter.New((item) =>
+            LogicOfTo<IHasId, bool> filter = LogicOfTo<IHasId, bool>.New((item) =>
             {
                 bool hasSameId = item.Id.Equals(obj.Id);
                 bool isSameType = item.GetType().Equals(obj.GetType());
@@ -72,11 +66,11 @@ namespace Decoratid.Storidioms.ItemValidating
 
             return filter;
         }
-        public static SearchFilter GetFindSameIdSearchFilter(IHasId obj)
+        public static LogicOfTo<IHasId, bool> GetFindSameIdSearchFilter(object id)
         {
-            SearchFilter filter = SearchFilter.New((item) =>
+            LogicOfTo<IHasId, bool> filter = LogicOfTo<IHasId, bool>.New((item) =>
             {
-                bool hasSameId = item.Id.Equals(obj.Id);
+                bool hasSameId = item.Id.Equals(id);
                 return hasSameId;
             });
 
@@ -85,13 +79,9 @@ namespace Decoratid.Storidioms.ItemValidating
         #endregion
 
         #region Static Methods
-        public static IsOfUniqueIdValidator New(Type ofType, IStore store)
+        public static UniqueIdValidator New(IStore store)
         {
-            return new IsOfUniqueIdValidator(ofType, store);
-        }
-        public static IsOfUniqueIdValidator New<T>(IStore store)
-        {
-            return new IsOfUniqueIdValidator(typeof(T), store);
+            return new UniqueIdValidator(store);
         }
         #endregion
     }

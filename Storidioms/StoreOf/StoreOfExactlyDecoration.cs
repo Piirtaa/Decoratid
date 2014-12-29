@@ -5,6 +5,7 @@ using Decoratid.Storidioms.ItemValidating;
 using System.Collections.Generic;
 using Decoratid.Extensions;
 using CuttingEdge.Conditions;
+using Decoratid.Core.Logical;
 
 namespace Decoratid.Storidioms.StoreOf
 {
@@ -18,7 +19,6 @@ namespace Decoratid.Storidioms.StoreOf
     {
         T GetById(object id);
         new List<T> GetAll();
-        List<T> Search(SearchFilterOf<T> filter);
     }
     #endregion
 
@@ -50,11 +50,6 @@ namespace Decoratid.Storidioms.StoreOf
         public new List<T> GetAll()
         {
             return base.GetAll().ConvertListTo<T, IHasId>();
-        }
-        public List<T> Search(SearchFilterOf<T> filter)
-        {
-            var list = base.Search<T>(filter);
-            return list;
         }
         public T GetById(object id)
         {

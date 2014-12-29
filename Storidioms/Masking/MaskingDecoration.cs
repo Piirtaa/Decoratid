@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using System;
@@ -56,12 +57,12 @@ namespace Decoratid.Storidioms.Masking
 
             return this.Decorated.Get(soId);
         }
-        public override List<T> Search<T>(SearchFilter filter)
+        public override List<IHasId> Search(LogicOfTo<IHasId,bool> filter)
         {
             if (!this.AllowedOperations.Has(StoreOperation.Search))
                 throw new InvalidOperationException("operation masked");
 
-            return this.Decorated.Search<T>(filter);
+            return this.Decorated.Search(filter);
         }
         public override void Commit(ICommitBag bag)
         {

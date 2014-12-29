@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Decoratid.Extensions;
 using System.Threading;
+using Decoratid.Core.Logical;
 
 namespace Decoratid.Storidioms
 {
@@ -59,12 +60,12 @@ namespace Decoratid.Storidioms
 //#endif
             return rv;
         }
-        public virtual List<T> Search<T>(SearchFilter filter) where T : IHasId
+        public virtual List<IHasId> Search(LogicOfTo<IHasId,bool> filter) 
         {
 //#if DEBUG
 //            Debug.WriteLine(string.Format("Id:{0}  Thread:{1}  Type:{2} Store search starts", (this as IHasId).With(o => o.Id).With(o => o.ToString()), Thread.CurrentThread.ManagedThreadId, this.GetType().FullName));
 //#endif
-            var rv = this.Decorated.Search<T>(filter);
+            var rv = this.Decorated.Search(filter);
 //#if DEBUG
 //            rv.WithEach(x =>
 //            {

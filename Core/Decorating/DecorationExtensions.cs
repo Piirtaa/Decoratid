@@ -89,8 +89,7 @@ namespace Decoratid.Core.Decorating
         /// <returns></returns>
         /// <remarks>
         /// If a decoration chain has a change of layer type (ie. we start off decorating T1 and at some point a decoration
-        /// converts the thing to a T2, which itself is then decorated) this function will walk it.  It's semantically 
-        /// equivalent to a polyfacing interface search but for decorations.
+        /// converts the thing to a T2, which itself is then decorated) this function will walk it. 
         /// </remarks>
         public static object WalkDecorations(this object obj, Func<object, bool> filter)
         {
@@ -110,6 +109,13 @@ namespace Decoratid.Core.Decorating
 
             return null;
         }
+        /// <summary>
+        /// walks all decorations regardless of type and looks for the specific decoration by a type match
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="decType"></param>
+        /// <param name="exactTypeMatch"></param>
+        /// <returns></returns>
         public static object FindDecoration(this object obj, Type decType, bool exactTypeMatch = true)
         {
             var match = WalkDecorations(obj, (dec) =>
@@ -130,6 +136,9 @@ namespace Decoratid.Core.Decorating
 
             return match;
         }
+        /// <summary>
+        /// walks all decorations regardless of type and looks for the specific decoration by a type match
+        /// </summary>
         public static T FindDecoration<T>(this object obj,  bool exactTypeMatch = true)
         {
             var rv = obj.FindDecoration(typeof(T), exactTypeMatch);
@@ -156,7 +165,7 @@ namespace Decoratid.Core.Decorating
             return returnValue;
         }
         /// <summary>
-        /// if the object is an instance of IDecorationOf T, returns all T in that decoration cake
+        /// if the object is an instance of IDecorationOf T, returns all T in that "decoration of" cake
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>

@@ -102,7 +102,7 @@ namespace Decoratid.Storidioms.StoreOf
             : base(LogicOf<IStore>.New((x) =>
             {
                 x.Clear();
-                var store = x.IsOfUniqueId<BaseThing>();
+                var store = x.IsOfUniqueId();
 
                 BaseThing thing1 = new BaseThing() { Data = "data", Id = "thing1" };
                 DerivedThing thing2 = new DerivedThing() { Data = "data", Data1 = "data1", Id = "thing2" };
@@ -114,10 +114,6 @@ namespace Decoratid.Storidioms.StoreOf
                 Assert.Throws<InvalidOperationException>(() =>
                 {
                     store.SaveItem(thing3);
-                });
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    store.SaveItem(thing4);
                 });
 
                 store.DeleteItems(thing1.GetStoredObjectId(), thing2.GetStoredObjectId());

@@ -219,8 +219,8 @@ namespace Decoratid.Idioms.Eventing
 
                 }, null);
 
-                var filter = SearchFilterOf<AsId<string>>.NewOf((o) => { return true; });
-                var searchList = store.Search<AsId<string>>(filter);
+                var filter =  LogicOfTo<AsId<string>, bool>.New((o) => { return true; });
+                var searchList = store.SearchOf<AsId<string>>(filter);
                 Assert.True(retFiltFlag && retFlag);
 
                 //now test get

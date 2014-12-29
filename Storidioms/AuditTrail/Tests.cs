@@ -34,7 +34,7 @@ namespace Decoratid.Storidioms.AuditTrail
                 auditItems = store.AuditStore.GetAll();
                 Assert.True(auditItems[1].Mode == StoredItemAccessMode.Read && auditItems[1].ObjRef.Equals(soid));
 
-                var list = store.Search<AsId<string>>(SearchFilter.New((o) => { return o.Id.Equals("asId1"); }));
+                var list = store.SearchOf<AsId<string>>(LogicOfTo<AsId<string>, bool>.New((o) => { return o.Id.Equals("asId1"); }));
                 auditItems = store.AuditStore.GetAll();
                 Assert.True(auditItems[2].Mode == StoredItemAccessMode.Read && auditItems[2].ObjRef.Equals(soid));
 

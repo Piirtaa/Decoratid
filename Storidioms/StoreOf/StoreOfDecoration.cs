@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Storidioms.ItemValidating;
@@ -16,12 +17,11 @@ namespace Decoratid.Storidioms.StoreOf
     public interface IStoreOf<T> : IStore, IValidatingStore where T : IHasId
     {
         new List<T> GetAll();
-        List<T> Search(SearchFilterOf<T> filter);
     }
     #endregion
 
     /// <summary>
-    /// Turns a store into a "storeOf".  decorates a store such that the only items that can be stored within the store are of type TItem
+    /// Turns a store into a "storeOf".  decorates a store such that the only items that can be stored within the store are of type T
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class StoreOfDecoration<T> : ValidatingDecoration, IStoreOf<T> where T : IHasId
@@ -49,11 +49,6 @@ namespace Decoratid.Storidioms.StoreOf
         {
             return base.GetAll().ConvertListTo<T, IHasId>();
         }
-        public List<T> Search(SearchFilterOf<T> filter)
-        {
-            var list = base.Search<T>(filter);
-            return list;
-        }
         #endregion
     }
 
@@ -73,6 +68,6 @@ namespace Decoratid.Storidioms.StoreOf
             //could alternately do
             //return decorated.WithValidation(new IsOfValidator<T>());
         }
-     
+
     }
 }

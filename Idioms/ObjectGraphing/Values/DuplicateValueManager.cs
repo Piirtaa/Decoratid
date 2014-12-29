@@ -1,4 +1,5 @@
 ﻿using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.ObjectGraphing.Path;
 using Decoratid.Idioms.Stringing;
@@ -36,7 +37,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
                 return false;
 
             //we can handle this if it's  a duplicate reference of something already in the node store
-            var matches = uow.NodeStore.Search<GraphNode>(SearchFilterOf<GraphNode>.NewOf((x) =>
+            var matches = uow.NodeStore.SearchOf<GraphNode>(LogicOfTo<GraphNode,bool>.New((x) =>
             {
                 if (x.NodeValue == null)
                     return false;
@@ -53,7 +54,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         public string DehydrateValue(object obj, IGraph uow)
         {
             //we can handle this if it's  a duplicate reference of something already in the node store
-            var matches = uow.NodeStore.Search<GraphNode>(SearchFilterOf<GraphNode>.NewOf((x) =>
+            var matches = uow.NodeStore.SearchOf<GraphNode>(LogicOfTo<GraphNode, bool>.New((x) =>
             {
                 if (x.NodeValue == null)
                     return false;
@@ -66,7 +67,7 @@ namespace Decoratid.Idioms.ObjectGraphing.Values
         public object HydrateValue(string nodeText, IGraph uow)
         {
             //get the node that is already hydrated, with the same provided path
-            var matches = uow.NodeStore.Search<GraphNode>(SearchFilterOf<GraphNode>.NewOf((x) =>
+            var matches = uow.NodeStore.SearchOf<GraphNode>(LogicOfTo<GraphNode,bool>.New((x) =>
             {
                 if (x.NodeValue == null)
                     return false;

@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
+using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
 using Decoratid.Idioms.Intercepting;
@@ -108,7 +109,7 @@ namespace Decoratid.Idioms.Eventing
             }
         }
 
-        void SearchOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<Tuple<Type, SearchFilter>, List<IHasId>>> e)
+        void SearchOperationIntercept_Completed(object sender, EventArgOf<InterceptUnitOfWork<LogicOfTo<IHasId,bool>, List<IHasId>>> e)
         {
             var uow = e.Value;
 
@@ -200,7 +201,7 @@ namespace Decoratid.Idioms.Eventing
             }
         }
 
-        public InterceptChain<Tuple<Type, SearchFilter>, List<IHasId>> SearchOperationIntercept
+        public InterceptChain<LogicOfTo<IHasId,bool>, List<IHasId>> SearchOperationIntercept
         {
             get
             {

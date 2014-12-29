@@ -45,7 +45,7 @@ namespace Decoratid.Core.Logical
         #region ILogic
         /// <summary>
         /// performs the logic.  if it's "Of" logic, the passed context is used, if supplied, else the logic's context
-        /// is used.
+        /// is used.  Internally clones the logic.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
