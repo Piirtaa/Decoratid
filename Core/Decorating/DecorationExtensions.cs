@@ -139,7 +139,7 @@ namespace Decoratid.Core.Decorating
         /// <summary>
         /// walks all decorations regardless of type and looks for the specific decoration by a type match
         /// </summary>
-        public static T FindDecoration<T>(this object obj,  bool exactTypeMatch = true)
+        public static T FindDecoration<T>(this object obj, bool exactTypeMatch = true)
         {
             var rv = obj.FindDecoration(typeof(T), exactTypeMatch);
             if (rv == null)
@@ -200,6 +200,73 @@ namespace Decoratid.Core.Decorating
         {
             return obj.HasDecoration(typeof(T), exactTypeMatch);
         }
+        /// <summary>
+        /// does a non-exact type match on all decorations
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="decTypes"></param>
+        /// <returns></returns>
+        public static bool HasDecorations(this object obj, params Type[] decTypes)
+        {
+            if (obj == null)
+                return false;
+
+            var decs = obj.GetAllDecorations();
+            List<Type> allDecTypes = new List<Type>();
+            foreach (var dec in decs)
+            {
+                allDecTypes.Add(dec.GetType());
+            }
+
+            bool rv = true;
+
+            //iterate thru all the decorations to look for
+            foreach (var decType in decTypes)
+            {
+                bool isFound = false;
+                foreach (var actualDecType in allDecTypes)
+                {
+                    if (decType.IsAssignableFrom(actualDecType))
+                    {
+                        isFound = true;
+                        break;
+                    }
+                }
+
+                if (!isFound)
+                {
+                    rv = false;
+                    break;
+                }
+            }
+
+            return rv;
+        }
+
+        public static bool HasDecorations<T1, T2>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2));
+        }
+        public static bool HasDecorations<T1, T2, T3>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2), typeof(T3));
+        }
+        public static bool HasDecorations<T1, T2, T3, T4>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+        }
+        public static bool HasDecorations<T1, T2, T3, T4, T5>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+        }
+        public static bool HasDecorations<T1, T2, T3, T4, T5, T6>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
+        }
+        public static bool HasDecorations<T1, T2, T3, T4, T5, T6, T7>(this object obj)
+        {
+            return obj.HasDecorations(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
+        }
         #endregion
 
         #region Walk Iteration - walks decorations of T
@@ -253,7 +320,7 @@ namespace Decoratid.Core.Decorating
 
             return default(T);
         }
-         /// <summary>
+        /// <summary>
         /// walks the decorator hierarchy to find the one of the provided type, and matching the filter
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -291,7 +358,7 @@ namespace Decoratid.Core.Decorating
         /// <param name="obj"></param>
         /// <param name="exactTypeMatch"></param>
         /// <returns></returns>
-        public static Tdec FindDecorationOf<Tdec,T>(this IDecorationOf<T> obj, bool exactTypeMatch)
+        public static Tdec FindDecorationOf<Tdec, T>(this IDecorationOf<T> obj, bool exactTypeMatch)
     where Tdec : T
         {
             var rv = obj.FindDecorationOf(typeof(Tdec), exactTypeMatch);
@@ -320,7 +387,7 @@ namespace Decoratid.Core.Decorating
         }
 
         #endregion
-  
+
 
         //public static object RemoveDecoration(Type decType, object obj)
         //{
