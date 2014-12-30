@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using Decoratid.Extensions;
+using Decoratid.Core.Identifying;
 
 namespace Decoratid.Core.Decorating
 {
@@ -45,6 +46,7 @@ namespace Decoratid.Core.Decorating
         public DecorationOfBase(T decorated)
         {
             this.SetDecorated(decorated);
+            this.SetDecorationId(string.Empty);
         }
         #endregion
 
@@ -72,6 +74,7 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Properties
+        public DecorationIdentity DecorationId { get; private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -99,6 +102,11 @@ namespace Decoratid.Core.Decorating
 
 
         #region Methods
+        protected void SetDecorationId(string id)
+        {
+            //by default the id is the full type name : T type name
+            this.DecorationId = DecorationIdentity.New(this.GetType(), typeof(T), id);
+        }
         /// <summary>
         /// sets the Decorated property.  If null, kacks
         /// </summary>
@@ -113,7 +121,7 @@ namespace Decoratid.Core.Decorating
 
             //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
             //or we'll get a circ reference situation
-            var decorationList =  this.GetAllDecorationsOf();
+            var decorationList = this.GetAllDecorationsOf();
             if (decorationList != null)
             {
                 foreach (var each in decorationList)

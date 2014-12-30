@@ -89,6 +89,7 @@
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Decorating\DecorationExtensions.cs" />
+    <Compile Include="Core\Decorating\DecorationIdentity.cs" />
     <Compile Include="Core\Decorating\Interfaces.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
@@ -536,6 +537,8 @@
     <Compile Include="Storidioms\Evicting\Tests.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\Factoried\Tests.cs" />
+    <Compile Include="Storidioms\Indexing\IndexFunctions.cs" />
+    <Compile Include="Storidioms\Indexing\IndexingDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\UniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\Tests.cs" />

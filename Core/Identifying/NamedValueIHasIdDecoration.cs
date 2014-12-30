@@ -90,7 +90,7 @@ namespace Decoratid.Core.Identifying
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static NamedValueIHasIdDecoration AddKeyValuePair(this IHasId decorated, string name, object value)
+        public static NamedValueIHasIdDecoration AddPropertyPair(this IHasId decorated, string name, object value)
         {
             Condition.Requires(decorated).IsNotNull();
             Condition.Requires(name).IsNotNullOrEmpty();

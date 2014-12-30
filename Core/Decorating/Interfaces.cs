@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Decoratid.Core.Identifying;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +8,12 @@ using System.Threading.Tasks;
 namespace Decoratid.Core.Decorating
 {
     /// <summary>
-    /// most basic definition of a decoration.  
+    /// most basic definition of a decoration.  Has an Id so that it can be uniquely identified
     /// </summary>
-    public interface IDecoration
+    public interface IDecoration 
     {
         object Decorated { get; }
+        DecorationIdentity DecorationId { get; }
     }
 
     /// <summary>

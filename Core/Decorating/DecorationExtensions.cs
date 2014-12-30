@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Core.Identifying;
 
 namespace Decoratid.Core.Decorating
 {
@@ -147,6 +148,9 @@ namespace Decoratid.Core.Decorating
 
             return (T)rv;
         }
+
+
+
         /// <summary>
         /// Gets all decorations regardless of decoration type continuity
         /// </summary>
@@ -388,7 +392,57 @@ namespace Decoratid.Core.Decorating
 
         #endregion
 
+        #region Decoration Signatures
+        /// <summary>
+        /// if the object is a decoration returns a | separated list of decoration id's, from 
+        /// outermost to innermost, excluding the core decorated thing.  
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string GetExactDecorationSignature(this object obj)
+        {
+            var list = obj.GetAllDecorations();
 
+            List<string> ids = new List<string>();
+            list.WithEach(x =>
+            {
+                var id = x as IDecoration;
+                if(id != null)
+                    ids.Add(id.DecorationId.ToString());
+            });
+            if (ids.Count == 0)
+                return string.Empty;
+
+            var rv = string.Join("|", ids.ToArray());
+            return rv;
+        }
+
+        /// <summary>
+        /// if the object is a decoration returns a | separated list of decoration id's, from 
+        /// outermost to innermost, excluding the core decorated thing, arranged alphabetically.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string GetAlphabeticDecorationSignature(this object obj)
+        {
+            var list = obj.GetAllDecorations();
+
+            List<string> ids = new List<string>();
+            list.WithEach(x =>
+            {
+                var id = x as IDecoration;
+                if (id != null)
+                    ids.Add(id.DecorationId.ToString());
+            });
+            if (ids.Count == 0)
+                return string.Empty;
+
+            ids.Sort();//sort by alpha
+
+            var rv = string.Join("|", ids.ToArray());
+            return rv;
+        }
+        #endregion
         //public static object RemoveDecoration(Type decType, object obj)
         //{
         //    var decs = GetDecorationList(obj);

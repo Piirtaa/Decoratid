@@ -133,6 +133,13 @@ namespace Decoratid.Extensions
             }
         }
 
+        public static List<T> AddToList<T>(this T obj)
+        {
+            List<T> rv = new List<T>();
+            if(obj != null)
+                rv.Add(obj);
+            return rv;
+        }
         public static object GetEnumerableItemByIndex(this IEnumerable source, int index)
         {
             if (source == null) { return null; }

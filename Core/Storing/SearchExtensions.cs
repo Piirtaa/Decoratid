@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Core.Storing
 {
@@ -55,6 +56,26 @@ namespace Decoratid.Core.Storing
 
             var list = store.Search(filter2);
 
+            return list;
+        }
+
+        /// <summary>
+        /// searches a store for items that have the specified decorations (inexact type match)
+        /// </summary>
+        /// <param name="store"></param>
+        /// <param name="decTypes"></param>
+        /// <returns></returns>
+        public static List<IHasId> SearchForHasDecorations(this ISearchableStore store, params Type[] decTypes)
+        {
+            if (store == null)
+                return null;
+
+            var filter = LogicOfTo<IHasId, bool>.New((x) =>
+            {
+                return x.HasDecorations(decTypes);
+            });
+
+            var list = store.Search(filter);
             return list;
         }
     }
