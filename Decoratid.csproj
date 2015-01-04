@@ -148,6 +148,12 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
+    <Compile Include="Idioms\StringSearch\Interfaces.cs" />
+    <Compile Include="Idioms\StringSearch\PDuniho\StateGraph.cs" />
+    <Compile Include="Idioms\StringSearch\PNikiforovs\Trie.cs" />
+    <Compile Include="Idioms\StringSearch\PNikiforovs\AhoCorasick.Tests.cs" />
+    <Compile Include="Idioms\OperationParsing\Extensions.cs" />
+    <Compile Include="Idioms\OperationParsing\Interfaces.cs" />
     <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -182,6 +188,8 @@
     <Compile Include="Idioms\Smellable\Interfaces.cs" />
     <Compile Include="Idioms\Smellable\Tests.cs" />
     <Compile Include="Idioms\Stringing\Tests.cs" />
+    <Compile Include="Idioms\StringSearch\EeekSoft\StringSearch.cs" />
+    <Compile Include="Idioms\StringSearch\StringSearchTestUtil.cs" />
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>
@@ -232,7 +240,6 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationHydratableValueManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\Polyfacing\PolyfacingIHasIdDecoration.cs" />
     <Compile Include="Core\Identifying\DecoratedHasIdBase.cs" />
     <Compile Include="Core\Identifying\Interfaces.cs" />
     <Compile Include="Core\Contextual\Interfaces.cs" />
@@ -521,6 +528,7 @@
     <Compile Include="Idioms\WithValuing\WithValueConditionOfDecoration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StoreSession\Interfaces.cs" />
     <Compile Include="Storidioms\AuditTrail\AuditingDecoration.cs" />
     <Compile Include="Storidioms\AuditTrail\Interfaces.cs" />
     <Compile Include="Idioms\Identifying\DistributedId.cs" />
@@ -537,8 +545,7 @@
     <Compile Include="Storidioms\Evicting\Tests.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\Factoried\Tests.cs" />
-    <Compile Include="Storidioms\Indexing\IndexFunctions.cs" />
-    <Compile Include="Storidioms\Indexing\IndexingDecoration.cs" />
+    <Compile Include="Storidioms\ItemValidating\IdIsOfValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\UniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />
     <Compile Include="Storidioms\ItemValidating\Tests.cs" />
@@ -550,6 +557,7 @@
     </Compile>
     <Compile Include="Storidioms\Masking\Tests.cs" />
     <Compile Include="Storidioms\Named\HasIdDecoration.cs" />
+    <Compile Include="Storidioms\StoreOf\StoreWithIdOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfExactlyDecoration.cs" />
     <Compile Include="Storidioms\StoreOf\StoreOfUniqueIdDecoration.cs" />
@@ -612,6 +620,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Idioms\StringSearch\PNikiforovs\README.md" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
@@ -640,6 +649,12 @@
     <Content Include="Idioms\Validating\Notes.txt" />
     <Content Include="Idioms\Vision.txt" />
     <Content Include="Idioms\WithValuing\Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rdParty\trienet-eec5604530fb4df213b7b4fd8e635218d59ee547\Gma.DataStructures.StringSearch\Gma.DataStructures.StringSearch.csproj">
+      <Project>{17125877-2cf0-42b2-89d3-418e40bde5d0}</Project>
+      <Name>Gma.DataStructures.StringSearch</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

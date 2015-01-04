@@ -121,7 +121,9 @@ namespace Decoratid.Core.Decorating
 
             //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
             //or we'll get a circ reference situation
-            var decorationList = this.GetAllDecorationsOf();
+            var decorationList = decorated.GetAllDecorationsOf<T>();
+            //remove the first decoration because it is equivalent to "this"
+           
             if (decorationList != null)
             {
                 foreach (var each in decorationList)

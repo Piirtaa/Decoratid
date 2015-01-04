@@ -48,4 +48,6 @@ namespace Decoratid.Core.Decorating
         /// <returns></returns>
         IDecorationOf<T> ApplyThisDecorationTo(T thing);
     }
+
+
 }

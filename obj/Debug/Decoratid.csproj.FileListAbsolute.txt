@@ -36,3 +36,5 @@ C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Decoratid
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\log4net.dll
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\log4net.xml
 C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\obj\Debug\Decoratid.csprojResolveAssemblyReference.cache
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Gma.DataStructures.StringSearch.dll
+C:\Users\anonymous3\Dropbox\Common\Repos\Decoratid\Decoratid\bin\Debug\Gma.DataStructures.StringSearch.pdb

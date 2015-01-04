@@ -108,7 +108,7 @@ namespace Decoratid.Storidioms.Indexing
 
             return rv;
         }
-    
+
         public override void Commit(ICommitBag bag)
         {
             try
@@ -200,10 +200,11 @@ namespace Decoratid.Storidioms.Indexing
         /// <returns></returns>
         public static IndexingDecoration GetIndexing(this IStore decorated, string name)
         {
-            return decorated.WalkDecorations( (x)=>{
-                
-                if(x is IndexingDecoration) 
-                    if(((IndexingDecoration)x).Name.Equals(name))
+            return decorated.WalkDecorations((x) =>
+            {
+
+                if (x is IndexingDecoration)
+                    if (((IndexingDecoration)x).Name.Equals(name))
                         return true;
 
                 return false;
@@ -229,6 +230,24 @@ namespace Decoratid.Storidioms.Indexing
             return new IndexingDecoration(decorated, name, indexFunction, index2SOIDStore, sOID2IndexStore);
         }
 
+        public static IndexingDecoration WithAlphabeticDecorationIndex(this IStore decorated,
+            IStoreOfExactly<Index2SOIDs> index2SOIDStore = null,
+            IStoreOfExactly<SOID2Index> sOID2IndexStore = null)
+        {
+            Condition.Requires(decorated).IsNotNull();
 
+            return new IndexingDecoration(decorated, "AlphabeticDecorationIndex",
+                IndexFunctions.AlphabeticDecorationSignatureFunction, index2SOIDStore, sOID2IndexStore);
+        }
+
+        public static IndexingDecoration WithExactDecorationIndex(this IStore decorated,
+    IStoreOfExactly<Index2SOIDs> index2SOIDStore = null,
+    IStoreOfExactly<SOID2Index> sOID2IndexStore = null)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+            return new IndexingDecoration(decorated, "ExactDecorationIndex",
+                IndexFunctions.ExactDecorationSignatureFunction, index2SOIDStore, sOID2IndexStore);
+        }
     }
 }

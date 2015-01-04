@@ -372,7 +372,7 @@ namespace Decoratid.Core.Decorating
             return (Tdec)rv;
         }
         /// <summary>
-        /// 
+        /// gets the layer cake of T, outermost to core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>

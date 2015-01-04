@@ -27,10 +27,12 @@ namespace Decoratid.Core.Decorating
             this.DecoratedType = obj.GetTypeBeingDecorated();
             this.Id = string.Empty;
         }
-        public DecorationIdentity(Type type, Type decoratedType, string id)
+        public DecorationIdentity(Type decorationType, Type decoratedType, string id)
         {
-            Condition.Requires(type).IsNotNull();
+            Condition.Requires(decorationType).IsNotNull();
             Condition.Requires(decoratedType).IsNotNull();
+            this.DecorationType = decorationType;
+            this.DecoratedType = decoratedType;
             this.Id = id;
         }
         #endregion
