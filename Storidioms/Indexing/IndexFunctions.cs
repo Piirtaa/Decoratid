@@ -14,29 +14,29 @@ namespace Decoratid.Storidioms.Indexing
     /// </summary>
     public static class IndexFunctions
     {
-        /// <summary>
-        /// returns the index that returns the object's decoration signature (a comma separated list of 
-        /// decoration types
-        /// </summary>
-        public static LogicOfTo<IHasId, string> ExactDecorationSignatureFunction
-        {
-            get
-            {
-                return LogicOfTo<IHasId, string>.New(x =>
-                {
-                    return x.GetExactDecorationSignature();
-                });
-            }
-        }
-        public static LogicOfTo<IHasId, string> AlphabeticDecorationSignatureFunction
-        {
-            get
-            {
-                return LogicOfTo<IHasId, string>.New(x =>
-                {
-                    return x.GetAlphabeticDecorationSignature();
-                });
-            }
-        }
+        ///// <summary>
+        ///// returns the index that returns the object's decoration signature (a comma separated list of 
+        ///// decoration types
+        ///// </summary>
+        //public static LogicOfTo<IHasId, string> ExactDecorationSignatureFunction
+        //{
+        //    get
+        //    {
+        //        return LogicOfTo<IHasId, string>.New(x =>
+        //        {
+        //            return x.GetExactDecorationSignature();
+        //        });
+        //    }
+        //}
+        //public static LogicOfTo<IHasId, string> AlphabeticDecorationSignatureFunction
+        //{
+        //    get
+        //    {
+        //        return LogicOfTo<IHasId, string>.New(x =>
+        //        {
+        //            return x.GetAlphabeticDecorationSignature();
+        //        });
+        //    }
+        //}
     }
 }

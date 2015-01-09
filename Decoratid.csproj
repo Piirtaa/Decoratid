@@ -89,7 +89,6 @@
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
     <Compile Include="Core\Decorating\DecorationExtensions.cs" />
-    <Compile Include="Core\Decorating\DecorationIdentity.cs" />
     <Compile Include="Core\Decorating\Interfaces.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
+    <Compile Include="Idioms\StringSearch\Trie.cs" />
     <Compile Include="Idioms\StringSearch\Interfaces.cs" />
     <Compile Include="Idioms\StringSearch\PDuniho\StateGraph.cs" />
     <Compile Include="Idioms\StringSearch\PNikiforovs\Trie.cs" />
@@ -189,7 +189,9 @@
     <Compile Include="Idioms\Smellable\Tests.cs" />
     <Compile Include="Idioms\Stringing\Tests.cs" />
     <Compile Include="Idioms\StringSearch\EeekSoft\StringSearch.cs" />
+    <Compile Include="Idioms\StringSearch\StringSearchTestCase.cs" />
     <Compile Include="Idioms\StringSearch\StringSearchTestUtil.cs" />
+    <Compile Include="Idioms\StringSearch\TextSearcher.cs" />
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>
@@ -625,6 +627,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Idioms\Indexing\" />
     <Folder Include="obj\" />
   </ItemGroup>
   <ItemGroup>

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Decoratid.Core.Decorating
 {
     /// <summary>
-    /// most basic definition of a decoration.  Has an Id so that it can be uniquely identified
+    /// most basic definition of a decoration.  
     /// </summary>
     public interface IDecoration 
     {
         object Decorated { get; }
-        DecorationIdentity DecorationId { get; }
     }
+
 
     /// <summary>
     /// a generic decoration

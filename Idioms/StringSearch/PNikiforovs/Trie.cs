@@ -74,7 +74,7 @@ namespace Decoratid.Idioms.StringSearch.PNikiforovs
         /// <summary>
         /// Root of the trie. It has no value and no parent.
         /// </summary>
-        private readonly Node<T, TValue> root = new Node<T, TValue>();
+        private readonly Node<T, TValue> _root = new Node<T, TValue>();
 
         /// <summary>
         /// Adds a word to the tree.
@@ -90,7 +90,7 @@ namespace Decoratid.Idioms.StringSearch.PNikiforovs
         public void Add(IEnumerable<T> word, TValue value)
         {
             // start at the root
-            var node = root;
+            var node = _root;
 
             // build a branch for the word, one letter at a time
             // if a letter node doesn't exist, add it
@@ -117,7 +117,7 @@ namespace Decoratid.Idioms.StringSearch.PNikiforovs
         {
             // construction is done using breadth-first-search
             var queue = new Queue<Node<T, TValue>>();
-            queue.Enqueue(root);
+            queue.Enqueue(_root);
 
             while (queue.Count > 0)
             {
@@ -128,20 +128,20 @@ namespace Decoratid.Idioms.StringSearch.PNikiforovs
                     queue.Enqueue(child);
 
                 // fail link of root is root
-                if (node == root)
+                if (node == _root)
                 {
-                    root.Fail = root;
+                    _root.Fail = _root;
                     continue;
                 }
 
                 var fail = node.Parent.Fail;
 
-                while (fail[node.Word] == null && fail != root)
+                while (fail[node.Word] == null && fail != _root)
                     fail = fail.Fail;
 
-                node.Fail = fail[node.Word] ?? root;
+                node.Fail = fail[node.Word] ?? _root;
                 if (node.Fail == node) 
-                    node.Fail = root;
+                    node.Fail = _root;
             }
         }
 
@@ -152,16 +152,16 @@ namespace Decoratid.Idioms.StringSearch.PNikiforovs
         /// <returns>The values that were added for the found words.</returns>
         public IEnumerable<TValue> Find(IEnumerable<T> text)
         {
-            var node = root;
+            var node = _root;
 
             foreach (T c in text)
             {
-                while (node[c] == null && node != root)
+                while (node[c] == null && node != _root)
                     node = node.Fail;
 
-                node = node[c] ?? root;
+                node = node[c] ?? _root;
 
-                for (var t = node; t != root; t = t.Fail)
+                for (var t = node; t != _root; t = t.Fail)
                 {
                     foreach (TValue value in t.Values)
                         yield return value;

@@ -46,7 +46,7 @@ namespace Decoratid.Core.Decorating
         public DecorationOfBase(T decorated)
         {
             this.SetDecorated(decorated);
-            this.SetDecorationId(string.Empty);
+            //this.SetDecorationId(string.Empty);
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Properties
-        public DecorationIdentity DecorationId { get; private set; }
+        //public DecorationIdentity DecorationId { get; private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -102,11 +102,11 @@ namespace Decoratid.Core.Decorating
 
 
         #region Methods
-        protected void SetDecorationId(string id)
-        {
-            //by default the id is the full type name : T type name
-            this.DecorationId = DecorationIdentity.New(this.GetType(), typeof(T), id);
-        }
+        //protected void SetDecorationId(string id)
+        //{
+        //    //by default the id is the full type name : T type name
+        //    this.DecorationId = DecorationIdentity.New(this.GetType(), typeof(T), id);
+        //}
         /// <summary>
         /// sets the Decorated property.  If null, kacks
         /// </summary>

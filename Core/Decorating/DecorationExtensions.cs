@@ -25,12 +25,16 @@ namespace Decoratid.Core.Decorating
                 return null;
 
             //validate we're on a decoration
-            var genTypeDef = typeof(IDecorationOf<>);
-            if (!genTypeDef.IsInstanceOfGenericType(obj))
+            if (!(obj is IDecoration))
                 return null;
 
+            //var genTypeDef = typeof(IDecorationOf<>);
+            //if (!genTypeDef.IsInstanceOfGenericType(obj))
+            //    return null;
+
             //get the generic type we're decorating
-            var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
+            var genType = obj.GetType().GetInterface("IDecorationOf`1").GetGenericArguments()[0];
+            //var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
 
             return genType;
         }
@@ -74,7 +78,6 @@ namespace Decoratid.Core.Decorating
             //var rv = pi.GetValue(obj);
             //return rv;
 
-
             if (!(obj is IDecoration))
                 return null;
 
@@ -92,7 +95,7 @@ namespace Decoratid.Core.Decorating
         /// If a decoration chain has a change of layer type (ie. we start off decorating T1 and at some point a decoration
         /// converts the thing to a T2, which itself is then decorated) this function will walk it. 
         /// </remarks>
-        public static object WalkDecorations(this object obj, Func<object, bool> filter)
+        public static object WalkDecorationsUntilConditionMet(this object obj, Func<object, bool> filter)
         {
             object currentLayer = obj;
 
@@ -119,7 +122,7 @@ namespace Decoratid.Core.Decorating
         /// <returns></returns>
         public static object FindDecoration(this object obj, Type decType, bool exactTypeMatch = true)
         {
-            var match = WalkDecorations(obj, (dec) =>
+            var match = WalkDecorationsUntilConditionMet(obj, (dec) =>
             {
                 //do type level filtering first
 
@@ -160,7 +163,7 @@ namespace Decoratid.Core.Decorating
         {
             List<object> returnValue = new List<object>();
 
-            var match = obj.WalkDecorations((reg) =>
+            var match = obj.WalkDecorationsUntilConditionMet((reg) =>
             {
                 returnValue.Add(reg);
                 return false;
@@ -393,55 +396,55 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Decoration Signatures
-        /// <summary>
-        /// if the object is a decoration returns a | separated list of decoration id's, from 
-        /// outermost to innermost, excluding the core decorated thing.  
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string GetExactDecorationSignature(this object obj)
-        {
-            var list = obj.GetAllDecorations();
+        ///// <summary>
+        ///// if the object is a decoration returns a | separated list of decoration id's, from 
+        ///// outermost to innermost, excluding the core decorated thing.  
+        ///// </summary>
+        ///// <param name="obj"></param>
+        ///// <returns></returns>
+        //public static string GetExactDecorationSignature(this object obj)
+        //{
+        //    var list = obj.GetAllDecorations();
 
-            List<string> ids = new List<string>();
-            list.WithEach(x =>
-            {
-                var id = x as IDecoration;
-                if(id != null)
-                    ids.Add(id.DecorationId.ToString());
-            });
-            if (ids.Count == 0)
-                return string.Empty;
+        //    List<string> ids = new List<string>();
+        //    list.WithEach(x =>
+        //    {
+        //        var id = x as IDecoration;
+        //        if(id != null)
+        //            ids.Add(id.DecorationId.ToString());
+        //    });
+        //    if (ids.Count == 0)
+        //        return string.Empty;
 
-            var rv = string.Join("|", ids.ToArray());
-            return rv;
-        }
+        //    var rv = string.Join("|", ids.ToArray());
+        //    return rv;
+        //}
 
-        /// <summary>
-        /// if the object is a decoration returns a | separated list of decoration id's, from 
-        /// outermost to innermost, excluding the core decorated thing, arranged alphabetically.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string GetAlphabeticDecorationSignature(this object obj)
-        {
-            var list = obj.GetAllDecorations();
+        ///// <summary>
+        ///// if the object is a decoration returns a | separated list of decoration id's, from 
+        ///// outermost to innermost, excluding the core decorated thing, arranged alphabetically.
+        ///// </summary>
+        ///// <param name="obj"></param>
+        ///// <returns></returns>
+        //public static string GetAlphabeticDecorationSignature(this object obj)
+        //{
+        //    var list = obj.GetAllDecorations();
 
-            List<string> ids = new List<string>();
-            list.WithEach(x =>
-            {
-                var id = x as IDecoration;
-                if (id != null)
-                    ids.Add(id.DecorationId.ToString());
-            });
-            if (ids.Count == 0)
-                return string.Empty;
+        //    List<string> ids = new List<string>();
+        //    list.WithEach(x =>
+        //    {
+        //        var id = x as IDecoration;
+        //        if (id != null)
+        //            ids.Add(id.DecorationId.ToString());
+        //    });
+        //    if (ids.Count == 0)
+        //        return string.Empty;
 
-            ids.Sort();//sort by alpha
+        //    ids.Sort();//sort by alpha
 
-            var rv = string.Join("|", ids.ToArray());
-            return rv;
-        }
+        //    var rv = string.Join("|", ids.ToArray());
+        //    return rv;
+        //}
         #endregion
         //public static object RemoveDecoration(Type decType, object obj)
         //{
