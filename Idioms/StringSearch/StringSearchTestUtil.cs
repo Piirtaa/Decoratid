@@ -19,6 +19,7 @@ namespace Decoratid.Idioms.StringSearch
             var testcase = StringSearchTestCase.New(50, 10, 1000000);
             Stopwatch stopWatch = new Stopwatch();
 
+            
 
             //trie
             Trie trie = new Trie();
@@ -28,13 +29,13 @@ namespace Decoratid.Idioms.StringSearch
                 trie.Add(x);
             });
             stopWatch.Stop();
-            Debug.WriteLine("init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine("trie init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
 
             stopWatch.Reset();
             stopWatch.Start();
             var matches = TrieSearch_ForwardOnlyCursor.FindMatches(trie, testcase.TestSearchText);
             stopWatch.Stop();
-            Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine("forwardonly elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches.Count())
                 );
@@ -43,7 +44,7 @@ namespace Decoratid.Idioms.StringSearch
             stopWatch.Start();
             var matches2 = TrieSearch_SeekAhead.FindMatches(trie, testcase.TestSearchText);
             stopWatch.Stop();
-            Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine("seekahead elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches2.Count())
                 );
@@ -52,10 +53,30 @@ namespace Decoratid.Idioms.StringSearch
             stopWatch.Start();
             var matches3 = TrieSearch_SeekAhead.FindNonOverlappingMatches(trie, testcase.TestSearchText);
             stopWatch.Stop();
-            Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine("seekaheadnonoverlapped elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches3.Count())
                 );
+
+            stopWatch.Reset();
+            stopWatch.Start();
+            InlineTrie inline_trie = new InlineTrie();
+            stopWatch.Start();
+            testcase.TestDictionary.WithEach(x =>
+            {
+                inline_trie.Add(x, x);
+            });
+            stopWatch.Stop();
+            Debug.WriteLine("inline init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            stopWatch.Reset();
+            stopWatch.Start();
+            var inline_matches = inline_trie.FindMatches(testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("inline elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, inline_matches.Count)
+                );
+
             ////trie
             //ITrie<string> gma_trie =  new PatriciaTrie<string>();
             //stopWatch.Start();

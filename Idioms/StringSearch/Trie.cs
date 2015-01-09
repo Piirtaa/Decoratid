@@ -158,7 +158,7 @@ namespace Decoratid.Idioms.StringSearch
             set
             {
                 //validate the value
-                if(value != null)
+                if (value != null)
                     Condition.Requires(value.Id).IsEqualTo(path);
 
                 //walk from the root to the parent of the node we want to set
@@ -246,7 +246,7 @@ namespace Decoratid.Idioms.StringSearch
             }
             return rv;
         }
-        
+
         private class MatchUoW
         {
             #region Ctor
@@ -383,7 +383,7 @@ namespace Decoratid.Idioms.StringSearch
 
             return rv;
         }
-        
+
         public static List<TrieMatch> FindMatches(ITrie trie, string text)
         {
             List<TrieMatch> rv = new List<TrieMatch>();
@@ -415,7 +415,7 @@ namespace Decoratid.Idioms.StringSearch
                 int grasp;
                 var list = FindMatchesAtPosition(trie, i, text, out grasp);
                 rv.AddRange(list);
-                i = i + grasp;
+                i = i + grasp; //move ahead
 
             }
             return rv;
