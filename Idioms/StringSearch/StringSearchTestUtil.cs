@@ -26,7 +26,7 @@ namespace Decoratid.Idioms.StringSearch
             stopWatch.Start();
             testcase.TestDictionary.WithEach(x =>
             {
-                trie.Add(x);
+                trie.Add(x, x);
             });
             stopWatch.Stop();
             Debug.WriteLine("trie init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
@@ -56,6 +56,15 @@ namespace Decoratid.Idioms.StringSearch
             Debug.WriteLine("seekaheadnonoverlapped elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches3.Count())
+                );
+
+            stopWatch.Reset();
+            stopWatch.Start();
+            var matches4 = TrieSearch_SeekAhead.FindMatchesParallel(trie, testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("seekaheadnonoverlapped elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches4.Count())
                 );
 
             stopWatch.Reset();

@@ -16,11 +16,6 @@ namespace Decoratid.Idioms.StringSearch
     /// </remarks>
     public interface ITrieNode : IHasId<string>
     {
-        ///// <summary>
-        ///// the letter defining this node.  calculated: the last letter of the id
-        ///// </summary>
-        //char Letter { get; }
-
         /// <summary>
         /// the children nodes
         /// </summary>
@@ -43,7 +38,6 @@ namespace Decoratid.Idioms.StringSearch
     {
         #region Declarations
         private readonly Dictionary<char, ITrieNode> _children = new Dictionary<char, ITrieNode>();
-        private string _word;
         #endregion
 
         #region Ctor
@@ -66,7 +60,7 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Properties
-        //public char Letter { get { return this.Id.LastOrDefault(); } }
+
         public bool HasWord { get; set; }
         public object Value { get; set; }
         /// <summary>
@@ -85,6 +79,10 @@ namespace Decoratid.Idioms.StringSearch
             set { _children[c] = value; }
         }
         #endregion
+
+        #region Calculated Properties
+        public char Letter { get { return this.Id.LastOrDefault(); } }
+        #endregion
     }
 
     /// <summary>
@@ -93,7 +91,7 @@ namespace Decoratid.Idioms.StringSearch
     public interface ITrie
     {
         ITrieNode Root { get; }
-        void Add(string word);
+        void Add(string word, object value);
         ITrieNode this[string path] { get; set; }
     }
 
@@ -114,7 +112,7 @@ namespace Decoratid.Idioms.StringSearch
 
         #region ITrie
         public ITrieNode Root { get { return _root; } }
-        public void Add(string word)
+        public void Add(string word, object value)
         {
             // start at the root
             var node = _root;
@@ -138,6 +136,7 @@ namespace Decoratid.Idioms.StringSearch
             }
 
             node.HasWord = true;
+            node.Value = value;
         }
         public ITrieNode this[string path]
         {
@@ -220,15 +219,15 @@ namespace Decoratid.Idioms.StringSearch
                     {
                         MatchUoW dequeueItem = queue.Dequeue();
 
+                        //if this matches, update the rv
+                        var match = dequeueItem.GetWordMatch();
+                        if (match != null)
+                            rv.Add(match);
+
                         //can we carry the item over?
                         if (dequeueItem.MoveNext(currentChar))
                         {
                             reQueuedItems.Add(dequeueItem);
-
-                            //test for word match
-                            var match = dequeueItem.GetWordMatch();
-                            if (match != null)
-                                rv.Add(match);
                         }
                     }
 
@@ -237,6 +236,8 @@ namespace Decoratid.Idioms.StringSearch
                         queue.Enqueue(each);
                 }
 
+
+                //Possibly create a unit of work for this particular character (starting from root)
                 var node = trie.Root[currentChar];
                 if (node == null)
                     continue;
@@ -246,7 +247,9 @@ namespace Decoratid.Idioms.StringSearch
             }
             return rv;
         }
-
+        /// <summary>
+        /// a unit of work for each possible match.  
+        /// </summary>
         private class MatchUoW
         {
             #region Ctor
@@ -421,6 +424,24 @@ namespace Decoratid.Idioms.StringSearch
             return rv;
         }
 
+        public static List<TrieMatch> FindMatchesParallel(ITrie trie, string text)
+        {
+            List<TrieMatch> rv = new List<TrieMatch>();
+
+            if (string.IsNullOrEmpty(text))
+                return rv;
+
+            var maxIndex = text.Length - 1;
+
+            Parallel.For(0, maxIndex, (x) =>
+            {
+                int grasp;
+                var list = FindMatchesAtPosition(trie, x, text, out grasp);
+                rv.AddRange(list);
+            });
+
+            return rv;
+        }
     }
 
 }
