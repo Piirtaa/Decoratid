@@ -147,6 +147,8 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
+    <Compile Include="Idioms\StringSearch\TrieNodeDecorationBase.cs" />
+    <Compile Include="Idioms\StringSearch\TrieHarder.cs" />
     <Compile Include="Idioms\StringSearch\Trie.cs" />
     <Compile Include="Idioms\StringSearch\Interfaces.cs" />
     <Compile Include="Idioms\StringSearch\PDuniho\StateGraph.cs" />

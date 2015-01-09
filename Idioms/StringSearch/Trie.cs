@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Identifying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,117 +8,102 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.StringSearch
 {
-    /*Specialized Trie
-     * Just like a normal trie, where each word has a value associated with it
-        
-     * Parsing sequence is different:
-     * given RAWTEXT - text to parse
-     * 1.  Matches only happen in this circumstance
-     *      -the trie matches the word
-     *      -the next character in the RAWTEXT is a space (a post match validation)
-     *      -if we match a word but the next character isn't a space, it's not a match
-     * 2.  After a match the match's ParseExtra function is invoked.  This will move the RAWTEXT cursor forward and grab
-     *      any additional data associated with the match, before the next match is attempted
-     *      
-     * 
-     *  
-     */
-
-
-    public class Trie
+    /// <summary>
+    /// a node in a trie
+    /// </summary>
+    /// <remarks>
+    /// the id value represents the current path/ aka the Word
+    /// </remarks>
+    public interface ITrieNode : IHasId<string>
     {
-        #region Inner Classes
+        ///// <summary>
+        ///// the letter defining this node.  calculated: the last letter of the id
+        ///// </summary>
+        //char Letter { get; }
+
         /// <summary>
-        /// Node in a trie.
+        /// the children nodes
         /// </summary>
-        private class TrieNode
+        /// <param name="c"></param>
+        /// <returns></returns>
+        ITrieNode this[char c] { get; set; }
+
+        /// <summary>
+        /// indicates whether this node terminates a word
+        /// </summary>
+        bool HasWord { get; set; }
+
+        /// <summary>
+        /// a placeholder for any values we want to lookup immediately upon a node match
+        /// </summary>
+        object Value { get; set; }
+    }
+
+    public class TrieNode : ITrieNode
+    {
+        #region Declarations
+        private readonly Dictionary<char, ITrieNode> _children = new Dictionary<char, ITrieNode>();
+        private string _word;
+        #endregion
+
+        #region Ctor
+        public TrieNode(string id = null)
         {
-            #region Declarations
-            private readonly char _char;
-            private readonly Dictionary<char, TrieNode> _children = new Dictionary<char, TrieNode>();
-            private string _word;
-            private object _value;
-            #endregion
-
-            #region Ctor
-            /// <summary>
-            /// Constructor for the root node.
-            /// </summary>
-            private TrieNode()
-            {
-            }
-
-            /// <summary>
-            /// Constructor for a node with a word
-            /// </summary>
-            /// <param name="word"></param>
-            /// <param name="parent"></param>
-            private TrieNode(char word)
-            {
-                this._char = word;
-            }
-            #endregion
-
-            #region Fluent Static
-            public static TrieNode New()
-            {
-                return new TrieNode();
-            }
-            public static TrieNode New(char word)
-            {
-                return new TrieNode(word);
-            }
-            #endregion
-
-            #region Properties
-            public char Char
-            {
-                get { return _char; }
-            }
-            public string Word
-            {
-                get { return _word; }
-            }
-            public object Value
-            {
-                get { return _value; }
-            }
-            /// <summary>
-            /// Children for this node indexed by their char
-            /// </summary>
-            /// <param name="c">Child word.</param>
-            /// <returns>Child node.</returns>
-            public TrieNode this[char c]
-            {
-                get
-                {
-                    TrieNode item = null;
-                    _children.TryGetValue(c, out item);
-                    return item;
-                }
-                set { _children[c] = value; }
-            }
-            #endregion
-
-            #region Methods
-            public bool HasWord()
-            {
-                return !string.IsNullOrEmpty(this.Word);
-            }
-            public void SetWordAndValue(string word, object val)
-            {
-                this._word = word;
-                this._value = val;
-            }
-            #endregion
+            this.Id = id;
         }
         #endregion
 
+        #region Fluent Static
+        public static TrieNode New(string id = null)
+        {
+            return new TrieNode(id);
+        }
+        #endregion
+
+        #region IHasId
+        public string Id { get; set; }
+        object IHasId.Id { get { return this.Id; } }
+        #endregion
+
+        #region Properties
+        //public char Letter { get { return this.Id.LastOrDefault(); } }
+        public bool HasWord { get; set; }
+        public object Value { get; set; }
+        /// <summary>
+        /// Children for this node indexed by their char
+        /// </summary>
+        /// <param name="c">Child word.</param>
+        /// <returns>Child node.</returns>
+        public ITrieNode this[char c]
+        {
+            get
+            {
+                ITrieNode item = null;
+                _children.TryGetValue(c, out item);
+                return item;
+            }
+            set { _children[c] = value; }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// a trie structure
+    /// </summary>
+    public interface ITrie
+    {
+        ITrieNode Root { get; }
+        void Add(string word);
+        ITrieNode this[string path] { get; set; }
+    }
+
+    public class Trie : ITrie
+    {
         #region Declarations
         /// <summary>
         /// Root of the trie. It has no value and no parent.
         /// </summary>
-        private readonly TrieNode _root = TrieNode.New();
+        private readonly ITrieNode _root = TrieNode.New();
         #endregion
 
         #region Ctor
@@ -126,11 +112,14 @@ namespace Decoratid.Idioms.StringSearch
         }
         #endregion
 
-        #region Init Methods
-        public void Add(string word, object val)
+        #region ITrie
+        public ITrieNode Root { get { return _root; } }
+        public void Add(string word)
         {
             // start at the root
             var node = _root;
+
+            string prefix = "";
 
             // build a branch for the word, one letter at a time
             // if a letter node doesn't exist, add it
@@ -139,20 +128,196 @@ namespace Decoratid.Idioms.StringSearch
                 var child = node[c];
 
                 if (child == null)
-                    child = node[c] = TrieNode.New(c); //sets item on the node
+                    child = node[c] = TrieNode.New(prefix + c); //sets item on the node
+
+                //update the prefix
+                prefix = prefix + c;
 
                 //set the node.  on final run this will be the final node that holds the value
                 node = child;
             }
 
-            node.SetWordAndValue(word, val);
+            node.HasWord = true;
+        }
+        public ITrieNode this[string path]
+        {
+            get
+            {
+                //walk from the root to the node, by each character in the path
+                ITrieNode node = this.Root;
+
+                foreach (char c in path)
+                {
+                    node = node[c]; //walk to child
+                    if (node == null)
+                        return null; //kack out with a null
+                }
+
+                return node;
+            }
+            set
+            {
+                //validate the value
+                if(value != null)
+                    Condition.Requires(value.Id).IsEqualTo(path);
+
+                //walk from the root to the parent of the node we want to set
+                ITrieNode node = this.Root;
+
+                var parentPath = path.Substring(path.Length - 1);
+                foreach (char c in parentPath)
+                {
+                    node = node[c];
+                    if (node == null)
+                        return; //kack out 
+                }
+
+                node[path.Last()] = value;
+            }
         }
         #endregion
+    }
 
-        #region Search Methods
-        public List<TrieMatch> FindTrieMatchesAtPosition(int idx, string text)
+    public class TrieMatch
+    {
+        public int PositionInText { get; private set; }
+        public string Word { get; private set; }
+        public object Value { get; private set; }
+
+        public static TrieMatch New(int pos, string word, object value)
+        {
+            return new TrieMatch() { PositionInText = pos, Word = word, Value = value };
+        }
+    }
+
+    //AND NOW DEFINE THE SEARCH ALGORITHMS THAT OPERATE ON THE TRIE STRUCTURE!!!!!
+
+    public static class TrieSearch_ForwardOnlyCursor
+    {
+
+        public static List<TrieMatch> FindMatches(ITrie trie, string text)
         {
             List<TrieMatch> rv = new List<TrieMatch>();
+
+            if (string.IsNullOrEmpty(text))
+                return rv;
+
+            var maxIndex = text.Length - 1;
+
+            Queue<MatchUoW> queue = new Queue<MatchUoW>();
+
+            for (int i = 0; i <= maxIndex; i++)
+            {
+                //get current char
+                char currentChar = text[i];
+
+                //dequeue all carryover items, and identify which ones can continue
+                List<MatchUoW> reQueuedItems = new List<MatchUoW>();
+                int queueCount = queue.Count;
+                if (queueCount > 0)
+                {
+                    for (int j = 0; j < queueCount; j++)
+                    {
+                        MatchUoW dequeueItem = queue.Dequeue();
+
+                        //can we carry the item over?
+                        if (dequeueItem.MoveNext(currentChar))
+                        {
+                            reQueuedItems.Add(dequeueItem);
+
+                            //test for word match
+                            var match = dequeueItem.GetWordMatch();
+                            if (match != null)
+                                rv.Add(match);
+                        }
+                    }
+
+                    //queue up the ones that continue
+                    foreach (var each in reQueuedItems)
+                        queue.Enqueue(each);
+                }
+
+                var node = trie.Root[currentChar];
+                if (node == null)
+                    continue;
+
+                MatchUoW uow = new MatchUoW(i, currentChar, node);
+                queue.Enqueue(uow);
+            }
+            return rv;
+        }
+        
+        private class MatchUoW
+        {
+            #region Ctor
+            public MatchUoW(int index, char currentChar, ITrieNode currentNode)
+            {
+                Condition.Requires(currentNode).IsNotNull();
+
+                this.StartingIndex = index;
+                this.CurrentIndex = index;
+                this.CurrentWord = new string(currentChar, 1);
+                this.CurrentNode = currentNode;
+            }
+            #endregion
+
+            #region Properties
+            public int StartingIndex { get; private set; }
+            public int CurrentIndex { get; private set; }
+            public string CurrentWord { get; private set; }
+            public ITrieNode CurrentNode { get; private set; }
+            #endregion
+
+            #region Methods
+            /// <summary>
+            /// tests if the current node can handle the next char, and updates match if so
+            /// </summary>
+            /// <param name="nextChar"></param>
+            /// <returns></returns>
+            public bool MoveNext(char nextChar)
+            {
+                var node = this.CurrentNode[nextChar];
+                if (node == null)
+                    return false;
+
+                //increment index
+                this.CurrentIndex++;
+                this.CurrentNode = node;
+                this.CurrentWord = this.CurrentWord + nextChar;
+                return true;
+            }
+            /// <summary>
+            /// if the current node has a word, we build a match to return
+            /// </summary>
+            /// <returns></returns>
+            public TrieMatch GetWordMatch()
+            {
+                if (!this.CurrentNode.HasWord)
+                    return null;
+
+                var match = TrieMatch.New(this.StartingIndex, this.CurrentNode.Id, this.CurrentNode.Value);
+                return match;
+            }
+            #endregion
+        }
+
+    }
+
+    public static class TrieSearch_SeekAhead
+    {
+        /// <summary>
+        /// for the provided index position, examines the trie to see if it can handle the character, and moves through
+        /// the trie graph until it no longer matches.  returns list to account for situation where matches share a common suffix.
+        /// </summary>
+        /// <param name="trie"></param>
+        /// <param name="idx"></param>
+        /// <param name="text"></param>
+        /// <param name="graspLengthOUT">the number of characters processed</param>
+        /// <returns></returns>
+        public static List<TrieMatch> FindMatchesAtPosition(ITrie trie, int idx, string text, out int graspLengthOUT)
+        {
+            List<TrieMatch> rv = new List<TrieMatch>();
+            graspLengthOUT = 0;
 
             //basic cursor position validation
             int maxIndex = text.Length - 1;
@@ -160,12 +325,34 @@ namespace Decoratid.Idioms.StringSearch
             if (maxIndex < idx)
                 return rv;
 
+            graspLengthOUT = 1;//we're at least processing 1 character
             var currentIdx = idx;
-            var currentNode = this._root;
+            var currentNode = trie.Root;
             var currentChar = text[currentIdx];
 
-            var queue = new Queue<Tuple<int, char, TrieNode>>();
-            queue.Enqueue(new Tuple<int, char, TrieNode>(currentIdx, currentChar, currentNode));
+            //do the first test in the loop
+            currentNode = currentNode[currentChar];
+            if (currentNode == null)
+                return rv;
+
+            var queue = new Queue<Tuple<int, char, ITrieNode>>();
+
+            //define function to increment position, and update currentIdx, currentChar, and queue it up
+            //implicit is the currentNode position has ALREADY been incremented at this point
+            Func<bool> enqueue = () =>
+            {
+                //get the next char
+                currentIdx++;
+                //validate position
+                if (maxIndex < currentIdx)
+                    return false;
+
+                currentChar = text[currentIdx];
+                queue.Enqueue(new Tuple<int, char, ITrieNode>(currentIdx, currentChar, currentNode));
+                return true;
+            };
+
+            enqueue();
 
             while (queue.Count > 0)
             {
@@ -175,31 +362,29 @@ namespace Decoratid.Idioms.StringSearch
                 currentIdx = tuple.Item1;
 
                 //if we're matching, return it
-                if (currentNode.HasWord())
+                if (currentNode.HasWord)
                 {
-                    var match = TrieMatch.New(currentIdx - 1 - currentNode.Word.Length, currentNode.Word, currentNode.Value);
+                    var match = TrieMatch.New(currentIdx - 1 - currentNode.Id.Length, currentNode.Id, currentNode.Value);
                     rv.Add(match);
+
+                    //update grasp length
+                    var matchGraspLength = match.Word.Length;
+                    if (graspLengthOUT < matchGraspLength)
+                        graspLengthOUT = matchGraspLength;
                 }
 
                 //does the trie even handle (aka lift, bro) this particular character?
                 currentNode = currentNode[currentChar];
                 if (currentNode != null)
                 {
-                    //get the next char
-                    currentIdx++;
-                    //validate position
-                    if (maxIndex < currentIdx)
-                        continue;
-                    
-                    currentChar = text[currentIdx];
-                    queue.Enqueue(new Tuple<int, char, TrieNode>(currentIdx, currentChar, currentNode));
+                    enqueue();
                 }
             }
 
             return rv;
         }
-
-        public List<TrieMatch> FindMatches(string text)
+        
+        public static List<TrieMatch> FindMatches(ITrie trie, string text)
         {
             List<TrieMatch> rv = new List<TrieMatch>();
 
@@ -210,56 +395,32 @@ namespace Decoratid.Idioms.StringSearch
 
             for (int i = 0; i <= maxIndex; i++)
             {
-                var list = FindTrieMatchesAtPosition(i, text);
+                int grasp;
+                var list = FindMatchesAtPosition(trie, i, text, out grasp);
                 rv.AddRange(list);
             }
             return rv;
         }
-        #endregion
-
-    
-    }
-
-
-
-    public class TrieMatch
-    {
-        public int PositionInText { get; private set; }
-        public string Word { get; private set; }
-        public string Extra { get; private set; }
-        public object Value { get; private set; }
-
-        public static TrieMatch New(int pos, string word, object value)
+        public static List<TrieMatch> FindNonOverlappingMatches(ITrie trie, string text)
         {
-            return new TrieMatch() { PositionInText = pos, Word = word, Value = value };
+            List<TrieMatch> rv = new List<TrieMatch>();
+
+            if (string.IsNullOrEmpty(text))
+                return rv;
+
+            var maxIndex = text.Length - 1;
+
+            for (int i = 0; i <= maxIndex; )
+            {
+                int grasp;
+                var list = FindMatchesAtPosition(trie, i, text, out grasp);
+                rv.AddRange(list);
+                i = i + grasp;
+
+            }
+            return rv;
         }
+
     }
 
-    ///// <summary>
-    ///// describes a substring of a string
-    ///// </summary>
-    //public class Substring
-    //{
-    //    #region Declarations
-
-    //    #endregion
-
-    //    #region Ctor
-    //    public Substring(int startPos, int endPos, string data)
-    //    {
-    //        Condition.Requires(startPos).IsGreaterOrEqual(0);
-    //        Condition.Requires(endPos).IsGreaterThan(startPos);
-    //        Condition.Requires(data).IsNotNullOrEmpty().HasLength(endPos - startPos);
-    //        this.StartPos = startPos;
-    //        this.EndPos = endPos;
-    //        this.Data = data;
-    //    }
-    //    #endregion
-
-    //    #region Properties
-    //    public int StartPos { get; private set; }
-    //    public int EndPos { get; private set; }
-    //    public string Data { get; private set; }
-    //    #endregion
-    //}
 }

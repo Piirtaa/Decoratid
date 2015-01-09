@@ -25,20 +25,37 @@ namespace Decoratid.Idioms.StringSearch
             stopWatch.Start();
             testcase.TestDictionary.WithEach(x =>
             {
-                trie.Add(x, x);
+                trie.Add(x);
             });
             stopWatch.Stop();
             Debug.WriteLine("init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
 
             stopWatch.Reset();
             stopWatch.Start();
-            var matches = trie.FindMatches(testcase.TestSearchText);
+            var matches = TrieSearch_ForwardOnlyCursor.FindMatches(trie, testcase.TestSearchText);
             stopWatch.Stop();
             Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches.Count())
                 );
 
+            stopWatch.Reset();
+            stopWatch.Start();
+            var matches2 = TrieSearch_SeekAhead.FindMatches(trie, testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches2.Count())
+                );
+
+            stopWatch.Reset();
+            stopWatch.Start();
+            var matches3 = TrieSearch_SeekAhead.FindNonOverlappingMatches(trie, testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches3.Count())
+                );
             ////trie
             //ITrie<string> gma_trie =  new PatriciaTrie<string>();
             //stopWatch.Start();
