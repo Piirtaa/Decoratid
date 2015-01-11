@@ -84,7 +84,7 @@ namespace Decoratid.Idioms.Eventing
         {
             get
             {
-                return this.FindDecoration<InterceptingStoreDecoration>(true);
+                return this.As<InterceptingStoreDecoration>(true);
             }
         }
         #endregion
@@ -282,7 +282,7 @@ namespace Decoratid.Idioms.Eventing
         /// <returns></returns>
         public static EventingStoreDecoration GetEventingDecoration(this IStore decorated)
         {
-            return decorated.FindDecoration<EventingStoreDecoration>(true);
+            return decorated.As<EventingStoreDecoration>(true);
         }
 
         /// <summary>

@@ -108,7 +108,7 @@ namespace Decoratid.Idioms.Intercepting
         {
             get
             {
-                return this.FindDecoration<InterceptingStoreDecoration>(true);
+                return this.As<InterceptingStoreDecoration>(true);
             }
         }
         #endregion
@@ -227,7 +227,7 @@ namespace Decoratid.Idioms.Intercepting
         /// <returns></returns>
         public static InterceptingStoreDecoration GetIntercept(this IStore decorated)
         {
-            return decorated.FindDecoration<InterceptingStoreDecoration>(true);
+            return decorated.As<InterceptingStoreDecoration>(true);
         }
         /// <summary>
         /// adds interception to the store

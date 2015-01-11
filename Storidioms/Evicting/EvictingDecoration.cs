@@ -360,7 +360,7 @@ namespace Decoratid.Storidioms.Evicting
         /// <returns></returns>
         public static EvictingDecoration GetEvicting(this IStore decorated)
         {
-            return decorated.FindDecoration<EvictingDecoration>(true);
+            return decorated.As<EvictingDecoration>(true);
         }
 
         /// <summary>

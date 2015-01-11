@@ -58,11 +58,11 @@ namespace Decoratid.Idioms.Tasking
         #region IStoreOfUniqueId<ITask>   
         public IHasId GetById(object id)
         {
-            return this.FindDecoration<IStoreOfUniqueId>(false).GetById(id) as ITask;
+            return this.As<IStoreOfUniqueId>(false).GetById(id) as ITask;
         }
         public new List<ITask> GetAll()
         {
-            return this.FindDecoration<IStoreOf<ITask>>(false).GetAll();
+            return this.As<IStoreOf<ITask>>(false).GetAll();
         }
         public List<ITask> SearchOf(LogicOfTo<ITask, bool> filter)
         {
@@ -70,7 +70,7 @@ namespace Decoratid.Idioms.Tasking
         }
         public IItemValidator ItemValidator
         {
-            get { return this.FindDecoration<IStoreOfUniqueId>(false).ItemValidator; }
+            get { return this.As<IStoreOfUniqueId>(false).ItemValidator; }
         }
         #endregion
 
@@ -79,11 +79,11 @@ namespace Decoratid.Idioms.Tasking
         {
             get
             {
-                return this.FindDecoration<EvictingDecoration>(true).ExpirableStore;
+                return this.As<EvictingDecoration>(true).ExpirableStore;
             }
             set
             {
-                this.FindDecoration<EvictingDecoration>(true).ExpirableStore = value;
+                this.As<EvictingDecoration>(true).ExpirableStore = value;
             }
         }
 
@@ -91,17 +91,17 @@ namespace Decoratid.Idioms.Tasking
         {
             get
             {
-                return this.FindDecoration<EvictingDecoration>(true).ExpirableFactory;
+                return this.As<EvictingDecoration>(true).ExpirableFactory;
             }
             set
             {
-                this.FindDecoration<EvictingDecoration>(true).ExpirableFactory = value;
+                this.As<EvictingDecoration>(true).ExpirableFactory = value;
             }
         }
 
         public void Commit(ICommitBag cb, IExpirable expirable)
         {
-            this.FindDecoration<EvictingDecoration>(true).Commit(cb, expirable);
+            this.As<EvictingDecoration>(true).Commit(cb, expirable);
         }
 
         public event EventHandler<EventArgOf<Tuple<IHasId, IExpirable>>> ItemEvicted
@@ -109,17 +109,17 @@ namespace Decoratid.Idioms.Tasking
             add
             {
                 //wire to core registry
-                this.FindDecoration<EvictingDecoration>(true).ItemEvicted += value;
+                this.As<EvictingDecoration>(true).ItemEvicted += value;
             }
             remove
             {
                 //wire to core registry
-                this.FindDecoration<EvictingDecoration>(true).ItemEvicted -= value;
+                this.As<EvictingDecoration>(true).ItemEvicted -= value;
             }
         }
         public void Evict()
         {
-            this.FindDecoration<EvictingDecoration>(true).Evict();
+            this.As<EvictingDecoration>(true).Evict();
         }
         #endregion
     }

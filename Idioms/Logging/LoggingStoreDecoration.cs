@@ -145,7 +145,7 @@ namespace Decoratid.Idioms.Logging
 
         public static LoggingStoreDecoration GetLogger(this IStore decorated)
         {
-            return decorated.FindDecoration<LoggingStoreDecoration>(true);
+            return decorated.As<LoggingStoreDecoration>(true);
         }
 
     }

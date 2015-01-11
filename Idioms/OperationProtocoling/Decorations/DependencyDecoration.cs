@@ -67,7 +67,7 @@ namespace Decoratid.Idioms.OperationProtocoling.Decorations
             //we can only have one dependency decoration per cake, so go grab that one and update it
             if (operation.HasDecoration<DependencyDecoration>())
             {
-                var dec = operation.FindDecoration<DependencyDecoration>();
+                var dec = operation.As<DependencyDecoration>();
                 dec.Dependency.Prerequisites.AddRange(prerequisiteOperationIds);
                 return dec;
             }
@@ -79,7 +79,7 @@ namespace Decoratid.Idioms.OperationProtocoling.Decorations
             Condition.Requires(operation).IsNotNull();
             if (operation.HasDecoration<DependencyDecoration>())
             {
-                var dec = operation.FindDecoration<DependencyDecoration>();
+                var dec = operation.As<DependencyDecoration>();
                 prerequisiteOperationIds.WithEach(pre =>
                 {
                     dec.Dependency.Prerequisites.Remove(pre);

@@ -105,7 +105,7 @@ namespace Decoratid.Storidioms.Factoried
         /// <returns></returns>
         public static FactoryDecoration GetFactory(this IStore decorated)
         {
-            return decorated.FindDecoration<FactoryDecoration>(true);
+            return decorated.As<FactoryDecoration>(true);
         }
 
         /// <summary>

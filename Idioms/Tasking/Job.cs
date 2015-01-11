@@ -71,7 +71,7 @@ namespace Decoratid.Idioms.Tasking
                () =>
                {
                    //the perform task is to turn on the polling process
-                   this.FindDecoration<IPollingDecoration>(false)
+                   this.As<IPollingDecoration>(false)
                        .SetBackgroundAction(LogicOf<ITask>.New(
                            (x) =>
                            {

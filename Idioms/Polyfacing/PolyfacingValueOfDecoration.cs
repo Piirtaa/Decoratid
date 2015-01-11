@@ -84,7 +84,7 @@ namespace Decoratid.Idioms.Polyfacing
             //if we have polyface in our chain, we return that
             if (decorated.HasDecoration<PolyfacingValueOfDecoration<T, Tface>>())
             {
-                rv = decorated.FindDecoration<PolyfacingValueOfDecoration<T, Tface>>();
+                rv = decorated.As<PolyfacingValueOfDecoration<T, Tface>>();
             }
             else
             {

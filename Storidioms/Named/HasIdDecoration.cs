@@ -58,7 +58,7 @@ namespace Decoratid.Storidioms.Named
         /// <returns></returns>
         public static HasIdDecoration GetHasIdDecoration(this IStore decorated)
         {
-            return decorated.FindDecoration<HasIdDecoration>(true);
+            return decorated.As<HasIdDecoration>(true);
         }
         public static HasIdDecoration HasId(this IStore decorated,
             string id)

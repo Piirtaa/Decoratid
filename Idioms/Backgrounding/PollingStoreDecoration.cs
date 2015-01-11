@@ -149,7 +149,7 @@ namespace Decoratid.Idioms.Backgrounding
         /// <returns></returns>
         public static PollingStoreDecoration GetPoll(this IStore decorated)
         {
-            return decorated.FindDecoration<PollingStoreDecoration>(true);
+            return decorated.As<PollingStoreDecoration>(true);
         }
         /// <summary>
         /// adds a background action 

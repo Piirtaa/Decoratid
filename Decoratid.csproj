@@ -147,8 +147,14 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
-    <Compile Include="Idioms\StringSearch\TrieNodeDecorationBase.cs" />
-    <Compile Include="Idioms\StringSearch\InlineTrie.cs" />
+    <Compile Include="Idioms\StringSearch\ParallelingTrieDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\NonOverlappingTrieDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\SeekAheadTrieDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\ForwardOnlyCursorTrieLogic.cs" />
+    <Compile Include="Idioms\StringSearch\StringSearcher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\StringSearch\StringSearchMatch.cs" />
     <Compile Include="Idioms\StringSearch\Trie.cs" />
     <Compile Include="Idioms\StringSearch\Interfaces.cs" />
     <Compile Include="Idioms\StringSearch\PDuniho\StateGraph.cs" />
@@ -193,7 +199,7 @@
     <Compile Include="Idioms\StringSearch\EeekSoft\StringSearch.cs" />
     <Compile Include="Idioms\StringSearch\StringSearchTestCase.cs" />
     <Compile Include="Idioms\StringSearch\StringSearchTestUtil.cs" />
-    <Compile Include="Idioms\StringSearch\TextSearcher.cs" />
+    <Compile Include="Idioms\StringSearch\TrieDecorationBase.cs" />
     <Compile Include="Idioms\Tasking\Decorations\ConditionalTriggerDecoration.cs" />
     <Compile Include="Idioms\Tasking\TaskingLogicDecoration.cs">
       <SubType>Code</SubType>

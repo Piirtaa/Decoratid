@@ -120,7 +120,7 @@ namespace Decoratid.Core.Decorating
         /// <param name="decType"></param>
         /// <param name="exactTypeMatch"></param>
         /// <returns></returns>
-        public static object FindDecoration(this object obj, Type decType, bool exactTypeMatch = true)
+        public static object As(this object obj, Type decType, bool exactTypeMatch = true)
         {
             var match = WalkDecorationsUntilConditionMet(obj, (dec) =>
             {
@@ -143,9 +143,9 @@ namespace Decoratid.Core.Decorating
         /// <summary>
         /// walks all decorations regardless of type and looks for the specific decoration by a type match
         /// </summary>
-        public static T FindDecoration<T>(this object obj, bool exactTypeMatch = true)
+        public static T As<T>(this object obj, bool exactTypeMatch = true)
         {
-            var rv = obj.FindDecoration(typeof(T), exactTypeMatch);
+            var rv = obj.As(typeof(T), exactTypeMatch);
             if (rv == null)
                 return default(T);
 
@@ -200,7 +200,7 @@ namespace Decoratid.Core.Decorating
             if (obj == null)
                 return false;
 
-            var dec = obj.FindDecoration(decType, exactTypeMatch);
+            var dec = obj.As(decType, exactTypeMatch);
             return dec != null;
         }
         public static bool HasDecoration<T>(this object obj, bool exactTypeMatch = true)

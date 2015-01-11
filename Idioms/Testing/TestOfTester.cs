@@ -115,7 +115,7 @@ namespace Decoratid.Idioms.Testing
 
             //get something we can write to
             var list = NaturalStringableList.New().Fileable().Filing(path);
-            IStringableList iList = list.FindDecoration<IStringableList>(false);
+            IStringableList iList = list.As<IStringableList>(false);
 
             foreach (var each in results)
             {

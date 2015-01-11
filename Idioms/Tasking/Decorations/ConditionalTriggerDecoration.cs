@@ -129,7 +129,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
         {
             Condition.Requires(task).IsNotNull();
 
-            var rv = task.FindDecoration<ConditionalTriggerDecoration>();
+            var rv = task.As<ConditionalTriggerDecoration>();
             if (rv == null)
                 rv = new ConditionalTriggerDecoration(task);
 

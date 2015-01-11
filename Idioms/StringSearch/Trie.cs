@@ -88,11 +88,16 @@ namespace Decoratid.Idioms.StringSearch
     /// <summary>
     /// a trie structure
     /// </summary>
-    public interface ITrie
+    public interface ITrieStructure
     {
         ITrieNode Root { get; }
-        void Add(string word, object value);
+
         ITrieNode this[string path] { get; set; }
+    }
+
+    public interface ITrie : ITrieStructure, IStringSearcher
+    {
+
     }
 
     public class Trie : ITrie
@@ -110,7 +115,7 @@ namespace Decoratid.Idioms.StringSearch
         }
         #endregion
 
-        #region ITrie
+        #region ITrieStructure
         public ITrieNode Root { get { return _root; } }
         public void Add(string word, object value)
         {
@@ -175,273 +180,15 @@ namespace Decoratid.Idioms.StringSearch
             }
         }
         #endregion
+
+        #region ITrieLogic
+        public List<StringSearchMatch> FindMatches(string text)
+        {
+            return ForwardOnlyCursorTrieLogic.FindMatches(this, text);
+        }
+        #endregion
     }
 
-    public class TrieMatch
-    {
-        public int PositionInText { get; private set; }
-        public string Word { get; private set; }
-        public object Value { get; private set; }
 
-        public static TrieMatch New(int pos, string word, object value)
-        {
-            return new TrieMatch() { PositionInText = pos, Word = word, Value = value };
-        }
-    }
-
-    //AND NOW DEFINE THE SEARCH ALGORITHMS THAT OPERATE ON THE TRIE STRUCTURE!!!!!
-
-    public static class TrieSearch_ForwardOnlyCursor
-    {
-
-        public static List<TrieMatch> FindMatches(ITrie trie, string text)
-        {
-            List<TrieMatch> rv = new List<TrieMatch>();
-
-            if (string.IsNullOrEmpty(text))
-                return rv;
-
-            var maxIndex = text.Length - 1;
-
-            Queue<MatchUoW> queue = new Queue<MatchUoW>();
-
-            for (int i = 0; i <= maxIndex; i++)
-            {
-                //get current char
-                char currentChar = text[i];
-
-                //dequeue all carryover items, and identify which ones can continue
-                List<MatchUoW> reQueuedItems = new List<MatchUoW>();
-                int queueCount = queue.Count;
-                if (queueCount > 0)
-                {
-                    for (int j = 0; j < queueCount; j++)
-                    {
-                        MatchUoW dequeueItem = queue.Dequeue();
-
-                        //if this matches, update the rv
-                        var match = dequeueItem.GetWordMatch();
-                        if (match != null)
-                            rv.Add(match);
-
-                        //can we carry the item over?
-                        if (dequeueItem.MoveNext(currentChar))
-                        {
-                            reQueuedItems.Add(dequeueItem);
-                        }
-                    }
-
-                    //queue up the ones that continue
-                    foreach (var each in reQueuedItems)
-                        queue.Enqueue(each);
-                }
-
-
-                //Possibly create a unit of work for this particular character (starting from root)
-                var node = trie.Root[currentChar];
-                if (node == null)
-                    continue;
-
-                MatchUoW uow = new MatchUoW(i, currentChar, node);
-                queue.Enqueue(uow);
-            }
-            return rv;
-        }
-        /// <summary>
-        /// a unit of work for each possible match.  
-        /// </summary>
-        private class MatchUoW
-        {
-            #region Ctor
-            public MatchUoW(int index, char currentChar, ITrieNode currentNode)
-            {
-                Condition.Requires(currentNode).IsNotNull();
-
-                this.StartingIndex = index;
-                this.CurrentIndex = index;
-                this.CurrentWord = new string(currentChar, 1);
-                this.CurrentNode = currentNode;
-            }
-            #endregion
-
-            #region Properties
-            public int StartingIndex { get; private set; }
-            public int CurrentIndex { get; private set; }
-            public string CurrentWord { get; private set; }
-            public ITrieNode CurrentNode { get; private set; }
-            #endregion
-
-            #region Methods
-            /// <summary>
-            /// tests if the current node can handle the next char, and updates match if so
-            /// </summary>
-            /// <param name="nextChar"></param>
-            /// <returns></returns>
-            public bool MoveNext(char nextChar)
-            {
-                var node = this.CurrentNode[nextChar];
-                if (node == null)
-                    return false;
-
-                //increment index
-                this.CurrentIndex++;
-                this.CurrentNode = node;
-                this.CurrentWord = this.CurrentWord + nextChar;
-                return true;
-            }
-            /// <summary>
-            /// if the current node has a word, we build a match to return
-            /// </summary>
-            /// <returns></returns>
-            public TrieMatch GetWordMatch()
-            {
-                if (!this.CurrentNode.HasWord)
-                    return null;
-
-                var match = TrieMatch.New(this.StartingIndex, this.CurrentNode.Id, this.CurrentNode.Value);
-                return match;
-            }
-            #endregion
-        }
-
-    }
-
-    public static class TrieSearch_SeekAhead
-    {
-        /// <summary>
-        /// for the provided index position, examines the trie to see if it can handle the character, and moves through
-        /// the trie graph until it no longer matches.  returns list to account for situation where matches share a common suffix.
-        /// </summary>
-        /// <param name="trie"></param>
-        /// <param name="idx"></param>
-        /// <param name="text"></param>
-        /// <param name="graspLengthOUT">the number of characters processed</param>
-        /// <returns></returns>
-        public static List<TrieMatch> FindMatchesAtPosition(ITrie trie, int idx, string text, out int graspLengthOUT)
-        {
-            List<TrieMatch> rv = new List<TrieMatch>();
-            graspLengthOUT = 0;
-
-            //basic cursor position validation
-            int maxIndex = text.Length - 1;
-
-            if (maxIndex < idx)
-                return rv;
-
-            graspLengthOUT = 1;//we're at least processing 1 character
-            var currentIdx = idx;
-            var currentNode = trie.Root;
-            var currentChar = text[currentIdx];
-
-            //do the first test in the loop
-            currentNode = currentNode[currentChar];
-            if (currentNode == null)
-                return rv;
-
-            var queue = new Queue<Tuple<int, char, ITrieNode>>();
-
-            //define function to increment position, and update currentIdx, currentChar, and queue it up
-            //implicit is the currentNode position has ALREADY been incremented at this point
-            Func<bool> enqueue = () =>
-            {
-                //get the next char
-                currentIdx++;
-                //validate position
-                if (maxIndex < currentIdx)
-                    return false;
-
-                currentChar = text[currentIdx];
-                queue.Enqueue(new Tuple<int, char, ITrieNode>(currentIdx, currentChar, currentNode));
-                return true;
-            };
-
-            enqueue();
-
-            while (queue.Count > 0)
-            {
-                var tuple = queue.Dequeue();
-                currentNode = tuple.Item3;
-                currentChar = tuple.Item2;
-                currentIdx = tuple.Item1;
-
-                //if we're matching, return it
-                if (currentNode.HasWord)
-                {
-                    var match = TrieMatch.New(currentIdx - 1 - currentNode.Id.Length, currentNode.Id, currentNode.Value);
-                    rv.Add(match);
-
-                    //update grasp length
-                    var matchGraspLength = match.Word.Length;
-                    if (graspLengthOUT < matchGraspLength)
-                        graspLengthOUT = matchGraspLength;
-                }
-
-                //does the trie even handle (aka lift, bro) this particular character?
-                currentNode = currentNode[currentChar];
-                if (currentNode != null)
-                {
-                    enqueue();
-                }
-            }
-
-            return rv;
-        }
-
-        public static List<TrieMatch> FindMatches(ITrie trie, string text)
-        {
-            List<TrieMatch> rv = new List<TrieMatch>();
-
-            if (string.IsNullOrEmpty(text))
-                return rv;
-
-            var maxIndex = text.Length - 1;
-
-            for (int i = 0; i <= maxIndex; i++)
-            {
-                int grasp;
-                var list = FindMatchesAtPosition(trie, i, text, out grasp);
-                rv.AddRange(list);
-            }
-            return rv;
-        }
-        public static List<TrieMatch> FindNonOverlappingMatches(ITrie trie, string text)
-        {
-            List<TrieMatch> rv = new List<TrieMatch>();
-
-            if (string.IsNullOrEmpty(text))
-                return rv;
-
-            var maxIndex = text.Length - 1;
-
-            for (int i = 0; i <= maxIndex; )
-            {
-                int grasp;
-                var list = FindMatchesAtPosition(trie, i, text, out grasp);
-                rv.AddRange(list);
-                i = i + grasp; //move ahead
-
-            }
-            return rv;
-        }
-
-        public static List<TrieMatch> FindMatchesParallel(ITrie trie, string text)
-        {
-            List<TrieMatch> rv = new List<TrieMatch>();
-
-            if (string.IsNullOrEmpty(text))
-                return rv;
-
-            var maxIndex = text.Length - 1;
-
-            Parallel.For(0, maxIndex, (x) =>
-            {
-                int grasp;
-                var list = FindMatchesAtPosition(trie, x, text, out grasp);
-                rv.AddRange(list);
-            });
-
-            return rv;
-        }
-    }
 
 }

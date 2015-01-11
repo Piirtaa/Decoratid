@@ -70,11 +70,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoration<HasDateCreatedDecoration>(true).DateCreated;
+                return this.As<HasDateCreatedDecoration>(true).DateCreated;
             }
             set
             {
-                this.FindDecoration<HasDateCreatedDecoration>(true).DateCreated = value;
+                this.As<HasDateCreatedDecoration>(true).DateCreated = value;
             }
         }
 
@@ -82,11 +82,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoration<HasGUIDDecoration>(true).GUID;
+                return this.As<HasGUIDDecoration>(true).GUID;
             }
             set
             {
-                this.FindDecoration<HasGUIDDecoration>(true).GUID = value;
+                this.As<HasGUIDDecoration>(true).GUID = value;
             }
         }
 
@@ -94,11 +94,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoration<HasMachineNameDecoration>(true).MachineName;
+                return this.As<HasMachineNameDecoration>(true).MachineName;
             }
             set
             {
-                this.FindDecoration<HasMachineNameDecoration>(true).MachineName = value;
+                this.As<HasMachineNameDecoration>(true).MachineName = value;
             }
         }
 
@@ -106,11 +106,11 @@ namespace Decoratid.Idioms.Identifying
         {
             get
             {
-                return this.FindDecoration<HasIPDecoration>(true).IPAddress;
+                return this.As<HasIPDecoration>(true).IPAddress;
             }
             set
             {
-                this.FindDecoration<HasIPDecoration>(true).IPAddress = value;
+                this.As<HasIPDecoration>(true).IPAddress = value;
             }
         }
         #endregion

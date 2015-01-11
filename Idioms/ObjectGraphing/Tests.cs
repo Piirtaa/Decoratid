@@ -52,12 +52,12 @@ namespace Decoratid.Idioms.ObjectGraphing
 
                 var obj2 = objState1.GraphDeserializeWithDefaults() as HasVersionDecoration;
                 Condition.Requires(obj2.Version).IsEqualTo("v");
-                Condition.Requires(obj2.FindDecoration<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
-                Condition.Requires(obj2.FindDecoration<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
-                Condition.Requires(obj2.FindDecoration<HasMachineNameDecoration>(true).MachineName).IsEqualTo(localMachineName);
-                Condition.Requires(obj2.FindDecoration<HasDateLastTouchedDecoration>(true).DateLastTouched.ToString()).IsEqualTo(lastTouchedDate.ToUniversalTime().ToString());
-                Condition.Requires(obj2.FindDecoration<HasDateCreatedDecoration>(true).DateCreated.ToString()).IsEqualTo(now.ToUniversalTime().ToString());
-                Condition.Requires(obj2.FindDecoration<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
+                Condition.Requires(obj2.As<HasRandomStringDecoration>(true).RandomString).IsEqualTo("blah");
+                Condition.Requires(obj2.As<HasIPDecoration>(true).IPAddress.ToString()).IsEqualTo(ip.ToString());
+                Condition.Requires(obj2.As<HasMachineNameDecoration>(true).MachineName).IsEqualTo(localMachineName);
+                Condition.Requires(obj2.As<HasDateLastTouchedDecoration>(true).DateLastTouched.ToString()).IsEqualTo(lastTouchedDate.ToUniversalTime().ToString());
+                Condition.Requires(obj2.As<HasDateCreatedDecoration>(true).DateCreated.ToString()).IsEqualTo(now.ToUniversalTime().ToString());
+                Condition.Requires(obj2.As<HasGUIDDecoration>(true).GUID).IsEqualTo(guid);
                 Condition.Requires(obj2.Id.ToString()).IsEqualTo("id");
 
                 hasV.Version = "v2";

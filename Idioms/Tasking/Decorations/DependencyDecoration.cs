@@ -60,24 +60,24 @@ namespace Decoratid.Idioms.Tasking.Decorations
         /// If set, defines the condition that will trigger a Perform().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition PerformTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
+        public HasCondition PerformTrigger { get { return this.As<IHasConditionalTaskTriggers>(false).PerformTrigger; } set { this.As<IHasConditionalTaskTriggers>(false).PerformTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a Cancel().
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition CancelTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
+        public HasCondition CancelTrigger { get { return this.As<IHasConditionalTaskTriggers>(false).CancelTrigger; } set { this.As<IHasConditionalTaskTriggers>(false).CancelTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkComplete().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition MarkCompleteTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
+        public HasCondition MarkCompleteTrigger { get { return this.As<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger; } set { this.As<IHasConditionalTaskTriggers>(false).MarkCompleteTrigger = value; } }
         /// <summary>
         /// If set, defines the condition that will trigger a MarkError().  Typically used to end asynchronous operations.
         /// </summary>
         /// <remarks>Must be property settable (not just ctor settable) to enable the condition to have references to the task itself</remarks>
-        public HasCondition MarkErrorTrigger { get { return this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.FindDecoration<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
+        public HasCondition MarkErrorTrigger { get { return this.As<IHasConditionalTaskTriggers>(false).MarkErrorTrigger; } set { this.As<IHasConditionalTaskTriggers>(false).MarkErrorTrigger = value; } }
 
-        public void CheckTriggers() { this.FindDecoration<IHasConditionalTaskTriggers>(false).CheckTriggers(); }
+        public void CheckTriggers() { this.As<IHasConditionalTaskTriggers>(false).CheckTriggers(); }
 
         #endregion
 
@@ -149,7 +149,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
             //we can only have one dependency decoration per cake, so go grab that one and update it
             if (task.HasDecoration<DependencyDecoration>())
             {
-                var dec = task.FindDecoration<DependencyDecoration>();
+                var dec = task.As<DependencyDecoration>();
                 dec.Dependency.Prerequisites.AddRange(prerequisiteTaskIds);
                 return dec;
             }
@@ -161,7 +161,7 @@ namespace Decoratid.Idioms.Tasking.Decorations
             Condition.Requires(task).IsNotNull();
             if (task.HasDecoration<DependencyDecoration>())
             {
-                var dec = task.FindDecoration<DependencyDecoration>();
+                var dec = task.As<DependencyDecoration>();
                 prerequisiteTaskIds.WithEach(pre =>
                 {
                     dec.Dependency.Prerequisites.Remove(pre);
