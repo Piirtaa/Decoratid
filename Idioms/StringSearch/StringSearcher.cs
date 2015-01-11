@@ -34,8 +34,30 @@ namespace Decoratid.Idioms.StringSearch
         {
             List<StringSearchMatch> rv = new List<StringSearchMatch>();
 
-            var words = this.Words.Keys;
-            
+            var words = this.Words.Keys.ToArray();
+
+            Parallel.For(0, words.Length - 1,
+                () => new List<StringSearchMatch>(),
+                (x, loop, subList) =>
+                {
+                    var word = words[x];
+                    object val = this.Words[word];
+                    string searchText = text;
+
+                    int idx = searchText.IndexOf(word);
+
+                    //search for this
+                    while (idx > 0)
+                    {
+                        subList.Add(StringSearchMatch.New(idx, word, val));
+                        searchText = searchText.Substring(idx + word.Length);
+                        idx = searchText.IndexOf(word);
+                    }
+
+                    return subList;
+                },
+                (x) => { rv.AddRange(x); }
+            );
 
             return rv;
         }

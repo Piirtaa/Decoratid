@@ -19,11 +19,29 @@ namespace Decoratid.Idioms.StringSearch
             var testcase = StringSearchTestCase.New(50, 10, 100000);
             Stopwatch stopWatch = new Stopwatch();
 
+            //searcher
+            StringSearcher searcher = new StringSearcher();
+            stopWatch.Start();
+            testcase.TestDictionary.WithEach(x =>
+            {
+                searcher.Add(x, x);
+            });
+            stopWatch.Stop();
+            Debug.WriteLine("searcher init elapsed ms {0}", stopWatch.ElapsedMilliseconds);
 
+            stopWatch.Reset();
+            stopWatch.Start();
+            var searchermatches = searcher.FindMatches(testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("searcher elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, searchermatches.Count())
+                );
 
+            stopWatch.Reset();
+            stopWatch.Start();
             //trie
             Trie trie = new Trie();
-            stopWatch.Start();
             testcase.TestDictionary.WithEach(x =>
             {
                 trie.Add(x, x);
@@ -40,14 +58,14 @@ namespace Decoratid.Idioms.StringSearch
                 string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches.Count())
                 );
 
-            //stopWatch.Reset();
-            //stopWatch.Start();
-            //var matches1b = ForwardOnlyCursorTrieLogic.FindMatches2(trie, testcase.TestSearchText);
-            //stopWatch.Stop();
-            //Debug.WriteLine("forwardonly2 elapsed ms {0}", stopWatch.ElapsedMilliseconds);
-            //Debug.WriteLine(
-            //    string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches1b.Count())
-            //    );
+            stopWatch.Reset();
+            stopWatch.Start();
+            var matches1b = ForwardOnlyCursorTrieLogic.FindMatches2(trie, testcase.TestSearchText);
+            stopWatch.Stop();
+            Debug.WriteLine("forwardonly2 elapsed ms {0}", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine(
+                string.Format("expected percent {0}.  found {1}", testcase.ExpectedPercentMatch, matches1b.Count())
+                );
 
             stopWatch.Reset();
             stopWatch.Start();
