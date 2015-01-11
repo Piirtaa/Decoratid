@@ -9,21 +9,21 @@ namespace Decoratid.Idioms.StringSearch
     /// <summary>
     /// ur std decoration interface
     /// </summary>
-    public interface ITrieDecoration : ITrie, IDecorationOf<ITrie> { }
+    public interface IStringSearcherDecoration : IStringSearcher, IDecorationOf<IStringSearcher> { }
 
 
     [Serializable]
-    public abstract class TrieDecorationBase : DecorationOfBase<ITrie>, ITrieDecoration
+    public abstract class StringSearcherDecorationBase : DecorationOfBase<IStringSearcher>, IStringSearcherDecoration
     {
         #region Ctor
-        public TrieDecorationBase(ITrie decorated)
+        public StringSearcherDecorationBase(IStringSearcher decorated)
             : base(decorated)
         {
         }
         #endregion
 
         #region ISerializable
-        protected TrieDecorationBase(SerializationInfo info, StreamingContext context)
+        protected StringSearcherDecorationBase(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -34,19 +34,19 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Properties
-        public override ITrie This
+        public override IStringSearcher This
         {
             get { return this; }
         }
         #endregion
 
-        #region ITrie
-        public ITrieNode Root { get { return this.Decorated.Root; } }
+        #region IStringSearcher
+
         public virtual void Add(string word, object value)
         {
             this.Decorated.Add(word, value);
         }
-        public ITrieNode this[string path] { get { return this.Decorated[path]; } set { this.Decorated[path] = value; } }
+
         public virtual List<StringSearchMatch> FindMatches(string text)
         {
             return this.Decorated.FindMatches(text);
@@ -54,7 +54,7 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region IDecoration
-        public override IDecorationOf<ITrie> ApplyThisDecorationTo(ITrie thing)
+        public override IDecorationOf<IStringSearcher> ApplyThisDecorationTo(IStringSearcher thing)
         {
             throw new NotImplementedException();
         }

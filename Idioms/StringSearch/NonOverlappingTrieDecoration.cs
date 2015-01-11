@@ -21,7 +21,7 @@ namespace Decoratid.Idioms.StringSearch
     }
 
     [Serializable]
-    public class NonOverlappingTrieDecoration : TrieDecorationBase, INonOverlappingTrie
+    public class NonOverlappingTrieDecoration : StringSearcherDecorationBase, INonOverlappingTrie
     {
         #region Ctor
         public NonOverlappingTrieDecoration(ISeekAheadTrie decorated)
@@ -42,6 +42,9 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Overrides
+        public ITrieNode Root { get { return (this.Decorated as ITrie).Root; } }
+        public ITrieNode this[string path] { get { return (this.Decorated as ITrie)[path]; } set { (this.Decorated as ITrie)[path] = value; } }
+
         public List<StringSearchMatch> FindMatchesAtPosition(int idx, string text, out int graspLengthOUT)
         {
             return (this.Decorated as ISeekAheadTrie).FindMatchesAtPosition(idx, text, out graspLengthOUT);
@@ -66,7 +69,7 @@ namespace Decoratid.Idioms.StringSearch
             }
             return rv;
         }
-        public override IDecorationOf<ITrie> ApplyThisDecorationTo(ITrie thing)
+        public override IDecorationOf<IStringSearcher> ApplyThisDecorationTo(IStringSearcher thing)
         {
             return new NonOverlappingTrieDecoration(thing as ISeekAheadTrie);
         }

@@ -15,7 +15,7 @@ namespace Decoratid.Idioms.StringSearch
     /// has seekahead algorithm - evaluates the trie at the given index and filters matches out by advancing the cursor 
     /// (ie. seeking ahead) until it can't search no more.  
     /// </summary>
-    public interface ISeekAheadTrie : ITrieDecoration
+    public interface ISeekAheadTrie : ITrie
     {
         /// <summary>
         /// for the provided index position, examines the trie to see if it can handle the character, and moves through
@@ -25,7 +25,7 @@ namespace Decoratid.Idioms.StringSearch
     }
 
     [Serializable]
-    public class SeekAheadTrieDecoration : TrieDecorationBase, ISeekAheadTrie
+    public class SeekAheadTrieDecoration : StringSearcherDecorationBase, ISeekAheadTrie
     {
         #region Ctor
         public SeekAheadTrieDecoration(ITrie decorated)
@@ -46,6 +46,8 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Overrides
+        public ITrieNode Root { get { return (this.Decorated as ITrie).Root; } }
+        public ITrieNode this[string path] { get { return (this.Decorated as ITrie)[path]; } set { (this.Decorated as ITrie)[path] = value; } }
         /// <summary>
         /// for the provided index position, examines the trie to see if it can handle the character, and moves through
         /// the trie graph until it no longer matches.  returns list to account for situation where matches share a common suffix.
@@ -142,9 +144,9 @@ namespace Decoratid.Idioms.StringSearch
             }
             return rv;
         }
-        public override IDecorationOf<ITrie> ApplyThisDecorationTo(ITrie thing)
+        public override IDecorationOf<IStringSearcher> ApplyThisDecorationTo(IStringSearcher thing)
         {
-            return new SeekAheadTrieDecoration(thing);
+            return new SeekAheadTrieDecoration(thing as ITrie);
         }
         #endregion
     }

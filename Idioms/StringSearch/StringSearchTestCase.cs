@@ -32,7 +32,7 @@ namespace Decoratid.Idioms.StringSearch
         /// </summary>
         /// <param name="numberOfItems"></param>
         /// <returns></returns>
-        private static List<string> GenerateTestDictionary(int numberOfItems)
+        public static List<string> GenerateTestDictionary(int numberOfItems)
         {
             List<string> rv = new List<string>();
 
@@ -53,7 +53,7 @@ namespace Decoratid.Idioms.StringSearch
         /// <param name="percentMatch"></param>
         /// <param name="numberOfLines"></param>
         /// <returns></returns>
-        private static List<string> GenerateSearchText(List<string> dictionary, int percentMatch, int numberOfLines)
+        public static List<string> GenerateSearchText(List<string> dictionary, int percentMatch, int numberOfLines)
         {
             List<string> rv = new List<string>();
 
@@ -79,6 +79,7 @@ namespace Decoratid.Idioms.StringSearch
                 var fakeLinePrefix = generator.GenerateAlpha(100, 1000);
                 var fakeLineSuffix = generator.GenerateAlpha(100, 1000);
                 return fakeLinePrefix + keyWord + fakeLineSuffix; //stick the value in the middle of the fake line
+
             };
 
             for (int i = 0; i < numberOfLines; i++)
@@ -86,6 +87,48 @@ namespace Decoratid.Idioms.StringSearch
                 rv.Add(generateLine());
             }
             Debug.WriteLine("{0} match lines in {1} total", matchLines, numberOfLines);
+            return rv;
+
+        }
+
+        public static List<string> GenerateDecorationySearchText(List<string> dictionary, int percentMatch, int numberOfLines)
+        {
+            List<string> rv = new List<string>();
+
+            //define the flag to write out a dictionary item
+            Random rnd = new Random();
+            int dictSize = dictionary.Count;
+
+            StringGenerator generator = new StringGenerator();
+            Func<string> generateLine = () =>
+            {
+                string line = string.Empty;
+
+                dictionary.ForEach(word =>
+                {
+                    var fakeLinePrefix = generator.GenerateAlpha(10, 50);
+                    var fakeLineSuffix = generator.GenerateAlpha(10, 50);
+
+                    line += fakeLinePrefix;
+
+                    //get random number from 0 to 100
+                    var rndVal = rnd.Next(0, 100);
+                    //run random filter
+                    if (rndVal < percentMatch)
+                    {
+                        line += word;
+                    }
+                    line += fakeLineSuffix;
+                });
+
+                return line;
+            };
+
+            for (int i = 0; i < numberOfLines; i++)
+            {
+                rv.Add(generateLine());
+            }
+
             return rv;
 
         }
