@@ -9,6 +9,16 @@ using System.Threading.Tasks;
 namespace Decoratid.Idioms.StringSearch
 {
     /// <summary>
+    /// a trie structure
+    /// </summary>
+    public interface ITrieStructure
+    {
+        ITrieNode Root { get; }
+
+        ITrieNode this[string path] { get; set; }
+    }
+
+    /// <summary>
     /// a node in a trie
     /// </summary>
     /// <remarks>
@@ -34,72 +44,16 @@ namespace Decoratid.Idioms.StringSearch
         object Value { get; set; }
     }
 
-    public class TrieNode : ITrieNode
-    {
-        #region Declarations
-        private readonly Dictionary<char, ITrieNode> _children = new Dictionary<char, ITrieNode>();
-        #endregion
-
-        #region Ctor
-        public TrieNode(string id = null)
-        {
-            this.Id = id;
-        }
-        #endregion
-
-        #region Fluent Static
-        public static TrieNode New(string id = null)
-        {
-            return new TrieNode(id);
-        }
-        #endregion
-
-        #region IHasId
-        public string Id { get; set; }
-        object IHasId.Id { get { return this.Id; } }
-        #endregion
-
-        #region Properties
-
-        public bool HasWord { get; set; }
-        public object Value { get; set; }
-        /// <summary>
-        /// Children for this node indexed by their char
-        /// </summary>
-        /// <param name="c">Child word.</param>
-        /// <returns>Child node.</returns>
-        public ITrieNode this[char c]
-        {
-            get
-            {
-                ITrieNode item = null;
-                _children.TryGetValue(c, out item);
-                return item;
-            }
-            set { _children[c] = value; }
-        }
-        #endregion
-
-        #region Calculated Properties
-        public char Letter { get { return this.Id.LastOrDefault(); } }
-        #endregion
-    }
-
     /// <summary>
-    /// a trie structure
+    /// a trie: trie structure and string search alg to navigate it
     /// </summary>
-    public interface ITrieStructure
-    {
-        ITrieNode Root { get; }
-
-        ITrieNode this[string path] { get; set; }
-    }
-
     public interface ITrie : ITrieStructure, IStringSearcher
     {
 
     }
-
+    /// <summary>
+    /// basic implementation of a trie, with standard forward-only cursor alg
+    /// </summary>
     public class Trie : ITrie
     {
         #region Declarations
@@ -184,10 +138,64 @@ namespace Decoratid.Idioms.StringSearch
         #region ITrieLogic
         public List<StringSearchMatch> FindMatches(string text)
         {
-            return ForwardOnlyCursorTrieLogic.FindMatches(this, text);
+            return TrieLogic.FindMatchesUsingForwardOnlyCursor(this, text);
         }
         #endregion
     }
+
+    public class TrieNode : ITrieNode
+    {
+        #region Declarations
+        private readonly Dictionary<char, ITrieNode> _children = new Dictionary<char, ITrieNode>();
+        #endregion
+
+        #region Ctor
+        public TrieNode(string id = null)
+        {
+            this.Id = id;
+        }
+        #endregion
+
+        #region Fluent Static
+        public static TrieNode New(string id = null)
+        {
+            return new TrieNode(id);
+        }
+        #endregion
+
+        #region IHasId
+        public string Id { get; set; }
+        object IHasId.Id { get { return this.Id; } }
+        #endregion
+
+        #region Properties
+
+        public bool HasWord { get; set; }
+        public object Value { get; set; }
+        /// <summary>
+        /// Children for this node indexed by their char
+        /// </summary>
+        /// <param name="c">Child word.</param>
+        /// <returns>Child node.</returns>
+        public ITrieNode this[char c]
+        {
+            get
+            {
+                ITrieNode item = null;
+                _children.TryGetValue(c, out item);
+                return item;
+            }
+            set { _children[c] = value; }
+        }
+        #endregion
+
+        #region Calculated Properties
+        public char Letter { get { return this.Id.LastOrDefault(); } }
+        #endregion
+    }
+
+
+
 
 
 

@@ -12,7 +12,7 @@ namespace Decoratid.Extensions
     /// <remarks>
     /// copied from hugoware.net/blog/enumeration-extensions-2-0
     /// </remarks>
-    public static class BitwiseExtensions
+    public static class BitwiseEnumExtensions
     {
         #region Extension Methods
         /// <summary>
@@ -92,7 +92,7 @@ namespace Decoratid.Extensions
         /// </summary>
         public static bool Missing<T>(this Enum obj, T value)
         {
-            return !BitwiseExtensions.Has<T>(obj, value);
+            return !BitwiseEnumExtensions.Has<T>(obj, value);
         }
 
         #endregion

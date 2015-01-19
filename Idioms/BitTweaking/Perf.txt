@@ -1,0 +1,107 @@
+﻿Tests starting for int | XOR.  1000000 items
+regular. elapsed ms 267.  matched 1
+parallel. elapsed ms 91.  matched 1
+1 workers. elapsed ms 229.  matched 1
+2 workers. elapsed ms 129.  matched 1
+4 workers. elapsed ms 91.  matched 1
+8 workers. elapsed ms 80.  matched 1
+best perf 8 workers 80
+
+Tests starting for boolarray | XOR.  1000000 items
+regular. elapsed ms 334.  matched 1
+parallel. elapsed ms 96.  matched 1
+1 workers. elapsed ms 338.  matched 1
+2 workers. elapsed ms 182.  matched 1
+4 workers. elapsed ms 151.  matched 1
+8 workers. elapsed ms 119.  matched 1
+best perf parallel 96
+
+Tests starting for bitvector | XOR.  1000000 items
+regular. elapsed ms 235.  matched 1
+parallel. elapsed ms 79.  matched 1
+1 workers. elapsed ms 242.  matched 1
+2 workers. elapsed ms 131.  matched 1
+4 workers. elapsed ms 93.  matched 1
+8 workers. elapsed ms 85.  matched 1
+best perf parallel 79
+
+Tests starting for bitarray | XOR.  1000000 items
+regular. elapsed ms 133.  matched 1
+parallel. elapsed ms 41.  matched 1
+1 workers. elapsed ms 126.  matched 1
+2 workers. elapsed ms 100.  matched 1
+4 workers. elapsed ms 74.  matched 1
+8 workers. elapsed ms 73.  matched 1
+best perf parallel 41
+
+Tests starting for int | bit by bit.  1000000 items
+regular. elapsed ms 221.  matched 0
+parallel. elapsed ms 63.  matched 0
+1 workers. elapsed ms 203.  matched 0
+2 workers. elapsed ms 119.  matched 0
+4 workers. elapsed ms 73.  matched 0
+8 workers. elapsed ms 73.  matched 0
+best perf parallel 63
+
+Tests starting for boolarray | bit by bit.  1000000 items
+regular. elapsed ms 300.  matched 0
+parallel. elapsed ms 79.  matched 0
+1 workers. elapsed ms 316.  matched 0
+2 workers. elapsed ms 168.  matched 0
+4 workers. elapsed ms 102.  matched 0
+8 workers. elapsed ms 106.  matched 0
+best perf parallel 79
+
+Tests starting for bitvector | bit by bit.  1000000 items
+regular. elapsed ms 221.  matched 0
+parallel. elapsed ms 73.  matched 0
+1 workers. elapsed ms 212.  matched 0
+2 workers. elapsed ms 117.  matched 0
+4 workers. elapsed ms 85.  matched 0
+8 workers. elapsed ms 79.  matched 0
+best perf parallel 73
+
+Tests starting for bitarray | bit by bit.  1000000 items
+regular. elapsed ms 109.  matched 1
+parallel. elapsed ms 27.  matched 1
+1 workers. elapsed ms 102.  matched 1
+2 workers. elapsed ms 55.  matched 1
+4 workers. elapsed ms 59.  matched 1
+8 workers. elapsed ms 98.  matched 1
+best perf parallel 27
+
+Tests starting for int | int compare.  1000000 items
+regular. elapsed ms 368.  matched 0
+parallel. elapsed ms 110.  matched 0
+1 workers. elapsed ms 342.  matched 0
+2 workers. elapsed ms 180.  matched 0
+4 workers. elapsed ms 129.  matched 0
+8 workers. elapsed ms 121.  matched 0
+best perf parallel 110
+
+Tests starting for boolarray | int compare.  1000000 items
+regular. elapsed ms 440.  matched 0
+parallel. elapsed ms 126.  matched 0
+1 workers. elapsed ms 444.  matched 0
+2 workers. elapsed ms 247.  matched 0
+4 workers. elapsed ms 200.  matched 0
+8 workers. elapsed ms 136.  matched 0
+best perf parallel 126
+
+Tests starting for bitvector | int compare.  1000000 items
+regular. elapsed ms 391.  matched 0
+parallel. elapsed ms 107.  matched 0
+1 workers. elapsed ms 359.  matched 0
+2 workers. elapsed ms 193.  matched 0
+4 workers. elapsed ms 136.  matched 0
+8 workers. elapsed ms 118.  matched 0
+best perf parallel 107
+
+Tests starting for bitarray | int compare.  1000000 items
+regular. elapsed ms 241.  matched 1
+parallel. elapsed ms 71.  matched 1
+1 workers. elapsed ms 246.  matched 1
+2 workers. elapsed ms 169.  matched 1
+4 workers. elapsed ms 95.  matched 1
+8 workers. elapsed ms 102.  matched 1
+best perf parallel 71

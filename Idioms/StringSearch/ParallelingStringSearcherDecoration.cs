@@ -11,26 +11,30 @@ using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.StringSearch
 {
+
     /// <summary>
-    /// slices up each index to process as a separate job and parallelize the seekahead.
+    /// slices up each index to process as a separate job and parallelize the IByPositionStringSearcher.
     /// by far the most performant trie decoration. 
     /// </summary>
-    public interface IParallelingTrie : ISeekAheadTrie
+    public interface IParallelingStringSearcher : IByPositionStringSearcher
     {
     }
-
+    /// <summary>
+    /// slices up each index to process as a separate job and parallelize the IByPositionStringSearcher.
+    /// by far the most performant trie decoration. 
+    /// </summary>
     [Serializable]
-    public class ParallelingTrieDecoration : StringSearcherDecorationBase, IParallelingTrie
+    public class ParallelingStringSearcherDecoration : StringSearcherDecorationBase, IByPositionStringSearcher
     {
         #region Ctor
-        public ParallelingTrieDecoration(ISeekAheadTrie decorated)
+        public ParallelingStringSearcherDecoration(IByPositionStringSearcher decorated)
             : base(decorated)
         {
         }
         #endregion
 
         #region ISerializable
-        protected ParallelingTrieDecoration(SerializationInfo info, StreamingContext context)
+        protected ParallelingStringSearcherDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -41,12 +45,9 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Overrides
-        public ITrieNode Root { get { return (this.Decorated as ITrie).Root; } }
-        public ITrieNode this[string path] { get { return (this.Decorated as ITrie)[path]; } set { (this.Decorated as ITrie)[path] = value; } }
-
         public List<StringSearchMatch> FindMatchesAtPosition(int idx, string text, out int graspLengthOUT)
         {
-            return (this.Decorated as ISeekAheadTrie).FindMatchesAtPosition(idx, text, out graspLengthOUT);
+            return (this.Decorated as IByPositionStringSearcher).FindMatchesAtPosition(idx, text, out graspLengthOUT);
         }
         public override List<StringSearchMatch> FindMatches(string text)
         {
@@ -68,7 +69,7 @@ namespace Decoratid.Idioms.StringSearch
                 (x, loop, subList) =>
                 {
                     int grasp;
-                    var list = (this.Decorated as ISeekAheadTrie).FindMatchesAtPosition(x, text, out grasp);
+                    var list = (this.Decorated as IByPositionStringSearcher).FindMatchesAtPosition(x, text, out grasp);
                     subList.AddRange(list);
                     return subList;
                 },
@@ -79,7 +80,7 @@ namespace Decoratid.Idioms.StringSearch
         }
         public override IDecorationOf<IStringSearcher> ApplyThisDecorationTo(IStringSearcher thing)
         {
-            return new ParallelingTrieDecoration(thing as ISeekAheadTrie);
+            return new ParallelingStringSearcherDecoration(thing as IByPositionStringSearcher);
         }
         #endregion
     }
@@ -87,14 +88,14 @@ namespace Decoratid.Idioms.StringSearch
     public static class ParallelingTrieDecorationExtensions
     {
         /// <summary>
-        /// decorates a seekaheadtrie with some bitchin parallelization perf improvements, y'all
+        /// decorates a IByPositionStringSearcher with some bitchin parallelization perf improvements, y'all
         /// </summary>
         /// <param name="decorated"></param>
         /// <returns></returns>
-        public static ParallelingTrieDecoration Paralleling(this ISeekAheadTrie decorated)
+        public static ParallelingStringSearcherDecoration Paralleling(this IByPositionStringSearcher decorated)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new ParallelingTrieDecoration(decorated);
+            return new ParallelingStringSearcherDecoration(decorated);
         }
 
     }

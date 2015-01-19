@@ -16,22 +16,25 @@ namespace Decoratid.Idioms.StringSearch
     /// index match, thus avoiding overlapping matches (if we know the text we're searching for looks like this, then
     /// this decoration might be useful)
     /// </summary>
-    public interface INonOverlappingTrie : ISeekAheadTrie
+    public interface INonOverlappingStringSearcher : IByPositionStringSearcher
     {
     }
 
+    /// <summary>
+    /// applies non-overlapping search alg to IByPositionStringSearcher
+    /// </summary>
     [Serializable]
-    public class NonOverlappingTrieDecoration : StringSearcherDecorationBase, INonOverlappingTrie
+    public class NonOverlappingStringSearcherDecoration : StringSearcherDecorationBase, INonOverlappingStringSearcher
     {
         #region Ctor
-        public NonOverlappingTrieDecoration(ISeekAheadTrie decorated)
+        public NonOverlappingStringSearcherDecoration(IByPositionStringSearcher decorated)
             : base(decorated)
         {
         }
         #endregion
 
         #region ISerializable
-        protected NonOverlappingTrieDecoration(SerializationInfo info, StreamingContext context)
+        protected NonOverlappingStringSearcherDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -42,12 +45,9 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region Overrides
-        public ITrieNode Root { get { return (this.Decorated as ITrie).Root; } }
-        public ITrieNode this[string path] { get { return (this.Decorated as ITrie)[path]; } set { (this.Decorated as ITrie)[path] = value; } }
-
         public List<StringSearchMatch> FindMatchesAtPosition(int idx, string text, out int graspLengthOUT)
         {
-            return (this.Decorated as ISeekAheadTrie).FindMatchesAtPosition(idx, text, out graspLengthOUT);
+            return (this.Decorated as IByPositionStringSearcher).FindMatchesAtPosition(idx, text, out graspLengthOUT);
         }
 
         public override List<StringSearchMatch> FindMatches(string text)
@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.StringSearch
             for (int i = 0; i <= maxIndex; )
             {
                 int grasp;
-                var list = (this.Decorated as ISeekAheadTrie).FindMatchesAtPosition(i, text, out grasp);
+                var list = (this.Decorated as IByPositionStringSearcher).FindMatchesAtPosition(i, text, out grasp);
                 rv.AddRange(list);
                 i = i + grasp; //move ahead
 
@@ -71,17 +71,20 @@ namespace Decoratid.Idioms.StringSearch
         }
         public override IDecorationOf<IStringSearcher> ApplyThisDecorationTo(IStringSearcher thing)
         {
-            return new NonOverlappingTrieDecoration(thing as ISeekAheadTrie);
+            return new NonOverlappingStringSearcherDecoration(thing as IByPositionStringSearcher);
         }
         #endregion
     }
 
     public static class NonOverlappingTrieDecorationExtensions
     {
-        public static NonOverlappingTrieDecoration NonOverlapping(this ISeekAheadTrie decorated)
+        /// <summary>
+        /// applies non-overlapping search alg to IByPositionStringSearcher
+        /// </summary>
+        public static NonOverlappingStringSearcherDecoration NonOverlapping(this IByPositionStringSearcher decorated)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new NonOverlappingTrieDecoration(decorated);
+            return new NonOverlappingStringSearcherDecoration(decorated);
         }
 
     }

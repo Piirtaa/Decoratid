@@ -100,6 +100,32 @@
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
     <Compile Include="Idioms\Adjusting\Tests.cs" />
     <Compile Include="Idioms\Backgrounding\Tests.cs" />
+    <Compile Include="Idioms\BitTweaking\BitArrayExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\BitExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\BitMocker.cs" />
+    <Compile Include="Idioms\BitTweaking\BitTweakerTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\BitVectorHasBits.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\BoolArrayHasBits.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\BitArrayHasBits.cs" />
+    <Compile Include="Idioms\BitTweaking\IntBitExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\BitTweaking\IntHasBits.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\Communicating\DecoratedEndPointClientBase.cs" />
     <Compile Include="Idioms\Communicating\DecoratedEndPointHostBase.cs" />
     <Compile Include="Idioms\Communicating\Extensions.cs" />
@@ -147,11 +173,11 @@
     <Compile Include="Idioms\ObjectGraphing\Values\DateValueManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\Values\DecorationValueManager.cs" />
     <Compile Include="Idioms\Observing\Tests.cs" />
-    <Compile Include="Idioms\StringSearch\CachingStringSearchDecoration.cs" />
-    <Compile Include="Idioms\StringSearch\ParallelingTrieDecoration.cs" />
-    <Compile Include="Idioms\StringSearch\NonOverlappingTrieDecoration.cs" />
-    <Compile Include="Idioms\StringSearch\SeekAheadTrieDecoration.cs" />
-    <Compile Include="Idioms\StringSearch\ForwardOnlyCursorTrieLogic.cs" />
+    <Compile Include="Idioms\StringSearch\PostMatchCursorMovingStringSearcherDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\ParallelingStringSearcherDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\NonOverlappingStringSearcherDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\ByPositionTrieDecoration.cs" />
+    <Compile Include="Idioms\StringSearch\TrieLogic.cs" />
     <Compile Include="Idioms\StringSearch\StringSearcher.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -206,6 +232,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Tasking\Interfaces.cs" />
+    <Content Include="Idioms\BitTweaking\Perf.txt" />
     <Content Include="Idioms\Tasking\Notes.txt" />
     <Compile Include="Idioms\Tasking\StrategizedTask.cs" />
     <Compile Include="Idioms\Tasking\Decorations\AsynchronousDecoration.cs" />
@@ -580,9 +607,12 @@
     <Compile Include="Storidioms\StoreOf\Tests.cs" />
     <Compile Include="Storidioms\StoreSerializer.cs" />
     <Compile Include="Storidioms\BasicStoreTest.cs" />
+    <Compile Include="Utils\AutoPhobicList.cs" />
     <Compile Include="Utils\CertificateGenerator.cs" />
     <Compile Include="Utils\CertUtil.cs" />
     <Compile Include="Utils\EnvironmentUtil.cs" />
+    <Compile Include="Utils\NumbersUtil.cs" />
+    <Compile Include="Utils\ParallelCounter.cs" />
     <Compile Include="Utils\ProcessUtil.cs" />
     <Compile Include="Utils\SSLUtil.cs" />
     <Compile Include="Utils\UnattributedTypeSerializationSurrogate.cs" />
@@ -597,7 +627,7 @@
     <Compile Include="Core\ValueOfing\DecoratedValueOfBase.cs" />
     <Compile Include="Core\ValueOfing\Extensions.cs" />
     <Compile Include="Extensions\EqualsExtensions.cs" />
-    <Compile Include="Extensions\BitwiseExtensions.cs" />
+    <Compile Include="Extensions\BitwiseEnumExtensions.cs" />
     <Compile Include="Core\Conditional\Or.cs" />
     <Compile Include="Extensions\ConversionExtensions.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />

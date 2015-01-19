@@ -60,7 +60,7 @@ namespace Decoratid.Idioms.StringSearch
 
             stopWatch.Reset();
             stopWatch.Start();
-            var matches1b = ForwardOnlyCursorTrieLogic.FindMatches2(trie, testcase.TestSearchText);
+            var matches1b = TrieLogic.FindMatchesUsingForwardOnlyCursor2(trie, testcase.TestSearchText);
             stopWatch.Stop();
             Debug.WriteLine("forwardonly2 elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
@@ -69,7 +69,7 @@ namespace Decoratid.Idioms.StringSearch
 
             stopWatch.Reset();
             stopWatch.Start();
-            var matches2 = trie.UseSeekAhead().FindMatches(testcase.TestSearchText);
+            var matches2 = trie.HasPositionalSearch().FindMatches(testcase.TestSearchText);
             stopWatch.Stop();
             Debug.WriteLine("seekahead elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
@@ -78,7 +78,7 @@ namespace Decoratid.Idioms.StringSearch
 
             stopWatch.Reset();
             stopWatch.Start();
-            var matches3 = trie.UseSeekAhead().NonOverlapping().FindMatches(testcase.TestSearchText);
+            var matches3 = trie.HasPositionalSearch().NonOverlapping().FindMatches(testcase.TestSearchText);
             stopWatch.Stop();
             Debug.WriteLine("seekaheadnonoverlapped elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
@@ -87,7 +87,7 @@ namespace Decoratid.Idioms.StringSearch
 
             stopWatch.Reset();
             stopWatch.Start();
-            var matches4 = trie.UseSeekAhead().Paralleling().FindMatches(testcase.TestSearchText);
+            var matches4 = trie.HasPositionalSearch().Paralleling().FindMatches(testcase.TestSearchText);
             stopWatch.Stop();
             Debug.WriteLine("seekaheadparallel elapsed ms {0}", stopWatch.ElapsedMilliseconds);
             Debug.WriteLine(
