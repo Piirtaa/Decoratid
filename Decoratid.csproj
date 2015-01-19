@@ -103,9 +103,6 @@
     <Compile Include="Idioms\BitTweaking\BitArrayExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\BitTweaking\BitExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Idioms\BitTweaking\BitMocker.cs" />
     <Compile Include="Idioms\BitTweaking\BitTweakerTester.cs">
       <SubType>Code</SubType>

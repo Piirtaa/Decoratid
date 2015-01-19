@@ -40,6 +40,7 @@ namespace Decoratid.Idioms.BitTweaking
         #region Custom Parallelized IHasBits handling
         private class HasBitsFilterWorker
         {
+            //private readonly object _stateLock = new object();
             public Thread Thread;
             public List<IHasBits> Accumulator = new List<IHasBits>();
             public int Start, End;
@@ -62,7 +63,12 @@ namespace Decoratid.Idioms.BitTweaking
                 {
                     IHasBits item = this.SourceList[i];
                     if (Filter(item))
-                        Accumulator.Add(item);
+                    {
+                        //lock (this._stateLock)
+                        //{
+                            Accumulator.Add(item);
+                        //}
+                    }
                 }
             }
         }
@@ -71,7 +77,7 @@ namespace Decoratid.Idioms.BitTweaking
         {
             List<IHasBits> rv = new List<IHasBits>();
 
-            var slices = NumbersUtil.GetSliceBounds(0, sourceList.Count, numThreads);
+            var slices = NumbersUtil.GetSliceBounds(0, sourceList.Count,  numThreads > sourceList.Count ? sourceList.Count : numThreads );
             var workers = new HasBitsFilterWorker[slices.Length];
             for (int i = 0; i < slices.Length; i++)
                 workers[i] = new HasBitsFilterWorker(slices[i][0], slices[i][1], sourceList, filter);

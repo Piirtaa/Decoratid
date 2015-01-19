@@ -12,6 +12,19 @@ namespace Decoratid.Idioms.BitTweaking
 {
     public static class BitArrayExtensions
     {
+        public static string ToHumanReadable(this BitArray ba)
+        {
+            //null check
+            if (ba == null)
+                return null;
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < ba.Length; i++)
+                sb.Append(ba[i] ? "1" : "0");
+
+            return sb.ToString();
+        }
         public static int GetIntFromBitArray(this BitArray bitArray)
         {
 
@@ -73,7 +86,8 @@ namespace Decoratid.Idioms.BitTweaking
                 return false;
 
             //do an XOR.  if any 1s appear we have a mismatch
-            BitArray check = ba1.Xor(ba2);
+            BitArray clone = ba1.Clone() as BitArray;
+            BitArray check = clone.Xor(ba2);
             foreach (bool each in check)
                 if (each)
                     return false;
@@ -107,8 +121,12 @@ namespace Decoratid.Idioms.BitTweaking
 
             for (int i = 0; i < l1; i++)
                 if (!ba1[i].Equals(ba2[i]))
+                {
+                    var s1 = ToHumanReadable(ba1);
+                    var s2 = ToHumanReadable(ba2);
                     return false;
 
+                }
             return true;
         }
         /// <summary>

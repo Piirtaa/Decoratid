@@ -63,10 +63,10 @@ namespace Decoratid.Idioms.BitTweaking
             var records = BitMocker.GenerateRandomBitArrays(1000000);
             var lastRecord = records.Last();
 
-            List<IHasBits> hasBits1 = new List<IHasBits>();
-            List<IHasBits> hasBits2 = new List<IHasBits>();
-            List<IHasBits> hasBits3 = new List<IHasBits>();
-            List<IHasBits> hasBits4 = new List<IHasBits>();
+            List<IHasBits> hasBitsInt = new List<IHasBits>();
+            List<IHasBits> hasBitsBoolArray = new List<IHasBits>();
+            List<IHasBits> hasBitsBitVector = new List<IHasBits>();
+            List<IHasBits> hasBitsBitArray = new List<IHasBits>();
             IntHasBits last1 = new IntHasBits(lastRecord);
             BoolArrayHasBits last2 = new BoolArrayHasBits(lastRecord);
             BitVectorHasBits last3 = new BitVectorHasBits(lastRecord);
@@ -74,10 +74,10 @@ namespace Decoratid.Idioms.BitTweaking
 
             records.ForEach(x =>
             {
-                hasBits1.Add(new IntHasBits(x));
-                hasBits2.Add(new BoolArrayHasBits(x));
-                hasBits3.Add(new BitVectorHasBits(x));
-                hasBits4.Add(new BitArrayHasBits(x));
+                hasBitsInt.Add(new IntHasBits(x));
+                hasBitsBoolArray.Add(new BoolArrayHasBits(x));
+                hasBitsBitVector.Add(new BitVectorHasBits(x));
+                hasBitsBitArray.Add(new BitArrayHasBits(x));
             });
 
             Func<IHasBits, bool> findLastFilter_XOR = (x) =>
@@ -93,18 +93,20 @@ namespace Decoratid.Idioms.BitTweaking
                 return x.Bits.AreEquivalent_IntCompare(lastRecord);
             };
 
-            TestFilterTimes(hasBits1, findLastFilter_XOR, "int | XOR");
-            TestFilterTimes(hasBits2, findLastFilter_XOR, "boolarray | XOR");
-            TestFilterTimes(hasBits3, findLastFilter_XOR, "bitvector | XOR");
-            TestFilterTimes(hasBits4, findLastFilter_XOR, "bitarray | XOR");
-            TestFilterTimes(hasBits1, findLastFilter_BitByBit, "int | bit by bit");
-            TestFilterTimes(hasBits2, findLastFilter_BitByBit, "boolarray | bit by bit");
-            TestFilterTimes(hasBits3, findLastFilter_BitByBit, "bitvector | bit by bit");
-            TestFilterTimes(hasBits4, findLastFilter_BitByBit, "bitarray | bit by bit");
-            TestFilterTimes(hasBits1, findLastFilter_IntCompare, "int | int compare");
-            TestFilterTimes(hasBits2, findLastFilter_IntCompare, "boolarray | int compare");
-            TestFilterTimes(hasBits3, findLastFilter_IntCompare, "bitvector | int compare");
-            TestFilterTimes(hasBits4, findLastFilter_IntCompare, "bitarray | int compare");
+            TestFilterTimes(hasBitsInt, findLastFilter_XOR, "int | XOR");
+            TestFilterTimes(hasBitsBoolArray, findLastFilter_XOR, "boolarray | XOR");
+            TestFilterTimes(hasBitsBitVector, findLastFilter_XOR, "bitvector | XOR");
+            TestFilterTimes(hasBitsBitArray, findLastFilter_XOR, "bitarray | XOR");
+            TestFilterTimes(hasBitsInt, findLastFilter_BitByBit, "int | bit by bit");
+            TestFilterTimes(hasBitsBoolArray, findLastFilter_BitByBit, "boolarray | bit by bit");
+            TestFilterTimes(hasBitsBitVector, findLastFilter_BitByBit, "bitvector | bit by bit");
+            TestFilterTimes(hasBitsBitArray, findLastFilter_BitByBit, "bitarray | bit by bit");
+            TestFilterTimes(hasBitsInt, findLastFilter_IntCompare, "int | int compare");
+            TestFilterTimes(hasBitsBoolArray, findLastFilter_IntCompare, "boolarray | int compare");
+            TestFilterTimes(hasBitsBitVector, findLastFilter_IntCompare, "bitvector | int compare");
+            TestFilterTimes(hasBitsBitArray, findLastFilter_IntCompare, "bitarray | int compare");
+
+            //apparently bitarray intcompare is the fastest arrangement
         }
         //public static void TestLookupTime()
         //{
