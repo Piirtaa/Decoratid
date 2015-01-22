@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Identifying;
+﻿using Decoratid.Core;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Storing;
 using Decoratid.Idioms.HasBitsing;
@@ -12,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Storidioms.Indexing
 {
-       
+
+
     /* What is Indexing?
      * Indexing provides additional high-performance bitwise query methods on a store's items. 
      * It is implemented as store of HasBits keyed by item Id.  Queries on this store will
@@ -21,27 +23,31 @@ namespace Decoratid.Storidioms.Indexing
      * 
      * 
      */
+    
+    //define type that stores an item's hasbits
+    using IndexedEntry = IsA<IHasId<StoredObjectId>, IHasBits>;
 
-    /// <summary>
-    /// the index of for a stored thing
-    /// </summary>
-    public interface IIndexedEntry : IHasId<StoredObjectId>, IHasBits
-    {
-    }
+    //define type that stores the HasBits item filters
+    using IndexingBitLogic = IsA<IHasId<int>,IHasName,LogicOfTo<IHasId,bool>>;
 
     public interface IIndexingStore : IDecoratedStore
     {
-        IStoreOf<IHasBitsHasId> StoreOfIndices { get; }
+        IStoreOf<IndexedEntry> StoreOfIndices { get; }
         IIndexGenerator IndexGenerator { get; }
         List<IHasId> SearchIndex(Func<IHasBits, bool> filter);
     }
 
-    public interface IIndexGenerator
+
+    /// <summary>
+    /// defines factory that will generate HasBits for an item(IHasId)
+    /// </summary>
+    public interface IIndexFactory
     {
-        void AddBitToIndex(string name, Func<IHasId, bool> HasBitLogic, int index = -1);
-        List<IIndexingBitLogic> BitLogic { get; }
+        IStoreOf<IndexingBitLogic> StoreOfBitLogic { get; }
+        void AddBitToIndex(string name, Func<IHasId, bool> hasBitLogic, int index = -1);
         IHasBits GenerateIndex(IHasId obj);
     }
+
 
     /// <summary>
     /// the logic that says whether a thing has a particular bit flag

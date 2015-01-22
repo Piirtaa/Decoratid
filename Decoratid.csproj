@@ -88,10 +88,12 @@
     <Compile Include="Core\Contextual\ContextualCondition.cs" />
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
+    <Compile Include="Core\Decorating\DecorationBase.cs" />
     <Compile Include="Core\Decorating\DecorationExtensions.cs" />
     <Compile Include="Core\Decorating\Interfaces.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
+    <Compile Include="Core\Identifying\NamingIHasIdDecoration.cs" />
     <Compile Include="Core\IsA.cs" />
     <Compile Include="Core\Logical\LogicUtils.cs" />
     <Compile Include="Core\Storing\NamedNaturalInMemoryStore.cs" />

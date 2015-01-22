@@ -12,9 +12,16 @@ namespace Decoratid.Core.Decorating
     /// </summary>
     public interface IDecoration 
     {
+        /// <summary>
+        /// the immediate thing we are decorating
+        /// </summary>
         object Decorated { get; }
-    }
 
+        /// <summary>
+        /// the coremost decorated thing
+        /// </summary>
+        object Core { get; }
+    }
 
     /// <summary>
     /// a generic decoration
@@ -29,7 +36,7 @@ namespace Decoratid.Core.Decorating
         /// <summary>
         /// in a chain of decorations, it's the core value being decorated
         /// </summary>
-        T Core { get; }
+        new T Core { get; }
         /// <summary>
         /// the immediate thing we are decorating
         /// </summary>

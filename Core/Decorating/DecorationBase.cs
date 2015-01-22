@@ -9,17 +9,6 @@ using Decoratid.Core.Identifying;
 
 namespace Decoratid.Core.Decorating
 {
-
-
-
-    /// <summary>
-    /// marker interface. If present on a decoration it prevents other decorations from decorating it
-    /// </summary>
-    public interface ISealedDecoration
-    {
-
-    }
-
     /// <summary>
     /// abstract class that provides templated implementation of a Decorator/Wrapper
     /// </summary>
@@ -29,13 +18,13 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted
+    public abstract class DecorationBase : DisposableBase, IDecoration, ISerializable, IFaceted
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private T _Decorated;
+        private object _Decorated;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private T _Core;
+        private object _Core;
         #endregion
 
         #region Ctor
@@ -43,17 +32,17 @@ namespace Decoratid.Core.Decorating
         /// the base ctor for a decoration.  it MUST decorate something!!  
         /// </summary>
         /// <param name="decorated">kacks on null</param>
-        public DecorationOfBase(T decorated)
+        public DecorationBase(object decorated)
         {
             this.SetDecorated(decorated);
-            //this.SetDecorationId(string.Empty);
         }
         #endregion
 
         #region ISerializable
-        protected DecorationOfBase(SerializationInfo info, StreamingContext context)
+        protected DecorationBase(SerializationInfo info, StreamingContext context)
         {
-            this._Decorated = (T)info.GetValue("_Decorated", typeof(T));
+            Type type = info.GetValue("_type", typeof(Type)) as Type;
+            this._Decorated = info.GetValue("_Decorated", type);
         }
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -70,6 +59,7 @@ namespace Decoratid.Core.Decorating
         protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("_Decorated", this._Decorated);
+            info.AddValue("_type", this.Decorated.GetType());
         }
         #endregion
 
@@ -87,21 +77,10 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Properties
-        //public DecorationIdentity DecorationId { get; private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public T Decorated { get { return this._Decorated; } }
+        public object Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        object IDecoration.Decorated
-        {
-            get { return this.Decorated; }
-        }
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public T Core { get { return this._Core; } }
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        object IDecoration.Core { get { return this.Core; } }
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public abstract T This { get; }
+        public object Core { get { return this._Core; } }
         #endregion
 
         #region Calculated Properties
@@ -122,7 +101,7 @@ namespace Decoratid.Core.Decorating
         /// sets the Decorated property.  If null, kacks
         /// </summary>
         /// <param name="decorated"></param>
-        protected void SetDecorated(T decorated)
+        protected void SetDecorated(object decorated)
         {
             if (decorated == null)
                 throw new InvalidOperationException("null decoration injection");
@@ -132,7 +111,7 @@ namespace Decoratid.Core.Decorating
 
             //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
             //or we'll get a circ reference situation
-            var decorationList = decorated.GetAllDecorationsOf<T>();
+            var decorationList = decorated.GetAllDecorations();
             //remove the first decoration because it is equivalent to "this"
 
             if (decorationList != null)
@@ -146,9 +125,9 @@ namespace Decoratid.Core.Decorating
 
             this._Decorated = decorated;
 
-            if (decorated is IDecorationOf<T>)
+            if (decorated is IDecoration)
             {
-                IDecorationOf<T> dec = decorated as IDecorationOf<T>;
+                IDecoration dec = decorated as IDecoration;
                 this._Core = dec.Core;
             }
             else
@@ -156,75 +135,6 @@ namespace Decoratid.Core.Decorating
                 this._Core = decorated;
             }
         }
-        /// <summary>
-        /// replaces the Decorated member.  In effect, we are injecting a decoration immediately below the "surface"
-        /// or outermost decoration.
-        /// </summary>
-        /// <param name="decorationStrategy"></param>
-        public void ReplaceDecorated(Func<T, T> decorationStrategy)
-        {
-            Condition.Requires(decorationStrategy).IsNotNull();
-            var newDec = decorationStrategy(this.Decorated);
-            this.SetDecorated(newDec);
-        }
-
-        public T Undecorate(Type decType, bool exactTypeMatch)
-        {
-            //find the decoration we want to remove
-            T decorationToRemove = this.FindDecorationOf(decType, exactTypeMatch);
-            if (decorationToRemove == null)
-                throw new InvalidOperationException("decoration not found");
-
-            //get the decorations from the inside out
-            List<T> decorations = this.GetAllDecorationsOf();
-            decorations.Reverse();
-
-            //iterate to the decoration to remove
-            T wrappee = default(T);
-            foreach (var each in decorations)
-            {
-                IDecorationOf<T> dec = each as IDecorationOf<T>;
-                if (dec == null)
-                    continue;
-
-                //set the flag when we're at the right index
-                if (object.ReferenceEquals(each, decorationToRemove))
-                {
-                    wrappee = dec.Decorated;
-                    continue;
-                }
-
-                //skip if the flag isn't set
-                if (wrappee == null)
-                    continue;
-
-                //we're at the decoration above the decoration to remove
-                //we want to add all the remaining layers on
-                //NOTE: this should kack if invalid
-                var decWrappee = dec.ApplyThisDecorationTo(wrappee);
-                wrappee = decWrappee.This;
-            }
-
-            return wrappee;
-        }
-        /// <summary>
-        /// looks for the provided decoration layer and tries to build the same store without this decoration.
-        /// </summary>
-        /// <remarks>
-        /// if there is a dependency of one layer upon the other, and the dependency is removed, the ctor 
-        /// chain should kack - we provide the same checks as a ctor does, in this method. 
-        /// </remarks>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Undecorate<Tdec>(bool exactTypeMatch)
-            where Tdec : T
-        {
-            return Undecorate(typeof(Tdec), exactTypeMatch);
-        }
-        #endregion
-
-        #region IDecoration
-        public abstract IDecorationOf<T> ApplyThisDecorationTo(T thing);
         #endregion
 
         #region Disposable

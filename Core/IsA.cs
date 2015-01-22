@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Core.Identifying;
 
 namespace Decoratid.Core
 {
@@ -30,7 +31,7 @@ namespace Decoratid.Core
     /// <summary>
     /// base interface for the IsA paradigm that extends IFaceted by adding type constraints
     /// </summary>
-    public interface IIsA : IFaceted
+    public interface IIsA : IFaceted, IHasId
     {
         Type[] IsATypes { get; }
         T GetIsA<T>();
@@ -100,6 +101,21 @@ namespace Decoratid.Core
         }
         #endregion
 
+        #region IHasId
+        /// <summary>
+        /// this points to the IHasId face, otherwise kacks
+        /// </summary>
+        public object Id
+        {
+            get 
+            {
+                var hasId = this.GetIsA<IHasId>();
+                Condition.Requires(hasId).IsNotNull();
+                return hasId.Id;
+            }
+        }
+        #endregion
+
         #region IFaceted
         public object GetFace(Type type)
         {
@@ -122,10 +138,12 @@ namespace Decoratid.Core
         #region Properties
         public IFaceted Faceted { get; private set; }
         #endregion
+
     }
 
     /*
-     * ALL THE CLASSES BELOW ARE JUST SYNTACTIC SUGAR TYPES!!
+     * below are the syntactic sugar types that allow us to quickly put type constraints on an IsA using generics 
+     * 
      * 
      */ 
     public class IsA<T1> : IsA
