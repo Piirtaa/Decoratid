@@ -8,6 +8,18 @@ using Decoratid.Extensions;
 
 namespace Decoratid.Core
 {
+    /*So what's the deal with IsA?
+     * 
+     * IsA is a way of normalizing data to a standard format.  It's a way of saying "I want something that implements 
+     * I1, I2, I3 but I don't want to create a fancy new interface/concrete type to contain this aggregation".  
+     * 
+     * This lends itself to a more fluent, transparent coding style and class design.  Idiomatic data, that is, data that 
+     * is constructed using idiomatic decorations (eg.IHasId<string>.New("me").AddDate().HasBits()) can be passed to 
+     * an IsA<IHasId,IHasDate,IHasBits> argument.  We get type constraints for dynamically constructed data.    
+     * 
+     * 
+     */
+ 
     /// <summary>
     /// the base interface for something that has faces (eg. it's faceted).  
     /// </summary>
@@ -16,7 +28,7 @@ namespace Decoratid.Core
         object GetFace(Type type);
     }
     /// <summary>
-    /// base interface for the IsA paradigm that extends IFaceted
+    /// base interface for the IsA paradigm that extends IFaceted by adding type constraints
     /// </summary>
     public interface IIsA : IFaceted
     {
@@ -112,13 +124,17 @@ namespace Decoratid.Core
         #endregion
     }
 
+    /*
+     * ALL THE CLASSES BELOW ARE JUST SYNTACTIC SUGAR TYPES!!
+     * 
+     */ 
     public class IsA<T1> : IsA
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1)) { }
 
         #region Fluent Static
-        public static IsA<T1> New(IFaceted faceted)
+        public new static IsA<T1> New(IFaceted faceted)
         {
             return new IsA<T1>(faceted);
         }
@@ -128,26 +144,61 @@ namespace Decoratid.Core
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2>(faceted);
+        }
+        #endregion
     }
     public class IsA<T1, T2, T3> : IsA<T1, T2>
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2), typeof(T3)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3>(faceted);
+        }
+        #endregion
     }
     public class IsA<T1, T2, T3, T4> : IsA<T1, T2, T3>
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4>(faceted);
+        }
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5> : IsA<T1, T2, T3, T4>
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5>(faceted);
+        }
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6> : IsA<T1, T2, T3, T4, T5>
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)) { }
+    
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6>(faceted);
+        }
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7> : IsA<T1, T2, T3, T4, T5, T6>
     {
@@ -155,6 +206,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7)) { }
+      
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8> : IsA<T1, T2, T3, T4, T5, T6, T7>
     {
@@ -162,6 +220,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IsA<T1, T2, T3, T4, T5, T6, T7, T8>
     {
@@ -169,6 +234,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
@@ -176,6 +248,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
@@ -183,6 +262,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11)) { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
@@ -190,6 +276,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12)) { }
+    
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
         T12>
@@ -198,6 +291,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13)) { }
+       
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
         T14> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -209,6 +309,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -220,6 +327,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15, T16> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -231,6 +345,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15), typeof(T16))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15, T16, T17> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -242,6 +363,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15), typeof(T16), typeof(T17))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -253,6 +381,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -264,6 +399,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18), typeof(T19))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -275,6 +417,13 @@ namespace Decoratid.Core
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13),
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18), typeof(T19), typeof(T20))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -287,6 +436,13 @@ namespace Decoratid.Core
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18), typeof(T19), typeof(T20),
             typeof(T21))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21, T22> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -299,6 +455,13 @@ namespace Decoratid.Core
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18), typeof(T19), typeof(T20),
             typeof(T21), typeof(T22))
         { }
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>(faceted);
+        }
+        #endregion  
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21, T22, T23> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -311,6 +474,14 @@ namespace Decoratid.Core
             typeof(T14), typeof(T15), typeof(T16), typeof(T17), typeof(T18), typeof(T19), typeof(T20),
             typeof(T21), typeof(T22), typeof(T23))
         { }
+
+
+        #region Fluent Static
+        public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23> New(IFaceted faceted)
+        {
+            return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23>(faceted);
+        }
+        #endregion  
     }
 
 }
