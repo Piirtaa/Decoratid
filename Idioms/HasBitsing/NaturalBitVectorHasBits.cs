@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
-    public class BitVectorHasBits : IHasBits
+    /// <summary>
+    /// HasBits implementation that uses BitVector32 as backing store.  Limited to 32 bits.
+    /// </summary>
+    public class NaturalBitVectorHasBits : IHasBits
     {
         #region Declarations
 
@@ -18,7 +21,7 @@ namespace Decoratid.Idioms.BitTweaking
         #endregion
 
         #region Ctor
-        static BitVectorHasBits()
+        static NaturalBitVectorHasBits()
         {
             _masks = new int[32];
             _masks[0] = BitVector32.CreateMask();
@@ -27,14 +30,25 @@ namespace Decoratid.Idioms.BitTweaking
             for (int i = 1; i < 32; i++)
                 _masks[i] = BitVector32.CreateMask(_masks[i - 1]);
         }
-        public BitVectorHasBits(BitArray bits)
+        public NaturalBitVectorHasBits(BitArray bits)
         {
             Condition.Requires(bits).IsNotNull();
             _bv = new BitVector32(bits.GetIntFromBitArray());
         }
-        public BitVectorHasBits(int val)
+        public NaturalBitVectorHasBits(int val)
         {
             _bv = new BitVector32(val);
+        }
+        #endregion
+
+        #region Fluent Static
+        public static NaturalBitVectorHasBits New(BitArray bits)
+        {
+            return new NaturalBitVectorHasBits(bits);
+        }
+        public static NaturalBitVectorHasBits New(int val)
+        {
+            return new NaturalBitVectorHasBits(val);
         }
         #endregion
 
@@ -65,7 +79,7 @@ namespace Decoratid.Idioms.BitTweaking
             var itemAsInt = item.Bits.GetIntFromBitArray();
             var andVal = this._bv.Data & itemAsInt;
 
-            return new BitVectorHasBits(andVal);
+            return new NaturalBitVectorHasBits(andVal);
         }
         #endregion
     }

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
     /// <summary>
     /// Generates mock bitarray data
     /// </summary>
-    public static class BitMocker
+    public static class MockBitArrays
     {
         public static List<BitArray> GenerateRandomBitArrays(int count)
         {

@@ -29,7 +29,7 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -70,6 +70,19 @@ namespace Decoratid.Core.Decorating
         protected virtual void ISerializable_GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("_Decorated", this._Decorated);
+        }
+        #endregion
+
+        #region IFaceted
+        /// <summary>
+        /// by default does a loose search
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public object GetFace(Type type)
+        {
+            var rv = this.As(type, false);
+            return rv;
         }
         #endregion
 
@@ -123,7 +136,7 @@ namespace Decoratid.Core.Decorating
             //or we'll get a circ reference situation
             var decorationList = decorated.GetAllDecorationsOf<T>();
             //remove the first decoration because it is equivalent to "this"
-           
+
             if (decorationList != null)
             {
                 foreach (var each in decorationList)

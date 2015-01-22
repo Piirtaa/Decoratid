@@ -7,19 +7,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
-    public class BitArrayHasBits : IHasBits
+    /// <summary>
+    /// Implementation of HasBits that uses a BitArray as the backing store.  Also the default
+    /// HasBits type for use in Decorations
+    /// </summary>
+    public class NaturalBitArrayHasBits : IHasBits
     {
         #region Declarations
         private BitArray _bits = null;
         #endregion
 
         #region Ctor
-        public BitArrayHasBits(BitArray bits)
+        public NaturalBitArrayHasBits(BitArray bits)
         {
             Condition.Requires(bits).IsNotNull();
             this._bits = bits;
+        }
+        #endregion
+
+        #region Fluent Static
+        public static NaturalBitArrayHasBits New(BitArray bits)
+        {
+            return new NaturalBitArrayHasBits(bits);
         }
         #endregion
 
@@ -47,9 +58,10 @@ namespace Decoratid.Idioms.BitTweaking
         {
             Condition.Requires(item).IsNotNull();
 
-            var andBits = this.Bits.And(item.Bits);
+            var clone = item.Bits.Clone() as BitArray; //we have to clone because the BitArray.And() implementation changes instance state of the BitArray
+            var andBits = clone.And(item.Bits);
 
-            return new BitArrayHasBits(andBits);
+            return new NaturalBitArrayHasBits(andBits);
         }
         #endregion
     }

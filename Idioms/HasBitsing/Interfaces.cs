@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
     /// <summary>
     /// something that is convertible to a bit array.  something that has bits.  

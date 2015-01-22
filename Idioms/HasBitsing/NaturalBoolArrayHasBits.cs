@@ -7,25 +7,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
-    public class BoolArrayHasBits : IHasBits
+    /// <summary>
+    /// HasBits implementation that uses an array of bool as the backing store.  
+    /// </summary>
+    public class NaturalBoolArrayHasBits : IHasBits
     {
         #region Declarations
         private readonly bool[] _data = null;
         #endregion
 
         #region Ctor
-        public BoolArrayHasBits(BitArray bits)
+        public NaturalBoolArrayHasBits(BitArray bits)
         {
             Condition.Requires(bits).IsNotNull();
             _data = new bool[bits.Length];
             bits.CopyTo(_data, 0);
         }
-        public BoolArrayHasBits(bool[] bits)
+        public NaturalBoolArrayHasBits(bool[] bits)
         {
             Condition.Requires(bits).IsNotNull();
             _data = bits;
+        }
+        #endregion
+
+        #region Fluent Static
+        public static NaturalBoolArrayHasBits New(BitArray bits)
+        {
+            return new NaturalBoolArrayHasBits(bits);
+        }
+        public static NaturalBoolArrayHasBits New(bool[] bits)
+        {
+            return new NaturalBoolArrayHasBits(bits);
         }
         #endregion
 
@@ -53,9 +67,11 @@ namespace Decoratid.Idioms.BitTweaking
         {
             Condition.Requires(item).IsNotNull();
 
-            var andBits = this.Bits.And(item.Bits);
+            var clone = this.Bits.Clone() as BitArray;
 
-            return new BoolArrayHasBits(andBits);
+            var andBits = clone.And(item.Bits);
+
+            return new NaturalBoolArrayHasBits(andBits);
         }
         #endregion
     }

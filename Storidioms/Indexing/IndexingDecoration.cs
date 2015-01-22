@@ -14,21 +14,6 @@ using Decoratid.Extensions;
 
 namespace Decoratid.Storidioms.Indexing
 {
-    //type used to contain mapping of index to soids
-    using Index2SOIDs = Decoratid.Core.Contextual.ContextualId<string, List<StoredObjectId>>;
-    //type used to contain mapping of soid to index
-    using SOID2Index = Decoratid.Core.Contextual.ContextualId<StoredObjectId, string>;
-
-    public interface IIndexingStore : IDecoratedStore
-    {
-        LogicOfTo<IHasId, string> IndexFunction { get; }
-        IStoreOfExactly<Index2SOIDs> Index2SOIDStore { get; }
-        IStoreOfExactly<SOID2Index> SOID2IndexStore { get; }
-
-        List<IHasId> GetByIndex(string idx);
-    }
-
-
     [Serializable]
     public class IndexingDecoration : DecoratedStoreBase, IIndexingStore
     {
@@ -37,11 +22,7 @@ namespace Decoratid.Storidioms.Indexing
         #endregion
 
         #region Ctor
-        public IndexingDecoration(IStore decorated,
-            string name,
-            LogicOfTo<IHasId, string> indexFunction,
-            IStoreOfExactly<Index2SOIDs> index2SOIDStore = null,
-            IStoreOfExactly<SOID2Index> sOID2IndexStore = null)
+        public IndexingDecoration(IStore decorated)
             : base(decorated)
         {
             Condition.Requires(name).IsNotNullOrEmpty();

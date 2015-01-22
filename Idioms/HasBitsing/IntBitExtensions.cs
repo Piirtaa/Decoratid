@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
     /// <summary>
     /// implements bit operations on ints

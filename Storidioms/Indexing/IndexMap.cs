@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.Indexing
+namespace Decoratid.Storidioms.Indexing
 {
     /// <summary>
     /// 

@@ -6,10 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
     public static class BitTweakerTester
     {
+        /// <summary>
+        /// for a given set, runs the filter and outputs the run time. attempts single thread, parallel, and custom threadpool
+        /// of 1, 2, 4, 8 threads to compare results
+        /// </summary>
+        /// <param name="testData"></param>
+        /// <param name="filter"></param>
+        /// <param name="remarks"></param>
         public static void TestFilterTimes(List<IHasBits> testData, Func<IHasBits, bool> filter, string remarks)
         {
             StringBuilder sb = new StringBuilder();
@@ -58,26 +65,29 @@ namespace Decoratid.Idioms.BitTweaking
             Debug.Write(sb.ToString());
         }
 
+        /// <summary>
+        /// tests different hasbits implementations and different filters to perform the same operation
+        /// </summary>
         public static void TestHasBits()
         {
-            var records = BitMocker.GenerateRandomBitArrays(1000000);
+            var records = MockBitArrays.GenerateRandomBitArrays(1000000);
             var lastRecord = records.Last();
 
             List<IHasBits> hasBitsInt = new List<IHasBits>();
             List<IHasBits> hasBitsBoolArray = new List<IHasBits>();
             List<IHasBits> hasBitsBitVector = new List<IHasBits>();
             List<IHasBits> hasBitsBitArray = new List<IHasBits>();
-            IntHasBits last1 = new IntHasBits(lastRecord);
-            BoolArrayHasBits last2 = new BoolArrayHasBits(lastRecord);
-            BitVectorHasBits last3 = new BitVectorHasBits(lastRecord);
-            BitArrayHasBits last4 = new BitArrayHasBits(lastRecord);
+            NaturalIntHasBits last1 = new NaturalIntHasBits(lastRecord);
+            NaturalBoolArrayHasBits last2 = new NaturalBoolArrayHasBits(lastRecord);
+            NaturalBitVectorHasBits last3 = new NaturalBitVectorHasBits(lastRecord);
+            NaturalBitArrayHasBits last4 = new NaturalBitArrayHasBits(lastRecord);
 
             records.ForEach(x =>
             {
-                hasBitsInt.Add(new IntHasBits(x));
-                hasBitsBoolArray.Add(new BoolArrayHasBits(x));
-                hasBitsBitVector.Add(new BitVectorHasBits(x));
-                hasBitsBitArray.Add(new BitArrayHasBits(x));
+                hasBitsInt.Add(new NaturalIntHasBits(x));
+                hasBitsBoolArray.Add(new NaturalBoolArrayHasBits(x));
+                hasBitsBitVector.Add(new NaturalBitVectorHasBits(x));
+                hasBitsBitArray.Add(new NaturalBitArrayHasBits(x));
             });
 
             Func<IHasBits, bool> findLastFilter_XOR = (x) =>
@@ -107,6 +117,16 @@ namespace Decoratid.Idioms.BitTweaking
             TestFilterTimes(hasBitsBitArray, findLastFilter_IntCompare, "bitarray | int compare");
 
             //apparently bitarray intcompare is the fastest arrangement
+
+            //now try the AND
+            //Func<IHasBits, bool> findLastFilter_AND = (x) =>
+            //{
+            //    var newBits = x.AND(last1);
+
+            //    return newBits.Bits.AreEquivalent_IntCompare(lastRecord);
+            //};
+
+
         }
         //public static void TestLookupTime()
         //{
@@ -154,12 +174,12 @@ namespace Decoratid.Idioms.BitTweaking
         //    );
 
         //    //get some tweakers to test against
-        //    List<IBitTweaking> tweakers = new List<IBitTweaking>();
+        //    List<IHasBitsing> tweakers = new List<IHasBitsing>();
         //    tweakers.Add(new IntBitTweaker(needleBA));
         //    tweakers.Add(new FixedArrayBitTweaker(needleBA));
         //    tweakers.Add(new BitVectorTweaker(needleBA));
 
-        //    foreach (IBitTweaking tweaker in tweakers)
+        //    foreach (IHasBitsing tweaker in tweakers)
         //    {
         //        var sw = Stopwatch.StartNew();
 

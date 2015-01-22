@@ -7,24 +7,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.BitTweaking
+namespace Decoratid.Idioms.HasBitsing
 {
-    public class IntHasBits : IHasBits
+    /// <summary>
+    /// HasBits implementation that uses an int32 as the backing store of bits.  Limited to 32 bits.
+    /// </summary>
+    public class NaturalIntHasBits : IHasBits
     {
         #region Declarations
         private int _val = 0;
         #endregion
 
         #region Ctor
-        public IntHasBits(BitArray bits)
+        public NaturalIntHasBits(BitArray bits)
         {
             Condition.Requires(bits).IsNotNull();
             _val = bits.GetIntFromBitArray();
         }
-        public IntHasBits(int val)
+        public NaturalIntHasBits(int val)
         {
             Condition.Requires(val).IsGreaterOrEqual(0);
             _val = val;
+        }
+        #endregion
+
+        #region Fluent Static
+        public static NaturalIntHasBits New(BitArray bits)
+        {
+            return new NaturalIntHasBits(bits);
+        }
+        public static NaturalIntHasBits New(int val)
+        {
+            return new NaturalIntHasBits(val);
         }
         #endregion
 
@@ -65,18 +79,18 @@ namespace Decoratid.Idioms.BitTweaking
             Condition.Requires(item).IsNotNull();
             //var andBits = item.Bits.And(item.Bits);
 
-            if (item is IntHasBits)
+            if (item is NaturalIntHasBits)
             {
                 var itemAsInt = item.Bits.GetIntFromBitArray();
-                var andVal = this._val & (item as IntHasBits)._val;
-                return new IntHasBits(andVal);
+                var andVal = this._val & (item as NaturalIntHasBits)._val;
+                return new NaturalIntHasBits(andVal);
             }
             else
             {
                 var itemAsInt = item.Bits.GetIntFromBitArray();
                 var andVal = this._val & itemAsInt;
 
-                return new IntHasBits(andVal);
+                return new NaturalIntHasBits(andVal);
             }
         }
         #endregion

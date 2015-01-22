@@ -171,6 +171,7 @@ namespace Decoratid.Core.Decorating
 
             return returnValue;
         }
+
         /// <summary>
         /// if the object is an instance of IDecorationOf T, returns all T in that "decoration of" cake
         /// </summary>
