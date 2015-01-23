@@ -36,7 +36,6 @@ namespace Decoratid.Core.Identifying
         {
             return new AsId<TId>(obj);
         }
-
         #endregion
     }
 

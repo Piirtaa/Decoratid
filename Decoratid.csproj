@@ -77,6 +77,7 @@
     <Compile Include="Core\Conditional\DecoratedConditionBase.cs" />
     <Compile Include="Core\Conditional\ConditionalLogicDecoration.cs" />
     <Compile Include="Core\Conditional\HasCondition.cs" />
+    <Compile Include="Core\Conditional\HasIdDecoration.cs" />
     <Compile Include="Core\Conditional\Of\ConditionalOfLogicDecoration.cs" />
     <Compile Include="Core\Conditional\Of\StrategizedConditionOf.cs">
       <SubType>Code</SubType>
@@ -95,8 +96,10 @@
     <Compile Include="Core\Identifying\AsId.cs" />
     <Compile Include="Core\Identifying\NamingIHasIdDecoration.cs" />
     <Compile Include="Core\IsA.cs" />
+    <Compile Include="Core\Logical\HasIdDecoration.cs" />
     <Compile Include="Core\Logical\LogicUtils.cs" />
     <Compile Include="Core\Storing\NamedNaturalInMemoryStore.cs" />
+    <Compile Include="Core\ValueOfing\HasIdDecoration.cs" />
     <Compile Include="Core\ValueOfing\ValueOfLogicDecoration.cs" />
     <Compile Include="Idioms\Adjusting\Adjustment.cs" />
     <Compile Include="Idioms\Adjusting\HasAdjustment.cs" />

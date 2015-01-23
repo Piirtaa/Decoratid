@@ -11,7 +11,7 @@ namespace Decoratid.Core.Identifying
     public interface IHasIdDecoration : IHasId, IDecorationOf<IHasId> { }
 
     /// <summary>
-    /// base class implementation
+    /// HasId decoration base class
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class DecoratedHasIdBase : DecorationOfBase<IHasId>, IHasIdDecoration

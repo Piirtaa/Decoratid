@@ -46,7 +46,6 @@ namespace Decoratid.Core.Decorating
         public DecorationOfBase(T decorated)
         {
             this.SetDecorated(decorated);
-            //this.SetDecorationId(string.Empty);
         }
         #endregion
 
@@ -87,7 +86,6 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region Properties
-        //public DecorationIdentity DecorationId { get; private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

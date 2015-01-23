@@ -95,7 +95,6 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-
         #region Methods
         /// <summary>
         /// sets the Decorated property.  If null, kacks
