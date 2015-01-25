@@ -28,21 +28,48 @@ namespace Decoratid.Storidioms.Indexing
                 //add a bunch of decorations and then search for them
                 IndexingDecoration store = x.WithIndex();
 
+                //bit 0- IHasContext
+                //since we're not supplying an index, it assumes it's the next one
+                store.StoreOfIndices.IndexFactory.SetBitLogic("hascontext", (o) => { return o is IHasContext; });
+                //bit 1 - IHasNameValue
+                store.StoreOfIndices.IndexFactory.SetBitLogic("hasnamevalue", (o) => { return o is IHasNameValue; });
+                //bit 2 - IHasName
+                store.StoreOfIndices.IndexFactory.SetBitLogic("hasname", (o) => { return o is IHasName; });
 
+                for (int i = 0; i < 20; i++)
+                {
+                    //bit 3 + i - IHasNameValue - name of i
+                    store.StoreOfIndices.IndexFactory.SetBitLogic("hasnamevalue" + i, (o) => { return o is IHasNameValue && (o as IHasNameValue).Name == i.ToString(); });
+                }
+                
+                //this gives us a few decorations to search thru. now generate mock data
+                int numRecords = 10000000;
+                Random rnd = new Random();
+                
+                for (int i = 0; i < numRecords; i++)
+                {
+                    var obj = i.BuildAsId();
 
-                var thing1 = AsId<string>.New("asId1").HasContext("context").HasNameValue("property1", "property1value");
-                var thing2 = AsId<string>.New("asId2").HasNameValue("property1", "property1value");
-                var thing3 = AsId<string>.New("asId3").HasContext("context");
+                    //using a suddendeath iteration, flip a coin and add a random namevalue
+                    for (int j = 0; j < 10; j++ )
+                    {
+                        //coin flip
+                        if (rnd.Next(2) == 0)
+                            continue;
 
-                Assert.True(thing1.HasDecorations<IHasContext, IHasNameValue, IHasId>());
-                Assert.True(thing2.HasDecorations<IHasNameValue, IHasId>());
-                Assert.True(thing3.HasDecorations<IHasContext, IHasId>());
-                Assert.False(thing3.HasDecoration<IHasNameValue>());
+                        //pick a decoration from 0 to 22
+                        var decNum = rnd.Next(20);
+                        obj.HasNameValue(decNum.ToString(), decNum);//decorate
+                    }
 
-                store.SaveItem(thing1);
-                store.SaveItem(thing2);
-                store.SaveItem(thing3);
+                    //coin flip
+                    if (rnd.Next(2) == 0)
+                        obj.HasName(i.ToString());
+                    
+                    store.SaveItem(obj);
+                }
 
+                //now search for stuff
 
                 
 
