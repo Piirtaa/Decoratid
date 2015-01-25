@@ -71,7 +71,7 @@ namespace Decoratid.Core.Identifying
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static NamingIHasIdDecoration AddName(this IHasId decorated, string name)
+        public static NamingIHasIdDecoration HasName(this IHasId decorated, string name)
         {
             Condition.Requires(decorated).IsNotNull();
             Condition.Requires(name).IsNotNullOrEmpty();

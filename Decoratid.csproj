@@ -588,6 +588,10 @@
     <Compile Include="Storidioms\Evicting\Tests.cs" />
     <Compile Include="Storidioms\Factoried\FactoryDecoration.cs" />
     <Compile Include="Storidioms\Factoried\Tests.cs" />
+    <Compile Include="Storidioms\Indexing\IndexFactory.cs" />
+    <Compile Include="Storidioms\Indexing\IndexingDecoration.cs" />
+    <Compile Include="Storidioms\Indexing\IndexingStore.cs" />
+    <Compile Include="Storidioms\Indexing\Interfaces.cs" />
     <Compile Include="Storidioms\ItemValidating\IdIsOfValidator.cs" />
     <Compile Include="Storidioms\ItemValidating\UniqueIdValidator.cs" />
     <Compile Include="Idioms\Logging\LoggingStoreDecoration.cs" />

@@ -28,8 +28,8 @@ namespace Decoratid.Storidioms.Indexing
                 //add a bunch of decorations and then search for them
                 IndexingDecoration store = x.WithExactDecorationIndex();
 
-                var thing1 = AsId<string>.New("asId1").AddContext("context").AddPropertyPair("property1", "property1value");
-                var thing2 = AsId<string>.New("asId2").AddPropertyPair("property1", "property1value");
+                var thing1 = AsId<string>.New("asId1").AddContext("context").HasNameValue("property1", "property1value");
+                var thing2 = AsId<string>.New("asId2").HasNameValue("property1", "property1value");
                 var thing3 = AsId<string>.New("asId3").AddContext("context");
 
                 Assert.True(thing1.HasDecorations<IHasContext, IHasNameValue, IHasId>());
