@@ -26,11 +26,13 @@ namespace Decoratid.Storidioms.Indexing
                 x.Clear();
 
                 //add a bunch of decorations and then search for them
-                IndexingDecoration store = x.WithExactDecorationIndex();
+                IndexingDecoration store = x.WithIndex();
 
-                var thing1 = AsId<string>.New("asId1").AddContext("context").HasNameValue("property1", "property1value");
+
+
+                var thing1 = AsId<string>.New("asId1").HasContext("context").HasNameValue("property1", "property1value");
                 var thing2 = AsId<string>.New("asId2").HasNameValue("property1", "property1value");
-                var thing3 = AsId<string>.New("asId3").AddContext("context");
+                var thing3 = AsId<string>.New("asId3").HasContext("context");
 
                 Assert.True(thing1.HasDecorations<IHasContext, IHasNameValue, IHasId>());
                 Assert.True(thing2.HasDecorations<IHasNameValue, IHasId>());
@@ -41,8 +43,6 @@ namespace Decoratid.Storidioms.Indexing
                 store.SaveItem(thing2);
                 store.SaveItem(thing3);
 
-                store.
-                
 
                 
 

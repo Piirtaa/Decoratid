@@ -72,7 +72,7 @@ namespace Decoratid.Core.Contextual
 
     public static partial class ContextualIHasIdDecorationExtensions
     {
-        public static ContextualIHasIdDecoration AddContext(this IHasId decorated, object context)
+        public static ContextualIHasIdDecoration HasContext(this IHasId decorated, object context)
         {
             Condition.Requires(decorated).IsNotNull();
             return new ContextualIHasIdDecoration(decorated, context);
