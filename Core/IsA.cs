@@ -40,6 +40,12 @@ namespace Decoratid.Core
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T As<T>();
+        /// <summary>
+        /// is the typed face avail?
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        bool Is<T>();
     }
 
     //public interface IIsA<T1> : IIsA { }
@@ -130,6 +136,11 @@ namespace Decoratid.Core
 
         #region IIsA
         public Type[] IsATypes { get; private set; }
+        /// <summary>
+        /// Gets the face
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T As<T>()
         {
             var face = this.GetFace(typeof(T));
@@ -137,6 +148,16 @@ namespace Decoratid.Core
                 return default(T);
 
             return (T)face;
+        }
+        /// <summary>
+        /// Is this face avail?
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool Is<T>()
+        {
+            var face = this.GetFace(typeof(T));
+            return face != null;
         }
         #endregion
 
