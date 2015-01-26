@@ -108,7 +108,12 @@ namespace Decoratid.Idioms.HasBitsing
                         subList.Add(item);
                     return subList;
                 },
-                (x) => { rv.AddRange(x); }
+                (x) => {
+                    lock (rv)
+                    {
+                        rv.AddRange(x);
+                    }
+                }
             );
             return rv;
         }

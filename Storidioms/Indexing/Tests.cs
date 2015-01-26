@@ -42,12 +42,12 @@ namespace Decoratid.Storidioms.Indexing
                     //bit 3 + i - IHasNameValue - name of i
                     store.StoreOfIndices.IndexFactory.SetBitLogic("hasnamevalue" + i, (o) => { return o is IHasNameValue && (o as IHasNameValue).Name == i.ToString(); });
                 }
-                
+
                 //this gives us a few decorations to search thru. now generate mock data
                 int numRecords = 1000000;
                 Random rnd = new Random();
-                
-                for (int i = 0; i < numRecords; i++)
+
+                Parallel.For(0, numRecords, (i) =>
                 {
                     var obj = i.BuildAsId();
 
@@ -57,7 +57,7 @@ namespace Decoratid.Storidioms.Indexing
                     //eg. probability of an item to have N NameValue pair decorations is = .5 ^ (n -1).
                     //because we're randomizing which namevalue pair decoration should also give us
                     //a flat bias at each quanta of grouping 
-                    for (int j = 0; j < 10; j++ )
+                    for (int j = 0; j < 10; j++)
                     {
                         //coin flip
                         if (rnd.Next(2) == 0)
@@ -71,13 +71,13 @@ namespace Decoratid.Storidioms.Indexing
                     //then add name on a coin flip
                     if (rnd.Next(2) == 0)
                         obj.HasName(i.ToString());
-                    
+
                     store.SaveItem(obj);
-                }
+                });
 
                 //add a needle to look for
                 var needleObj = int.MaxValue.BuildAsId().HasName("root").HasNameValue("0", 0).HasNameValue("1", 1).HasNameValue("2", 2).HasNameValue("3", 3).HasNameValue("4", 4).HasNameValue("5", 5);
-                
+
                 //use this as a mask
                 var mask = store.StoreOfIndices.IndexFactory.GenerateIndex(needleObj);
 
