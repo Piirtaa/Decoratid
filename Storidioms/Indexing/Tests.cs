@@ -44,7 +44,7 @@ namespace Decoratid.Storidioms.Indexing
                 }
                 
                 //this gives us a few decorations to search thru. now generate mock data
-                int numRecords = 10000000;
+                int numRecords = 1000000;
                 Random rnd = new Random();
                 
                 for (int i = 0; i < numRecords; i++)
