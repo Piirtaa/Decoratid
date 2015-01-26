@@ -34,7 +34,12 @@ namespace Decoratid.Core
     public interface IIsA : IFaceted, IHasId
     {
         Type[] IsATypes { get; }
-        T GetIsA<T>();
+        /// <summary>
+        /// returns the typed face
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T As<T>();
     }
 
     //public interface IIsA<T1> : IIsA { }
@@ -109,7 +114,7 @@ namespace Decoratid.Core
         {
             get 
             {
-                var hasId = this.GetIsA<IHasId>();
+                var hasId = this.As<IHasId>();
                 Condition.Requires(hasId).IsNotNull();
                 return hasId.Id;
             }
@@ -125,7 +130,7 @@ namespace Decoratid.Core
 
         #region IIsA
         public Type[] IsATypes { get; private set; }
-        public T GetIsA<T>()
+        public T As<T>()
         {
             var face = this.GetFace(typeof(T));
             if (face == null)

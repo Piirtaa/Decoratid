@@ -116,9 +116,9 @@ namespace Decoratid.Storidioms.Indexing
             //foreach item, position by position, set the hasbits values
             bitLogics.WithEach(x =>
             {
-                var nameFace = x.GetIsA<IHasName>();
-                var indexFace = x.GetIsA<IHasId<int>>();
-                var logicFace = x.GetIsA<LogicOfTo<IHasId, bool>>();
+                var nameFace = x.As<IHasName>();
+                var indexFace = x.As<IHasId<int>>();
+                var logicFace = x.As<LogicOfTo<IHasId, bool>>();
 
                 var logic = logicFace.Perform(obj) as LogicOfTo<IHasId, bool>;
                 rv.SetBit(indexFace.Id, logic.Result);

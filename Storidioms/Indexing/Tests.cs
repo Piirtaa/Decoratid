@@ -44,12 +44,12 @@ namespace Decoratid.Storidioms.Indexing
                 }
 
                 //this gives us a few decorations to search thru. now generate mock data
-                int numRecords = 1000000;
+                int numRecords = 1;
                 Random rnd = new Random();
 
                 Parallel.For(0, numRecords, (i) =>
                 {
-                    var obj = i.BuildAsId();
+                    IHasId obj = i.BuildAsId();
 
                     //using a suddendeath iteration for each record, flip a coin and add a random namevalue
                     //try to get lucky 10 times.
@@ -60,29 +60,32 @@ namespace Decoratid.Storidioms.Indexing
                     for (int j = 0; j < 10; j++)
                     {
                         //coin flip
-                        if (rnd.Next(2) == 0)
-                            continue;
+                        //if (rnd.Next(2) == 0)
+                        //    continue;
 
                         //pick a decoration from 0 to 22
                         var decNum = rnd.Next(20);
-                        obj.HasNameValue(decNum.ToString(), decNum);//decorate
+                        obj = obj.HasNameValue(decNum.ToString(), decNum);//decorate
                     }
 
                     //then add name on a coin flip
                     if (rnd.Next(2) == 0)
-                        obj.HasName(i.ToString());
+                        obj = obj.HasName(i.ToString());
 
                     store.SaveItem(obj);
                 });
 
                 //add a needle to look for
                 var needleObj = int.MaxValue.BuildAsId().HasName("root").HasNameValue("0", 0).HasNameValue("1", 1).HasNameValue("2", 2).HasNameValue("3", 3).HasNameValue("4", 4).HasNameValue("5", 5);
+                store.SaveItem(needleObj);
 
                 //use this as a mask
                 var mask = store.StoreOfIndices.IndexFactory.GenerateIndex(needleObj);
-
+                var maskFunc = mask.BuildANDLogic();
                 //now search for stuff
-                var matches = store.SearchIndex(mask.BuildANDLogic());
+                var equalsFunc = mask.BuildIsEquivalentToLogic();
+                var findNeedleMatches = store.SearchIndex(equalsFunc);
+                var matches = store.SearchIndex(maskFunc);
 
                 store.Dispose();
             }))

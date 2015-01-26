@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,6 +81,18 @@ namespace Decoratid.Idioms.HasBitsing
             var andVal = this._bv.Data & itemAsInt;
 
             return new NaturalBitVectorHasBits(andVal);
+        }
+        #endregion
+
+        #region ToString Overrides
+ 
+        public override string ToString()
+        {
+            return this.Bits.ToHumanReadable();
+        }
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
         }
         #endregion
     }
