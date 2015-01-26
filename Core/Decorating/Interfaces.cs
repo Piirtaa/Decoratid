@@ -63,8 +63,8 @@ namespace Decoratid.Core.Decorating
      * -can also parse the Idiomatique and hydrate 
      * -as well as have state be human readable via the Idiomatique, we also have "Idiomatic conditional expressions", which
      *  allow for comparison/filtering of IIdiomatic of the same type via the format  
-     *      #{Idiom} {Expression} {Data}
-     *      eg.( HasId.Equals("myid"), HasDateCreated.After(YYYYMMDDhhmmss))
+     *      #{Idiom}# {Expression} {Data}
+     *      eg.( #HasId#.Equals("myid"), #HasDateCreated#.After("YYYYMMDDhhmmss"))
      *  
      *      These "Idiomatic Conditional Expressions" are also used from the Decoratid Command Line to filter data from 
      *      the current store.  The DCL expects data in the format:
@@ -73,7 +73,7 @@ namespace Decoratid.Core.Decorating
      *          -or THING is a "Idiomatic Conditional Expression" - #HasId.Equals("myid").Or(#HasId.Equals("yourid"))
      *              -where # prefixes a search expression,  IConditionOf<IIdiomatic>
      *              -these expressions operate on the specified store (if none given, assumes current store)
-     *                  eg.  @store.#HasId.Equals("myid") translates to an IConditionOf<IIdiomatic> ??not sure think about this some more
+     *                  eg.  @store@.#HasId#.Equals("myid") translates to an IConditionOf<IIdiomatic> ??not sure think about this some more
      *          -where ACTION is the "Idiomatic Operation"
      *          
      *          there is autocomplete after the idiom is specified.  ie. once "#HasId." has been entered.  The "." will
@@ -81,14 +81,15 @@ namespace Decoratid.Core.Decorating
      *              "Idiomatic Operations".
      *              
      * -when constructing an instance of something the use of a "Has{Idiom}(data)" approach will be prevalent.
-     *  eg. "myid".AsId().HasDateCreated(#now).HasBits(0111011010).HasName("bro").HasNameValue("sup", "yo,guy")
+     *  eg. "myid".AsId().HasDateCreated(|now|).HasBits(0111011010).HasName("bro").HasNameValue("sup", "yo,guy")
      * 
      * # # typically connotes an idiom
      * " " connotes a string literal
      * @ @ connotes a session thing (could be current stores, default things, etc)
-     * Not sure if to have prefix/suffix tagging to resolve literals (eg. "hey") and keywords (eg. #now#, #today#)
+     * | | connotes a keyword (eg. |now| and |today|). keywords are idiom-specific
      * 
      */
+
     /// <summary>
     /// thing converts to a Decoratid Idiomatic textual description
     /// </summary>
