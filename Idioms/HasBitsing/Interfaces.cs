@@ -129,6 +129,32 @@ namespace Decoratid.Idioms.HasBitsing
             return rv;
         }
 
+        public static Func<IHasBits, bool> BuildIsEquivalentToLogic(this IHasBits hasbits)
+        {
+            Func<IHasBits, bool> filter = (x) =>
+            {
+                return x.Bits.AreEquivalent_IntCompare(hasbits.Bits);
+            };
+            return filter;
+        }
+        /// <summary>
+        /// returns true if the (item AND hasBits) == hasbits.  In other words, if the original mask has an ON bit
+        /// @ position N, and the item shares this ON bit at the same position, the ANDed bit is also ON at position N.
+        /// This is a masking function.  It returns those things that share the same ON bits as the mask.  This is not equivalence,
+        /// which is when things share the same ON bits and OFF bits as the mask.
+        /// </summary>
+        /// <param name="hasbits"></param>
+        /// <returns></returns>
+        public static Func<IHasBits, bool> BuildANDLogic(this IHasBits hasbits)
+        {
+            Func<IHasBits, bool> filter = (x) =>
+            {
+                var newBits = x.AND(hasbits);
+
+                return hasbits.Bits.AreEquivalent_IntCompare(newBits.Bits);
+            };
+            return filter;
+        }
 //        /// <summary>
 //        /// performs an AND on each item in the list and if the result matches the mask, the original item is accumulated
 //        /// </summary>

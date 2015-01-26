@@ -25,6 +25,10 @@ namespace Decoratid.Storidioms.Indexing
      */
 
 
+    public static class IndexingExtensions
+    {
+        //public static Func<IHasBits, bool> Create
+    }
 
 
 

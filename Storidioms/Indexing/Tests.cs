@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Decoratid.Idioms.HasBitsing;
 
 namespace Decoratid.Storidioms.Indexing
 {
@@ -50,7 +51,12 @@ namespace Decoratid.Storidioms.Indexing
                 {
                     var obj = i.BuildAsId();
 
-                    //using a suddendeath iteration, flip a coin and add a random namevalue
+                    //using a suddendeath iteration for each record, flip a coin and add a random namevalue
+                    //try to get lucky 10 times.
+                    //this will create discernable groupings in the distribution and predictability
+                    //eg. probability of an item to have N NameValue pair decorations is = .5 ^ (n -1).
+                    //because we're randomizing which namevalue pair decoration should also give us
+                    //a flat bias at each quanta of grouping 
                     for (int j = 0; j < 10; j++ )
                     {
                         //coin flip
@@ -62,16 +68,21 @@ namespace Decoratid.Storidioms.Indexing
                         obj.HasNameValue(decNum.ToString(), decNum);//decorate
                     }
 
-                    //coin flip
+                    //then add name on a coin flip
                     if (rnd.Next(2) == 0)
                         obj.HasName(i.ToString());
                     
                     store.SaveItem(obj);
                 }
 
-                //now search for stuff
-
+                //add a needle to look for
+                var needleObj = int.MaxValue.BuildAsId().HasName("root").HasNameValue("0", 0).HasNameValue("1", 1).HasNameValue("2", 2).HasNameValue("3", 3).HasNameValue("4", 4).HasNameValue("5", 5);
                 
+                //use this as a mask
+                var mask = store.StoreOfIndices.IndexFactory.GenerateIndex(needleObj);
+
+                //now search for stuff
+                var matches = store.SearchIndex(mask.BuildANDLogic());
 
                 store.Dispose();
             }))
