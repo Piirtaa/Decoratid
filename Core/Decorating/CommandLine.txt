@@ -1,0 +1,186 @@
+﻿The Decoratid Command Line (DCL) provides a gateway into a Decoratid Session. A session contains a single IStore by default,
+and depending upon how the Session was created that store could be initialized, or by default, blank.  
+
+Session creation switches:
+	-store="{path}" //if one exists at that location it will be loaded.  gives a backing file decoration
+	-dirty //when the session ends, it leaves the store data around.  ie. it's dirty (TODO: should prob be a store or file decoration)
+	-keypath="{path}" //will load a symmetric key from the keyfile located at this location.  If one doesn't exist, it will
+		generate one and use the default encryption scheme (TODO: define defaults)
+	-idiomatique="{idiomatique}" //expresses the store as an Idiomatique that we can build up fluently on startup
+
+-------------------
+
+The DCL has 5 types of literals: strings, integers, decimals, datetime, and binary.  
+(Limited to these types only but underlying design will allow for all value and ref types.  
+The DCL just uses a simplified subset of parsable types.)
+
+	Examples.
+		string :	"dog"
+		integer:	17	
+		decimal:	17.5d
+		datetime:	YYYYMMDDhhmmss format only.  20170824155432 aka 2017-08-24:15:54:32
+		binary:		011011010b
+
+		(TODO: review literal formats)
+
+-------------------
+
+Idiomatique:
+	-an idiom signature, human-readable, that describes the idiomatic facet's state, following the format 
+		#{Idiom}#.[{PropertyName},{Value}].[{PropertyName},{Value}].[{PropertyName},{Value}]
+
+	-This makes a decoration chain pretty self descriptive:
+		#{Idiom}#.[{PropertyName},{Value}].[{PropertyName},{Value}].[{PropertyName},{Value}]
+		#{Idiom}#.[{PropertyName},{Value}].[{PropertyName},{Value}].[{PropertyName},{Value}]
+		#{Idiom}#.[{PropertyName},{Value}].[{PropertyName},{Value}].[{PropertyName},{Value}]
+		...
+
+		(This is what our custom type visualizer uses to display IIsIdiomatic types such as DecorationBase rooted ones.)
+
+-------------------
+Session variables:
+	-prefixed by ${varname}=
+		eg. $yo="thisid".AsId().HasContext("stuff")
+	-will exist forever in the session memory unless cleared by ${varname} clear
+		eg.	$yo clear
+	-internally is maintained in memory in a separate NaturalInMemoryStore.New().OfUniqueId()
+	-to flush all memory variables use $ALL clear, where ALL is a reserved keyword that points to the Variable store, itself		
+	-this is how we keep services up and running -> we keep them in scope, and perpetually touch them
+-------------------
+Autocomplete:
+	-everytime a "." character is pressed, the expression prior to the "." is evaluated to determine what type the object is.
+	based on this, a list of possible decorations, idiomatic expressions and idiomatic operations are presented in a dropdown.
+
+
+-------------------
+
+Fluently creating objects:
+
+"myid".AsId().HasDateCreated(20170824155432).HasBits(1000001111010101)
+
+
+-------------------
+
+Idiomatic Expressions:
+	-are conceptually compare functions that operate on the idiomatic facet
+	-ultimately convert to ICondition
+	-follow the format #{Idiom}#.{Expression}[data, data, data]
+	-does an interim conversion to Func<IIdiomatic,string[], bool?>, that is pulled from IIsIdiomatic.ConditionalExpressionMap
+		-thus the expression name keys the func to be returned
+		-the func is then converted into an ICondition that evaluates the func with the passed in strings, and item
+
+		Eg. #IHasDateCreated#.Before(20170824155432) will translate to 
+			(o,args)=>{ return o.As<IHasDateCreated>().With(x=>x.DateCreated).IsLessThan(args[0] as YYYYMMDDhhmmss);}
+			which then translates to ()=>expressionfunc(item, 20170824155432);
+
+	-Boolean operations/ chaining
+		Eg. #IHasDateCreated#.Before(20170824155432).And(#IHasDateCreated#.After(2016082455432))
+
+	-expressions are unique to each idiom.  Thus IHasDateCreated will not have the same expressions as IHasId<string>.
+
+-------------------
+
+what am i trying to do here??
+-author and save data -> idiom based, fluently built
+-query data -> this will be id and idiom based
+-build up services and run them -> idiom based, fluently built
+
+have a dilemma here: fluent vs idiom map
+
+keys entered:					what happens
+#idiom#.						the idiom "idiom" is set as the current facet
+								displays conditions & operations 
+								displays decorations looked up
+								Is/As
+
+
+fluent approach:
+
+{literal}.					displays options (AsId, etc.  Not that many)
+		AsId()				changes context type to AsId.  displays all IHasId decorations,conditions&operations,is/as
+		.HasDecorationX		
+
+definitely points the need out for an autocomplete system.  <<<NEXT TODO!
+	on this, the output text should also be associated with the decoration action (eg. func<obj,obj>) so
+	that the text can be broken out and executed as if by parsing.
+
+	That is, there is a mapping of idiom action <-> func<IHasId,IHasId>    
+
+	what if for autocomplete the entire decoration chain is exposed as well as diff interfaces
+		for each interface/decoration we present a list of actions
+
+	IX, DoSomething
+	IX, DoSomethingElse
+	IY, DoSomethingAgain
+	HasDateCreated, IsBefore
+	HasDateCreated, IsAfter
+	HasX, returns IX
+
+
+nonfluent:
+THING ACTION DATA
+"myid" ISID HAS HASDATECREATED HAS BINARY 1110000 
+
+it's evaluated left to right. 
+	step 1 - "myid" ISID	
+				- expects 0 data args 	 
+				- the primitive type has an autocomplete of ISID (as default action), context switches to IHASID 
+ 	step 2 - HAS HASDATECREATED
+				- expects 0 or 1 args 
+				- context switches to IHasId
+	step 3 - HAS BINARY 
+				(seek ahead parsing alg is great for indef arg size)
+
+
+
+
+
+
+
+
+The DCL expects commands in the format:
+{THING} {ACTION} {DATA} {enter/newline}
+
+Thing: an expression that points to a single IHasId instance, or a List<IHasId>.  Store expressions:
+	
+
+
+What's the Decoratid concept of "Idiomatic"
+-has a unique (domain-wide) idiom root name, {Idiom}.  eg. HasId
+-has human readable representation of its state, aka "the Idiomatique", via the format 
+     {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
+-can also parse the Idiomatique and hydrate 
+-as well as have state be human readable via the Idiomatique, we also have "Idiomatic conditional expressions", which
+ allow for comparison/filtering of IIdiomatic of the same type via the format  
+     #{Idiom}# {Expression} {Data}
+     eg.( #HasId#.Equals("myid"), #HasDateCreated#.After("YYYYMMDDhhmmss"))
+ 
+     These "Idiomatic Conditional Expressions" are also used from the Decoratid Command Line to filter data from 
+     the current store.  The DCL expects data in the format:
+         
+         -where THING is a "SOID EXPRESSION" - <Type>(Id), that leads to a currentStore.Get(SOID)
+         -or THING is a "Idiomatic Conditional Expression" - #HasId.Equals("myid").Or(#HasId.Equals("yourid"))
+             -where # prefixes a search expression,  IConditionOf<IIdiomatic>
+             -these expressions operate on the specified store (if none given, assumes current store)
+                 eg.  @store@.#HasId#.Equals("myid") translates to an IConditionOf<IIdiomatic> ??not sure think about this some more
+         -where ACTION is the "Idiomatic Operation"
+         
+         there is autocomplete after the idiom is specified.  ie. once "#HasId." has been entered.  The "." will
+             do an expression dictionary autocomplete returning "Idiomatic Conditional Expressions" and 
+             "Idiomatic Operations".
+             
+-when constructing an instance of something the use of a "Has{Idiom}(data)" approach will be prevalent.
+ eg. "myid".AsId().HasDateCreated(|now|).HasBits(0111011010).HasName("bro").HasNameValue("sup", "yo,guy")
+
+# # typically connotes an idiom
+" " connotes a string literal
+@ @ connotes a session thing (could be current stores, default things, etc)
+| | connotes a keyword (eg. |now| and |today|). keywords are idiom-specific
+
+----------------------------------
+what does that mean for the design/implementation?
+-IdiomName
+-Dictionary<string, Func<IIdiomatic, string[], bool>> ConditionalExpressions
+-Dictionary<string, Func<IIdiomatic, string[], bool>> Operations
+
+

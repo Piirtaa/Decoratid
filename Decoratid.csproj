@@ -89,6 +89,7 @@
     <Compile Include="Core\Contextual\ContextualCondition.cs" />
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
+    <Compile Include="Core\YYYYMMDDhhmmss.cs" />
     <Compile Include="Core\Decorating\DecorationBase.cs" />
     <Compile Include="Core\Decorating\DecorationExtensions.cs" />
     <Compile Include="Core\Decorating\Interfaces.cs" />
@@ -237,6 +238,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\Tasking\Interfaces.cs" />
+    <Content Include="Core\Decorating\CommandLine.txt" />
     <Content Include="Idioms\HasBitsing\Perf.txt" />
     <Content Include="Idioms\Tasking\Notes.txt" />
     <Compile Include="Idioms\Tasking\StrategizedTask.cs" />

@@ -19,6 +19,8 @@ namespace Decoratid.Core.Contextual
     public interface IHasContext<T> : IHasContext
     {
         new T Context { get; set; }
+
+      
     }
     #endregion
 
