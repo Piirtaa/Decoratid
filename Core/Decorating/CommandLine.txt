@@ -132,6 +132,13 @@ it's evaluated left to right.
 				(seek ahead parsing alg is great for indef arg size)
 
 
+same problem either way, fluent or non-fluent
+still need autocomplete
+still needs to do the same thing..track current type..autocomplete...know output type.
+
+fluent allows parsing queues with dot "." notation, and brackets trigger closure.
+nonfluent would need lookahead trie.  no biggie.  very very terse language
+
 
 
 
