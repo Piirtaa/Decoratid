@@ -13,13 +13,22 @@ namespace Decoratid.Idioms.StringSearch
     /// </summary>
     public interface ITrieStructure
     {
+        /// <summary>
+        /// the topmost or root node
+        /// </summary>
         ITrieNode Root { get; }
-
+        
+        /// <summary>
+        /// string indexer that does a lookup through the entire trie for the node at the given phrase/path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         ITrieNode this[string path] { get; set; }
     }
 
     /// <summary>
-    /// a node in a trie
+    /// a node in a trie.  is recursive.  has list of child characters/nodes, and HasWord flag indicating it's a word, with optional
+    /// placeholder Value for quick lookups
     /// </summary>
     /// <remarks>
     /// the id value represents the current path/ aka the Word
@@ -51,6 +60,8 @@ namespace Decoratid.Idioms.StringSearch
     {
 
     }
+
+
     /// <summary>
     /// basic implementation of a trie, with standard forward-only cursor alg
     /// </summary>
@@ -136,6 +147,11 @@ namespace Decoratid.Idioms.StringSearch
         #endregion
 
         #region ITrieLogic
+        /// <summary>
+        /// finds matches using the forward only cursor approach
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public List<StringSearchMatch> FindMatches(string text)
         {
             return TrieLogic.FindMatchesUsingForwardOnlyCursor(this, text);

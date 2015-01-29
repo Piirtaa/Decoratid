@@ -107,6 +107,7 @@
     <Compile Include="Idioms\Adjusting\Interfaces.cs" />
     <Compile Include="Idioms\Adjusting\Tests.cs" />
     <Compile Include="Idioms\Backgrounding\Tests.cs" />
+    <Compile Include="Idioms\CommandLine\Primitives.cs" />
     <Compile Include="Idioms\HasBitsing\BitArrayExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -193,8 +194,8 @@
     <Compile Include="Idioms\StringSearch\PDuniho\StateGraph.cs" />
     <Compile Include="Idioms\StringSearch\PNikiforovs\Trie.cs" />
     <Compile Include="Idioms\StringSearch\PNikiforovs\AhoCorasick.Tests.cs" />
-    <Compile Include="Idioms\OperationParsing\Extensions.cs" />
-    <Compile Include="Idioms\OperationParsing\Interfaces.cs" />
+    <Compile Include="Idioms\CommandLine\Extensions.cs" />
+    <Compile Include="Idioms\CommandLine\Interfaces.cs" />
     <Compile Include="Idioms\OperationProtocoling\DecoratedOperationBase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -538,6 +539,13 @@
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\DotParenthesisComma\Parsers.cs" />
+    <Compile Include="Idioms\TokenParsing\DotParenthesisComma\DPCDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\Interfaces.cs" />
+    <Compile Include="Idioms\TokenParsing\StartEndPositionDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\StopTokenParser.cs" />
+    <Compile Include="Idioms\TokenParsing\TokenDecorationBase.cs" />
+    <Compile Include="Idioms\TokenParsing\Token.cs" />
     <Compile Include="Idioms\Touching\TouchableDecorationBase.cs" />
     <Compile Include="Idioms\Touching\HasTouchable.cs">
       <SubType>Code</SubType>
