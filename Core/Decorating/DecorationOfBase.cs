@@ -29,7 +29,7 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted, IIsIdiomatic
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -237,29 +237,29 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-        #region IIsIdiomatic
-        /// <summary>
-        /// quick check flag to determine if something is idiomatic
-        /// </summary>
-        public abstract bool IsIdiomatic { get; }
+        //#region IIsIdiomatic
+        ///// <summary>
+        ///// quick check flag to determine if something is idiomatic
+        ///// </summary>
+        //public abstract bool IsIdiomatic { get; }
 
-        public abstract string IdiomName { get; } //should come from an attribute, just putting it here as a reminder
-        /// <summary>
-        /// returns the textual representation of state according to the template Has {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
-        /// </summary>
-        /// <returns></returns>
-        public string GetIdiomaticRepresentation();
-        /// <summary>
-        /// sets current state by parsing the command
-        /// </summary>
-        public void ParseIdiomaticRepresentation();
-        /// <summary>
-        /// sets the property to the value.  should only work on idiomatic properties
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="val"></param>
-        void HasProperty(string propertyName, object val); 
-        #endregion
+        //public abstract string IdiomName { get; } //should come from an attribute, just putting it here as a reminder
+        ///// <summary>
+        ///// returns the textual representation of state according to the template Has {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
+        ///// </summary>
+        ///// <returns></returns>
+        //public string GetIdiomaticRepresentation();
+        ///// <summary>
+        ///// sets current state by parsing the command
+        ///// </summary>
+        //public void ParseIdiomaticRepresentation();
+        ///// <summary>
+        ///// sets the property to the value.  should only work on idiomatic properties
+        ///// </summary>
+        ///// <param name="propertyName"></param>
+        ///// <param name="val"></param>
+        //void HasProperty(string propertyName, object val); 
+        //#endregion
     }
 
 

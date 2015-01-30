@@ -539,8 +539,10 @@
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\DotParenthesisComma\DPCOperation.cs" />
     <Compile Include="Idioms\TokenParsing\DotParenthesisComma\Parsers.cs" />
     <Compile Include="Idioms\TokenParsing\DotParenthesisComma\DPCDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\DotParenthesisComma\Tests.cs" />
     <Compile Include="Idioms\TokenParsing\Interfaces.cs" />
     <Compile Include="Idioms\TokenParsing\StartEndPositionDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\StopTokenParser.cs" />

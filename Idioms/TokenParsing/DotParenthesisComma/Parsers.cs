@@ -42,8 +42,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
         #endregion
     }
     /// <summary>
-    /// goes from:
-    /// ( 
+    /// At ( or , seeking , or )
     /// </summary>
     public class ToCommaOrEndParenthesisParser : IForwardMovingTokenParser
     {
@@ -65,7 +64,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
 
                 var substring = text.Substring(currentPosition, idx - currentPosition);
                 newPosition = idx + 1;
-                newToken = Token.New(substring).HasDPCTokenType(DPCTokenType.Parenthesis);
+                newToken = Token.New(substring).HasDPCTokenType(DPCTokenType.Item);
                 newParser = new ToDotParser();
                 return true;
             }
@@ -73,7 +72,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
             {
                 var substring = text.Substring(currentPosition, idx - currentPosition);
                 newPosition = idx + 1;
-                newToken = Token.New(substring).HasDPCTokenType(DPCTokenType.Parenthesis);
+                newToken = Token.New(substring).HasDPCTokenType(DPCTokenType.Item);
                 newParser = new ToCommaOrEndParenthesisParser();
                 return true;
             }
@@ -81,14 +80,14 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
         #endregion
     }
     /// <summary>
-    /// goes from ) to .
+    /// At ) seeking .
     /// </summary>
     public class ToDotParser : IForwardMovingTokenParser
     {
         #region IForwardMovingTokenParser
         public bool Parse(string text, int currentPosition, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenParser newParser)
         {
-            //if we can't find a ( then we kack
+            //if we can't find a . then we kack
             var idx = text.IndexOf(".", currentPosition);
             if (idx == -1)
             {
@@ -101,8 +100,8 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
             {
                 var substring = text.Substring(currentPosition, idx - currentPosition);
                 newPosition = idx + 1;
-                newToken = Token.New(substring).HasDPCTokenType(DPCTokenType.Dot);//build up the token
-                newParser = new ParenthesisParser();
+                newToken = Token.New(substring);//build up the token
+                newParser = new ToOpenParenthesisParser();
                 return true;
             }
         }

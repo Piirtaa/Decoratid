@@ -28,17 +28,17 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
     public class DPCDecoration : TokenDecorationBase, IDPCToken
     {
         #region Ctor
-        public DPCDecoration(IToken decorated, DPCTokenType parserType)
+        public DPCDecoration(IToken decorated, DPCTokenType tokenType)
             : base(decorated)
         {
-            this.TokenType = parserType;
+            this.TokenType = tokenType;
         }
         #endregion
 
         #region Fluent Static
-        public static StartEndPositionDecoration New(IToken decorated, int startPos, int endPos)
+        public static DPCDecoration New(IToken decorated, DPCTokenType tokenType)
         {
-            return new StartEndPositionDecoration(decorated, startPos, endPos);
+            return new DPCDecoration(decorated, tokenType);
         }
         #endregion
 
@@ -69,5 +69,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
             Condition.Requires(thing).IsNotNull();
             return new DPCDecoration(thing, tokenType);
         }
+
+        
     }
 }
