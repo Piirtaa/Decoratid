@@ -28,9 +28,12 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region IToken
         public IToken PriorToken { get; set; }
-        public string GetStringValue()
+        public string TokenString
         {
-            return this._tokenString;
+            get
+            {
+                return this._tokenString;
+            }
         }
         #endregion
     }

@@ -34,10 +34,7 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region Properties
         public virtual IToken PriorToken { get { return this.Decorated.PriorToken; } set { this.Decorated.PriorToken = value; } }
-        public virtual string GetStringValue()
-        {
-            return this.Decorated.GetStringValue();
-        }
+        public virtual string TokenString { get { return this.Decorated.TokenString; } }
         public override IToken This
         {
             get { return this; }

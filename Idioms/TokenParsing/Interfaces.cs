@@ -34,7 +34,7 @@ namespace Decoratid.Idioms.TokenParsing
     public interface IToken
     {
         IToken PriorToken { get; set; }
-        string GetStringValue();
+        string TokenString { get; }
     }
 
 
@@ -46,8 +46,8 @@ namespace Decoratid.Idioms.TokenParsing
 
         /// <returns>true if tokenized successfully</returns>
         /*Adfasd*/
-        
-        
+
+
         bool Parse(string text, int currentPosition, IToken currentToken,
             out int newPosition, out IToken newToken, out IForwardMovingTokenParser newParser);
     }
@@ -86,7 +86,7 @@ namespace Decoratid.Idioms.TokenParsing
                     {
                         token.PriorToken = priorToken;
                         token.HasStartEndPositions(startPos, pos);
-        
+
                         rv.Add(token);
                     }
                 }
