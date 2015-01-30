@@ -20,7 +20,9 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
                 string commandtoparse = ".dosomething(11.0,15,asdkljlkjmjh,).dosomethingelse(aaadsfasdf)";
 
                 var cmds = commandtoparse.TokenizeToDPCOperations();
-
+                Condition.Requires(cmds).HasLength(2);
+                Condition.Requires(cmds[1].OperationToken.TokenString).IsEqualTo("dosomethingelse");
+                Condition.Requires(cmds[0].ArgTokens[3].TokenString).IsEqualTo("");
                 Debug.WriteLine("");
             })) 
         { 
