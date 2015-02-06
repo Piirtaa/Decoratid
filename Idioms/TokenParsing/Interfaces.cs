@@ -24,10 +24,7 @@ namespace Decoratid.Idioms.TokenParsing
      *      and tokenizes the source text.
      */
 
-    public interface IHasToken
-    {
-        IToken Token { get; }
-    }
+
     /// <summary>
     /// some thing that is parsed out of a string, that has a string value
     /// </summary>
@@ -37,19 +34,20 @@ namespace Decoratid.Idioms.TokenParsing
         string TokenString { get; }
     }
 
-
-    public interface IForwardMovingTokenParser
+    public interface IForwardMovingTokenizer
     {
         /// <summary>
         /// moves forward and parses first token it can.  returns false if can't continue
         /// </summary>
-
-        /// <returns>true if tokenized successfully</returns>
-        /*Adfasd*/
-
-
-        bool Parse(string text, int currentPosition, IToken currentToken,
-            out int newPosition, out IToken newToken, out IForwardMovingTokenParser newParser);
+        /// <param name="text"></param>
+        /// <param name="currentPosition"></param>
+        /// <param name="currentToken"></param>
+        /// <param name="newPosition"></param>
+        /// <param name="newToken">decorate result token to extend </param>
+        /// <param name="newParser"></param>
+        /// <returns></returns>
+        bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser);
     }
 
     public static class TokenParsingExtensions
@@ -60,38 +58,9 @@ namespace Decoratid.Idioms.TokenParsing
         /// <param name="text"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
-        public static List<IToken> Tokenize(this string text, IForwardMovingTokenParser parser)
+        public static List<IToken> Tokenize(this string text, object state, IForwardMovingTokenizer parser)
         {
-            List<IToken> rv = new List<IToken>();
-            if (string.IsNullOrEmpty(text))
-                return rv;
-            if (parser == null)
-                return rv;
-
-            int pos = 0;
-            int maxPos = text.Length - 1;
-            IToken token = null;
-            IForwardMovingTokenParser currentParser = parser;
-            bool goodParse = true;
-
-            while (goodParse && currentParser != null && pos > -1 && pos < maxPos)
-            {
-                var priorToken = token;
-                var startPos = pos;
-
-                goodParse = currentParser.Parse(text, pos, token, out pos, out token, out currentParser);
-                if (goodParse)
-                {
-                    if (token != null)
-                    {
-                        token.PriorToken = priorToken;
-                        token.HasStartEndPositions(startPos, pos);
-
-                        rv.Add(token);
-                    }
-                }
-            }
-            return rv;
+            return ForwardMovingTokenizer.Tokenize(text, state, parser);
         }
     }
 }

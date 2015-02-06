@@ -1,0 +1,139 @@
+﻿DCL Design 1 - exposing native c# debugger type commands (equiv of executing code snippets, scripts, functionally)
+			 - have intellisense.  reflect public methods and expose them
+			 - have local variable storage, session storage. these vars may need to be passed to public methods
+			 (see http://www.mono-project.com/docs/tools+libraries/tools/repl/)
+
+			 cons:
+			 - very hackable, probably too hackable
+
+DCL Design 2 - have registry of scriptable commands (per type) that have known input type, args, output type
+				but parse as c#
+				-otherwise the same as Design 1 
+				
+			pros:
+			- limited hacking
+			- scripts that can be converted directly into c# and tested in that way 
+
+DCL Design 3 - have registry of scriptable commands (per type) that have known input type, args, output type
+				with custom syntax
+				- declare local variables differently.  
+				
+			pros:
+			- limited hacking
+			- scripts can be converted into c# with little work
+
+			cons:
+			- non std syntax
+
+DCL Design 4 - follow an idiomatic format - THING|SEARCH.COMMAND(ARGS)
+				- dot separated
+				- is a languagey concept - crossplatformable.  tighter than code.
+				
+
+				-THING always points to an IHasId
+					-follows @store@[id] 
+					-conceptually the store is a store of unique ids
+					-all THINGS exist in the store.
+						-how does one get things into the store?
+							-thing["me"].
+								-will create a blank AsId<string>("me") instance if one doesn't exist
+								-will load up the instance
+
+					-there are only 4 datatypes - number, string, datetime, binary
+						they are prefixed literals:
+						"-> string -> "me"
+						 -> integer/decimal -> 9,  9.5
+						d-> datetime ->	d20150101153000, YYYYMMDDhhmmss
+						b-> binary -> b01111001001
+
+					thus to enter data into the store one could use the 4 datatypes as so:
+					["me"].
+					[1].
+					[15.3].
+					[d20150101153000].
+					[b01111001001].
+
+
+				-SEARCH
+					-follows @store@#ness#.COMPAREEXPRESSION(ARGS) or #ness#.COMPAREEXPRESSION(ARGS)
+					eg. #length#.GreaterThan(7)
+					-conceptually this is an IConditionOf<IHasId> and can be chained as such
+					eg. #length#.GreaterThan(7).And(#ness#.COMPAREEXPRESSION(ARGS))
+												.And(#datecreated#.After(YYYYMMDDhhmmss))
+															
+						thus .COMPAREEXPRESSION(ARGS).And(#ness#.COMPAREEXPRESSION(ARGS)).And(#ness#.COMPAREEXPRESSION(ARGS))
+					-the compare operations are specific to the idiom	
+					
+					-is ultimately evaluated against all of the records in the current store
+						and returns a list of IHasId
+			
+		TOKENIZING:			 							
+			- example phrases to tokenize:
+			  @mystore@["me"].HasDateCreated(d20150101153000).HasBits(b0111010101010)
+			  @mystore@["me"].HasNess#DateCreated#(d20150101153000).HasNess#Bits#(b0111010101010)  ---i like this better
+			  @mystore@["me"].#DateCreated#(d20150101153000).#Bits#(b0111010101010)  ---i like this better still
+
+			  @mystore@#DateCreated#.Before(d20150101153000).And(#Bits#.AND(b0000000010))
+
+			  Ness:
+			  #DateCreated#
+			  #DateCreated(d2lkjadflkj)#
+			  #DateCreated.Before(d2adlfkjasdf)#
+
+			  in search context:
+			  @store@#DateCreated# - find things that have a datecreated ness
+			  @store@#DateCreated(d2lkjadflkj)# - find things that have a datecreated ness of d2lkasdflkj
+			  @store@#DateCreated.Before(d2adlfkjasdf)# - finds things that have a datecreated ness before d2adlkadsf
+			  @store@#DateCreated.Before(d2adlfkjasdf)##Bits# - finds things that have a datecreated ness before d2adlkadsf, and bits
+				-since ness conditions are IConditionsOf they can be chained with boolean operations AND and OR
+				how about & and | as bool tokens
+
+			  in thing context:
+			  @store@["thing"]
+
+		and the "." would then load the IHasId by id, and if null, 
+		create new AsId<string>, AsId<int>, AsId<decimal>, AsId<DateTime>, AsId<BitArray>
+					
+		@@ tokenizes store
+			-into IStoreOfUniqueId
+			-transitions to [] or ##
+
+		[], thus tokenizes as an Id literal
+			-from this we can lookup the IHasId.  
+			Notes:It does not tokenize to a SOID because there is no purpose - we're playing with a store of unique id
+				type doesn't matter
+
+			-transitions to .
+
+		## tokenizes Ness
+			-into INess
+					-name (String)
+					-interfaceType
+					-is context dependent so resolution of the actual type depends on prior token
+			-transitions to . (for Ness conditions), or () (for Ness ctor)
+					
+		. tokenizes as IHasId (IFaceted, IIsA, etc.).  has a bunch of faces
+			-
+
+		() tokenizes as:
+			-an operation if the prior token is  
+
+			-for example.  ["me"].HasDateCreated(d20150101153000). 
+				will tokenize to an instance of DateCreatedIHasIdDecoration.
+				-we should be able to convert a decoration to a IsA container,and thus these operations return an IsA stack
+							
+				-or does it tokenize as an operation that returns DateCreatedIHasIdDecoration
+					or IsA of the entire stack
+
+					thus every THING.OPERATION(ARGS) call will 
+						-have arg of IsA with at least IHasId
+						-have return of IsA with at least IHasId 
+
+						what about making a distinction between:
+						operations on things ()
+						Nesses/decorations ##, which are technically operations and also change the current IHasId, but behave consistently
+						comparisons on Nesses
+								 
+						we don't want to execute each line until the parsing validates it
+						so we want to track arg and result IHasId types on each operation
+																	

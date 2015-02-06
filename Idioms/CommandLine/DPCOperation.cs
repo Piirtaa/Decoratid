@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
+namespace Decoratid.Idioms.CommandLine
 {
     public class DPCOperation
     {
@@ -24,7 +24,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
         {
             var rv = new List<DPCOperation>();
 
-            var tokens = text.Tokenize(null, new ToDotParser());
+            var tokens = text.Tokenize(new ToDotParser());
 
             DPCOperation currentOperation = null;
                     

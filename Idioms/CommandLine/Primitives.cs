@@ -9,30 +9,6 @@ using System.Threading.Tasks;
 namespace Decoratid.Idioms.CommandLine
 {
 
-    /*
-     *  The parsing approach:
-     *      given some text, a position, and a parser - the parser will attempt to parse the text and return 
-     *      some return data (the token), the new position in text, and the next parser to continue with.
-     * 
-     *      It's a chain of responsibility that produces a list of tokens whilst parsing a string.  
-     *      The program continues only when there is some text to parse and a parser to parse it with.
-     *      Each step of the parse determines whether to continue (ie. to find the next parser).
-     *      It's conceptually similar to a Turing machine, with each parsing step being 
-     *      equivalent to a step in a computer program.  With Turing (unlike this), he needed 
-     *      an infinite amount of text (ie. storage), and he moved back and forth along the text -
-     *      enabling loops, and he wrote on the text itself. This approach simply moves forward only, 
-     *      and tokenizes the source text.
-     */ 
-
-    public interface IToken
-    {
-        string GetStringValue();
-    }
-
-    public interface IForwardMovingTokenParser
-    {
-
-    }
     /// <summary>
     /// primitives are stringable (ie. parse/hydrate) things that also tell us if they can be parsed
     /// </summary>
@@ -40,6 +16,7 @@ namespace Decoratid.Idioms.CommandLine
     {
         bool CanParse(string text);
     }
+
     /*
      * Decoratid Command Line primitive types are convertable to .NET value types, and also  
      * provide

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Decoratid.Idioms.TokenParsing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
+namespace Decoratid.Idioms.CommandLine
 {
     /*
      *  "." -> "("
@@ -12,14 +13,41 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
      * ")" -> "."
      * 
      */
-
+    /// <summary>
+    /// At ) seeking .
+    /// </summary>
+    public class ToDotParser : IForwardMovingTokenizer
+    {
+        #region IForwardMovingTokenParser
+        public bool Parse(string text, int currentPosition, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        {
+            //if we can't find a . then we kack
+            var idx = text.IndexOf(".", currentPosition);
+            if (idx == -1)
+            {
+                newPosition = -1;
+                newToken = null;
+                newParser = null;
+                return false;
+            }
+            else
+            {
+                var substring = text.Substring(currentPosition, idx - currentPosition);
+                newPosition = idx + 1;
+                newToken = NaturalToken.New(substring);//build up the token
+                newParser = new ToOpenParenthesisParser();
+                return true;
+            }
+        }
+        #endregion
+    }
     /// <summary>
     /// At . seeking (
     /// </summary>
     public class ToOpenParenthesisParser : IForwardMovingTokenizer
     {
         #region IForwardMovingTokenParser
-        public bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public bool Parse(string text, int currentPosition, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
         {
             //if we can't find a ( then we kack
             var idx = text.IndexOf("(", currentPosition);
@@ -47,7 +75,7 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
     public class ToCommaOrEndParenthesisParser : IForwardMovingTokenizer
     {
         #region IForwardMovingTokenParser
-        public bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public bool Parse(string text, int currentPosition, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
         {
             //if we can't find a , or ) then we kack
             var idx = text.IndexOf(",", currentPosition);
@@ -79,32 +107,5 @@ namespace Decoratid.Idioms.TokenParsing.DotParenthesisComma
         }
         #endregion
     }
-    /// <summary>
-    /// At ) seeking .
-    /// </summary>
-    public class ToDotParser : IForwardMovingTokenizer
-    {
-        #region IForwardMovingTokenParser
-        public bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
-        {
-            //if we can't find a . then we kack
-            var idx = text.IndexOf(".", currentPosition);
-            if (idx == -1)
-            {
-                newPosition = -1;
-                newToken = null;
-                newParser = null;
-                return false;
-            }
-            else
-            {
-                var substring = text.Substring(currentPosition, idx - currentPosition);
-                newPosition = idx + 1;
-                newToken = NaturalToken.New(substring);//build up the token
-                newParser = new ToOpenParenthesisParser();
-                return true;
-            }
-        }
-        #endregion
-    }
+
 }

@@ -6,23 +6,26 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.TokenParsing
 {
-    public class Token : IToken
+    /// <summary>
+    /// most basic token.  just keeps a string value
+    /// </summary>
+    public class NaturalToken : IToken
     {
         #region Declarations
         protected string _tokenString;
         #endregion
 
         #region Ctor
-        public Token(string token)
+        public NaturalToken(string token)
         {
             this._tokenString = token;
         }
         #endregion
 
         #region Fluent Static
-        public static Token New(string token)
+        public static NaturalToken New(string token)
         {
-            return new Token(token);
+            return new NaturalToken(token);
         }
         #endregion
 

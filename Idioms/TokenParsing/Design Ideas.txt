@@ -1,0 +1,263 @@
+﻿@store.search(#ness.IsThing("x","y"))
+tokenizes to:
+			@store			-store token
+								-has name "store"
+								-is operand (meaning operations can take place on it)
+			.search			-operation token
+								-has operation name "search"
+								-has operation ??
+								-is operand (meaning operations can take place on it)
+			(				-params token
+			#ness			-ness token
+								-has ness "ness"
+								-is operand (meaning operations can take place on it)
+			.IsThing		-operation token
+								-has operationname "IsThing"
+			(				-params token
+			"x"				-literal token
+								-is operand (meaning operations can take place on it)
+			,				-item token
+			"y"				-literal token
+								-is operand (meaning operations can take place on it)
+			)				-endparams token
+			)				-endparams token
+
+in a prefix tokenizer scheme, the token(izer) type is determined by the prefix
+"@" - parses store name to "."
+"." - parses operation name to "(" or "."
+"(" - parses nothing (eg. from "(" to itself) , just a placeholder indicating params
+"," - parses nothing, just a placeholder for params separator
+")" - parses nothing, just a placeholder indicating params have closed
+"#" - parses ness name to "."
+everything else parses to literal
+
+how does the lexical parsing work?
+using the forward moving tokenizer sig:
+	bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser);
+
+in forward moving tokenizing, each tokenizer says what the next tokenizer is.  since we're using prefixing
+we can provide a default tokenizing behaviour to the tokenizer such that the next tokenizer to use 
+is determined by the first character. 
+
+perhaps a set of tokenizer decorations will do this.  maybe we can use decorators to extend the behaviour 
+of the token(izer)s and define the parsing rules this way.
+
+example decorations:
+
+	//this decoration knows how to determine what tokenizer to use for a given prefix
+	//it uses this knowledge to decide what the next parser is.  This overrides default behaviour.
+	IPrefixRoutingTokenizer : ITokenizer
+	{
+		ITokenizer GetTokenizerFromPrefix(string prefix);
+	
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+				var newParser = GetTokenizerFromPrefix(text[newPosition]);
+				return rv;
+			}
+
+			//fluent usage: tokenizer.HasPrefixRouting(Func<string,IForwardMovingTokenizer> routingFunction);
+	}
+
+	//will only tokenize if the prior token is cool
+	IPriorTokenValidating : ITokenizer
+	{
+		bool IsPriorTokenValid(IToken priorToken);
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				if(!IsPriorTokenValid(currentToken))
+					throw new InvalidLexicon("invalid prior token");
+
+				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+				return rv;
+			}
+	
+		//fluent usage: tokenizer.Follows(IForwardMovingTokenizer tokenizer);
+	}
+
+	//knows whether it can handle the current job
+	ISelfDirectedTokenizer : ITokenizer
+	{
+		bool CanHandle(string text, int currentPosition);
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				if(!CanHandle(text, currentPosition))
+					throw new InvalidLexicon("cannot handle phrase");
+
+				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+				return rv;
+			}
+
+		//fluent usage: tokenizer.Validates(Func<string, int> canHandleStrategy);
+	}
+
+	//requires a prefix to tokenize
+	IPrefixedTokenizer : ITokenizer, ISelfDirectedTokenizer
+	{
+		string Prefix {get;}
+		bool canHandle(string text, int currentPosition)
+		{
+			return text.substring(currentPosition).startswith(Prefix);
+		}
+				
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+				return rv;
+			}
+
+		//fluent usage: tokenizer.HasPrefix(string prefix);
+	}
+
+	//parses from current spot to any of the suffixes
+	ISuffixedTokenizer : ITokenizer
+	{
+		string[] Suffixes{get;}
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				//for all the suffixes this parses to, finds the nearest one (nongreedy)
+				int idx = -1;
+				foreach(var each in Suffixes)
+				{
+					var tempIdx = text.substring(currentPosition).indexOf(each);
+					if(tempIdx == -1)
+						continue;
+					if(idx == -1)
+						idx = tempIdx; continue;
+
+					if(tempIdx < idx)
+						idx = tempIdx; continue;
+				}
+
+				newPosition  = idx;
+				newToken =  Token.New(...  );//ur std simple token
+				newParser = null;
+			}
+
+			//fluent usage: tokenizer.HasSuffix(string suffix);
+	}
+
+
+	IProducesTokensOf<T> : ITokenizer
+	{
+		T Tokenize(string text, int currentPosition, object state, currentToken,
+			int newPosition, IToken newToken, IForwardMovingTokenizer newParser);
+
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+			{
+				//for all the suffixes this parses to, finds the nearest one (nongreedy)
+				int idx = -1;
+				foreach(var each in Suffixes)
+				{
+					var tempIdx = text.substring(currentPosition).indexOf(each);
+					if(tempIdx == -1)
+						continue;
+					if(idx == -1)
+						idx = tempIdx; continue;
+
+					if(tempIdx < idx)
+						idx = tempIdx; continue;
+				}
+
+				newPosition  = idx;
+				newToken = ...
+				newParser = ...
+			}
+
+			//fluent usage: tokenizer.HasSuffix(string suffix);
+	}
+
+	//this decoration uses a router to get next tokenizer
+	IGetsNextWithRoutingTokenizer: ITokenizer
+	{
+		IRoutingTokenizer Router {get;}
+		//if the default behaviour returns the next tokenizer, override it
+		bool OverrideIfNonNull {get;}
+
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+        out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+		{
+			//parse as usual
+			bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+			
+			if(newParser == null)
+			{
+				newParser = Router.GetTokenizer(text, newPosition);
+				return rv;
+			}
+			else
+			{		
+				//override the new parser to use the router
+				if(OverrideIfNonNull)
+				{
+					newParser = Router.GetTokenizer(text, newPosition);
+					return rv;
+				}
+			}
+		}
+	
+		//fluent usage: tokenizer.GetsNextWith(IRoutingTokenizer router, bool overrideIfNonNull = false);
+	}
+
+	//this decoration delegates the actual tokenizing process to the appropriate tokenizer
+	IRoutingTokenizer : ITokenizer
+	{
+		IStoreOf<ITokenizer> Rules {get;}
+		ITokenizer AddTokenizer(ITokenizer t)
+		{
+			//tell each tokenizer to use the router as the backup router
+			var newT =	t.GetsNextWith(this, false);
+		
+			Rules.Save(newT)
+			return newT;
+		}
+
+		ITokenizer GetTokenizer(string text, int currentPosition)
+		{
+			List<ITokenizer> tokenizers = Rules.GetAll();
+
+			//iterate thru all the tokenizers and find ones that know if they can handle stuff
+			foreach(var each in tokenizers)
+			{
+				if(each is ISelfDirectedTokenizer)
+				{
+					if((each as ISelfDirectedTokenizer).CanHandle(text, currentPosition))
+						return each;
+				}	
+			}
+			return null;
+		}
+
+		bool Parse(string text, int currentPosition, object state, IToken currentToken,
+        out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+		{
+			//get the new tokenizer
+			var tokenizer = GetTokenizer(text, currentPosition);
+			Condition.Requires(tokenizer).IsNotNull();
+
+			//delegate to it
+			bool rv = tokenizer.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+			return rv;
+		}
+		
+		//fluent usage: tokenizer.HasPrefixRouting(Func<string,IForwardMovingTokenizer> routingFunction);
+	}
+	//have NaturallyNotImplemented hollow core
+
+
+	//so lets use these decorations to define the parsing rules of a function call: @thing.function(arg1,arg2)
+	IRoutingTokenizer router = new();
+	
+	
+	var thingTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("@").HasSuffix(".");
+	var functionTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix(".").HasSuffix("(");
+	var argTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("(").HasSuffix(",").HasSuffix(")");
+	var argTokenizer2 = NaturallyNotImplementedTokenizer.New().HasPrefix(",").HasSuffix(",").HasSuffix(")")"

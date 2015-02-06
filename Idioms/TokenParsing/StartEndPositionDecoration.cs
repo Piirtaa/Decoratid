@@ -19,7 +19,9 @@ namespace Decoratid.Idioms.TokenParsing
         int StartPos { get; }
         int EndPos { get; }
     }
-
+    /// <summary>
+    /// decorates with positional tracking
+    /// </summary>
     [Serializable]
     public class StartEndPositionDecoration : TokenDecorationBase, IStartEndPositionalToken
     {
