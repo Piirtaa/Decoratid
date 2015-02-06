@@ -310,8 +310,7 @@ example decorations:
 			-Operation (can be op).  This op will correspond to some function to perform on the operand with the args, returning 
 			-Args (list of literal or UnitOfWork)
 			-Eval
-			-ChainToSibling()
-
+		
 		compilation process goes like this:
 		step:						current UoW:							UoW stack:
 		@store						UoW1.operand=store							1
@@ -329,5 +328,6 @@ example decorations:
 		ok, so every time an eval() call happens we have to replace the UoW that generated the value,
 		with the actual value, on the parent's arg list.  by the time we're back at the last UoW,
 		we'll all have actual values (or, deferred getters which means we can avoid evaluation until we need to,
-		and in this way we can probably queue up the sequence of operations on the fly)
+		and in this way we can probably queue up the sequence of operations on the fly).  we've compiled the
+		tokens into things to do, in the correct sequence.
 
