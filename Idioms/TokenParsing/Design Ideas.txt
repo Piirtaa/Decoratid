@@ -289,3 +289,16 @@ example decorations:
 
 	STEP 2 - COMPILATION!!
 
+	@store.search(#ness.IsThing("x","y"))
+	tokenizes to:
+			@store			store
+			.search			op
+			(				openParen
+			#ness			ness
+			.IsThing		op
+			(				openParen
+			"x"				literal
+			,				item
+			"y"				literal
+			)				closeParen
+			)				closeParen
