@@ -41,7 +41,10 @@ we can provide a default tokenizing behaviour to the tokenizer such that the nex
 is determined by the first character. 
 
 perhaps a set of tokenizer decorations will do this.  maybe we can use decorators to extend the behaviour 
-of the token(izer)s and define the parsing rules this way.
+of the token(izer)s and define the parsing rules this way.  YES! YES! WE CAN
+
+	we can actually do a lot of things from providing exact parsing, to loose/fuzzy parsing even and this may be 
+	sufficient enough to do the job.  layer things in via decorations. 
 
 example decorations:
 
@@ -59,7 +62,7 @@ example decorations:
 				return rv;
 			}
 
-			//fluent usage: tokenizer.HasPrefixRouting(Func<string,IForwardMovingTokenizer> routingFunction);
+		//fluent usage: tokenizer.HasPrefixRouting(Func<string,IForwardMovingTokenizer> routingFunction);
 	}
 
 	//will only tokenize if the prior token is cool
@@ -99,20 +102,27 @@ example decorations:
 	//requires a prefix to tokenize
 	IPrefixedTokenizer : ITokenizer, ISelfDirectedTokenizer
 	{
-		string Prefix {get;}
+		string[] Prefixes {get;}
 		bool canHandle(string text, int currentPosition)
 		{
-			return text.substring(currentPosition).startswith(Prefix);
+			foreach(string each in Prefixes)
+				if(text.substring(currentPosition).startswith(each))
+					return true;
+
+			return false;
 		}
 				
 		bool Parse(string text, int currentPosition, object state, IToken currentToken,
             out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
 			{
+				if(!CanHandle(text, currentPosition))
+					throw new InvalidLexicon("cannot handle phrase");
+
 				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
 				return rv;
 			}
 
-		//fluent usage: tokenizer.HasPrefix(string prefix);
+		//fluent usage: tokenizer.HasPrefix(params string[] prefixes);
 	}
 
 	//parses from current spot to any of the suffixes
@@ -141,38 +151,21 @@ example decorations:
 				newParser = null;
 			}
 
-			//fluent usage: tokenizer.HasSuffix(string suffix);
+			//fluent usage: tokenizer.HasSuffix(params string[] suffices);
 	}
 
 
-	IProducesTokensOf<T> : ITokenizer
+	INamedTokenizer : ITokenizer <IHasId<string>>
 	{
-		T Tokenize(string text, int currentPosition, object state, currentToken,
-			int newPosition, IToken newToken, IForwardMovingTokenizer newParser);
-
 		bool Parse(string text, int currentPosition, object state, IToken currentToken,
             out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
 			{
-				//for all the suffixes this parses to, finds the nearest one (nongreedy)
-				int idx = -1;
-				foreach(var each in Suffixes)
-				{
-					var tempIdx = text.substring(currentPosition).indexOf(each);
-					if(tempIdx == -1)
-						continue;
-					if(idx == -1)
-						idx = tempIdx; continue;
-
-					if(tempIdx < idx)
-						idx = tempIdx; continue;
-				}
-
-				newPosition  = idx;
-				newToken = ...
-				newParser = ...
+				//parse as usual
+				bool rv = base.Parse(text, currentPosition, state, currentToken, newPosition, newToken, newParser);
+				newToken.HasTokenizer(this.Id);
 			}
 
-			//fluent usage: tokenizer.HasSuffix(string suffix);
+			//fluent usage: tokenizer.HasName(string name);
 	}
 
 	//this decoration uses a router to get next tokenizer
@@ -252,12 +245,47 @@ example decorations:
 	}
 	//have NaturallyNotImplemented hollow core
 
-
 	//so lets use these decorations to define the parsing rules of a function call: @thing.function(arg1,arg2)
 	IRoutingTokenizer router = new();
 	
+	var thingTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("@").HasSuffix(".").HasName("thing");
+	var functionTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix(".").HasSuffix("(").HasName("function");
+	var argTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("(", ",").HasSuffix(",",")").HasName("arg");
+	router.AddTokenizer(thingTokenizer).AddTokenizer(functionTokenizer).AddTokenizer(argTokenizer);
+
+	//and we're done.  at this point it should be sufficient to tokenize a simple function call
+
+	//and if we wanted to add some goofy extra rules
+	functionTokenizer.Follows(thingTokenizer);
+	argTokenizer.Follows(functionTokenizer);
+
+	/*
+	to implement these rules:
 	
-	var thingTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("@").HasSuffix(".");
-	var functionTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix(".").HasSuffix("(");
-	var argTokenizer = NaturallyNotImplementedTokenizer.New().HasPrefix("(").HasSuffix(",").HasSuffix(")");
-	var argTokenizer2 = NaturallyNotImplementedTokenizer.New().HasPrefix(",").HasSuffix(",").HasSuffix(")")"
+	for:  @store.search(#ness.IsThing("x","y"))
+	
+	"@" - parses store name to "."
+	"." - parses operation name to "(" or "."
+	"(" - parses nothing (eg. from "(" to itself) , just a placeholder indicating params
+	"," - parses nothing, just a placeholder for params separator
+	")" - parses nothing, just a placeholder indicating params have closed
+	"#" - parses ness name to "."
+	everything else parses to literal
+	
+		this example covers nested tokens as well
+	*/
+
+	IRoutingTokenizer router = new();
+	var storeTokenizer = BlankTokenizer.New().HasPrefix("@").HasSuffix(".").HasName("store");
+	var opTokenizer = BlankTokenizer.New().HasPrefix(".").HasSuffix(".","(").HasName("op");
+	var openParenTokenizer = BlankTokenizer.New().HasPrefix("(").HasSuffix("(").HasName("openParen");
+	var itemTokenizer = BlankTokenizer.New().HasPrefix(",").HasSuffix(",").HasName("item");
+	var closeParenTokenizer = BlankTokenizer.New().HasPrefix(")").HasSuffix(")").HasName("closeParen");
+	var nessTokenizer = BlankTokenizer.New().HasPrefix("#").HasSuffix(".").HasName("ness");
+	var functionTokenizer = BlankTokenizer.New().HasPrefix(".").HasSuffix("(").HasName("function");
+	var argTokenizer = BlankTokenizer.New().HasPrefix("(", ",").HasSuffix(",",")").HasName("arg");
+	router.AddTokenizer(all the above)
+
+
+	STEP 2 - COMPILATION!!
+
