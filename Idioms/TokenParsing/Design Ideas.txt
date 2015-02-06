@@ -302,3 +302,32 @@ example decorations:
 			"y"				literal
 			)				closeParen
 			)				closeParen
+
+	compilation will perform a forward only move of this tokenset and convert it into a series of UnitsOfWork to execute in order.
+	
+		UnitOfWork has:
+			-Operand (can be: store, op, ness, literal)
+			-Operation (can be op).  This op will correspond to some function to perform on the operand with the args, returning 
+			-Args (list of literal or UnitOfWork)
+			-Eval
+			-ChainToSibling()
+
+		compilation process goes like this:
+		step:						current UoW:							UoW stack:
+		@store						UoW1.operand=store							1
+		.search						UoW1.operation=search
+		(							UoW1.args.add(UoW2)							2
+		#ness						UoW2.operand=#ness
+		.IsThing					UoW2.operation=IsThing
+		(							UoW2.args.add(UoW3)							3
+		"x"							UoW3.eval = "x", it's a literal (dequeue)	2	
+		,							UoW2.args.add(UoW4)							3
+		"y"							UoW4.eval = "y" (dequeue)					2
+		)							UoW2.eval()		(dequeue)					1
+		)							UoW1.eval()		(dequeue)					0								
+									
+		ok, so every time an eval() call happens we have to replace the UoW that generated the value,
+		with the actual value, on the parent's arg list.  by the time we're back at the last UoW,
+		we'll all have actual values (or, deferred getters which means we can avoid evaluation until we need to,
+		and in this way we can probably queue up the sequence of operations on the fly)
+
