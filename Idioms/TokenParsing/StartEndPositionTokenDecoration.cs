@@ -23,10 +23,10 @@ namespace Decoratid.Idioms.TokenParsing
     /// decorates with positional tracking
     /// </summary>
     [Serializable]
-    public class StartEndPositionDecoration : TokenDecorationBase, IStartEndPositionalToken
+    public class StartEndPositionTokenDecoration : TokenDecorationBase, IStartEndPositionalToken
     {
         #region Ctor
-        public StartEndPositionDecoration(IToken decorated, int startPos, int endPos)
+        public StartEndPositionTokenDecoration(IToken decorated, int startPos, int endPos)
             : base(decorated)
         {
             Condition.Requires(startPos).IsGreaterOrEqual(0).IsLessThan(endPos);
@@ -36,14 +36,14 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static StartEndPositionDecoration New(IToken decorated, int startPos, int endPos)
+        public static StartEndPositionTokenDecoration New(IToken decorated, int startPos, int endPos)
         {
-            return new StartEndPositionDecoration(decorated, startPos, endPos);
+            return new StartEndPositionTokenDecoration(decorated, startPos, endPos);
         }
         #endregion
 
         #region ISerializable
-        protected StartEndPositionDecoration(SerializationInfo info, StreamingContext context)
+        protected StartEndPositionTokenDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -58,17 +58,17 @@ namespace Decoratid.Idioms.TokenParsing
         public int EndPos { get; private set; }
         public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
         {
-            return new StartEndPositionDecoration(thing, this.StartPos, this.EndPos);
+            return new StartEndPositionTokenDecoration(thing, this.StartPos, this.EndPos);
         }
         #endregion
     }
 
     public static class StartEndPositionDecorationExtensions
     {
-        public static StartEndPositionDecoration HasStartEndPositions(this IToken thing, int startPos, int endPos)
+        public static StartEndPositionTokenDecoration HasStartEndPositions(this IToken thing, int startPos, int endPos)
         {
             Condition.Requires(thing).IsNotNull();
-            return new StartEndPositionDecoration(thing, startPos, endPos);
+            return new StartEndPositionTokenDecoration(thing, startPos, endPos);
         }
     }
 }

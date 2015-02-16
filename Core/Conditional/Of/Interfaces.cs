@@ -14,4 +14,5 @@ namespace Decoratid.Core.Conditional.Of
     {
         bool? Evaluate(T context);
     }
+
 }

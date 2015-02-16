@@ -12,6 +12,9 @@ namespace Decoratid.Idioms.ConditionalWaiting
     /// </summary>
     public interface IHasWaitCondition : IHasCondition
     {
+        /// <summary>
+        /// the condition that will stop the waiting condition before the actual waiting condition is over
+        /// </summary>
         ICondition StopWaitingCondition { get; }
 
     }

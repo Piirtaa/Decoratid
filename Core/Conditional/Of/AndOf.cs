@@ -4,25 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Decoratid.Core.Conditional
+namespace Decoratid.Core.Conditional.Of
 {
     /// <summary>
     /// produces an And condition based on the passed in conditions
     /// </summary>
     [Serializable]
-    public sealed class And : ICondition, ISerializable, ICloneableCondition
+    public sealed class AndOf<T> : IConditionOf<T>, ISerializable
     {
         #region Ctor
-        public And(params ICondition[] conditions)
+        public AndOf(params IConditionOf<T>[] conditions)
         {
             this.Conditions = conditions;
         }
         #endregion
 
-        #region ISerializable
-        protected And(SerializationInfo info, StreamingContext context)
+        #region Fluent Static
+        public static AndOf<T> New(params IConditionOf<T>[] conditions)
         {
-            this.Conditions = (ICondition[])info.GetValue("Conditions", typeof(ICondition[]));
+            return new AndOf<T>(conditions);
+        }
+        #endregion
+
+        #region ISerializable
+        protected AndOf(SerializationInfo info, StreamingContext context)
+        {
+            this.Conditions = (IConditionOf<T>[])info.GetValue("Conditions", typeof(IConditionOf<T>[]));
         }
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -31,33 +38,29 @@ namespace Decoratid.Core.Conditional
         #endregion
 
         #region Properties
-        public ICondition[] Conditions { get; protected set; }
+        public IConditionOf<T>[] Conditions { get; protected set; }
         #endregion
 
         #region Methods
-        public bool? Evaluate()
+        public bool? Evaluate(T context)
         {
             if (this.Conditions == null) { return false; }
             if (this.Conditions.Length == 0) { return false; }
 
             //in an AND, if any of the terms are false the expression is false
-            foreach (ICondition each in this.Conditions)
+            foreach (IConditionOf<T> each in this.Conditions)
             {
-                if (!each.Evaluate().GetValueOrDefault())
+                if (!each.Evaluate(context).GetValueOrDefault())
                 {
                     return false;
                 }
             }
             return true;
         }
-        public ICondition Clone()
-        {
-            return new And(this.Conditions);
-        }
         #endregion
     }
 
-    public static class AndExtensions
+    public static class AndOfExtensions
     {
         /// <summary>
         /// fluent And 
@@ -65,12 +68,12 @@ namespace Decoratid.Core.Conditional
         /// <param name="cond"></param>
         /// <param name="conds"></param>
         /// <returns></returns>
-        public static ICondition And(this ICondition cond, params ICondition[] conds)
+        public static IConditionOf<T> And<T>(this IConditionOf<T> cond, params IConditionOf<T>[] conds)
         {
             if (conds == null || conds.Length == 0)
                 return cond;
 
-            List<ICondition> newConds = new List<ICondition>();
+            List<IConditionOf<T>> newConds = new List<IConditionOf<T>>();
 
             //if THIS is null, don't include it in the return condition
             if (cond != null)
@@ -78,24 +81,8 @@ namespace Decoratid.Core.Conditional
 
             newConds.AddRange(conds);
 
-            return new And(newConds.ToArray());
+            return new AndOf<T>(newConds.ToArray());
 
-        }
-
-        /// <summary>
-        /// Does and And and wrapplaces the HasA 
-        /// </summary>
-        /// <param name="cond"></param>
-        /// <param name="conds"></param>
-        /// <returns></returns>
-        public static IHasCondition AppendAnd(this IHasCondition cond, params ICondition[] conds)
-        {
-            if (cond == null)
-                return cond;
-
-            cond.Condition = cond.Condition.And(conds);
-
-            return cond;
         }
     }
 }

@@ -28,6 +28,21 @@ namespace Decoratid.Core
     {
         object GetFace(Type type);
     }
+
+    public static class IFacetedExtensions
+    {
+        public static T GetFace<T>(this object obj)
+        {
+            Condition.Requires(obj).IsNotNull();
+
+            if (!(obj is IFaceted))
+                return default(T);
+
+            var isa = IsA.New(obj as IFaceted);
+            return isa.As<T>();
+        }
+    }
+
     /// <summary>
     /// base interface for the IsA paradigm that extends IFaceted by adding type constraints
     /// </summary>
@@ -47,6 +62,7 @@ namespace Decoratid.Core
         /// <returns></returns>
         bool Is<T>();
     }
+
 
     //public interface IIsA<T1> : IIsA { }
     //public interface IIsA<T1, T2> : IIsA<T1> { }
