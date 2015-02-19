@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
 
 namespace Decoratid.Core.Decorating
 {
     /// <summary>
-    /// most basic definition of a decoration.  
+    /// most basic definition of a decoration.  Something that wraps something else
     /// </summary>
     public interface IDecoration 
     {
@@ -21,6 +22,23 @@ namespace Decoratid.Core.Decorating
         /// the coremost decorated thing
         /// </summary>
         object Core { get; }
+
+        
+    }
+
+    /// <summary>
+    /// a decoration that is aware of who is decorating it
+    /// </summary>
+    public interface IDecoratorAwareDecoration : IDecoration
+    {
+        /// <summary>
+        /// the thing decorating this
+        /// </summary>
+        object Decorator { get; set; }
+        /// <summary>
+        /// the outermost decoration in the stack
+        /// </summary>
+        object Outer { get; }
     }
 
     /// <summary>
@@ -56,76 +74,37 @@ namespace Decoratid.Core.Decorating
         IDecorationOf<T> ApplyThisDecorationTo(T thing);
     }
 
-//What's the Decoratid concept of "Idiomatic"
-//-has a unique (domain-wide) idiom root name, {Idiom}.  eg. HasId
-//-has human readable representation of its state, aka "the Idiomatique", via the format 
-//     {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
-//-can also parse the Idiomatique and hydrate 
-//-as well as have state be human readable via the Idiomatique, we also have "Idiomatic conditional expressions", which
-// allow for comparison/filtering of IIdiomatic of the same type via the format  
-//     #{Idiom}# {Expression} {Data}
-//     eg.( #HasId#.Equals("myid"), #HasDateCreated#.After("YYYYMMDDhhmmss"))
- 
-//     These "Idiomatic Conditional Expressions" are also used from the Decoratid Command Line to filter data from 
-//     the current store.  The DCL expects data in the format:
-//         [THING] [ACTION] [DATA]
-//         -where THING is a "SOID EXPRESSION" - <Type>(Id), that leads to a currentStore.Get(SOID)
-//         -or THING is a "Idiomatic Conditional Expression" - #HasId.Equals("myid").Or(#HasId.Equals("yourid"))
-//             -where # prefixes a search expression,  IConditionOf<IIdiomatic>
-//             -these expressions operate on the specified store (if none given, assumes current store)
-//                 eg.  @store@.#HasId#.Equals("myid") translates to an IConditionOf<IIdiomatic> ??not sure think about this some more
-//         -where ACTION is the "Idiomatic Operation"
-         
-//         there is autocomplete after the idiom is specified.  ie. once "#HasId." has been entered.  The "." will
-//             do an expression dictionary autocomplete returning "Idiomatic Conditional Expressions" and 
-//             "Idiomatic Operations".
-             
-//-when constructing an instance of something the use of a "Has{Idiom}(data)" approach will be prevalent.
-// eg. "myid".AsId().HasDateCreated(|now|).HasBits(0111011010).HasName("bro").HasNameValue("sup", "yo,guy")
-
-//# # typically connotes an idiom
-//" " connotes a string literal
-//@ @ connotes a session thing (could be current stores, default things, etc)
-//| | connotes a keyword (eg. |now| and |today|). keywords are idiom-specific
-
-//----------------------------------
-//what does that mean for the design/implementation?
-//-IdiomName
-//-Dictionary<string, Func<IIdiomatic, string[], bool>> ConditionalExpressions
-//-Dictionary<string, Func<IIdiomatic, string[], bool>> Operations
 
 
 
+    ///// <summary>
+    ///// thing converts to a Decoratid Idiomatic textual description
+    ///// </summary>
+    ///// <remarks>
+    ///// </remarks>
+    //public interface IIsIdiomatic
+    //{
+    //    /// <summary>
+    //    /// quick check flag to determine if something is idiomatic
+    //    /// </summary>
+    //    bool IsIdiomatic { get; }
 
-
-    /// <summary>
-    /// thing converts to a Decoratid Idiomatic textual description
-    /// </summary>
-    /// <remarks>
-    /// </remarks>
-    public interface IIsIdiomatic
-    {
-        /// <summary>
-        /// quick check flag to determine if something is idiomatic
-        /// </summary>
-        bool IsIdiomatic { get; }
-
-        string IdiomName { get; } //should come from an attribute, just putting it here as a reminder
-        /// <summary>
-        /// returns the textual representation of state according to the template {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
-        /// </summary>
-        /// <returns></returns>
-        string GetIdiomaticRepresentation();
-        /// <summary>
-        /// sets current state by parsing the command
-        /// </summary>
-        void ParseIdiomaticRepresentation();
-        /// <summary>
-        /// sets the property to the value.  should only work on idiomatic properties
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="val"></param>
-        void HasProperty(string propertyName, object val); 
-    }
+    //    string IdiomName { get; } //should come from an attribute, just putting it here as a reminder
+    //    /// <summary>
+    //    /// returns the textual representation of state according to the template {Idiom}.HasProperty({PropertyName},{Value}).HasProperty({PropertyName},{Value})
+    //    /// </summary>
+    //    /// <returns></returns>
+    //    string GetIdiomaticRepresentation();
+    //    /// <summary>
+    //    /// sets current state by parsing the command
+    //    /// </summary>
+    //    void ParseIdiomaticRepresentation();
+    //    /// <summary>
+    //    /// sets the property to the value.  should only work on idiomatic properties
+    //    /// </summary>
+    //    /// <param name="propertyName"></param>
+    //    /// <param name="val"></param>
+    //    void HasProperty(string propertyName, object val); 
+    //}
 
 }

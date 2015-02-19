@@ -48,13 +48,13 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
             router.AddTokenizer(opTokenizer);
 
             //open and close brackets
-            var openParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPrefix("(").HasSuffix("(").HasId(OPENPAREN);
-            var closeParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPrefix(")").HasSuffix(")").HasId(CLOSEPAREN);
+            var openParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasConstantValue("(").HasId(OPENPAREN);
+            var closeParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasConstantValue(")").HasId(CLOSEPAREN);
             router.AddTokenizer(openParenTokenizer);
             router.AddTokenizer(closeParenTokenizer);
 
             //the comma
-            var commaTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPrefix(",").HasSuffix(",").HasId(COMMA);
+            var commaTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasConstantValue(",").HasId(COMMA);
             router.AddTokenizer(commaTokenizer);
 
             //everything else

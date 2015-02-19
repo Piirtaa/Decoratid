@@ -69,6 +69,7 @@ namespace Decoratid.Idioms.TokenParsing
             //tell each tokenizer to use the router as the backup router
             var newT = t.HasRouting(this, false);
 
+
             TokenizerItem item = new TokenizerItem(newT);
 
             this.Rules.SaveItem(item);
@@ -81,6 +82,12 @@ namespace Decoratid.Idioms.TokenParsing
             //iterate thru all the tokenizers and find ones that know if they can handle stuff
             foreach (var each in tokenizers)
             {
+                //get the IForwardMovingTokenizer face
+                var tokenizer = each.As<IForwardMovingTokenizer>();
+                var tokedecs = tokenizer.GetAllDecorations();
+                var eachdecs = each.GetAllDecorations();
+                var tokenizer2 = each.As<ISelfDirectedTokenizer>();
+
                 if (each.Is<ISelfDirectedTokenizer>())
                 {
                     if (each.As<ISelfDirectedTokenizer>().CanHandle(text, currentPosition, state,currentToken))
@@ -89,23 +96,11 @@ namespace Decoratid.Idioms.TokenParsing
             }
             return null;
         }
-        public IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition
-        {
-            get
-            {
-                //define the prefix condition
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation>.New((x) =>
-                {
-                    var tokenizer = GetTokenizer(x.Text, x.CurrentPosition, x.State, x.CurrentToken);
-                    return tokenizer != null;
-                });
-                return cond;
-            }
-        }
+
         public bool CanHandle(string text, int currentPosition, object state, IToken currentToken)
         {
-            var rv = this.CanTokenizeCondition.Evaluate(ForwardMovingTokenizingOperation.New(text, currentPosition, state, currentToken));
-            return rv.GetValueOrDefault();
+            var tokenizer = GetTokenizer(text, currentPosition, state, currentToken);
+            return tokenizer != null;
         }
         public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
         {

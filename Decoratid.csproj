@@ -91,9 +91,10 @@
     <Compile Include="Core\Contextual\ContextualCondition.cs" />
     <Compile Include="Core\Contextual\ContextualId.cs" />
     <Compile Include="Core\Contextual\ContextualIHasIdDecoration.cs" />
-    <Compile Include="Core\Decorating\DecorationOfExtensions.cs" />
     <Compile Include="Core\Decorating\DecorationBase.cs" />
-    <Compile Include="Core\Decorating\DecorationExtensions.cs" />
+    <Compile Include="Core\Decorating\DecorationExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\Decorating\Interfaces.cs" />
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
@@ -543,6 +544,7 @@
     <Compile Include="Idioms\TokenParsing\CommandLine\Compiler.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\HasValueTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\CommandLineCompilationException.cs" />
+    <Compile Include="Idioms\TokenParsing\CommandLine\Tests.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\TokenEvaluator.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\TokenExtensions.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\UnitOfWork.cs" />

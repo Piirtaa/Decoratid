@@ -14,53 +14,25 @@ using Decoratid.Extensions;
 namespace Decoratid.Idioms.TokenParsing
 {
     /// <summary>
-    /// encapsulates the state of a tokenizing operation
-    /// </summary>
-    public class ForwardMovingTokenizingOperation
-    {
-        public string Text { get; set; }
-        public int CurrentPosition { get; set; }
-        public object State { get; set; }
-        public IToken CurrentToken { get; set; }
-
-        public static ForwardMovingTokenizingOperation New(string text, int currentPosition, object state, IToken currentToken)
-        {
-            var rv = new ForwardMovingTokenizingOperation();
-            rv.Text = text;
-            rv.CurrentPosition = currentPosition;
-            rv.State = state;
-            rv.CurrentToken = currentToken;
-
-            return rv;
-        }
-    }
-
-    /// <summary>
-    /// a tokenizer that has a condition that needs to be passed for the tokenizer to work
-    /// </summary>
-    public interface IHasHandleConditionTokenizer : IForwardMovingTokenizer
-    {
-        IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition { get; }
-    }
-
-    /// <summary>
     /// a tokenizer that knows whether it can handle a tokenizing operation
     /// </summary>
-    public interface ISelfDirectedTokenizer : IHasHandleConditionTokenizer
+    public interface ISelfDirectedTokenizer : IForwardMovingTokenizer
     {
         bool CanHandle(string text, int currentPosition, object state, IToken currentToken);
     }
 
     /// <summary>
-    /// tokenizer that knows if it can handle (ie. tokenize) the text provided.  Only one decoration of this per stack is allowed.
+    /// tokenizer that knows if it can handle (ie. tokenize) the text provided.  Only one of this decoration per stack is allowed.
+    /// implemented with IHasHandleConditionTokenizer as well to specify implementation of handling filter as IConditionOf 
     /// </summary>
     /// <remarks>
     /// Works in conjunction with IHasHandleConditionTokenizer which is applied on any decoration that has a handling requirement.
     /// Since only one decoration of SelfDirectedTokenizerDecoration is allowed per stack, this is the aggregator point for all
-    /// IHasHandleConditionTokenizers on the stack.  All handling conditions on the stack must pass.
+    /// IHasHandleConditionTokenizers on the stack.  All handling conditions on the stack must pass each handler condition.
+    /// 
     /// </remarks>
     [Serializable]
-    public class SelfDirectedTokenizerDecoration : ForwardMovingTokenizerDecorationBase, ISelfDirectedTokenizer
+    public class SelfDirectedTokenizerDecoration : ForwardMovingTokenizerDecorationBase, ISelfDirectedTokenizer, IHasHandleConditionTokenizer
     {
         #region Ctor
         public SelfDirectedTokenizerDecoration(IForwardMovingTokenizer decorated, 
@@ -97,8 +69,6 @@ namespace Decoratid.Idioms.TokenParsing
         public IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition { get; set; }
         public bool CanHandle(string text, int currentPosition, object state, IToken currentToken)
         {
-            Condition.Requires(this.CanTokenizeCondition).IsNotNull();
-
             var cursor = ForwardMovingTokenizingOperation.New(text, currentPosition, state, currentToken);
 
             //get all IHasHandleConditionTokenizer conditions in the decoration stack
@@ -107,12 +77,18 @@ namespace Decoratid.Idioms.TokenParsing
             //-all the other decorations that affect this decoration (eg. all IHasHandleConditionTokenizers) are pulled from
             // the decoration stack and applied here
 
+            var decs = this.GetAllDecorations();
+
             var hasConditions = this.GetAllImplementingDecorations<IHasHandleConditionTokenizer>();
             List<IConditionOf<ForwardMovingTokenizingOperation>> conds = new List<IConditionOf<ForwardMovingTokenizingOperation>>();
             hasConditions.WithEach(x =>
             {
-                conds.Add(x.CanTokenizeCondition);
+                if (x.CanTokenizeCondition != null)
+                    conds.Add(x.CanTokenizeCondition);
             });
+
+            if (conds.Count == 0)
+                return false;
 
             var cond = AndOf<ForwardMovingTokenizingOperation>.New(conds.ToArray());
             var rv = cond.Evaluate(cursor);

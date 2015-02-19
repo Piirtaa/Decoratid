@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Core.Conditional.Of;
 
 namespace Decoratid.Idioms.TokenParsing
 {
@@ -50,6 +51,36 @@ namespace Decoratid.Idioms.TokenParsing
         /// <returns></returns>
         bool Parse(string text, int currentPosition, object state, IToken currentToken,
             out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser);
+    }
+
+    /// <summary>
+    /// encapsulates the state of a tokenizing operation
+    /// </summary>
+    public class ForwardMovingTokenizingOperation
+    {
+        public string Text { get; set; }
+        public int CurrentPosition { get; set; }
+        public object State { get; set; }
+        public IToken CurrentToken { get; set; }
+
+        public static ForwardMovingTokenizingOperation New(string text, int currentPosition, object state, IToken currentToken)
+        {
+            var rv = new ForwardMovingTokenizingOperation();
+            rv.Text = text;
+            rv.CurrentPosition = currentPosition;
+            rv.State = state;
+            rv.CurrentToken = currentToken;
+
+            return rv;
+        }
+    }
+
+    /// <summary>
+    /// a tokenizer that has a condition that needs to be passed for the tokenizer to work
+    /// </summary>
+    public interface IHasHandleConditionTokenizer : IForwardMovingTokenizer
+    {
+        IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition { get; }
     }
 
     public static class TokenExtensions

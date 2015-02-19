@@ -18,7 +18,7 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationBase : DisposableBase, IDecoration, ISerializable, IFaceted
+    public abstract class DecorationBase : DisposableBase, IDecoration, ISerializable, IFaceted, IDecoratorAwareDecoration
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -76,11 +76,24 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-        #region Properties
+        #region IDecoration
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public object Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public object Core { get { return this._Core; } }
+        #endregion
+
+        #region IDecoratorAwareDecoration
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        /// <summary>
+        /// the thing decorating this
+        /// </summary>
+        public object Decorator { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        /// <summary>
+        /// the outermost decoration in the stack
+        /// </summary>
+        public object Outer { get { return this.GetOuterDecorator(); } }
         #endregion
 
         #region Calculated Properties
@@ -102,6 +115,7 @@ namespace Decoratid.Core.Decorating
         /// <param name="decorated"></param>
         protected void SetDecorated(object decorated)
         {
+            //validate
             if (decorated == null)
                 throw new InvalidOperationException("null decoration injection");
 
@@ -122,6 +136,7 @@ namespace Decoratid.Core.Decorating
                 }
             }
 
+            //set decorated
             this._Decorated = decorated;
 
             if (decorated is IDecoration)
@@ -132,6 +147,12 @@ namespace Decoratid.Core.Decorating
             else
             {
                 this._Core = decorated;
+            }
+
+            //set the decorator backreference
+            if (decorated.IsADecoratorAwareDecoration())
+            {
+                (decorated as IDecoratorAwareDecoration).Decorator = this;
             }
         }
         #endregion

@@ -13,6 +13,40 @@ namespace Decoratid.Core.Decorating
 {
     public static class DecorationOfExtensions
     {
+        public static bool IsADecorationOf(this object obj)
+        {
+            if (obj == null)
+                return false;
+
+            //validate we're on a decoration
+            var genTypeDef = typeof(IDecorationOf<>);
+            return genTypeDef.IsInstanceOfGenericType(obj);
+        }
+        /// <summary>
+        /// returns the type being decorated. Eg. for instance of IDecorationOf T, it returns T 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static Type GetTypeBeingDecorated(this object obj)
+        {
+            if (obj == null)
+                return null;
+
+            //validate we're on a decoration
+            if (!(obj is IDecoration))
+                return null;
+
+            //var genTypeDef = typeof(IDecorationOf<>);
+            //if (!genTypeDef.IsInstanceOfGenericType(obj))
+            //    return null;
+
+            //get the generic type we're decorating
+            var genType = obj.GetType().GetInterface("IDecorationOf`1").GetGenericArguments()[0];
+            //var genType = obj.GetType().GetTypeInfo().GenericTypeArguments[0];
+
+            return genType;
+        }
+
         #region Walk Iteration - walks decorations of T
         /// <summary>
         /// returns whether the object is a decoration of T

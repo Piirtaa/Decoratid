@@ -29,7 +29,7 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted, IDecoratorAwareDecoration
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -85,7 +85,7 @@ namespace Decoratid.Core.Decorating
         }
         #endregion
 
-        #region Properties
+        #region IDecoration
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -97,9 +97,24 @@ namespace Decoratid.Core.Decorating
         public T Core { get { return this._Core; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         object IDecoration.Core { get { return this.Core; } }
-        
+        #endregion
+
+        #region IDecorationOf
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public abstract T This { get; }
+        #endregion
+
+        #region IDecoratorAwareDecoration
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        /// <summary>
+        /// the thing decorating this
+        /// </summary>
+        public object Decorator { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        /// <summary>
+        /// the outermost decoration in the stack
+        /// </summary>
+        public object Outer { get { return this.GetOuterDecorator(); } }
         #endregion
 
         #region Calculated Properties
@@ -130,7 +145,7 @@ namespace Decoratid.Core.Decorating
 
             //if decorated is a decoration, we must ensure that none of the decoration layers are equal to this 
             //or we'll get a circ reference situation
-            var decorationList = decorated.GetAllDecorationsOf<T>();
+            var decorationList = decorated.GetAllDecorations();
             //remove the first decoration because it is equivalent to "this"
 
             if (decorationList != null)
@@ -153,6 +168,12 @@ namespace Decoratid.Core.Decorating
             {
                 this._Core = decorated;
             }
+
+            //set the decorator backreference
+            if (decorated.IsADecoratorAwareDecoration())
+            {
+                (decorated as IDecoratorAwareDecoration).Decorator = this;
+            }
         }
         /// <summary>
         /// replaces the Decorated member.  In effect, we are injecting a decoration immediately below the "surface"
@@ -166,59 +187,59 @@ namespace Decoratid.Core.Decorating
             this.SetDecorated(newDec);
         }
 
-        public T Undecorate(Type decType, bool exactTypeMatch)
-        {
-            //find the decoration we want to remove
-            T decorationToRemove = this.FindDecorationOf(decType, exactTypeMatch);
-            if (decorationToRemove == null)
-                throw new InvalidOperationException("decoration not found");
+        //public T Undecorate(Type decType, bool exactTypeMatch)
+        //{
+        //    //find the decoration we want to remove
+        //    T decorationToRemove = this.AsBelow.FindDecorationOf(decType, exactTypeMatch);
+        //    if (decorationToRemove == null)
+        //        throw new InvalidOperationException("decoration not found");
 
-            //get the decorations from the inside out
-            List<T> decorations = this.GetAllDecorationsOf();
-            decorations.Reverse();
+        //    //get the decorations from the inside out
+        //    List<T> decorations = this.GetAllDecorationsOf();
+        //    decorations.Reverse();
 
-            //iterate to the decoration to remove
-            T wrappee = default(T);
-            foreach (var each in decorations)
-            {
-                IDecorationOf<T> dec = each as IDecorationOf<T>;
-                if (dec == null)
-                    continue;
+        //    //iterate to the decoration to remove
+        //    T wrappee = default(T);
+        //    foreach (var each in decorations)
+        //    {
+        //        IDecorationOf<T> dec = each as IDecorationOf<T>;
+        //        if (dec == null)
+        //            continue;
 
-                //set the flag when we're at the right index
-                if (object.ReferenceEquals(each, decorationToRemove))
-                {
-                    wrappee = dec.Decorated;
-                    continue;
-                }
+        //        //set the flag when we're at the right index
+        //        if (object.ReferenceEquals(each, decorationToRemove))
+        //        {
+        //            wrappee = dec.Decorated;
+        //            continue;
+        //        }
 
-                //skip if the flag isn't set
-                if (wrappee == null)
-                    continue;
+        //        //skip if the flag isn't set
+        //        if (wrappee == null)
+        //            continue;
 
-                //we're at the decoration above the decoration to remove
-                //we want to add all the remaining layers on
-                //NOTE: this should kack if invalid
-                var decWrappee = dec.ApplyThisDecorationTo(wrappee);
-                wrappee = decWrappee.This;
-            }
+        //        //we're at the decoration above the decoration to remove
+        //        //we want to add all the remaining layers on
+        //        //NOTE: this should kack if invalid
+        //        var decWrappee = dec.ApplyThisDecorationTo(wrappee);
+        //        wrappee = decWrappee.This;
+        //    }
 
-            return wrappee;
-        }
-        /// <summary>
-        /// looks for the provided decoration layer and tries to build the same store without this decoration.
-        /// </summary>
-        /// <remarks>
-        /// if there is a dependency of one layer upon the other, and the dependency is removed, the ctor 
-        /// chain should kack - we provide the same checks as a ctor does, in this method. 
-        /// </remarks>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Undecorate<Tdec>(bool exactTypeMatch)
-            where Tdec : T
-        {
-            return Undecorate(typeof(Tdec), exactTypeMatch);
-        }
+        //    return wrappee;
+        //}
+        ///// <summary>
+        ///// looks for the provided decoration layer and tries to build the same store without this decoration.
+        ///// </summary>
+        ///// <remarks>
+        ///// if there is a dependency of one layer upon the other, and the dependency is removed, the ctor 
+        ///// chain should kack - we provide the same checks as a ctor does, in this method. 
+        ///// </remarks>
+        ///// <typeparam name="T"></typeparam>
+        ///// <returns></returns>
+        //public T Undecorate<Tdec>(bool exactTypeMatch)
+        //    where Tdec : T
+        //{
+        //    return Undecorate(typeof(Tdec), exactTypeMatch);
+        //}
         #endregion
 
         #region IDecoration
