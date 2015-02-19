@@ -82,16 +82,11 @@ namespace Decoratid.Idioms.TokenParsing
             //iterate thru all the tokenizers and find ones that know if they can handle stuff
             foreach (var each in tokenizers)
             {
-                //get the IForwardMovingTokenizer face
-                var tokenizer = each.As<IForwardMovingTokenizer>();
-                var tokedecs = tokenizer.GetAllDecorations();
-                var tokenizer2 = each.As<ISelfDirectedTokenizer>();
-                var tokedecs2 = tokenizer2.GetAllDecorations();
-                if (each.Is<ISelfDirectedTokenizer>())
-                {
-                    if (each.As<ISelfDirectedTokenizer>().CanHandle(text, currentPosition, state,currentToken))
+                var sd = each.GetFace<ISelfDirectedTokenizer>();
+
+                if (sd != null)
+                    if (sd.CanHandle(text, currentPosition, state, currentToken))
                         return each;
-                }
             }
             return null;
         }
@@ -123,7 +118,7 @@ namespace Decoratid.Idioms.TokenParsing
         #region Overrides
         public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
         {
-            var rv =  new RoutingTokenizerDecoration(thing);
+            var rv = new RoutingTokenizerDecoration(thing);
 
             //move the rules over
             var rules = this.Rules.GetAll();

@@ -63,7 +63,8 @@ namespace Decoratid.Idioms.TokenParsing
 
             foreach (var each in Suffixes)
             {
-                var tempIdx = text.Substring(currentPosition + 1).IndexOf(each);
+                //always search ahead of the current position
+                var tempIdx = text.IndexOf(each, currentPosition + 1);
 
                 //can't find the suffix, move along
                 if (tempIdx == -1)

@@ -31,7 +31,6 @@ namespace Decoratid.Idioms.TokenParsing
         public HasPredecessorTokenizerDecoration(IForwardMovingTokenizer decorated, params string[] priorTokenizerIds)
             : base(decorated.HasSelfDirection())
         {
-            Condition.Requires(priorTokenizerIds).IsNotEmpty();
             this.PriorTokenizerIds = priorTokenizerIds;
         }
         #endregion
@@ -65,8 +64,22 @@ namespace Decoratid.Idioms.TokenParsing
                     var substring = x.Text.Substring(x.CurrentPosition);
 
                     //can't check without predecessor
+                    //unless a null tokenizer id exists, in which case return true
                     if (x.CurrentToken == null)
+                    {
+                        if (this.PriorTokenizerIds == null)
+                            return true;
+
+                        if (this.PriorTokenizerIds.Contains(null))
+                            return true;
+
                         return false;
+                    }
+
+                    //if we have no predecessors to validate (other than the null predecessor we handle above), then we skip out
+                    if (this.PriorTokenizerIds == null)
+                        return false;
+
                     //can't check if not decorated
                     if (!(x.CurrentToken is IFaceted))
                         return false;
@@ -105,6 +118,7 @@ namespace Decoratid.Idioms.TokenParsing
             //can't check without predecessor
             if (currentToken == null)
                 return rv;
+
             //can't check if not decorated
             if (!(currentToken is IFaceted))
                 return rv;
@@ -153,7 +167,7 @@ namespace Decoratid.Idioms.TokenParsing
 
     public static class HasPriorTokenizerIdTokenizerDecorationExtensions
     {
-        public static HasPredecessorTokenizerDecoration HasPredecessor(this IForwardMovingTokenizer decorated,
+        public static HasPredecessorTokenizerDecoration HasPredecessorIds(this IForwardMovingTokenizer decorated,
             params string[] priorTokenizerIds)
         {
             Condition.Requires(decorated).IsNotNull();

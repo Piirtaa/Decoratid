@@ -30,8 +30,12 @@ namespace Decoratid.Idioms.TokenParsing
             IForwardMovingTokenizer currentParser = parser;
             bool goodParse = true;
 
-            while (goodParse && currentParser != null && pos > -1 && pos < maxPos)
+            int counter= 0;
+
+            while (goodParse && currentParser != null && pos > -1 && pos <= maxPos)
             {
+                counter++;
+
                 var priorToken = token;
                 var startPos = pos;
 
@@ -42,7 +46,7 @@ namespace Decoratid.Idioms.TokenParsing
                     {
                         token.PriorToken = priorToken;
                         //decorate token with positional info
-                        token.HasStartEndPositions(startPos, pos);
+                        token = token.HasStartEndPositions(startPos, pos);
 
                         rv.Add(token);
                     }

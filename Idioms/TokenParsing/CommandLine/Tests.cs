@@ -23,7 +23,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
                     "7.AsId().HasName('name')"
                 };
 
-                var tokens = CommandLineLexer.ForwardMovingTokenize(commands[0]);
+                var tokens = CommandLineLexer.ForwardMovingTokenize(commands[1]);
 
                 //Condition.Requires(cmds).HasLength(2);
                 //Condition.Requires(cmds[1].OperationToken.TokenString).IsEqualTo("dosomethingelse");

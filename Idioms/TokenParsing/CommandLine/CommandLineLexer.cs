@@ -27,6 +27,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         public const string CLOSEPAREN = "closeParen";
         public const string COMMA = "comma";
         public const string ARG = "arg";
+        public const string THING = "thing";
 
         public static IForwardMovingTokenizer BuildLexingLogic()
         {
@@ -43,6 +44,10 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
             var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPrefix("#").HasSuffix(".").HasId(NESS);
             router.AddTokenizer(nessTokenizer);
 
+            //parse thing token
+            var thingTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPredecessorIds(null).HasSuffix(".").HasId(THING);
+            router.AddTokenizer(thingTokenizer);
+
             //parse operation name into op token
             var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPrefix(".").HasSuffix(".", "(").HasId(OP);
             router.AddTokenizer(opTokenizer);
@@ -58,7 +63,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
             router.AddTokenizer(commaTokenizer);
 
             //everything else
-            var argTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPredecessor(OPENPAREN, COMMA).HasSuffix(",", ")").HasId(ARG);
+            var argTokenizer = NaturallyNotImplementedForwardMovingTokenizer.New().HasPredecessorIds(null, OPENPAREN, COMMA).HasSuffix(",", ")").HasId(ARG);
             router.AddTokenizer(argTokenizer);
 
             return router;

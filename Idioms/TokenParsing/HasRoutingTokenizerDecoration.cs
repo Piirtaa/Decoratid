@@ -71,8 +71,11 @@ namespace Decoratid.Idioms.TokenParsing
 
             if (newParser == null)
             {
-                var tokenizer = this.Router.GetTokenizer(text, newPosition, state, currentToken);
-                newParser = tokenizer.As<IForwardMovingTokenizer>();
+                var tokenizer = this.Router.GetTokenizer(text, newPosition, state, newToken);
+
+                if(tokenizer != null)
+                    newParser = tokenizer.As<IForwardMovingTokenizer>();
+                
                 return rv;
             }
             else
@@ -80,7 +83,7 @@ namespace Decoratid.Idioms.TokenParsing
                 //override the new parser to use the router
                 if (OverrideIfNonNull)
                 {
-                    var tokenizer = this.Router.GetTokenizer(text, newPosition, state, currentToken);
+                    var tokenizer = this.Router.GetTokenizer(text, newPosition, state, newToken);
                     newParser = tokenizer.As<IForwardMovingTokenizer>();
                     return rv;
                 }

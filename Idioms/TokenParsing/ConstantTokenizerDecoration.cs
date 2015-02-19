@@ -74,8 +74,6 @@ namespace Decoratid.Idioms.TokenParsing
         public override bool Parse(string text, int currentPosition, object state, IToken currentToken,
             out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
         {
-            
-            Condition.Requires(text).StartsWith(this.TokenValue);
             newPosition = currentPosition + this.TokenValue.Length;
 
             //returns a natural token

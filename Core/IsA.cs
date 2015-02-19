@@ -145,11 +145,11 @@ namespace Decoratid.Core
         #endregion
 
         #region IFaceted
-        object IFaceted.GetFace(Type type)
+        public object GetFace(Type type)
         {
             return this.Faceted.GetFace(type);
         }
-        List<object> IFaceted.GetFaces()
+        public List<object> GetFaces()
         {
             return this.Faceted.GetFaces();
         }
