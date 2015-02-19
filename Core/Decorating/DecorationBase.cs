@@ -69,9 +69,14 @@ namespace Decoratid.Core.Decorating
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public object GetFace(Type type)
+        object IFaceted.GetFace(Type type)
         {
             var rv = this.As(type, false);
+            return rv;
+        }
+        List<object> IFaceted.GetFaces()
+        {
+            var rv = this.GetAllDecorations();
             return rv;
         }
         #endregion

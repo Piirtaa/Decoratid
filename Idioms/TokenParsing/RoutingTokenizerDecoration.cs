@@ -85,9 +85,8 @@ namespace Decoratid.Idioms.TokenParsing
                 //get the IForwardMovingTokenizer face
                 var tokenizer = each.As<IForwardMovingTokenizer>();
                 var tokedecs = tokenizer.GetAllDecorations();
-                var eachdecs = each.GetAllDecorations();
                 var tokenizer2 = each.As<ISelfDirectedTokenizer>();
-
+                var tokedecs2 = tokenizer2.GetAllDecorations();
                 if (each.Is<ISelfDirectedTokenizer>())
                 {
                     if (each.As<ISelfDirectedTokenizer>().CanHandle(text, currentPosition, state,currentToken))

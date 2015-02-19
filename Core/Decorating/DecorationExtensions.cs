@@ -44,6 +44,11 @@ namespace Decoratid.Core.Decorating
 
             return (obj as IDecoration).Decorated;
         }
+        /// <summary>
+        /// walking Decorated chain, gets the Core 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static object GetCoreDecorated(this object obj)
         {
             object last = obj;
@@ -59,6 +64,12 @@ namespace Decoratid.Core.Decorating
 
             return (last as IDecoration).Decorated;
         }
+        /// <summary>
+        /// walks Decorated chain to the core, or until the stop condition is met
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="stopWalkCondition"></param>
+        /// <returns></returns>
         public static object WalkDecorationsToCore(this object obj, Func<object, bool> stopWalkCondition)
         {
             object currentLayer = obj;
@@ -96,7 +107,10 @@ namespace Decoratid.Core.Decorating
             return returnValue;
         }
     }
-
+    /// <summary>
+    /// basically the mirror of IDecorationExtensions but going Upwards on the Decorator chain, instead of 
+    /// Downwards on the Decorated chain
+    /// </summary>
     public static class IDecoratorAwareDecorationExtensions
     {
         public static bool IsADecoratorAwareDecoration(this object obj)
@@ -124,7 +138,11 @@ namespace Decoratid.Core.Decorating
 
             return (obj as IDecoratorAwareDecoration).Decorator;
         }
-
+        /// <summary>
+        /// Walks up the Decorator chain to the topmost
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static object GetOuterDecorator(this object obj)
         {
             object last = obj;

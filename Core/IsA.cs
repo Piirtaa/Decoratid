@@ -27,6 +27,7 @@ namespace Decoratid.Core
     public interface IFaceted
     {
         object GetFace(Type type);
+        List<object> GetFaces();
     }
 
     public static class IFacetedExtensions
@@ -144,9 +145,13 @@ namespace Decoratid.Core
         #endregion
 
         #region IFaceted
-        public object GetFace(Type type)
+        object IFaceted.GetFace(Type type)
         {
             return this.Faceted.GetFace(type);
+        }
+        List<object> IFaceted.GetFaces()
+        {
+            return this.Faceted.GetFaces();
         }
         #endregion
 
@@ -159,7 +164,7 @@ namespace Decoratid.Core
         /// <returns></returns>
         public T As<T>()
         {
-            var face = this.GetFace(typeof(T));
+            var face = (this as IFaceted).GetFace(typeof(T));
             if (face == null)
                 return default(T);
 
@@ -172,7 +177,7 @@ namespace Decoratid.Core
         /// <returns></returns>
         public bool Is<T>()
         {
-            var face = this.GetFace(typeof(T));
+            var face = (this as IFaceted).GetFace(typeof(T));
             return face != null;
         }
         #endregion
