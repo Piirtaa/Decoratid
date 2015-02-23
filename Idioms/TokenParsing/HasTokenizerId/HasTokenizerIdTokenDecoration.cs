@@ -9,12 +9,12 @@ using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasTokenizerId
 {
     /// <summary>
     /// a token that tracks who tokenized
     /// </summary>
-    public interface IHasTokenizerId : IToken
+    public interface IHasTokenizerId<T> : IToken<T>
     {
         string TokenizerId { get; }
     }
@@ -23,10 +23,10 @@ namespace Decoratid.Idioms.TokenParsing
     /// decorates with who tokenized
     /// </summary>
     [Serializable]
-    public class HasTokenizerIdTokenDecoration : TokenDecorationBase, IHasTokenizerId
+    public class HasTokenizerIdTokenDecoration<T> : TokenDecorationBase<T>, IHasTokenizerId<T>
     {
         #region Ctor
-        public HasTokenizerIdTokenDecoration(IToken decorated, string tokenizerId)
+        public HasTokenizerIdTokenDecoration(IToken<T> decorated, string tokenizerId)
             : base(decorated)
         {
             Condition.Requires(tokenizerId).IsNotNullOrEmpty();
@@ -35,9 +35,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasTokenizerIdTokenDecoration New(IToken decorated, string tokenizerId)
+        public static HasTokenizerIdTokenDecoration<T> New(IToken<T> decorated, string tokenizerId)
         {
-            return new HasTokenizerIdTokenDecoration(decorated, tokenizerId);
+            return new HasTokenizerIdTokenDecoration<T>(decorated, tokenizerId);
         }
         #endregion
 
@@ -54,19 +54,19 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region Overrides
         public string TokenizerId { get; private set; }
-        public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
+        public override IDecorationOf<IToken<T>> ApplyThisDecorationTo(IToken<T> thing)
         {
-            return new HasTokenizerIdTokenDecoration(thing, this.TokenizerId);
+            return new HasTokenizerIdTokenDecoration<T>(thing, this.TokenizerId);
         }
         #endregion
     }
 
     public static class HasTokenizerIdTokenDecorationExtensions
     {
-        public static HasTokenizerIdTokenDecoration HasTokenizerId(this IToken thing, string tokenizerId)
+        public static HasTokenizerIdTokenDecoration<T> HasTokenizerId<T>(this IToken<T> thing, string tokenizerId)
         {
             Condition.Requires(thing).IsNotNull();
-            return new HasTokenizerIdTokenDecoration(thing, tokenizerId);
+            return new HasTokenizerIdTokenDecoration<T>(thing, tokenizerId);
         }
     }
 }

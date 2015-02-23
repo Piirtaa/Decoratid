@@ -1,28 +1,23 @@
-﻿using System;
+﻿using Decoratid.Core.Logical;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine
+namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
-    /// <summary>
-    /// common interface shared by arg tokens (eg. primitives) and UnitOfWork
-    /// </summary>
-    public interface ICanEval
-    {
-        object Evaluate();
-    }
+
 
     /// <summary>
     /// the compilation process will create a bunch of unit of works as it moves forward thru the tokens
     /// </summary>
-    public class UnitOfWork : ICanEval
+    public class UnitOfWork : ILogic
     {
         #region Ctor
         public UnitOfWork()
         {
-            this.ArgTokens = new List<ICanEval>();
+            this.Args = new List<ICanEval>();
         }
         #endregion
 
@@ -34,13 +29,13 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         #endregion
 
         #region Token Properties
-        public IToken OperandToken { get; set; }
-        public IToken OperationToken { get; set; }
-        public List<ICanEval> ArgTokens { get; private set; }
+        public ICanEval Operand { get; set; }
+        public IStringToken OperandToken { get; set; }
+        public IStringToken OperationToken { get; set; }
+        public List<ICanEval> Args { get; private set; }
         #endregion
 
         #region Placeholders
-        public object Operand { get; set; }
         public object Result { get; set; }
         public Func<object, List<object>, object> Function { get; set; }
         #endregion
@@ -50,17 +45,27 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         {
             if (this.Result == null)
             {
-                var args = this.GetArgs();
+                var args = this.EvaluateArgs();
 
                 this.Result = this.Function(this.Operand, args); 
             }
             return this.Result;
         }
-        private List<object> GetArgs()
+        #endregion
+
+        #region Methods
+        public static void BuildUnitOfWork(List<IStringToken> tokens, int currentPosition, UnitOfWork currentUoW, out int newPosition, out UnitOfWork newUoW)
+        {
+
+        }
+        #endregion
+
+        #region Helpers
+        private List<object> EvaluateArgs()
         {
             List<object> rv = new List<object>();
 
-            foreach (ICanEval each in this.ArgTokens)
+            foreach (ICanEval each in this.Args)
             {
                 var val = each.Evaluate();
                 rv.Add(val);
@@ -68,5 +73,6 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
             return rv;
         }
         #endregion
+
     }
 }

@@ -7,15 +7,17 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasSelfDirection;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasConstantValue
 {
     /// <summary>
-    /// a tokenizer that parses string constants
+    /// a tokenizer that parses constants
     /// </summary>
-    public interface IConstantTokenizerDecoration : IHasHandleConditionTokenizer
+    public interface IConstantTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
     {
-        string TokenValue { get; }
+        T[] TokenValue { get; }
     }
 
     /// <summary>
@@ -23,21 +25,21 @@ namespace Decoratid.Idioms.TokenParsing
     /// suffix decorated natural tokens.
     /// </summary>
     [Serializable]
-    public class ConstantTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IConstantTokenizerDecoration
+    public class ConstantTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IConstantTokenizerDecoration<T>
     {
         #region Ctor
-        public ConstantTokenizerDecoration(IForwardMovingTokenizer decorated, string tokenValue)
+        public ConstantTokenizerDecoration(IForwardMovingTokenizer<T> decorated, T[] tokenValue)
             : base(decorated.HasSelfDirection())
         {
-            Condition.Requires(tokenValue).IsNotNullOrEmpty();
+            Condition.Requires(tokenValue).IsNotNull();
             this.TokenValue = tokenValue;
         }
         #endregion
 
         #region Fluent Static
-        public static ConstantTokenizerDecoration New(IForwardMovingTokenizer decorated, string tokenValue)
+        public static ConstantTokenizerDecoration<T> New<T>(IForwardMovingTokenizer<T> decorated, T[] tokenValue)
         {
-            return new ConstantTokenizerDecoration(decorated, tokenValue);
+            return new ConstantTokenizerDecoration<T>(decorated, tokenValue);
         }
         #endregion
 
@@ -53,16 +55,16 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public string TokenValue { get; private set; }
-        public IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition
+        public T[] TokenValue { get; private set; }
+        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
         {
             get
             {
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
                 {
-                    var substring = x.Text.Substring(x.CurrentPosition);
+                    var substring = x.Source.GetSegment(x.CurrentPosition);
 
-                    if (!substring.StartsWith(this.TokenValue))
+                    if (!substring.StartsWithSegment(this.TokenValue))
                         return false;
 
                     return true;
@@ -71,13 +73,13 @@ namespace Decoratid.Idioms.TokenParsing
             }
         }
 
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken,
-            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken,
+            out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
             newPosition = currentPosition + this.TokenValue.Length;
 
             //returns a natural token
-            newToken = NaturalToken.New(this.TokenValue);
+            newToken = NaturalToken<T>.New(this.TokenValue);
 
             //we don't know what parser to use next
             newParser = null;
@@ -88,19 +90,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new ConstantTokenizerDecoration(thing, this.TokenValue);
+            return new ConstantTokenizerDecoration<T>(thing, this.TokenValue);
         }
         #endregion
     }
 
     public static class ConstantTokenizerDecorationExtensions
     {
-        public static ConstantTokenizerDecoration HasConstantValue(this IForwardMovingTokenizer decorated, string tokenValue)
+        public static ConstantTokenizerDecoration<T> HasConstantValue<T>(this IForwardMovingTokenizer<T> decorated, T[] tokenValue)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new ConstantTokenizerDecoration(decorated, tokenValue);
+            return new ConstantTokenizerDecoration<T>(decorated, tokenValue);
         }
     }
 }

@@ -5,48 +5,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasStartEnd;
 
 namespace Decoratid.Idioms.TokenParsing
 {
-    public static class  ForwardMovingTokenizer
+    public static class ForwardMovingTokenizer
     {
         /// <summary>
         /// tokenizes a string by a forward only parse.  each tokenizer MUST provide the next tokenizer
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="rawData"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
-        public static List<IToken> ForwardMovingTokenize(this string text, object state, IForwardMovingTokenizer parser)
+        public static List<IToken<T>> ForwardMovingTokenize<T>(this T[] rawData, object state, IForwardMovingTokenizer<T> parser)
         {
-            List<IToken> rv = new List<IToken>();
-            if (string.IsNullOrEmpty(text))
+            List<IToken<T>> rv = new List<IToken<T>>();
+
+            if (rawData == null)
                 return rv;
             if (parser == null)
                 return rv;
 
             int pos = 0;
-            int maxPos = text.Length - 1;
-            IToken token = null;
-            IForwardMovingTokenizer currentParser = parser;
+            int maxPos = rawData.Length - 1;
+            IToken<T> token = null;
+            IForwardMovingTokenizer<T> currentParser = parser;
+            IForwardMovingTokenizer<T> lastParser = null;
             bool goodParse = true;
 
-            int counter= 0;
+            int counter = 0;
 
             while (goodParse && currentParser != null && pos > -1 && pos <= maxPos)
             {
+                if (currentParser != null)
+                    lastParser = currentParser;
+
                 counter++;
 
                 var priorToken = token;
                 var startPos = pos;
 
-                goodParse = currentParser.Parse(text, pos, state, token, out pos, out token, out currentParser);
+                goodParse = currentParser.Parse(rawData, pos, state, token, out pos, out token, out currentParser);
                 if (goodParse)
                 {
                     if (token != null)
                     {
                         token.PriorToken = priorToken;
                         //decorate token with positional info
-                        token = token.HasStartEndPositions(startPos, pos);
+                        token = token.HasStartEnd(startPos, pos);
 
                         rv.Add(token);
                     }
@@ -55,8 +61,8 @@ namespace Decoratid.Idioms.TokenParsing
 
             //if there's been a problem, kack 
             if (!goodParse)
-                throw new LexingException(string.Format("tokenizing failed at pos {0} with tokenizer {1}", pos, currentParser.GetType()));
-            
+                throw new LexingException(string.Format("tokenizing failed at pos {0} with tokenizer {1}", pos, lastParser.GetType()));
+
             return rv;
         }
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine
+namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
     [Serializable]
     public class CommandLineCompilationException : ApplicationException

@@ -10,24 +10,24 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasSuccessor
 {
     /// <summary>
     /// tokenizer requires the stated prior tokenizer
     /// </summary>
-    public interface IHasSuccessorTokenizer : IForwardMovingTokenizer
+    public interface IHasSuccessorTokenizer<T> : IForwardMovingTokenizer<T>
     {
-        IForwardMovingTokenizer NextTokenizer { get; }
+        IForwardMovingTokenizer<T> NextTokenizer { get; }
     }
 
     /// <summary>
     /// tokenizer requires the stated prior tokenizer
     /// </summary>
     [Serializable]
-    public class HasSuccessorTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IHasSuccessorTokenizer
+    public class HasSuccessorTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasSuccessorTokenizer<T>
     {
         #region Ctor
-        public HasSuccessorTokenizerDecoration(IForwardMovingTokenizer decorated, IForwardMovingTokenizer nextTokenizer)
+        public HasSuccessorTokenizerDecoration(IForwardMovingTokenizer<T> decorated, IForwardMovingTokenizer<T> nextTokenizer)
             : base(decorated)
         {
             Condition.Requires(nextTokenizer).IsNotNull();
@@ -36,9 +36,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasSuccessorTokenizerDecoration New(IForwardMovingTokenizer decorated, IForwardMovingTokenizer nextTokenizer)
+        public static HasSuccessorTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IForwardMovingTokenizer<T> nextTokenizer)
         {
-            return new HasSuccessorTokenizerDecoration(decorated, nextTokenizer);
+            return new HasSuccessorTokenizerDecoration<T>(decorated, nextTokenizer);
         }
         #endregion
 
@@ -54,11 +54,11 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public IForwardMovingTokenizer NextTokenizer { get; private set; }
+        public IForwardMovingTokenizer<T> NextTokenizer { get; private set; }
 
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            var rv = base.Parse(text, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
 
             newParser = this.NextTokenizer;
             return rv;
@@ -66,19 +66,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new HasSuccessorTokenizerDecoration(thing, this.NextTokenizer);
+            return new HasSuccessorTokenizerDecoration<T>(thing, this.NextTokenizer);
         }
         #endregion
     }
 
     public static class HasSuccessorTokenizerDecorationExtensions
     {
-        public static HasSuccessorTokenizerDecoration TransitionsTo(this IForwardMovingTokenizer decorated, IForwardMovingTokenizer tokenizer)
+        public static HasSuccessorTokenizerDecoration<T> HasSuccessor<T>(this IForwardMovingTokenizer<T> decorated, IForwardMovingTokenizer<T> tokenizer)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasSuccessorTokenizerDecoration(decorated, tokenizer);
+            return new HasSuccessorTokenizerDecoration<T>(decorated, tokenizer);
         }
     }
 }

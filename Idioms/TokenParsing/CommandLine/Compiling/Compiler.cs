@@ -5,8 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
+using Decoratid.Idioms.TokenParsing.CommandLine.Evaluating;
+using Decoratid.Core.Logical;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine
+namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
     public class Compiler
     {
@@ -30,25 +33,57 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         #endregion
 
         #region Methods
-        public UnitOfWork Compile(List<IToken> tokens)
+        private UnitOfWork 
+        public ILogic Compile(List<IStringToken> tokens)
         {
             UnitOfWork rv = UnitOfWork.New();
 
-            UnitOfWork uow = rv;
+
             var operandTokenizers = new List<string>(){
                 CommandLineLexer.STORE,
                 CommandLineLexer.NESS,
                 CommandLineLexer.OP,
-                CommandLineLexer.ARG};
+                CommandLineLexer.ARG,
+                CommandLineLexer.THING};
 
             //@store.search(#ness.IsThing("x","y"))
 
-            foreach (IToken each in tokens)
+            //iterate once only thru the tokens to do a compile
+            //-thus all preprocessing steps need to be done at each iteration (Eg. evaluation)
+            //we can decouple "Evaluation", and should prob think about that some more
+
+            UnitOfWork uow = rv;
+
+            for (int i = 0; i < tokens.Count; i++)
             {
+                IStringToken each = tokens[i];
+
                 //scrub
-                IToken token = this.TokenScrubber.TouchToken(each);
+                IStringToken token = this.TokenScrubber.TouchToken(each);
+
+                /*
+                    Iterating thru the tokens:
+                 * 
+                 *      Is the CurrentToken an operand?
+                 *          -yes
+                 *              -do we have 
+                 * 
+                 * 
+                 *          -no
+                 *          
+                 * 
+                 
+                    
+                */ 
+
+                if (token.IsOperandToken())
+                {
+
+                }
 
                 string tokenizerId = token.GetTokenizerId();
+
+
 
                 //if the token is an Operand (eg. store, op, ness or arg)
                 //then the current uow must have an empty OperandToken

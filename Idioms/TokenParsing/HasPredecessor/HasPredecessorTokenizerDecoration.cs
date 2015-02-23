@@ -10,13 +10,17 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
+using Decoratid.Idioms.TokenParsing.HasId;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasPredecessor
 {
     /// <summary>
     /// tokenizer requires the stated prior tokenizer
     /// </summary>
-    public interface IHasPredecessorTokenizer : IHasHandleConditionTokenizer
+    public interface IHasPredecessorTokenizer<T> : IHasHandleConditionTokenizer<T>
     {
         string[] PriorTokenizerIds { get; }
     }
@@ -25,10 +29,10 @@ namespace Decoratid.Idioms.TokenParsing
     /// tokenizer requires the stated prior tokenizer
     /// </summary>
     [Serializable]
-    public class HasPredecessorTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IHasPredecessorTokenizer
+    public class HasPredecessorTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasPredecessorTokenizer<T>
     {
         #region Ctor
-        public HasPredecessorTokenizerDecoration(IForwardMovingTokenizer decorated, params string[] priorTokenizerIds)
+        public HasPredecessorTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params string[] priorTokenizerIds)
             : base(decorated.HasSelfDirection())
         {
             this.PriorTokenizerIds = priorTokenizerIds;
@@ -36,9 +40,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasPredecessorTokenizerDecoration New(IForwardMovingTokenizer decorated, params string[] priorTokenizerIds)
+        public static HasPredecessorTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, params string[] priorTokenizerIds)
         {
-            return new HasPredecessorTokenizerDecoration(decorated, priorTokenizerIds);
+            return new HasPredecessorTokenizerDecoration<T>(decorated, priorTokenizerIds);
         }
         #endregion
 
@@ -55,13 +59,13 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region Implementation
         public string[] PriorTokenizerIds { get; private set; }
-        public IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition
+        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
         {
             get
             {
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
                 {
-                    var substring = x.Text.Substring(x.CurrentPosition);
+                    var substring = x.Source.GetSegment(x.CurrentPosition);
 
                     //can't check without predecessor
                     //unless a null tokenizer id exists, in which case return true
@@ -86,10 +90,10 @@ namespace Decoratid.Idioms.TokenParsing
 
                     var isa = IsA.New(x.CurrentToken as IFaceted);
                     //not decorated with tokenizerId, which is what we're comparing against
-                    if (!isa.Is<IHasTokenizerId>())
+                    if (!isa.Is<IHasTokenizerId<T>>())
                         return false;
 
-                    var tokenizer = isa.As<IHasTokenizerId>();
+                    var tokenizer = isa.As<IHasTokenizerId<T>>();
 
                     var rv = false;
                     foreach (var each in this.PriorTokenizerIds)
@@ -111,7 +115,7 @@ namespace Decoratid.Idioms.TokenParsing
             }
         }
 
-        private string GetPriorTokenizerId(string text, int currentPosition, object state, IToken currentToken)
+        private string GetPriorTokenizerId(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
             string rv = null;
 
@@ -125,10 +129,10 @@ namespace Decoratid.Idioms.TokenParsing
 
             var isa = IsA.New(currentToken as IFaceted);
             //not decorated with tokenizerId, which is what we're comparing against
-            if (!isa.Is<IHasTokenizerId>())
+            if (!isa.Is<IHasTokenizerId<T>>())
                 return rv;
 
-            var tokenizer = isa.As<IHasTokenizerId>();
+            var tokenizer = isa.As<IHasTokenizerId<T>>();
 
             foreach (var each in this.PriorTokenizerIds)
             {
@@ -142,14 +146,14 @@ namespace Decoratid.Idioms.TokenParsing
 
             return rv;
         }
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            IToken newTokenOUT = null;
+            IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(text, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with prior tokenizer id
-            var priorTokenizerId = this.GetPriorTokenizerId(text, currentPosition, state, currentToken);
+            var priorTokenizerId = this.GetPriorTokenizerId(source, currentPosition, state, currentToken);
             newTokenOUT = newTokenOUT.HasPriorTokenizerId(priorTokenizerId);
 
             newToken = newTokenOUT;
@@ -158,31 +162,31 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new HasPredecessorTokenizerDecoration(thing, this.PriorTokenizerIds);
+            return new HasPredecessorTokenizerDecoration<T>(thing, this.PriorTokenizerIds);
         }
         #endregion
     }
 
     public static class HasPriorTokenizerIdTokenizerDecorationExtensions
     {
-        public static HasPredecessorTokenizerDecoration HasPredecessorIds(this IForwardMovingTokenizer decorated,
+        public static HasPredecessorTokenizerDecoration<T> HasPredecessorTokenizerIds<T>(this IForwardMovingTokenizer<T> decorated,
             params string[] priorTokenizerIds)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasPredecessorTokenizerDecoration(decorated, priorTokenizerIds);
+            return new HasPredecessorTokenizerDecoration<T>(decorated, priorTokenizerIds);
         }
 
-        public static HasPredecessorTokenizerDecoration HasPredecessor(this IForwardMovingTokenizer decorated,
-    params IHasStringIdTokenizer[] priorTokenizers)
+        public static HasPredecessorTokenizerDecoration<T> HasPredecessorTokenizers<T>(this IForwardMovingTokenizer<T> decorated,
+    params IHasStringIdTokenizer<T>[] priorTokenizers)
         {
             Condition.Requires(decorated).IsNotNull();
             List<string> ids = new List<string>();
             foreach (var each in priorTokenizers)
                 ids.Add(each.Id);
 
-            var rv = new HasPredecessorTokenizerDecoration(decorated, ids.ToArray());
+            var rv = new HasPredecessorTokenizerDecoration<T>(decorated, ids.ToArray());
 
             //wire up the 
 

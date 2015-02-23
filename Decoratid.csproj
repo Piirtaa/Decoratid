@@ -540,34 +540,32 @@
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\CommandLineLexer.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiler.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\HasValueTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\CommandLineCompilationException.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\Tests.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\TokenEvaluator.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\TokenExtensions.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\UnitOfWork.cs" />
-    <Compile Include="Idioms\TokenParsing\ConstantTokenizerDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasPriorTokenizerIdTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasPredecessorTokenizerDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasSuccessorTokenizerDecoration.cs">
+    <Compile Include="Idioms\TokenParsing\CommandLine\Lexing\CommandLineLexer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Idioms\TokenParsing\HasSuffixTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasPrefixTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasTokenizerIdTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasRoutingTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\CommandLine\Lexing\Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\HasConstantValue\ConstantTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasPredecessor\HasPriorTokenizerIdTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasPredecessor\HasPredecessorTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasSuccessor\HasSuccessorTokenizerDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\HasSuffix\HasSuffixTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasPrefix\HasPrefixTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasTokenizerId\HasTokenizerIdTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasRouting\HasRoutingTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\NaturallyNotImplementedForwardMovingTokenizer.cs" />
-    <Compile Include="Idioms\TokenParsing\RoutingTokenizerDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasStringIdTokenizerDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\SuffixDelimitedTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasRouting\RoutingTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasId\HasStringIdTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasSuffix\SuffixDelimitedTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\LexingException.cs" />
-    <Compile Include="Idioms\TokenParsing\PrefixedTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasPrefix\PrefixedTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\ForwardMovingTokenizerDecorationBase.cs" />
     <Compile Include="Idioms\TokenParsing\Interfaces.cs" />
-    <Compile Include="Idioms\TokenParsing\SelfDirectedTokenizerDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\StartEndPositionTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasSelfDirection\SelfDirectedTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasStartEnd\StartEndPositionTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\TokenDecorationBase.cs" />
     <Compile Include="Idioms\TokenParsing\NaturalToken.cs" />
     <Compile Include="Idioms\TokenParsing\ForwardMovingTokenizer.cs" />

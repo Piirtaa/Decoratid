@@ -11,33 +11,36 @@ using System.Threading.Tasks;
 using Decoratid.Core.Identifying;
 using Decoratid.Core;
 using Decoratid.Extensions;
+using Decoratid.Core.Conditional.Of;
+using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasId;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasRouting
 {
 
     //define behaviour of the logic for each bit
-    using TokenizerItem = IsA<IHasId<string>, IForwardMovingTokenizer>;
-    using Decoratid.Core.Conditional.Of;
+    using TokenizerItem = IsA<IHasId<string>>;
+
 
     /// <summary>
     /// this decoration delegates the actual tokenizing process to the appropriate tokenizer. Typically instances of this
     /// are used as the bootstrapping tokenizer
     /// </summary>
-    public interface IRoutingTokenizer : ISelfDirectedTokenizer
+    public interface IRoutingTokenizer<T> : ISelfDirectedTokenizer<T>
     {
         IStoreOf<TokenizerItem> Rules { get; }
-        TokenizerItem AddTokenizer(IHasStringIdTokenizer t);
-        TokenizerItem GetTokenizer(string text, int currentPosition, object state, IToken currentToken);
+        TokenizerItem AddTokenizer(IHasStringIdTokenizer<T> t);
+        TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken);
     }
 
     /// <summary>
     /// this decoration delegates the actual tokenizing process to the appropriate tokenizer
     /// </summary>
     [Serializable]
-    public class RoutingTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IRoutingTokenizer
+    public class RoutingTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IRoutingTokenizer<T>
     {
         #region Ctor
-        public RoutingTokenizerDecoration(IForwardMovingTokenizer decorated)
+        public RoutingTokenizerDecoration(IForwardMovingTokenizer<T> decorated)
             : base(decorated)
         {
             this.Rules = NaturalInMemoryStore.New().IsOf<TokenizerItem>();
@@ -45,9 +48,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static RoutingTokenizerDecoration New(IForwardMovingTokenizer decorated)
+        public static RoutingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated)
         {
-            return new RoutingTokenizerDecoration(decorated);
+            return new RoutingTokenizerDecoration<T>(decorated);
         }
         #endregion
 
@@ -64,7 +67,7 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region Implementation
         public IStoreOf<TokenizerItem> Rules { get; private set; }
-        public TokenizerItem AddTokenizer(IHasStringIdTokenizer t)
+        public TokenizerItem AddTokenizer(IHasStringIdTokenizer<T> t)
         {
             //tell each tokenizer to use the router as the backup router
             var newT = t.HasRouting(this, false);
@@ -75,31 +78,35 @@ namespace Decoratid.Idioms.TokenParsing
             this.Rules.SaveItem(item);
             return item;
         }
-        public TokenizerItem GetTokenizer(string text, int currentPosition, object state, IToken currentToken)
+        public TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
+            //if we're passed the end of the source, return null
+            if (source.Length <= currentPosition)
+                return null;
+
             List<TokenizerItem> tokenizers = Rules.GetAll();
 
             //iterate thru all the tokenizers and find ones that know if they can handle stuff
             foreach (var each in tokenizers)
             {
-                var sd = each.GetFace<ISelfDirectedTokenizer>();
+                var sd = each.GetFace<ISelfDirectedTokenizer<T>>();
 
                 if (sd != null)
-                    if (sd.CanHandle(text, currentPosition, state, currentToken))
+                    if (sd.CanHandle(source, currentPosition, state, currentToken))
                         return each;
             }
             return null;
         }
 
-        public bool CanHandle(string text, int currentPosition, object state, IToken currentToken)
+        public bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
-            var tokenizer = GetTokenizer(text, currentPosition, state, currentToken);
+            var tokenizer = GetTokenizer(source, currentPosition, state, currentToken);
             return tokenizer != null;
         }
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
             //get the new tokenizer
-            var tokenizer = GetTokenizer(text, currentPosition, state, currentToken);
+            var tokenizer = GetTokenizer(source, currentPosition, state, currentToken);
 
             //skip out with a false
             if (tokenizer == null)
@@ -109,16 +116,16 @@ namespace Decoratid.Idioms.TokenParsing
                 newPosition = -1;
                 return false;
             }
-            IForwardMovingTokenizer alg = tokenizer.As<IForwardMovingTokenizer>();
-            var rv = alg.Parse(text, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
+            var rv = alg.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
             return rv;
         }
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            var rv = new RoutingTokenizerDecoration(thing);
+            var rv = new RoutingTokenizerDecoration<T>(thing);
 
             //move the rules over
             var rules = this.Rules.GetAll();
@@ -134,10 +141,10 @@ namespace Decoratid.Idioms.TokenParsing
 
     public static class RoutingTokenizerDecorationExtensions
     {
-        public static RoutingTokenizerDecoration MakeRouter(this IForwardMovingTokenizer decorated)
+        public static RoutingTokenizerDecoration<T> MakeRouter<T>(this IForwardMovingTokenizer<T> decorated)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new RoutingTokenizerDecoration(decorated);
+            return new RoutingTokenizerDecoration<T>(decorated);
         }
     }
 }

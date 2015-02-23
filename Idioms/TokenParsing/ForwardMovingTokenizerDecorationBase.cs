@@ -5,17 +5,17 @@ using System.Runtime.Serialization;
 namespace Decoratid.Idioms.TokenParsing
 {
 
-    public interface ITokenizerDecoration : IForwardMovingTokenizer, IDecorationOf<IForwardMovingTokenizer> { }
+    public interface ITokenizerDecoration<T> : IForwardMovingTokenizer<T>, IDecorationOf<IForwardMovingTokenizer<T>> { }
 
     /// <summary>
     /// base class implementation of a tokenizer decoration
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public abstract class ForwardMovingTokenizerDecorationBase : DecorationOfBase<IForwardMovingTokenizer>, ITokenizerDecoration
+    public abstract class ForwardMovingTokenizerDecorationBase<T> : DecorationOfBase<IForwardMovingTokenizer<T>>, ITokenizerDecoration<T>
     {
         #region Ctor
-        public ForwardMovingTokenizerDecorationBase(IForwardMovingTokenizer decorated)
+        public ForwardMovingTokenizerDecorationBase(IForwardMovingTokenizer<T> decorated)
             : base(decorated)
         {
         }
@@ -33,19 +33,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Properties
-        public virtual bool Parse(string text, int currentPosition, object state, IToken currentToken,
-    out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public virtual bool Parse(T[] rawData, int currentPosition, object state, IToken<T> currentToken,
+    out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            return this.Decorated.Parse(text, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            return this.Decorated.Parse(rawData, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
         }
-        public override IForwardMovingTokenizer This
+        public override IForwardMovingTokenizer<T> This
         {
             get { return this; }
         }
         #endregion
 
         #region IDecoration
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
             throw new NotImplementedException();
         }

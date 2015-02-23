@@ -8,25 +8,26 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasSelfDirection;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasPrefix
 {
     /// <summary>
     /// a tokenizer that requires the to-be-parsed token has a valid prefix
     /// </summary>
-    public interface IPrefixedTokenizer : IHasHandleConditionTokenizer
+    public interface IPrefixedTokenizer<T> : IHasHandleConditionTokenizer<T>
     {
-        string[] Prefixes { get; }
+        T[][] Prefixes { get; }
     }
 
     /// <summary>
     /// a tokenizer that requires the to-be-parsed token has a valid prefix.  
     /// </summary>
     [Serializable]
-    public class PrefixedTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IPrefixedTokenizer
+    public class PrefixedTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IPrefixedTokenizer<T>
     {
         #region Ctor
-        public PrefixedTokenizerDecoration(IForwardMovingTokenizer decorated, params string[] prefixes)
+        public PrefixedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
             : base(decorated.HasSelfDirection())
         {
             Condition.Requires(prefixes).IsNotEmpty();
@@ -35,9 +36,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static PrefixedTokenizerDecoration New(IForwardMovingTokenizer decorated, params string[] prefixes)
+        public static PrefixedTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
         {
-            return new PrefixedTokenizerDecoration(decorated, prefixes);
+            return new PrefixedTokenizerDecoration<T>(decorated, prefixes);
         }
         #endregion
 
@@ -53,20 +54,20 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition
+        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
         {
             get
             {
                 //define the prefix condition
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
                 {
-                    var substring = x.Text.Substring(x.CurrentPosition);
+                    var substring = x.Source.GetSegment(x.CurrentPosition);
 
                     bool rv = false;
 
-                    foreach (string each in this.Prefixes)
+                    foreach (T[] each in this.Prefixes)
                     {
-                        if (substring.StartsWith(each))
+                        if (substring.StartsWithSegment(each))
                         {
                             rv = true;
                             break;
@@ -81,26 +82,26 @@ namespace Decoratid.Idioms.TokenParsing
                 return cond;
             }
         }
-        public string[] Prefixes { get; private set; }
-        private string GetPrefix(string text, int currentPosition)
+        public T[][] Prefixes { get; private set; }
+        private T[] GetPrefix(T[] source, int currentPosition)
         {
-            var substring = text.Substring(currentPosition);
+            var substring = source.GetSegment(currentPosition);
 
-            foreach (string each in this.Prefixes)
-                if (substring.StartsWith(each))
+            foreach (T[] each in this.Prefixes)
+                if (substring.StartsWithSegment(each))
                     return each;
 
-            return string.Empty;
+            return null;
         }
 
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            IToken newTokenOUT = null;
+            IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(text, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with prefix
-            var prefix = this.GetPrefix(text, currentPosition);
+            var prefix = this.GetPrefix(source, currentPosition);
             newTokenOUT = newTokenOUT.HasPrefix(prefix);
 
             newToken = newTokenOUT;
@@ -109,19 +110,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new PrefixedTokenizerDecoration(thing, this.Prefixes);
+            return new PrefixedTokenizerDecoration<T>(thing, this.Prefixes);
         }
         #endregion
     }
 
     public static class PrefixedTokenizerDecorationExtensions
     {
-        public static PrefixedTokenizerDecoration HasPrefix(this IForwardMovingTokenizer decorated, params string[] prefixes)
+        public static PrefixedTokenizerDecoration<T> HasPrefix<T>(this IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new PrefixedTokenizerDecoration(decorated, prefixes);
+            return new PrefixedTokenizerDecoration<T>(decorated, prefixes);
         }
     }
 }

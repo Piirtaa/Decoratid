@@ -29,94 +29,131 @@ namespace Decoratid.Idioms.TokenParsing
 
 
     /// <summary>
-    /// some thing that is parsed out of a string, that has a string value
+    /// generic version of a token.  the common string version would be IToken of char
     /// </summary>
-    public interface IToken
+    /// <typeparam name="T"></typeparam>
+    public interface IToken<T>
     {
-        IToken PriorToken { get; set; }
-        string TokenString { get; }
+        IToken<T> PriorToken { get; set; }
+        T[] TokenData { get; }
     }
 
-    public interface IForwardMovingTokenizer
+    public interface IForwardMovingTokenizer<T>
     {
-        /// <summary>
-        /// moves forward and parses first token it can.  returns false if can't continue
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="currentPosition"></param>
-        /// <param name="currentToken"></param>
-        /// <param name="newPosition"></param>
-        /// <param name="newToken">decorate result token to extend </param>
-        /// <param name="newParser"></param>
-        /// <returns></returns>
-        bool Parse(string text, int currentPosition, object state, IToken currentToken,
-            out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser);
+        bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken,
+            out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser);
     }
 
     /// <summary>
     /// encapsulates the state of a tokenizing operation
     /// </summary>
-    public class ForwardMovingTokenizingOperation
+    public class ForwardMovingTokenizingOperation<T>
     {
-        public string Text { get; set; }
+        public T[] Source { get; set; }
         public int CurrentPosition { get; set; }
         public object State { get; set; }
-        public IToken CurrentToken { get; set; }
+        public IToken<T> CurrentToken { get; set; }
 
-        public static ForwardMovingTokenizingOperation New(string text, int currentPosition, object state, IToken currentToken)
+        public static ForwardMovingTokenizingOperation<T> New(T[] source, int currentPosition, object state,
+            IToken<T> currentToken)
         {
-            var rv = new ForwardMovingTokenizingOperation();
-            rv.Text = text;
+            var rv = new ForwardMovingTokenizingOperation<T>();
+            rv.Source = source;
             rv.CurrentPosition = currentPosition;
             rv.State = state;
             rv.CurrentToken = currentToken;
-
             return rv;
         }
     }
 
-    /// <summary>
-    /// a tokenizer that has a condition that needs to be passed for the tokenizer to work
-    /// </summary>
-    public interface IHasHandleConditionTokenizer : IForwardMovingTokenizer
-    {
-        IConditionOf<ForwardMovingTokenizingOperation> CanTokenizeCondition { get; }
-    }
+
+    
+    #region String Implementations
+
+    ///// <summary>
+    ///// some thing that is parsed out of a string, that has a string value
+    ///// </summary>
+    //public interface IStringToken
+    //{
+    //    IStringToken PriorToken { get; set; }
+    //    string TokenString { get; }
+    //}
+
+    //public interface IForwardMovingTokenizer<T>
+    //{
+    //    /// <summary>
+    //    /// moves forward and parses first token it can.  returns false if can't continue
+    //    /// </summary>
+    //    /// <param name="text"></param>
+    //    /// <param name="currentPosition"></param>
+    //    /// <param name="currentToken"></param>
+    //    /// <param name="newPosition"></param>
+    //    /// <param name="newToken">decorate result token to extend </param>
+    //    /// <param name="newParser"></param>
+    //    /// <returns></returns>
+    //    bool Parse(string text, int currentPosition, object state, IStringToken currentToken,
+    //        out int newPosition, out IStringToken newToken, out IForwardMovingTokenizer<T> newParser);
+    //}
+
+    ///// <summary>
+    ///// encapsulates the state of a tokenizing operation
+    ///// </summary>
+    //public class ForwardMovingTokenizingOperation<T>
+    //{
+    //    public string Text { get; set; }
+    //    public int CurrentPosition { get; set; }
+    //    public object State { get; set; }
+    //    public IStringToken CurrentToken { get; set; }
+
+    //    public static ForwardMovingTokenizingOperation<T> New(string text, int currentPosition, object state, IStringToken currentToken)
+    //    {
+    //        var rv = new ForwardMovingTokenizingOperation<T>();
+    //        rv.Text = text;
+    //        rv.CurrentPosition = currentPosition;
+    //        rv.State = state;
+    //        rv.CurrentToken = currentToken;
+
+    //        return rv;
+    //    }
+    //}
+
+
 
     public static class TokenExtensions
     {
-        public static string GetTokenizerId(this IToken token)
-        {
-            Condition.Requires(token).IsNotNull();
+        
+        //public static string GetTokenizerId(this IStringToken token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
 
-            var tokenizer = token.GetFace<IHasTokenizerId>();
-            return tokenizer.With(x => x.TokenizerId);
-        }
-        public static IStartEndPositionalToken GetStartEnd(this IToken token)
-        {
-            Condition.Requires(token).IsNotNull();
-            var tokenizer = token.GetFace<IStartEndPositionalToken>();
-            return tokenizer;
-        }
-        public static string GetPrefix(this IToken token)
-        {
-            Condition.Requires(token).IsNotNull();
-            var tokenizer = token.GetFace<IHasPrefixToken>();
-            return tokenizer.With(x => x.Prefix);
-        }
-        public static string GetSuffix(this IToken token)
-        {
-            Condition.Requires(token).IsNotNull();
-            var tokenizer = token.GetFace<IHasSuffixToken>();
-            return tokenizer.With(x => x.Suffix);
-        }
-        public static string GetPriorTokenizerId(this IToken token)
-        {
-            Condition.Requires(token).IsNotNull();
-            var tokenizer = token.GetFace<IHasPriorTokenizerIdToken>();
-            return tokenizer.With(x => x.PriorTokenizerId);
-        }
+        //    var tokenizer = token.GetFace<IHasTokenizerId>();
+        //    return tokenizer.With(x => x.TokenizerId);
+        //}
+        //public static IStartEndPositionalToken GetStartEnd(this IStringToken token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
+        //    var tokenizer = token.GetFace<IStartEndPositionalToken>();
+        //    return tokenizer;
+        //}
+        //public static string GetPrefix(this IStringToken token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
+        //    var tokenizer = token.GetFace<IHasPrefixToken>();
+        //    return tokenizer.With(x => x.Prefix);
+        //}
+        //public static string GetSuffix(this IStringToken token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
+        //    var tokenizer = token.GetFace<IHasSuffixToken>();
+        //    return tokenizer.With(x => x.Suffix);
+        //}
+        //public static string GetPriorTokenizerId(this IStringToken token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
+        //    var tokenizer = token.GetFace<IHasPriorTokenizerIdToken>();
+        //    return tokenizer.With(x => x.PriorTokenizerId);
+        //}
 
     }
-
+    #endregion
 }

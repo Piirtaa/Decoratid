@@ -1,6 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using Decoratid.Core;
 using Decoratid.Core.Storing;
+using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
 using Decoratid.Storidioms.StoreOf;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine
+namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
 {
-
+    /// <summary>
+    /// decorates tokens with evaluated data
+    /// </summary>
     public class TokenEvaluator
     {
         #region Ctor
@@ -39,11 +42,11 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         #endregion
 
         #region Methods
-        public IToken TouchToken(IToken token)
+        public IStringToken TouchToken(IStringToken token)
         {
             Condition.Requires(token).IsNotNull();
 
-            IToken rv = token;
+            IStringToken rv = token;
             if (!(token is IFaceted))
                 return rv;
 

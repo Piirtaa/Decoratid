@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.TokenParsing
 {
-    public class NaturallyNotImplementedForwardMovingTokenizer : IForwardMovingTokenizer
+    public class NaturallyNotImplementedForwardMovingTokenizer<T> : IForwardMovingTokenizer<T>
     {
         #region Ctor
         public NaturallyNotImplementedForwardMovingTokenizer() { }
         #endregion
 
         #region Fluent Static
-        public static NaturallyNotImplementedForwardMovingTokenizer New() { return new NaturallyNotImplementedForwardMovingTokenizer(); }
+        public static NaturallyNotImplementedForwardMovingTokenizer<T> New() { return new NaturallyNotImplementedForwardMovingTokenizer<T>(); }
         #endregion
 
         #region IForwardMovingTokenizer
-        public bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public bool Parse(T[] dataToTokenize, int currentPosition, object state, IToken<T> currentToken,
+            out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
             throw new NotImplementedException();
         }

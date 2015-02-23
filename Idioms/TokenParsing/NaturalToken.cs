@@ -9,33 +9,33 @@ namespace Decoratid.Idioms.TokenParsing
     /// <summary>
     /// most basic token.  just keeps a string value
     /// </summary>
-    public class NaturalToken : IToken
+    public class NaturalToken<T> : IToken<T>
     {
         #region Declarations
-        protected string _tokenString;
+        protected T[] _tokenData;
         #endregion
 
         #region Ctor
-        public NaturalToken(string token)
+        public NaturalToken(T[] tokenData)
         {
-            this._tokenString = token;
+            this._tokenData = tokenData;
         }
         #endregion
 
         #region Fluent Static
-        public static NaturalToken New(string token)
+        public static NaturalToken<T> New(T[] tokenData)
         {
-            return new NaturalToken(token);
+            return new NaturalToken<T>(tokenData);
         }
         #endregion
 
         #region IToken
-        public IToken PriorToken { get; set; }
-        public string TokenString
+        public IToken<T> PriorToken { get; set; }
+        public T[] TokenData
         {
             get
             {
-                return this._tokenString;
+                return this._tokenData;
             }
         }
         #endregion

@@ -7,13 +7,14 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasId
 {
     /// <summary>
     /// decorates with a string id
     /// </summary>
-    public interface IHasStringIdTokenizer : IForwardMovingTokenizer, IHasId<String>
+    public interface IHasStringIdTokenizer<T> : IForwardMovingTokenizer<T>, IHasId<String>
     {
 
     }
@@ -22,10 +23,10 @@ namespace Decoratid.Idioms.TokenParsing
     /// a decorates with a string id
     /// </summary>
     [Serializable]
-    public class HasStringIdTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IHasStringIdTokenizer
+    public class HasStringIdTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasStringIdTokenizer<T>
     {
         #region Ctor
-        public HasStringIdTokenizerDecoration(IForwardMovingTokenizer decorated, string id)
+        public HasStringIdTokenizerDecoration(IForwardMovingTokenizer<T> decorated, string id)
             : base(decorated)
         {
             Condition.Requires(id).IsNotNullOrEmpty();
@@ -34,9 +35,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasStringIdTokenizerDecoration New(IForwardMovingTokenizer decorated, string id)
+        public static HasStringIdTokenizerDecoration<T> New<T>(IForwardMovingTokenizer<T> decorated, string id)
         {
-            return new HasStringIdTokenizerDecoration(decorated, id);
+            return new HasStringIdTokenizerDecoration<T>(decorated, id);
         }
         #endregion
 
@@ -57,11 +58,11 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            IToken newTokenOUT = null;
+            IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(text, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with tokenizer id
             newTokenOUT = newTokenOUT.HasTokenizerId(this.Id);
@@ -72,19 +73,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new HasStringIdTokenizerDecoration(thing, this.Id);
+            return new HasStringIdTokenizerDecoration<T>(thing, this.Id);
         }
         #endregion
     }
 
     public static class HasStringIdTokenizerDecorationExtensions
     {
-        public static HasStringIdTokenizerDecoration HasId(this IForwardMovingTokenizer decorated, string id)
+        public static HasStringIdTokenizerDecoration<T> HasId<T>(this IForwardMovingTokenizer<T> decorated, string id)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasStringIdTokenizerDecoration(decorated, id);
+            return new HasStringIdTokenizerDecoration<T>(decorated, id);
         }
     }
 }

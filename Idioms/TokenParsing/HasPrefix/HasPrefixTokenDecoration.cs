@@ -9,21 +9,21 @@ using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasPrefix
 {
-    public interface IHasPrefixToken : IToken
+    public interface IHasPrefixToken<T> : IToken<T>
     {
-        string Prefix { get; }
+        T[] Prefix { get; }
     }
 
     /// <summary>
     /// decorates with prefix
     /// </summary>
     [Serializable]
-    public class HasPrefixTokenDecoration : TokenDecorationBase, IHasPrefixToken
+    public class HasPrefixTokenDecoration<T> : TokenDecorationBase<T>, IHasPrefixToken<T>
     {
         #region Ctor
-        public HasPrefixTokenDecoration(IToken decorated, string prefix)
+        public HasPrefixTokenDecoration(IToken<T> decorated, T[] prefix)
             : base(decorated)
         {
             this.Prefix = prefix;
@@ -31,9 +31,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasPrefixTokenDecoration New(IToken decorated, string prefix)
+        public static HasPrefixTokenDecoration<T> New(IToken<T> decorated, T[] prefix)
         {
-            return new HasPrefixTokenDecoration(decorated, prefix);
+            return new HasPrefixTokenDecoration<T>(decorated, prefix);
         }
         #endregion
 
@@ -49,33 +49,33 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public string Prefix { get; private set; }
-        public override string TokenString
+        public T[] Prefix { get; private set; }
+        public override T[] TokenData
         {
             get
             {
                 //remove the prefix
-                var rv = base.TokenString;
-                rv = rv.Remove(0, this.Prefix.Length);
+                var rv = base.TokenData;
+                rv = rv.GetSegment(this.Prefix.Length);
                 return  rv;
             }
         }
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
+        public override IDecorationOf<IToken<T>> ApplyThisDecorationTo(IToken<T> thing)
         {
-            return new HasPrefixTokenDecoration(thing, this.Prefix);
+            return new HasPrefixTokenDecoration<T>(thing, this.Prefix);
         }
         #endregion
     }
 
     public static class HasPrefixTokenDecorationExtensions
     {
-        public static HasPrefixTokenDecoration HasPrefix(this IToken thing, string prefix)
+        public static HasPrefixTokenDecoration<T> HasPrefix<T>(this IToken<T> thing, T[] prefix)
         {
             Condition.Requires(thing).IsNotNull();
-            return new HasPrefixTokenDecoration(thing, prefix);
+            return new HasPrefixTokenDecoration<T>(thing, prefix);
         }
     }
 }

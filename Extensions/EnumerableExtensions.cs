@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,123 @@ namespace Decoratid.Extensions
     [DebuggerStepThrough]
     public static class EnumerableExtensions
     {
+        public static bool StartsWithSegment<T>(this T[] source, T[] prefix)
+        {
+            if (source == null)
+                return false;
+
+            if (prefix == null)
+                return false;
+
+            Condition.Requires(source).IsLongerOrEqual(prefix.Length);
+
+            for (int i = 0; i < prefix.Length; i++)
+                if (!source[i].Equals(prefix[i]))
+                    return false;
+
+            return true;
+        }
+        public static T[] GetSegment<T>(this T[] source, int startPos, int length = -1)
+        {
+            int actualLength = length;
+            if (length == -1)
+                actualLength = source.Length - startPos;
+
+            Condition.Requires(source).IsLongerOrEqual(startPos + actualLength);
+
+            List<T> list = new List<T>();
+            for (int i = startPos; i < (startPos + actualLength); i++)
+            {
+                list.Add(source[i]);
+            }
+
+            return list.ToArray();
+        }
+        /// <summary>
+        /// finds first position of segment in source 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="segment"></param>
+        /// <returns></returns>
+        public static int FindIndexOf<T>(this T[] source, T[] segment, int startPos = 0)
+        {
+            if (source == null)
+                return -1;
+
+            if (segment == null)
+                return -1;
+
+            int rv = -1;
+            int segLength = segment.Length;
+
+            for (int i = startPos; i < source.Length; i++)
+            {
+                T current = source[i];
+
+                if (!segment[0].Equals(current))
+                    continue;
+
+                bool isGood = true;
+                for (int j = 1; j < segLength; j++)
+                {
+                    if (!segment[j].Equals(source[i + j]))
+                    {
+                        isGood = false;
+                        break;
+                    }
+                }
+                if (isGood)
+                {
+                    rv = i;
+                    break;
+                }
+            }
+
+            return rv;
+        }
+
+        /// <summary>
+        /// finds the nearest segment
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="segments"></param>
+        /// <param name="startPos"></param>
+        /// <returns></returns>
+        public static int FindNearestIndexOf<T>(this T[] source, T[][] segments, out T[] segment, int startPos = 0)
+        {
+            int closestIdx = -1;
+            T[] match = null;
+
+            foreach (var each in segments)
+            {
+                //always search ahead of the current position
+                var tempIdx = source.FindIndexOf(each, startPos + 1);
+
+                //can't find the suffix, move along
+                if (tempIdx == -1)
+                    continue;
+
+                //set the closest index if it's undefined
+                if (closestIdx == -1)
+                {
+                    closestIdx = tempIdx;
+                    match = each;
+                    continue;
+                }
+                //update the closest index
+                if (tempIdx < closestIdx)
+                {
+                    closestIdx = tempIdx;
+                    match = each;
+                    continue;
+                }
+            }
+
+            segment = match;
+            return closestIdx;
+        }
         /// <summary>
         /// Returns the enumerable type (eg. IEnumerable of T would return T) fo the provided type
         /// </summary>
@@ -59,7 +177,7 @@ namespace Decoratid.Extensions
 
             source.WithEach(x =>
             {
-                if (filter == null || filter(x)) 
+                if (filter == null || filter(x))
                     returnValue.Add(x);
             });
 
@@ -128,7 +246,7 @@ namespace Decoratid.Extensions
                     {
                         break;
                     }
-                }  
+                }
                 action(item);
             }
         }
@@ -136,7 +254,7 @@ namespace Decoratid.Extensions
         public static List<T> AddToList<T>(this T obj)
         {
             List<T> rv = new List<T>();
-            if(obj != null)
+            if (obj != null)
                 rv.Add(obj);
             return rv;
         }

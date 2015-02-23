@@ -9,14 +9,14 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasRouting
 {
     /// <summary>
     /// gives a tokenizer routing logic
     /// </summary>
-    public interface IHasRoutingTokenizer : IForwardMovingTokenizer
+    public interface IHasRoutingTokenizer<T> : IForwardMovingTokenizer<T>
     {
-        IRoutingTokenizer Router { get; }
+        IRoutingTokenizer<T> Router { get; }
 
         /// <summary>
         /// if the default behaviour returns the next tokenizer, override it with the routers suggestion
@@ -28,10 +28,11 @@ namespace Decoratid.Idioms.TokenParsing
     /// gives a tokenizer routing logic
     /// </summary>
     [Serializable]
-    public class HasRoutingTokenizerDecoration : ForwardMovingTokenizerDecorationBase, IHasRoutingTokenizer
+    public class HasRoutingTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasRoutingTokenizer<T>
     {
         #region Ctor
-        public HasRoutingTokenizerDecoration(IForwardMovingTokenizer decorated, IRoutingTokenizer router, bool overrideIfNonNull)
+        public HasRoutingTokenizerDecoration(IForwardMovingTokenizer<T> decorated,
+            IRoutingTokenizer<T> router, bool overrideIfNonNull)
             : base(decorated)
         {
             Condition.Requires(router).IsNotNull();
@@ -41,9 +42,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasRoutingTokenizerDecoration New(IForwardMovingTokenizer decorated, IRoutingTokenizer router, bool overrideIfNonNull)
+        public static HasRoutingTokenizerDecoration<T> New<T>(IForwardMovingTokenizer<T> decorated, IRoutingTokenizer<T> router, bool overrideIfNonNull)
         {
-            return new HasRoutingTokenizerDecoration(decorated, router, overrideIfNonNull);
+            return new HasRoutingTokenizerDecoration<T>(decorated, router, overrideIfNonNull);
         }
         #endregion
 
@@ -59,22 +60,22 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Implementation
-        public IRoutingTokenizer Router { get; private set; }
+        public IRoutingTokenizer<T> Router { get; private set; }
         /// <summary>
         /// if the default behaviour returns the next tokenizer, override it with the routers suggestion
         /// </summary>
         public bool OverrideIfNonNull { get; private set; }
 
-        public override bool Parse(string text, int currentPosition, object state, IToken currentToken, out int newPosition, out IToken newToken, out IForwardMovingTokenizer newParser)
+        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            var rv = base.Parse(text, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
 
             if (newParser == null)
             {
-                var tokenizer = this.Router.GetTokenizer(text, newPosition, state, newToken);
+                var tokenizer = this.Router.GetTokenizer(source, newPosition, state, newToken);
 
                 if(tokenizer != null)
-                    newParser = tokenizer.As<IForwardMovingTokenizer>();
+                    newParser = tokenizer.As<IForwardMovingTokenizer<T>>();
                 
                 return rv;
             }
@@ -83,8 +84,8 @@ namespace Decoratid.Idioms.TokenParsing
                 //override the new parser to use the router
                 if (OverrideIfNonNull)
                 {
-                    var tokenizer = this.Router.GetTokenizer(text, newPosition, state, newToken);
-                    newParser = tokenizer.As<IForwardMovingTokenizer>();
+                    var tokenizer = this.Router.GetTokenizer(source, newPosition, state, newToken);
+                    newParser = tokenizer.As<IForwardMovingTokenizer<T>>();
                     return rv;
                 }
             }
@@ -93,19 +94,19 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public override IDecorationOf<IForwardMovingTokenizer> ApplyThisDecorationTo(IForwardMovingTokenizer thing)
+        public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new HasRoutingTokenizerDecoration(thing, this.Router, this.OverrideIfNonNull);
+            return new HasRoutingTokenizerDecoration<T>(thing, this.Router, this.OverrideIfNonNull);
         }
         #endregion
     }
 
     public static class HasRoutingTokenizerDecorationExtensions
     {
-        public static HasRoutingTokenizerDecoration HasRouting(this IForwardMovingTokenizer decorated, IRoutingTokenizer router, bool overrideIfNonNull)
+        public static HasRoutingTokenizerDecoration<T> HasRouting<T>(this IForwardMovingTokenizer<T> decorated, IRoutingTokenizer<T> router, bool overrideIfNonNull)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasRoutingTokenizerDecoration(decorated, router, overrideIfNonNull);
+            return new HasRoutingTokenizerDecoration<T>(decorated, router, overrideIfNonNull);
         }
     }
 }

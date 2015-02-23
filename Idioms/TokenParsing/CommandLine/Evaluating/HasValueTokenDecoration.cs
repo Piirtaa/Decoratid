@@ -8,12 +8,15 @@ using Decoratid.Extensions;
 using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
+using Decoratid.Idioms.TokenParsing.CommandLine.Compiling;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine
+namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
 {
 
-
-    public interface IHasValueToken : IToken, ICanEval
+    /// <summary>
+    /// decorates a token with a value
+    /// </summary>
+    public interface IHasValueToken : IStringToken, ICanEval
     {
         object Value { get; }
     }
@@ -25,7 +28,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
     public class HasValueTokenDecoration : TokenDecorationBase, IHasValueToken
     {
         #region Ctor
-        public HasValueTokenDecoration(IToken decorated, object value)
+        public HasValueTokenDecoration(IStringToken decorated, object value)
             : base(decorated)
         {
             this.Value = value;
@@ -33,7 +36,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         #endregion
 
         #region Fluent Static
-        public static HasValueTokenDecoration New(IToken decorated, object value)
+        public static HasValueTokenDecoration New(IStringToken decorated, object value)
         {
             return new HasValueTokenDecoration(decorated, value);
         }
@@ -54,7 +57,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
         public object Value { get; private set; }
         public object Evaluate() { return this.Value; }
 
-        public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
+        public override IDecorationOf<IStringToken> ApplyThisDecorationTo(IStringToken thing)
         {
             return new HasValueTokenDecoration(thing, this.Value);
         }
@@ -63,7 +66,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine
 
     public static class HasValueTokenDecorationExtensions
     {
-        public static HasValueTokenDecoration HasValue(this IToken thing, object value)
+        public static HasValueTokenDecoration HasValue(this IStringToken thing, object value)
         {
             Condition.Requires(thing).IsNotNull();
             return new HasValueTokenDecoration(thing, value);

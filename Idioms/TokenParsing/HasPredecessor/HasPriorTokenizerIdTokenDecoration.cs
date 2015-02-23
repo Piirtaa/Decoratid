@@ -8,13 +8,14 @@ using Decoratid.Extensions;
 using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasPredecessor
 {
     /// <summary>
     /// a token that tracks the prior token's tokenizer id
     /// </summary>
-    public interface IHasPriorTokenizerIdToken : IToken
+    public interface IHasPriorTokenizerIdToken<T> : IToken<T>
     {
         string PriorTokenizerId { get; }
     }
@@ -23,10 +24,10 @@ namespace Decoratid.Idioms.TokenParsing
     /// a decoration that tracks the prior token's tokenizer id
     /// </summary>
     [Serializable]
-    public class HasPriorTokenizerIdTokenDecoration : TokenDecorationBase, IHasPriorTokenizerIdToken
+    public class HasPriorTokenizerIdTokenDecoration<T> : TokenDecorationBase<T>, IHasPriorTokenizerIdToken<T>
     {
         #region Ctor
-        public HasPriorTokenizerIdTokenDecoration(IToken decorated, string priorTokenizerId)
+        public HasPriorTokenizerIdTokenDecoration(IToken<T> decorated, string priorTokenizerId)
             : base(decorated)
         {
             Condition.Requires(priorTokenizerId).IsNotNullOrEmpty();
@@ -35,9 +36,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasPriorTokenizerIdTokenDecoration New(IToken decorated, string priorTokenizerId)
+        public static HasPriorTokenizerIdTokenDecoration<T> New(IToken<T> decorated, string priorTokenizerId)
         {
-            return new HasPriorTokenizerIdTokenDecoration(decorated, priorTokenizerId);
+            return new HasPriorTokenizerIdTokenDecoration<T>(decorated, priorTokenizerId);
         }
         #endregion
 
@@ -54,19 +55,19 @@ namespace Decoratid.Idioms.TokenParsing
 
         #region Overrides
         public string PriorTokenizerId { get; private set; }
-        public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
+        public override IDecorationOf<IToken<T>> ApplyThisDecorationTo(IToken<T> thing)
         {
-            return new HasTokenizerIdTokenDecoration(thing, this.PriorTokenizerId);
+            return new HasTokenizerIdTokenDecoration<T>(thing, this.PriorTokenizerId);
         }
         #endregion
     }
 
     public static class HasPriorTokenizerIdTokenDecorationExtensions
     {
-        public static HasPriorTokenizerIdTokenDecoration HasPriorTokenizerId(this IToken thing, string priorTokenizerId)
+        public static HasPriorTokenizerIdTokenDecoration<T> HasPriorTokenizerId<T>(this IToken<T> thing, string priorTokenizerId)
         {
             Condition.Requires(thing).IsNotNull();
-            return new HasPriorTokenizerIdTokenDecoration(thing, priorTokenizerId);
+            return new HasPriorTokenizerIdTokenDecoration<T>(thing, priorTokenizerId);
         }
     }
 }

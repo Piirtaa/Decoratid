@@ -9,21 +9,21 @@ using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
 
-namespace Decoratid.Idioms.TokenParsing
+namespace Decoratid.Idioms.TokenParsing.HasSuffix
 {
-    public interface IHasSuffixToken : IToken
+    public interface IHasSuffixToken<T> : IToken<T>
     {
-        string Suffix { get; }
+        T[] Suffix { get; }
     }
 
     /// <summary>
     /// decorates with suffix
     /// </summary>
     [Serializable]
-    public class HasSuffixTokenDecoration : TokenDecorationBase, IHasSuffixToken
+    public class HasSuffixTokenDecoration<T> : TokenDecorationBase<T>, IHasSuffixToken<T>
     {
         #region Ctor
-        public HasSuffixTokenDecoration(IToken decorated, string suffix)
+        public HasSuffixTokenDecoration(IToken<T> decorated, T[] suffix)
             : base(decorated)
         {
             this.Suffix = suffix;
@@ -31,9 +31,9 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Fluent Static
-        public static HasSuffixTokenDecoration New(IToken decorated, string suffix)
+        public static HasSuffixTokenDecoration<T> New(IToken<T> decorated, T[] suffix)
         {
-            return new HasSuffixTokenDecoration(decorated, suffix);
+            return new HasSuffixTokenDecoration<T>(decorated, suffix);
         }
         #endregion
 
@@ -49,20 +49,20 @@ namespace Decoratid.Idioms.TokenParsing
         #endregion
 
         #region Overrides
-        public string Suffix { get; private set; }
-        public override IDecorationOf<IToken> ApplyThisDecorationTo(IToken thing)
+        public T[] Suffix { get; private set; }
+        public override IDecorationOf<IToken<T>> ApplyThisDecorationTo(IToken<T> thing)
         {
-            return new HasSuffixTokenDecoration(thing, this.Suffix);
+            return new HasSuffixTokenDecoration<T>(thing, this.Suffix);
         }
         #endregion
     }
 
     public static class HasSuffixTokenDecorationExtensions
     {
-        public static HasSuffixTokenDecoration HasSuffix(this IToken thing, string suffix)
+        public static HasSuffixTokenDecoration<T> HasSuffix<T>(this IToken<T> thing, T[] suffix)
         {
             Condition.Requires(thing).IsNotNull();
-            return new HasSuffixTokenDecoration(thing, suffix);
+            return new HasSuffixTokenDecoration<T>(thing, suffix);
         }
     }
 }
