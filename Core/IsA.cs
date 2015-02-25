@@ -20,33 +20,21 @@ namespace Decoratid.Core
      * 
      * 
      */
- 
-    /// <summary>
-    /// the base interface for something that has faces (eg. it's faceted).  
-    /// </summary>
-    public interface IFaceted
-    {
-        object GetFace(Type type);
-        List<object> GetFaces();
-    }
 
-    public static class IFacetedExtensions
-    {
-        public static T GetFace<T>(this object obj)
-        {
-            Condition.Requires(obj).IsNotNull();
-
-            if (!(obj is IFaceted))
-                return default(T);
-
-            var isa = IsA.New(obj as IFaceted);
-            return isa.As<T>();
-        }
-    }
 
     /// <summary>
     /// base interface for the IsA paradigm that extends IFaceted by adding type constraints
     /// </summary>
+    /// <remarks>
+    /// So what's the deal with IsA?
+    /// 
+    /// IsA is a way of normalizing data to a standard format.  It's a way of saying "I want something that implements 
+    /// I1, I2, I3 but I don't want to create a fancy new interface/concrete type to contain this aggregation".  
+    /// 
+    /// This lends itself to a more fluent, transparent coding style and class design.  Idiomatic data, that is, data that 
+    /// is constructed using idiomatic decorations (eg.IHasId[string].New("me").AddDate().HasBits()) can be passed to 
+    /// an IsA [IHasId,IHasDate,IHasBits] argument.  We get type constraints for dynamically constructed data. 
+    /// </remarks>
     public interface IIsA : IFaceted, IHasId
     {
         Type[] IsATypes { get; }
@@ -91,7 +79,7 @@ namespace Decoratid.Core
     //public interface IIsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23> : IIsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> { }
 
 
-    //NOW the container classes that things will convert to
+    //below, the container classes that things will convert to
 
     /// <summary>
     /// The IsA type hierarchy is a way of normalizing idiomatic data (eg. decorations,IFaceted) to a defined container (the IsA)
@@ -135,7 +123,7 @@ namespace Decoratid.Core
         /// </summary>
         public object Id
         {
-            get 
+            get
             {
                 var hasId = this.As<IHasId>();
                 Condition.Requires(hasId).IsNotNull();
@@ -192,7 +180,7 @@ namespace Decoratid.Core
      * below are the syntactic sugar types that allow us to quickly put type constraints on an IsA using generics 
      * 
      * 
-     */ 
+     */
     public class IsA<T1> : IsA
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
@@ -257,7 +245,7 @@ namespace Decoratid.Core
     {
         protected IsA(IFaceted faceted, params Type[] isATypes) : base(faceted, isATypes) { }
         public IsA(IFaceted faceted) : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)) { }
-    
+
         #region Fluent Static
         public new static IsA<T1, T2, T3, T4, T5, T6> New(IFaceted faceted)
         {
@@ -271,13 +259,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7)) { }
-      
+
         #region Fluent Static
         public new static IsA<T1, T2, T3, T4, T5, T6, T7> New(IFaceted faceted)
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8> : IsA<T1, T2, T3, T4, T5, T6, T7>
     {
@@ -291,7 +279,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IsA<T1, T2, T3, T4, T5, T6, T7, T8>
     {
@@ -305,7 +293,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
@@ -319,7 +307,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
@@ -333,7 +321,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
@@ -341,13 +329,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12)) { }
-    
+
         #region Fluent Static
         public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> New(IFaceted faceted)
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
         T12>
@@ -356,13 +344,13 @@ namespace Decoratid.Core
         public IsA(IFaceted faceted)
             : base(faceted, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
                 typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13)) { }
-       
+
         #region Fluent Static
         public new static IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> New(IFaceted faceted)
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
         T14> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -380,7 +368,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -398,7 +386,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15, T16> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -416,7 +404,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
     T14, T15, T16, T17> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -434,7 +422,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -452,7 +440,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -470,7 +458,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -488,7 +476,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -507,7 +495,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21, T22> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -526,7 +514,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>(faceted);
         }
-        #endregion  
+        #endregion
     }
     public class IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
    T14, T15, T16, T17, T18, T19, T20, T21, T22, T23> : IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
@@ -546,7 +534,7 @@ namespace Decoratid.Core
         {
             return new IsA<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23>(faceted);
         }
-        #endregion  
+        #endregion
     }
 
 }

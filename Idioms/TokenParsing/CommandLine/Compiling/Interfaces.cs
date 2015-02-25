@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
-    /// <summary>
-    /// common interface shared by arg tokens (eg. primitives) and UnitOfWork
-    /// </summary>
-    public interface ICanEval
-    {
-        object Evaluate();
-    }
+    ///// <summary>
+    ///// common interface shared by arg tokens (eg. primitives) and UnitOfWork
+    ///// </summary>
+    //public interface IThing
+    //{
+    //    object Evaluate();
+    //}
 }

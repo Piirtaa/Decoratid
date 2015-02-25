@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
-using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasValidation;
 
 namespace Decoratid.Idioms.TokenParsing.HasPrefix
 {
@@ -28,7 +28,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
     {
         #region Ctor
         public PrefixedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
-            : base(decorated.HasSelfDirection())
+            : base(decorated.HasValidation())
         {
             Condition.Requires(prefixes).IsNotEmpty();
             this.Prefixes = prefixes;
@@ -54,12 +54,12 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
         #endregion
 
         #region Implementation
-        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
         {
             get
             {
                 //define the prefix condition
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
                 {
                     var substring = x.Source.GetSegment(x.CurrentPosition);
 

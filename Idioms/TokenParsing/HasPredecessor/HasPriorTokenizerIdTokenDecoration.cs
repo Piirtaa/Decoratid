@@ -69,5 +69,11 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
             Condition.Requires(thing).IsNotNull();
             return new HasPriorTokenizerIdTokenDecoration<T>(thing, priorTokenizerId);
         }
+        public static string GetPriorTokenizerId<T>(this IToken<T> token)
+        {
+            Condition.Requires(token).IsNotNull();
+            var tokenizer = token.GetFace<IHasPriorTokenizerIdToken<T>>();
+            return tokenizer.With(x => x.PriorTokenizerId);
+        }
     }
 }

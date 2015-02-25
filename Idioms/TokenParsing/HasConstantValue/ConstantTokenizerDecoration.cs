@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
-using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasValidation;
 
 namespace Decoratid.Idioms.TokenParsing.HasConstantValue
 {
@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.TokenParsing.HasConstantValue
     {
         #region Ctor
         public ConstantTokenizerDecoration(IForwardMovingTokenizer<T> decorated, T[] tokenValue)
-            : base(decorated.HasSelfDirection())
+            : base(decorated.HasValidation())
         {
             Condition.Requires(tokenValue).IsNotNull();
             this.TokenValue = tokenValue;
@@ -56,11 +56,11 @@ namespace Decoratid.Idioms.TokenParsing.HasConstantValue
 
         #region Implementation
         public T[] TokenValue { get; private set; }
-        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
         {
             get
             {
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
                 {
                     var substring = x.Source.GetSegment(x.CurrentPosition);
 

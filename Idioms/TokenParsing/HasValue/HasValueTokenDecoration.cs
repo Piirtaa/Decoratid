@@ -10,25 +10,27 @@ using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
 using Decoratid.Idioms.TokenParsing.CommandLine.Compiling;
 
-namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
+namespace Decoratid.Idioms.TokenParsing.HasValue
 {
-
+    public interface IHasValue
+    {
+        object Value { get; }
+    }
     /// <summary>
     /// decorates a token with a value
     /// </summary>
-    public interface IHasValueToken : IStringToken, ICanEval
+    public interface IHasValueToken<T> : IToken<T>, IHasValue
     {
-        object Value { get; }
     }
 
     /// <summary>
     /// decorates with a value
     /// </summary>
     [Serializable]
-    public class HasValueTokenDecoration : TokenDecorationBase, IHasValueToken
+    public class HasValueTokenDecoration<T> : TokenDecorationBase<T>, IHasValueToken<T>
     {
         #region Ctor
-        public HasValueTokenDecoration(IStringToken decorated, object value)
+        public HasValueTokenDecoration(IToken<T> decorated, object value)
             : base(decorated)
         {
             this.Value = value;
@@ -36,9 +38,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
         #endregion
 
         #region Fluent Static
-        public static HasValueTokenDecoration New(IStringToken decorated, object value)
+        public static HasValueTokenDecoration<T> New(IToken<T> decorated, object value)
         {
-            return new HasValueTokenDecoration(decorated, value);
+            return new HasValueTokenDecoration<T>(decorated, value);
         }
         #endregion
 
@@ -55,21 +57,20 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
 
         #region Overrides
         public object Value { get; private set; }
-        public object Evaluate() { return this.Value; }
 
-        public override IDecorationOf<IStringToken> ApplyThisDecorationTo(IStringToken thing)
+        public override IDecorationOf<IToken<T>> ApplyThisDecorationTo(IToken<T> thing)
         {
-            return new HasValueTokenDecoration(thing, this.Value);
+            return new HasValueTokenDecoration<T>(thing, this.Value);
         }
         #endregion
     }
 
     public static class HasValueTokenDecorationExtensions
     {
-        public static HasValueTokenDecoration HasValue(this IStringToken thing, object value)
+        public static HasValueTokenDecoration<T> HasValue<T>(this IToken<T> thing, object value)
         {
             Condition.Requires(thing).IsNotNull();
-            return new HasValueTokenDecoration(thing, value);
+            return new HasValueTokenDecoration<T>(thing, value);
         }
     }
 }

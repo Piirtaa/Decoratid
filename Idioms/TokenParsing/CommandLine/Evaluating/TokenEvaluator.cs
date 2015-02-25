@@ -8,6 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasConstantValue;
+using Decoratid.Idioms.TokenParsing.HasId;
+using Decoratid.Idioms.TokenParsing.HasPredecessor;
+using Decoratid.Idioms.TokenParsing.HasPrefix;
+using Decoratid.Idioms.TokenParsing.HasRouting;
+using Decoratid.Idioms.TokenParsing.HasValidation;
+using Decoratid.Idioms.TokenParsing.HasStartEnd;
+using Decoratid.Idioms.TokenParsing.HasSuccessor;
+using Decoratid.Idioms.TokenParsing.HasSuffix;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
+using Decoratid.Idioms.TokenParsing.HasImplementation;
+using Decoratid.Idioms.TokenParsing.HasValue;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
 {
@@ -42,11 +54,11 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
         #endregion
 
         #region Methods
-        public IStringToken TouchToken(IStringToken token)
+        public IToken<char> TouchToken(IToken<char> token)
         {
             Condition.Requires(token).IsNotNull();
 
-            IStringToken rv = token;
+            IToken<char> rv = token;
             if (!(token is IFaceted))
                 return rv;
 
@@ -67,7 +79,8 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
                 case CommandLineLexer.OPENPAREN:
                     break;
                 case CommandLineLexer.STORE:
-                    var store = this.StoreOfStores.Get<NamedNaturalInMemoryStore>(token.TokenString);
+                    string storeName = new string(token.TokenData);
+                    var store = this.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
                     rv = token.HasValue(store);
                     break;
             }

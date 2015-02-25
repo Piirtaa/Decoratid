@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
-using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 using Decoratid.Idioms.TokenParsing.HasId;
 
@@ -33,7 +33,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
     {
         #region Ctor
         public HasPredecessorTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params string[] priorTokenizerIds)
-            : base(decorated.HasSelfDirection())
+            : base(decorated.HasValidation())
         {
             this.PriorTokenizerIds = priorTokenizerIds;
         }
@@ -59,11 +59,11 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
 
         #region Implementation
         public string[] PriorTokenizerIds { get; private set; }
-        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
         {
             get
             {
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingOperation<T>>.New((x) =>
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
                 {
                     var substring = x.Source.GetSegment(x.CurrentPosition);
 

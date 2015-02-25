@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.TokenParsing.CommandLine.Evaluating;
 using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
@@ -20,7 +21,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
                 CommandLineLexer.ARG,
                 CommandLineLexer.THING};
 
-        public static object GetTokenValue(this IStringToken token)
+        public static object GetTokenValue<T>(this IToken<T> token)
         {
             Condition.Requires(token).IsNotNull();
 
@@ -33,7 +34,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool IsOperandToken(this IStringToken token)
+        public static bool IsOperandToken<T>(this IToken<T> token)
         {
             Condition.Requires(token).IsNotNull();
 

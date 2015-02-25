@@ -70,5 +70,11 @@ namespace Decoratid.Idioms.TokenParsing.HasStartEnd
             Condition.Requires(thing).IsNotNull();
             return new StartEndPositionTokenDecoration<T>(thing, startPos, endPos);
         }
+        public static IStartEndPositionalToken<T> GetStartEnd<T>(this IToken<T> token)
+        {
+            Condition.Requires(token).IsNotNull();
+            var tokenizer = token.GetFace<IStartEndPositionalToken<T>>();
+            return tokenizer;
+        }
     }
 }

@@ -1,23 +1,35 @@
-﻿using Decoratid.Core.Logical;
+﻿using CuttingEdge.Conditions;
+using Decoratid.Core.Logical;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasConstantValue;
+using Decoratid.Idioms.TokenParsing.HasId;
+using Decoratid.Idioms.TokenParsing.HasPredecessor;
+using Decoratid.Idioms.TokenParsing.HasPrefix;
+using Decoratid.Idioms.TokenParsing.HasRouting;
+using Decoratid.Idioms.TokenParsing.HasValidation;
+using Decoratid.Idioms.TokenParsing.HasStartEnd;
+using Decoratid.Idioms.TokenParsing.HasSuccessor;
+using Decoratid.Idioms.TokenParsing.HasSuffix;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
+using Decoratid.Idioms.TokenParsing.HasImplementation;
+using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
+using Decoratid.Idioms.TokenParsing.HasValue;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
-
-
     /// <summary>
     /// the compilation process will create a bunch of unit of works as it moves forward thru the tokens
     /// </summary>
-    public class UnitOfWork : ILogic
+    public class UnitOfWork : IToken<IToken<char>>, IHasValue
     {
         #region Ctor
         public UnitOfWork()
         {
-            this.Args = new List<ICanEval>();
+            this.Args = null;
         }
         #endregion
 
@@ -29,10 +41,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         #endregion
 
         #region Token Properties
-        public ICanEval Operand { get; set; }
-        public IStringToken OperandToken { get; set; }
-        public IStringToken OperationToken { get; set; }
-        public List<ICanEval> Args { get; private set; }
+        public IHasValue Operand { get; set; }
+        public IToken<char> OperationToken { get; set; }
+        public List<IHasValue> Args { get; private set; }
         #endregion
 
         #region Placeholders
@@ -40,34 +51,31 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         public Func<object, List<object>, object> Function { get; set; }
         #endregion
 
-        #region ICanEval
-        public object Evaluate()
+        #region IHasValue
+        public object Value
         {
-            if (this.Result == null)
+            get
             {
-                var args = this.EvaluateArgs();
+                if (this.Result == null)
+                {
+                    var args = this.EvaluateArgs();
 
-                this.Result = this.Function(this.Operand, args); 
+                    this.Result = this.Function(this.Operand, args);
+                }
+                return this.Result;
             }
-            return this.Result;
         }
         #endregion
 
-        #region Methods
-        public static void BuildUnitOfWork(List<IStringToken> tokens, int currentPosition, UnitOfWork currentUoW, out int newPosition, out UnitOfWork newUoW)
-        {
-
-        }
-        #endregion
 
         #region Helpers
         private List<object> EvaluateArgs()
         {
             List<object> rv = new List<object>();
 
-            foreach (ICanEval each in this.Args)
+            foreach (IHasValue each in this.Args)
             {
-                var val = each.Evaluate();
+                var val = each.Value;
                 rv.Add(val);
             }
             return rv;

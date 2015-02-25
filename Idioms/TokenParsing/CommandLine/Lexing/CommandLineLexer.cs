@@ -42,7 +42,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
         public static IForwardMovingTokenizer<char> BuildLexingLogic()
         {
             //@store.search(#ness.IsThing("x","y"))
-
+            
             //to parse this type of syntax we use prefix routing - ie. we route via prefix
             var router = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter();
             

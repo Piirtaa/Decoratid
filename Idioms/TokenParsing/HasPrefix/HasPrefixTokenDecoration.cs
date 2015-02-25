@@ -77,5 +77,11 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
             Condition.Requires(thing).IsNotNull();
             return new HasPrefixTokenDecoration<T>(thing, prefix);
         }
+        public static T[] GetPrefix<T>(this IToken<T> token)
+        {
+            Condition.Requires(token).IsNotNull();
+            var tokenizer = token.GetFace<IHasPrefixToken<T>>();
+            return tokenizer.With(x => x.Prefix);
+        }
     }
 }

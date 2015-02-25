@@ -47,17 +47,17 @@ namespace Decoratid.Idioms.TokenParsing
     /// <summary>
     /// encapsulates the state of a tokenizing operation
     /// </summary>
-    public class ForwardMovingTokenizingOperation<T>
+    public class ForwardMovingTokenizingCursor<T>
     {
         public T[] Source { get; set; }
         public int CurrentPosition { get; set; }
         public object State { get; set; }
         public IToken<T> CurrentToken { get; set; }
 
-        public static ForwardMovingTokenizingOperation<T> New(T[] source, int currentPosition, object state,
+        public static ForwardMovingTokenizingCursor<T> New(T[] source, int currentPosition, object state,
             IToken<T> currentToken)
         {
-            var rv = new ForwardMovingTokenizingOperation<T>();
+            var rv = new ForwardMovingTokenizingCursor<T>();
             rv.Source = source;
             rv.CurrentPosition = currentPosition;
             rv.State = state;
@@ -119,41 +119,14 @@ namespace Decoratid.Idioms.TokenParsing
 
 
 
-    public static class TokenExtensions
-    {
+    //public static class TokenExtensions
+    //{
         
-        //public static string GetTokenizerId(this IStringToken token)
-        //{
-        //    Condition.Requires(token).IsNotNull();
 
-        //    var tokenizer = token.GetFace<IHasTokenizerId>();
-        //    return tokenizer.With(x => x.TokenizerId);
-        //}
-        //public static IStartEndPositionalToken GetStartEnd(this IStringToken token)
-        //{
-        //    Condition.Requires(token).IsNotNull();
-        //    var tokenizer = token.GetFace<IStartEndPositionalToken>();
-        //    return tokenizer;
-        //}
-        //public static string GetPrefix(this IStringToken token)
-        //{
-        //    Condition.Requires(token).IsNotNull();
-        //    var tokenizer = token.GetFace<IHasPrefixToken>();
-        //    return tokenizer.With(x => x.Prefix);
-        //}
-        //public static string GetSuffix(this IStringToken token)
-        //{
-        //    Condition.Requires(token).IsNotNull();
-        //    var tokenizer = token.GetFace<IHasSuffixToken>();
-        //    return tokenizer.With(x => x.Suffix);
-        //}
-        //public static string GetPriorTokenizerId(this IStringToken token)
-        //{
-        //    Condition.Requires(token).IsNotNull();
-        //    var tokenizer = token.GetFace<IHasPriorTokenizerIdToken>();
-        //    return tokenizer.With(x => x.PriorTokenizerId);
-        //}
 
-    }
+
+
+
+    //}
     #endregion
 }

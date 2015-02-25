@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Arg.cs" />
     <Compile Include="Core\Conditional\DecoratedConditionBase.cs" />
     <Compile Include="Core\Conditional\ConditionalLogicDecoration.cs" />
     <Compile Include="Core\Conditional\HasCondition.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Core\Identifying\AsHasId.cs" />
     <Compile Include="Core\Identifying\AsId.cs" />
     <Compile Include="Core\Identifying\NamingIHasIdDecoration.cs" />
+    <Compile Include="Core\Interfaces.cs" />
     <Compile Include="Core\IsA.cs" />
     <Compile Include="Core\Logical\HasIdDecoration.cs" />
     <Compile Include="Core\Logical\LogicUtils.cs" />
@@ -173,6 +175,9 @@
     <Compile Include="Idioms\Messaging\StoreProtocoling\Extensions.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolHostDecoration.cs" />
+    <Compile Include="Idioms\Ness\Interfaces.cs" />
+    <Compile Include="Idioms\Ness\NessDefinition.cs" />
+    <Compile Include="Idioms\Ness\NessOp.cs" />
     <Compile Include="Idioms\ObjectGraphing\GraphingUtil.cs" />
     <Compile Include="Idioms\ObjectGraphing\DecoratedGraphBase.cs" />
     <Compile Include="Idioms\ObjectGraphing\FormattingGraphDecoration.cs" />
@@ -540,6 +545,34 @@
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\CommandLineCompilationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Compiler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Evalable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Interfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\SimpleThing.cs" />
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\TokenExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\TokenLexer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\UnitOfWork.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\HasValue\HasValueTokenDecoration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\Evaluating\TokenEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Idioms\TokenParsing\CommandLine\Lexing\CommandLineLexer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -547,6 +580,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\TokenParsing\HasConstantValue\ConstantTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasImplementation\HasImplementationTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasPredecessor\HasPriorTokenizerIdTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasPredecessor\HasPredecessorTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasSuccessor\HasSuccessorTokenizerDecoration.cs">
@@ -564,7 +598,7 @@
     <Compile Include="Idioms\TokenParsing\HasPrefix\PrefixedTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\ForwardMovingTokenizerDecorationBase.cs" />
     <Compile Include="Idioms\TokenParsing\Interfaces.cs" />
-    <Compile Include="Idioms\TokenParsing\HasSelfDirection\SelfDirectedTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasValidation\ValidatingTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasStartEnd\StartEndPositionTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\TokenDecorationBase.cs" />
     <Compile Include="Idioms\TokenParsing\NaturalToken.cs" />

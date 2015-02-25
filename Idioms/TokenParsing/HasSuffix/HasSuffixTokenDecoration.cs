@@ -64,5 +64,12 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
             Condition.Requires(thing).IsNotNull();
             return new HasSuffixTokenDecoration<T>(thing, suffix);
         }
+
+        public static T[] GetSuffix<T>(this IToken<T> token)
+        {
+            Condition.Requires(token).IsNotNull();
+            var tokenizer = token.GetFace<IHasSuffixToken<T>>();
+            return tokenizer.With(x => x.Suffix);
+        }
     }
 }

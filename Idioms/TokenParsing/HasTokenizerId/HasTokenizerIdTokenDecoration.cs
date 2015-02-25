@@ -68,5 +68,12 @@ namespace Decoratid.Idioms.TokenParsing.HasTokenizerId
             Condition.Requires(thing).IsNotNull();
             return new HasTokenizerIdTokenDecoration<T>(thing, tokenizerId);
         }
+        public static string GetTokenizerId<T>(this IToken<T> token)
+        {
+            Condition.Requires(token).IsNotNull();
+
+            var tokenizer = token.GetFace<IHasTokenizerId<T>>();
+            return tokenizer.With(x => x.TokenizerId);
+        }
     }
 }

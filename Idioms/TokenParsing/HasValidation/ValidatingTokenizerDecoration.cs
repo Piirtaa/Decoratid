@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 using Decoratid.Core;
 using Decoratid.Extensions;
 
-namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
+namespace Decoratid.Idioms.TokenParsing.HasValidation
 {
     /// <summary>
     /// a tokenizer that has a condition that needs to be passed for the tokenizer to work
     /// </summary>
     public interface IHasHandleConditionTokenizer<T> : IForwardMovingTokenizer<T>
     {
-        IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition { get; }
+        IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition { get; }
     }
 
     /// <summary>
     /// a tokenizer that knows whether it can handle a tokenizing operation
     /// </summary>
-    public interface ISelfDirectedTokenizer<T> : IForwardMovingTokenizer<T>
+    public interface IValidatingTokenizer<T> : IForwardMovingTokenizer<T>
     {
         bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken);
     }
@@ -40,15 +40,15 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
     /// 
     /// </remarks>
     [Serializable]
-    public class SelfDirectedTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, ISelfDirectedTokenizer<T>, IHasHandleConditionTokenizer<T>
+    public class ValidatingTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IValidatingTokenizer<T>, IHasHandleConditionTokenizer<T>
     {
         #region Ctor
-        public SelfDirectedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, 
-            IConditionOf<ForwardMovingTokenizingOperation<T>> canHandleCondition = null)
+        public ValidatingTokenizerDecoration(IForwardMovingTokenizer<T> decorated, 
+            IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
             : base(decorated)
         {
             //ensure no more than 1 selfdirected decoration is possible per stack
-            if (decorated.HasDecoration<SelfDirectedTokenizerDecoration<T>>())
+            if (decorated.HasDecoration<ValidatingTokenizerDecoration<T>>())
                 throw new InvalidOperationException("already self-directed");
 
             this.CanTokenizeCondition = canHandleCondition;
@@ -56,14 +56,14 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
         #endregion
 
         #region Fluent Static
-        public static SelfDirectedTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingOperation<T>> canHandleCondition)
+        public static ValidatingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition)
         {
-            return new SelfDirectedTokenizerDecoration<T>(decorated, canHandleCondition);
+            return new ValidatingTokenizerDecoration<T>(decorated, canHandleCondition);
         }
         #endregion
 
         #region ISerializable
-        protected SelfDirectedTokenizerDecoration(SerializationInfo info, StreamingContext context)
+        protected ValidatingTokenizerDecoration(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
@@ -74,10 +74,10 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
         #endregion
 
         #region Implementation
-        public IConditionOf<ForwardMovingTokenizingOperation<T>> CanTokenizeCondition { get; set; }
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition { get; set; }
         public bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
-            var cursor = ForwardMovingTokenizingOperation<T>.New(source, currentPosition, state, currentToken);
+            var cursor = ForwardMovingTokenizingCursor<T>.New(source, currentPosition, state, currentToken);
 
             //get all IHasHandleConditionTokenizer conditions in the decoration stack
             //-the idea here is that there is only one instance of SelfDirectedTokenizer per decoration stack (it checks during ctor)
@@ -88,7 +88,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
             var decs = this.GetAllDecorations();
 
             var hasConditions = this.GetAllImplementingDecorations<IHasHandleConditionTokenizer<T>>();
-            List<IConditionOf<ForwardMovingTokenizingOperation<T>>> conds = new List<IConditionOf<ForwardMovingTokenizingOperation<T>>>();
+            List<IConditionOf<ForwardMovingTokenizingCursor<T>>> conds = new List<IConditionOf<ForwardMovingTokenizingCursor<T>>>();
             hasConditions.WithEach(x =>
             {
                 if (x.CanTokenizeCondition != null)
@@ -98,7 +98,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
             if (conds.Count == 0)
                 return false;
 
-            var cond = AndOf<ForwardMovingTokenizingOperation<T>>.New(conds.ToArray());
+            var cond = AndOf<ForwardMovingTokenizingCursor<T>>.New(conds.ToArray());
             var rv = cond.Evaluate(cursor);
             
             if (!rv.GetValueOrDefault())
@@ -119,12 +119,12 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
         #region Overrides
         public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            return new SelfDirectedTokenizerDecoration<T>(thing, this.CanTokenizeCondition);
+            return new ValidatingTokenizerDecoration<T>(thing, this.CanTokenizeCondition);
         }
         #endregion
     }
 
-    public static class SelfDirectedTokenizerDecorationExtensions
+    public static class ValidatingTokenizerDecorationExtensions
     {
         /// <summary>
         /// decorates with self direction.  if stack already has this decoration, just ands the condition
@@ -132,18 +132,18 @@ namespace Decoratid.Idioms.TokenParsing.HasSelfDirection
         /// <param name="decorated"></param>
         /// <param name="canHandleStrategy"></param>
         /// <returns></returns>
-        public static SelfDirectedTokenizerDecoration<T> HasSelfDirection<T>(this IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingOperation<T>> canHandleCondition = null)
+        public static ValidatingTokenizerDecoration<T> HasValidation<T>(this IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
         {
             Condition.Requires(decorated).IsNotNull();
 
             //if we have a self direction decoration in the stack we return that
-            var dec = decorated.As<SelfDirectedTokenizerDecoration<T>>(true);
+            var dec = decorated.As<ValidatingTokenizerDecoration<T>>(true);
             if (dec != null)
             {
                 dec.CanTokenizeCondition = dec.CanTokenizeCondition.And(canHandleCondition);
                 return dec;
             }
-            return new SelfDirectedTokenizerDecoration<T>(decorated, canHandleCondition);
+            return new ValidatingTokenizerDecoration<T>(decorated, canHandleCondition);
         }
 
     }

@@ -12,7 +12,7 @@ using Decoratid.Core.Identifying;
 using Decoratid.Core;
 using Decoratid.Extensions;
 using Decoratid.Core.Conditional.Of;
-using Decoratid.Idioms.TokenParsing.HasSelfDirection;
+using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Idioms.TokenParsing.HasId;
 
 namespace Decoratid.Idioms.TokenParsing.HasRouting
@@ -26,7 +26,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
     /// this decoration delegates the actual tokenizing process to the appropriate tokenizer. Typically instances of this
     /// are used as the bootstrapping tokenizer
     /// </summary>
-    public interface IRoutingTokenizer<T> : ISelfDirectedTokenizer<T>
+    public interface IRoutingTokenizer<T> : IValidatingTokenizer<T>
     {
         IStoreOf<TokenizerItem> Rules { get; }
         TokenizerItem AddTokenizer(IHasStringIdTokenizer<T> t);
@@ -89,7 +89,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             //iterate thru all the tokenizers and find ones that know if they can handle stuff
             foreach (var each in tokenizers)
             {
-                var sd = each.GetFace<ISelfDirectedTokenizer<T>>();
+                var sd = each.GetFace<IValidatingTokenizer<T>>();
 
                 if (sd != null)
                     if (sd.CanHandle(source, currentPosition, state, currentToken))
