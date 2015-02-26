@@ -9,15 +9,35 @@ using Decoratid.Extensions;
 
 namespace Decoratid.Core
 {
+    /*What's the deal with Arg?
+     * It's a non-decorated container that supports IFaceted, that one can use to build up Args for ILogic.
+     * Essentially a tuple.
+     * 
+     * Unlike normal decorations that only apply to some types (and thus can be "organically" grown, and still maintain
+     * a Ness-y integrity), we may have a bunch of disconnected pieces of data that aren't really related in any Ness-y, semantic 
+     * way.  This container lets us aggregate these types under one IFaceted umbrella without requiring any of that 
+     * hippy organicsauce.
+     * 
+     */ 
+
     /// <summary>
     /// a tuple type of container of data that can be grown with more data, dynamically
     /// </summary>
     public class Arg : IFaceted, IHasId
     {
         #region Ctor
+        /// <summary>
+        /// copy ctor
+        /// </summary>
+        /// <param name="arg"></param>
+        public Arg(Arg arg)
+        {
+            this.Faces = arg.Faces;
+        }
+
         public Arg(params object[] args)
         {
-            this.AggregatedTypes = new Dictionary<Type, object>();
+            this.Faces = new Dictionary<Type, object>();
 
             args.WithEach(x =>
             {
@@ -25,12 +45,12 @@ namespace Decoratid.Core
                 {
                     if (x is IHasId)
                     {
-                        this.AggregatedTypes[typeof(IHasId)] = x;
+                        this.Faces[typeof(IHasId)] = x;
                     }
                     else
                     {
                         var type = x.GetType();
-                        this.AggregatedTypes[type] = x;
+                        this.Faces[type] = x;
                     }
                 }
             });
@@ -62,16 +82,16 @@ namespace Decoratid.Core
         #region IFaceted
         public object GetFace(Type type)
         {
-            return this.AggregatedTypes[type];
+            return this.Faces[type];
         }
         public List<object> GetFaces()
         {
-            return this.AggregatedTypes.Values.ToList();
+            return this.Faces.Values.ToList();
         }
         #endregion
 
         #region Properties
-        protected Dictionary<Type, object> AggregatedTypes { get; private set; }
+        protected Dictionary<Type, object> Faces { get; private set; }
         #endregion
 
         #region Methods
@@ -83,16 +103,24 @@ namespace Decoratid.Core
         public Arg AddValue(object val)
         {
             if (val != null)
-                this.AggregatedTypes[val.GetType()] = val;
+                this.Faces[val.GetType()] = val;
 
             return this;
         }
         public Arg Is<T>(T val)
         {
             if (val != null)
-                this.AggregatedTypes[typeof(T)] = val;
+                this.Faces[typeof(T)] = val;
 
             return this;
+        }
+        public T As<T>()
+        {
+            var face = (this as IFaceted).GetFace(typeof(T));
+            if (face == null)
+                return default(T);
+
+            return (T)face;
         }
         #endregion
     }

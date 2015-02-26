@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Arg.cs" />
+    <Compile Include="Core\Conditional\Of\ArgUtils.cs" />
     <Compile Include="Core\Conditional\DecoratedConditionBase.cs" />
     <Compile Include="Core\Conditional\ConditionalLogicDecoration.cs" />
     <Compile Include="Core\Conditional\HasCondition.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Core\Identifying\NamingIHasIdDecoration.cs" />
     <Compile Include="Core\Interfaces.cs" />
     <Compile Include="Core\IsA.cs" />
+    <Compile Include="Core\Logical\ArgUtils.cs" />
     <Compile Include="Core\Logical\HasIdDecoration.cs" />
     <Compile Include="Core\Logical\LogicUtils.cs" />
     <Compile Include="Core\Storing\NamedNaturalInMemoryStore.cs" />
@@ -176,8 +178,10 @@
     <Compile Include="Idioms\Messaging\StoreProtocoling\Interfaces.cs" />
     <Compile Include="Idioms\Messaging\StoreProtocoling\StoreProtocolHostDecoration.cs" />
     <Compile Include="Idioms\Ness\Interfaces.cs" />
+    <Compile Include="Idioms\Ness\NessCondition.cs" />
     <Compile Include="Idioms\Ness\NessDefinition.cs" />
-    <Compile Include="Idioms\Ness\NessOp.cs" />
+    <Compile Include="Idioms\Ness\NessOperation.cs" />
+    <Compile Include="Idioms\Ness\NessManager.cs" />
     <Compile Include="Idioms\ObjectGraphing\GraphingUtil.cs" />
     <Compile Include="Idioms\ObjectGraphing\DecoratedGraphBase.cs" />
     <Compile Include="Idioms\ObjectGraphing\FormattingGraphDecoration.cs" />

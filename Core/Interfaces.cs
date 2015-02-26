@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Extensions;
 
 namespace Decoratid.Core
 {
@@ -28,6 +29,25 @@ namespace Decoratid.Core
 
             var isa = IsA.New(obj as IFaceted);
             return isa.As<T>();
+        }
+
+        public static List<Type> GetFaceTypes(this object obj)
+        {
+            Condition.Requires(obj).IsNotNull();
+
+            if (!(obj is IFaceted))
+                return obj.GetType().AddToList();
+
+            var faces = (obj as IFaceted).GetFaces();
+
+            List<Type> rv = new List<Type>();
+            faces.WithEach(x =>
+            {
+                if (x != null)
+                    rv.Add(x.GetType());
+            });
+
+            return rv;
         }
     }
 }

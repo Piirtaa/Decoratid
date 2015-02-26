@@ -19,7 +19,7 @@ namespace Decoratid.Core.Logical
     ///     LogicOfTo - takes an argument, returns some data
     ///     
     /// Essentially, we are wrapping a delegate.  The wrapping gives us a chance to explicitly control the serialization of the 
-    /// delegate, and also to restrict the types of delegates we are expecting (ActionLogic, ActionLogicOf, FunctionLogic, FunctionLogicOf).
+    /// delegate, and also to restrict the types of delegates we are expecting (Logic, LogicOf, LogicTo, LogicOfTo).
     /// 
     /// The Perform() method is fluent and returns itself.  In the implementations of ILogic we clone the logic, and the clone, 
     /// containing the state of the operation, is returned.  Thus we get a stateful container of the operation but the original operation
