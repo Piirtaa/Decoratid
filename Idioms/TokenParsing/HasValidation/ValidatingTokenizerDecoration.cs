@@ -80,7 +80,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
             var cursor = ForwardMovingTokenizingCursor<T>.New(source, currentPosition, state, currentToken);
 
             //get all IHasHandleConditionTokenizer conditions in the decoration stack
-            //-the idea here is that there is only one instance of SelfDirectedTokenizer per decoration stack (it checks during ctor)
+            //-the idea here is that there is only one instance of ValidatingTokenizerDecoration per decoration stack (it checks during ctor)
             //-this is the only decoration that will filter 
             //-all the other decorations that affect this decoration (eg. all IHasHandleConditionTokenizers) are pulled from
             // the decoration stack and applied here

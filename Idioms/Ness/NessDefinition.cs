@@ -51,8 +51,8 @@ namespace Decoratid.Idioms.Ness
         public Type DecoratingType { get { return typeof(Tness); } }
         public string Name { get; private set; }
         public LogicOfTo<Arg<Tdecorated>, Tness> DecoratorLogic { get; set; }
-        private IStoreOf<INessOperation> OperationStore { get; set; }
-        private IStoreOf<INessCondition> ConditionStore { get; set; }
+        public IStoreOf<INessOperation> OperationStore { get; set; }
+        public IStoreOf<INessCondition> ConditionStore { get; set; }
         #endregion
 
         #region Registration

@@ -79,8 +79,15 @@ namespace Decoratid.Idioms.Ness
 
         #endregion
 
+        #region Registration
+        public void AddNess(INess ness)
+        {
+            this.Store.SaveItem(ness);
+        }
+        #endregion
+
         #region Ness Building
-        private INess GetNess(object obj, string nessName)
+        public INess GetNess(object obj, string nessName)
         {
             var possibleness = this.GetPossibleNess(obj);
             var rv = possibleness.Find(x => x.Name.Equals(nessName));

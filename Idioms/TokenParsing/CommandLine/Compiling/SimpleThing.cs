@@ -17,6 +17,7 @@ using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 using Decoratid.Idioms.TokenParsing.HasImplementation;
 using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
 using Decoratid.Idioms.TokenParsing.HasValue;
+using Decoratid.Extensions;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
@@ -36,29 +37,32 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         #endregion
 
         #region Ctor
-        public SimpleThing(IToken<IToken<char>> token)
+        public SimpleThing(IToken<char>[] tokens)
         {
-            Condition.Requires(token).IsNull();
-
-            var tokenizerId = token.GetTokenizerId();
+            Condition.Requires(tokens).IsNotNull().HasLength(1);
+            var tokenizerId = tokens[0].GetTokenizerId();
             Condition.Requires(_validThingTokenizerIds).Contains(tokenizerId, "token must be STORE, NESS, ARG or THING");
-            this.Token = token;
+            this.TokenData = tokens;
+            this.TokenizerId = tokenizerId;
+        }
+        #endregion
+
+        #region Fluent Static
+        public static SimpleThing New(IToken<char> token)
+        {
+            return new SimpleThing(token.AddToList().ToArray());
         }
         #endregion
 
         #region Properties
-        public IToken<IToken<char>> Token { get; private set; }
-        
+        public IToken<IToken<char>> PriorToken { get; set; }
+        public IToken<char>[] TokenData { get; private set; }
+        public string TokenizerId { get; private set; }
         #endregion
 
         #region IHasValue
-        public object Value
-        {
-            get
-            {
-
-            }
-        }
+        public object Value { get; set; }
         #endregion
+
     }
 }

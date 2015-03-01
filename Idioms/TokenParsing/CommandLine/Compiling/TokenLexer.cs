@@ -18,27 +18,40 @@ using Decoratid.Core.Conditional.Of;
 using Decoratid.Core;
 using Decoratid.Idioms.TokenParsing.CommandLine.Lexing;
 using CuttingEdge.Conditions;
-using Decoratid.Idioms.TokenParsing.CommandLine.Evaluating;
+
+using Decoratid.Idioms.Ness;
+using Decoratid.Storidioms.StoreOf;
+using Decoratid.Core.Storing;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
 {
     /// <summary>
-    /// lexes the Level1 results into units of work or equivalent IHasValues
+    /// lexes the Level1 results into HasValue tokens (ie. UnitOfWork or SimpleThing)
     /// </summary>
     /// <remarks>
-    /// Commandline lexing converts a string (eg. an array of char) into ITokens of char.
-    /// Token lexing converts an array of ITokens of char to 
     /// </remarks>
     public class TokenLexer : IForwardMovingTokenizer<IToken<char>>, IValidatingTokenizer<IToken<char>>
     {
         #region Declarations
-        private TokenEvaluator _tokenEvaluator = null;
+        private static List<string> _validThingTokenizerIds = new List<string>(){
+                CommandLineLexer.STORE,
+                CommandLineLexer.NESS,
+                CommandLineLexer.ARG,
+                CommandLineLexer.THING};
         #endregion
 
         #region Ctor
-        public TokenLexer(TokenEvaluator tokenEvaluator)
+        public TokenLexer(NessManager nessManager, IStoreOf<NamedNaturalInMemoryStore> storeOfStores = null)
         {
-            this._tokenEvaluator = tokenEvaluator;
+            if (storeOfStores == null)
+            {
+                this.StoreOfStores = NaturalInMemoryStore.New().IsOf<NamedNaturalInMemoryStore>();
+            }
+            else
+            {
+                this.StoreOfStores = storeOfStores;
+            }
+            this.NessManager = nessManager;
         }
         #endregion
 
@@ -47,6 +60,11 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         {
             return true;
         }
+        #endregion
+
+        #region Properties
+        public IStoreOf<NamedNaturalInMemoryStore> StoreOfStores { get; private set; }
+        public NessManager NessManager { get; private set; }
         #endregion
 
         #region IForwardMovingTokenizer
@@ -141,6 +159,43 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
             
             return true;
         }
+
+        //private IToken<IToken<char>> BuildToken(IToken<char>[] source, int currentPosition, object state, out int newPosition)
+        //{
+        //    //get current source token
+        //    var sourceToken = source[currentPosition];
+            
+        //    //can we parse a simple thing out? (store, ness, arg, thing)
+        //    var tokenizerId = sourceToken.GetTokenizerId();
+        //    Condition.Requires(_validThingTokenizerIds).Contains(tokenizerId);
+            
+        //    //create the simple thing
+        //    var operand = SimpleThing.New(sourceToken);
+            
+        //    //set the value
+        //    switch(tokenizerId)
+        //    {
+        //        case CommandLineLexer.ARG:
+        //        case CommandLineLexer.THING:
+        //            //set the value of the operand to the arg's text.  this will be parsed on interpretation
+        //            operand.Value = new string(sourceToken.TokenData);
+        //            break;
+        //        case CommandLineLexer.STORE:
+        //            string storeName = new string(sourceToken.TokenData);
+        //            var store = this.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
+        //            operand.Value = store;
+        //            break;
+        //        case CommandLineLexer.NESS:
+        //            string nessName = new string(sourceToken.TokenData);
+        //            operand.Value = nessName;
+
+        //            //what the ness is depends on the previous value.  so we build a function
+        //            this.NessManager.GetNess(
+        //            //operand.Value
+        //            break;
+        //    }
+        //    return operand;
+        //}
         #endregion
     }
 }

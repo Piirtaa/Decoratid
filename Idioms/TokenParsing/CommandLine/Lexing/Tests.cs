@@ -22,8 +22,10 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
                     "@store.search(#ness.IsThing('x','y',7))",
                     "7.AsId().HasName('name')"
                 };
+                
+                var config = CLConfig.New();
 
-                var tokens = CommandLineLexer.ForwardMovingTokenize(commands[0]);
+                var tokens = CommandLineLexer.ForwardMovingTokenize(config, commands[0]);
 
                 //Condition.Requires(cmds).HasLength(2);
                 //Condition.Requires(cmds[1].OperationToken.TokenString).IsEqualTo("dosomethingelse");

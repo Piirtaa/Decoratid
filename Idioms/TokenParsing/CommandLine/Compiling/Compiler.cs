@@ -33,7 +33,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
         #endregion
 
         #region Methods
-        private UnitOfWork 
+        //private UnitOfWork 
         public ILogic Compile(List<IStringToken> tokens)
         {
             UnitOfWork rv = UnitOfWork.New();

@@ -20,6 +20,7 @@ using Decoratid.Idioms.TokenParsing.HasSuffix;
 using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 using Decoratid.Idioms.TokenParsing.HasImplementation;
 using Decoratid.Idioms.TokenParsing.HasValue;
+using Decoratid.Idioms.Ness;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
 {
@@ -29,29 +30,19 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
     public class TokenEvaluator
     {
         #region Ctor
-        public TokenEvaluator(IStoreOf<NamedNaturalInMemoryStore> storeOfStores = null)
+        public TokenEvaluator(NessManager nessManager, IStoreOf<NamedNaturalInMemoryStore> storeOfStores = null)
         {
-            if (storeOfStores == null)
-            {
-                this.StoreOfStores = NaturalInMemoryStore.New().IsOf<NamedNaturalInMemoryStore>();
-            }
-            else
-            {
-                this.StoreOfStores = storeOfStores;
-            }
+
         }
         #endregion
 
         #region Fluent Static
-        public static TokenEvaluator New(IStoreOf<NamedNaturalInMemoryStore> storeOfStores = null)
+        public static TokenEvaluator New(NessManager nessManager, IStoreOf<NamedNaturalInMemoryStore> storeOfStores = null)
         {
-            return new TokenEvaluator(storeOfStores);
+            return new TokenEvaluator(nessManager, storeOfStores);
         }
         #endregion
 
-        #region Properties
-        public IStoreOf<NamedNaturalInMemoryStore> StoreOfStores { get; private set; }
-        #endregion
 
         #region Methods
         public IToken<char> TouchToken(IToken<char> token)
@@ -79,10 +70,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Evaluating
                 case CommandLineLexer.OPENPAREN:
                     break;
                 case CommandLineLexer.STORE:
-                    string storeName = new string(token.TokenData);
-                    var store = this.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
-                    rv = token.HasValue(store);
-                    break;
+
             }
 
             return rv;

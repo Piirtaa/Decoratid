@@ -549,32 +549,9 @@
     <Compile Include="Idioms\Throttling\ThrottlingConditionDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\CommandLineCompilationException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Compiler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Evalable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\Interfaces.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\SimpleThing.cs" />
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\TokenExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\TokenLexer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Compiling\UnitOfWork.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Idioms\TokenParsing\CommandLine\CLConfig.cs" />
+    <Compile Include="Idioms\TokenParsing\HasValue\HasValueFactoryTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasValue\HasValueTokenDecoration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Idioms\TokenParsing\CommandLine\Evaluating\TokenEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Idioms\TokenParsing\CommandLine\Lexing\CommandLineLexer.cs">
@@ -594,6 +571,7 @@
     <Compile Include="Idioms\TokenParsing\HasPrefix\HasPrefixTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasTokenizerId\HasTokenizerIdTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasRouting\HasRoutingTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasValue\HasValueFactoryTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\NaturallyNotImplementedForwardMovingTokenizer.cs" />
     <Compile Include="Idioms\TokenParsing\HasRouting\RoutingTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasId\HasStringIdTokenizerDecoration.cs" />

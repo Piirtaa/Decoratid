@@ -21,26 +21,26 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Compiling
                 CommandLineLexer.ARG,
                 CommandLineLexer.THING};
 
-        public static object GetTokenValue<T>(this IToken<T> token)
-        {
-            Condition.Requires(token).IsNotNull();
+        //public static object GetTokenValue<T>(this IToken<T> token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
 
-            var tokenizer = token.GetFace<IHasValueToken>();
-            return tokenizer.With(x => x.Value);
-        }
+        //    var tokenizer = token.GetFace<IHasValueToken>();
+        //    return tokenizer.With(x => x.Value);
+        //}
 
-        /// <summary>
-        /// is the token a store, ness, op, arg or thing
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public static bool IsOperandToken<T>(this IToken<T> token)
-        {
-            Condition.Requires(token).IsNotNull();
+        ///// <summary>
+        ///// is the token a store, ness, op, arg or thing
+        ///// </summary>
+        ///// <param name="token"></param>
+        ///// <returns></returns>
+        //public static bool IsOperandToken<T>(this IToken<T> token)
+        //{
+        //    Condition.Requires(token).IsNotNull();
 
-            string tokenizerId = token.GetTokenizerId();
-            var rv = (_operandTokenizers.Contains(tokenizerId));
-            return rv;
-        }
+        //    string tokenizerId = token.GetTokenizerId();
+        //    var rv = (_operandTokenizers.Contains(tokenizerId));
+        //    return rv;
+        //}
     }
 }
