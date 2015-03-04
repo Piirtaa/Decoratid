@@ -7,15 +7,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
-using Decoratid.Idioms.TokenParsing.HasValidation;
-using Decoratid.Core.Conditional.Of;
 
-namespace Decoratid.Idioms.TokenParsing.HasSuffix
+namespace Decoratid.Idioms.TokenParsing.HasPairedSuffix
 {
     /// <summary>
     /// parses from current spot to any of the suffixes
     /// </summary>
-    public interface ISuffixDelimitedTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
+    public interface ISuffixDelimitedTokenizerDecoration<T> : ITokenizerDecoration<T>
     {
         T[][] Suffixes { get; }
         bool IsInclusive { get;}
@@ -59,23 +57,6 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
         #region Implementation
         public bool IsInclusive { get; private set; }
         public T[][] Suffixes { get; private set; }
-
-        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
-        {
-            get
-            {
-                var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
-                {
-                    T[] seg = null;
-
-                    var closestIdx = x.Source.FindNearestIndexOf(this.Suffixes, out seg, x.CurrentPosition);
-                    
-                    //if we can't find a suffix, we kack
-                    return (closestIdx == -1);
-                });
-                return cond;
-            }
-        }
 
         public override bool Parse(T[] dataToTokenize, int currentPosition, object state, IToken<T> currentToken,
             out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)

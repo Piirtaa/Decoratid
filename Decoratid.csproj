@@ -550,6 +550,10 @@
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\CLConfig.cs" />
+    <Compile Include="Idioms\TokenParsing\HasComposite\HasCompositeTokenDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasComposite\CompositeTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasLength\HasLengthStrategyTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\HasLength\HasLengthTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasValue\HasValueFactoryTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasValue\HasValueTokenDecoration.cs">
       <SubType>Code</SubType>
@@ -745,6 +749,7 @@
     <Content Include="Idioms\Polyfacing\Notes.txt" />
     <Content Include="Idioms\Sealing\Notes.txt" />
     <Content Include="Idioms\Stringing\Notes.txt" />
+    <Content Include="Idioms\TokenParsing\CommandLine\Lexing\Syntax.txt" />
     <Content Include="Idioms\TokenParsing\Design Ideas.txt" />
     <Content Include="Idioms\Validating\Notes.txt" />
     <Content Include="Idioms\Vision.txt" />

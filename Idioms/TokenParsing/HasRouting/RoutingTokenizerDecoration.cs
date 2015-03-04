@@ -1,6 +1,12 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
+using Decoratid.Core.Conditional.Of;
 using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
+using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasId;
+using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Storidioms.StoreOf;
 using System;
 using System.Collections.Generic;
@@ -8,12 +14,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using Decoratid.Core.Identifying;
-using Decoratid.Core;
-using Decoratid.Extensions;
-using Decoratid.Core.Conditional.Of;
-using Decoratid.Idioms.TokenParsing.HasValidation;
-using Decoratid.Idioms.TokenParsing.HasId;
 
 namespace Decoratid.Idioms.TokenParsing.HasRouting
 {
@@ -98,7 +98,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             return null;
         }
 
-        public bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken)
+        public virtual bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
             var tokenizer = GetTokenizer(source, currentPosition, state, currentToken);
             return tokenizer != null;

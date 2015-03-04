@@ -9,7 +9,7 @@ using Decoratid.Core;
 using System.Runtime.Serialization;
 using Decoratid.Core.Decorating;
 
-namespace Decoratid.Idioms.TokenParsing.HasSuffix
+namespace Decoratid.Idioms.TokenParsing.HasPairedSuffix
 {
     public interface IHasSuffixToken<T> : IToken<T>
     {

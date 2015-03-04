@@ -1,13 +1,13 @@
 ﻿using CuttingEdge.Conditions;
+using Decoratid.Core;
+using Decoratid.Core.Decorating;
+using Decoratid.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Core;
-using System.Runtime.Serialization;
-using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.TokenParsing.HasPrefix
 {

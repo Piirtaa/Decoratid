@@ -12,17 +12,13 @@ using Decoratid.Idioms.TokenParsing.HasValidation;
 
 namespace Decoratid.Idioms.TokenParsing.HasImplementation
 {
-    /// <summary>
-    /// a tokenizer that requires the to-be-parsed token has a valid prefix
-    /// </summary>
+
     public interface IHasImplementationTokenizer<T> : IHasHandleConditionTokenizer<T>
     {
         Func<ForwardMovingTokenizingCursor<T>, ForwardMovingTokenizingCursor<T>> TokenizingStrategy { get; }
     }
 
-    /// <summary>
-    /// a tokenizer that requires the to-be-parsed token has a valid prefix.  
-    /// </summary>
+
     [Serializable]
     public class HasImplementationTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasImplementationTokenizer<T>
     {

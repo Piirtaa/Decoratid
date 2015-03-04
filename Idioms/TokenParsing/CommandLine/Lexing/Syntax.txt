@@ -1,0 +1,72 @@
+﻿Command:							Token Resolves to object:				Other Events:
+@MyStore[id]						IHasId instance (LoadById)				Dumps object state to Command Output
+@[id]								as above (uses the current Store)
+
+@[id]
+	#HasDateCreated(now)			decorating token -> Ness ctor			applies decoration to @[id] and dumps state to Cmd out
+
+	#HasDateCreated.Date		     Ness,  operation/property
+	
+	.Save()							subject token (ie. @[id])		saves decorated version
+	.Delete()						null							dumps last state out
+		
+@
+	#HasDateCreated.GreaterThan(now)	IConditionOf<HasDateCreated>
+
+	(#HasDateCreated.GreaterThan(now).And(
+		(#HasId.Equals("a").Or(#HasId.Equals("b")
+	)
+
+	.And( )							IConditionOf<IFaceted>
+	.Or( )
+	
+	
+			
+
+TOKEN CONSTRAINTS
+
+IHasIdToken
+	StoreToken or CurrentStoreToken  (eg. @store1 , @)
+	IdToken
+		[ ConstantToken
+		LiteralToken
+		] ConstantToken
+
+eg. @store1[id1]
+
+DecoratingCommandToken
+	IHasIdToken
+	DecoratingToken[]
+	
+	eg. @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)
+
+DecoratingToken
+	NessToken
+	( ConstantToken
+	Expression
+	) ConstantToken
+
+StoreCommandToken
+	IHasIdToken or DecoratingCommandToken
+	SaveToken (eg. .Save()) or DeleteToken(eg. .Delete())
+
+CommandToken
+	IHasIdToken
+	Command
+
+
+
+CommandExamples:
+
+	Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
+	Saving:																	.Save()
+	Deleting:	@[id1].Delete()
+	Getting Ness Value:	@[id1]#HasDateCreated.Date
+	Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
+	Conditional Ness: #HasDateCreated.IsAfter(now)
+
+
+	Token
+		ChildTokens[]
+
+	

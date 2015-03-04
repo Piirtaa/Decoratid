@@ -16,7 +16,6 @@ using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 using Decoratid.Extensions;
 using Decoratid.Core.Storing;
 using Decoratid.Core;
-using CuttingEdge.Conditions;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 {
@@ -42,125 +41,38 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
         public const string ARG = "arg";
         public const string THING = "thing";
 
-
-        private static int GetPositionOfComplement<T>(this T[] source, T[] left, T[] right)
-        {
-
-            //for (int i = 0; i < source.Length; i++)
-            //    if (!source[i].Equals(prefix[i]))
-            //        return false;
-
-            //validate we start with left
-            Condition.Requires(source.StartsWithSegment(left)).IsTrue();
-
-            int unmatchedpairs = 1;
-            while (unmatchedpairs > 0)
-            {
-
-            }
-            for (int i = 0; i < source.Length; i++)
-                if (!source[i].Equals(prefix[i]))
-                    return false;
-
-        }
         public static IForwardMovingTokenizer<char> BuildLexingLogic(CLConfig config)
         {
-            /*
-                CommandExamples:
-
-	            Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
-	            Saving:																	.Save()
-	            Deleting:	@[id1].Delete()
-	            Getting Ness Value:	@[id1]#HasDateCreated.Date
-	            Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
-	            Conditional Ness: #HasDateCreated.IsAfter(now)
-             */
+            //@store.search(#ness.IsThing("x","y"))
             
-            //define common separators/punctuation.  these will terminate tokens
-            var at = "@".ToCharArray();
-            var dot = ".".ToCharArray();
-            var comma = ",".ToCharArray();
-            var openParenthesis = "(".ToCharArray();
-            var closedParenthesis = ")".ToCharArray();
-            var hash = "#".ToCharArray();
-            var openBracket = "[".ToCharArray();
-            var closedBracket = "]".ToCharArray();
-
-            //define the basic tokens
-            var storeTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(at)
-                .HasSuffix(false, at, dot, comma, openParenthesis,closedParenthesis, hash, openBracket, closedBracket)
-                .HasValueFactory(token =>
-                {
-                    string storeName = new string(token.TokenData);
-                    if (string.IsNullOrEmpty(storeName))
-                    {
-                        return null;//default store strategy
-                    }
-                    else
-                    {
-                        var store = config.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
-                        return store;
-                    }
-                }).HasId("Store"); 
-
-            var idTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(openBracket)
-                .HasSuffix(true, closedBracket)
-                .HasValueFactory(token =>
-                {
-                    string id = new string(token.TokenData);
-                    return id;
-                }).HasId("Id");
-
-            var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(dot)
-                .HasSuffix(false, dot, openParenthesis)
-                .HasId("Op");
-
-            //parse ness name into ness token.  eg. #ness
-            var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(hash).HasSuffix(false, dot,openParenthesis)
-                .HasValueFactory(token =>
-                {
-                    string nessName = new string(token.TokenData);
-
-                    //ness is contextual and depends on who is invoking the ness 
-                    //so we have to get the prior token's value
-                    var lastTokenValueFace = token.PriorToken.GetFace<IHasValue>();
-                    var lastTokenValue = lastTokenValueFace.Value;
-
-                    var rv = config.NessManager.GetNess(lastTokenValue, nessName);
-                    return rv;
-                }).HasId("Ness");
-
-            //parse ness name into ness token.  eg. #ness
-            var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(hash).HasSuffix(false, dot, openParenthesis)
-                .HasValueFactory(token =>
-                {
-                    string nessName = new string(token.TokenData);
-
-                    //ness is contextual and depends on who is invoking the ness 
-                    //so we have to get the prior token's value
-                    var lastTokenValueFace = token.PriorToken.GetFace<IHasValue>();
-                    var lastTokenValue = lastTokenValueFace.Value;
-
-                    var rv = config.NessManager.GetNess(lastTokenValue, nessName);
-                    return rv;
-                }).HasId("Ness");
-
-            router.AddTokenizer(nessTokenizer);
-
-
-
             //to parse this type of syntax we use prefix routing - ie. we route via prefix
             var router = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter();
             
             //parse store name into store token.  eg.  @store
-
+            var storeTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasPrefix("@".ToCharArray()).HasSuffix(".".ToCharArray())
+                .HasValueFactory(token => 
+                {
+                    string storeName = new string(token.TokenData);
+                    var store = config.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
+                    return store;
+                }).HasId(STORE); 
             router.AddTokenizer(storeTokenizer);
 
+            //parse ness name into ness token.  eg. #ness
+            var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasPrefix("#".ToCharArray()).HasSuffix(".".ToCharArray())
+                .HasValueFactory(token =>
+                {
+                    string nessName = new string(token.TokenData);
+
+                    //ness is contextual and depends on who is invoking the ness 
+                    //so we have to get the prior token's value
+                    var lastTokenValueFace = token.PriorToken.GetFace<IHasValue>();
+                    var lastTokenValue = lastTokenValueFace.Value;
+
+                    var rv = config.NessManager.GetNess(lastTokenValue, nessName);
+                    return rv;
+                }).HasId(NESS);
+            router.AddTokenizer(nessTokenizer);
 
             //parse thing token - isn't a store or a ness or an op since it has no predecessors.  
             //isn't an arg cos it's not terminated by , or ).  eg. "hello" 
@@ -174,7 +86,8 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             router.AddTokenizer(thingTokenizer);
 
             //parse operation name into op token.  eg. .search
-             router.AddTokenizer(opTokenizer);
+            var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasPrefix(".".ToCharArray()).HasSuffix(".".ToCharArray(), "(".ToCharArray()).HasId(OP);
+            router.AddTokenizer(opTokenizer);
 
             //open and close brackets.  constants
             var openParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasConstantValue("(".ToCharArray()).HasId(OPENPAREN);
