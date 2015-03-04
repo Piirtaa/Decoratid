@@ -105,6 +105,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
             Condition.Requires(decorated).IsNotNull();
             return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy);
         }
+
     }
 }
 

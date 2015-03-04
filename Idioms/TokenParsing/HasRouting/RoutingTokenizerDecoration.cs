@@ -29,7 +29,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
     public interface IRoutingTokenizer<T> : IValidatingTokenizer<T>
     {
         IStoreOf<TokenizerItem> Rules { get; }
-        TokenizerItem AddTokenizer(IHasStringIdTokenizer<T> t);
+        IRoutingTokenizer<T> AddTokenizer(IHasStringIdTokenizer<T> t);
         TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken);
     }
 
@@ -67,7 +67,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
         #region Implementation
         public IStoreOf<TokenizerItem> Rules { get; private set; }
-        public TokenizerItem AddTokenizer(IHasStringIdTokenizer<T> t)
+        public IRoutingTokenizer<T> AddTokenizer(IHasStringIdTokenizer<T> t)
         {
             //tell each tokenizer to use the router as the backup router
             var newT = t.HasRouting(this, false);
@@ -76,7 +76,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             TokenizerItem item = new TokenizerItem(newT);
 
             this.Rules.SaveItem(item);
-            return item;
+            return this;
         }
         public TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {

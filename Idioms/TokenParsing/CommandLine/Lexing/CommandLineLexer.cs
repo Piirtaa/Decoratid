@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasComposite;
 using Decoratid.Idioms.TokenParsing.HasConstantValue;
 using Decoratid.Idioms.TokenParsing.HasId;
 using Decoratid.Idioms.TokenParsing.HasPredecessor;
@@ -13,10 +14,12 @@ using Decoratid.Idioms.TokenParsing.HasStartEnd;
 using Decoratid.Idioms.TokenParsing.HasSuccessor;
 using Decoratid.Idioms.TokenParsing.HasSuffix;
 using Decoratid.Idioms.TokenParsing.HasTokenizerId;
+using Decoratid.Idioms.TokenParsing.HasLength;
 using Decoratid.Extensions;
 using Decoratid.Core.Storing;
 using Decoratid.Core;
 using CuttingEdge.Conditions;
+using Decoratid.Core.Logical;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 {
@@ -42,27 +45,6 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
         public const string ARG = "arg";
         public const string THING = "thing";
 
-
-        private static int GetPositionOfComplement<T>(this T[] source, T[] left, T[] right)
-        {
-
-            //for (int i = 0; i < source.Length; i++)
-            //    if (!source[i].Equals(prefix[i]))
-            //        return false;
-
-            //validate we start with left
-            Condition.Requires(source.StartsWithSegment(left)).IsTrue();
-
-            int unmatchedpairs = 1;
-            while (unmatchedpairs > 0)
-            {
-
-            }
-            for (int i = 0; i < source.Length; i++)
-                if (!source[i].Equals(prefix[i]))
-                    return false;
-
-        }
         public static IForwardMovingTokenizer<char> BuildLexingLogic(CLConfig config)
         {
             /*
@@ -74,22 +56,25 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 	            Getting Ness Value:	@[id1]#HasDateCreated.Date
 	            Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
 	            Conditional Ness: #HasDateCreated.IsAfter(now)
+             * 
+             * 
              */
-            
+
             //define common separators/punctuation.  these will terminate tokens
             var at = "@".ToCharArray();
             var dot = ".".ToCharArray();
             var comma = ",".ToCharArray();
             var openParenthesis = "(".ToCharArray();
-            var closedParenthesis = ")".ToCharArray();
+            var closeParenthesis = ")".ToCharArray();
             var hash = "#".ToCharArray();
             var openBracket = "[".ToCharArray();
-            var closedBracket = "]".ToCharArray();
+            var closeBracket = "]".ToCharArray();
 
-            //define the basic tokens
+            #region Primitive-y Tokenizers - all routing unhydrated
+            //store token starts with @ and ends with any punctuation
             var storeTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasPrefix(at)
-                .HasSuffix(false, at, dot, comma, openParenthesis,closedParenthesis, hash, openBracket, closedBracket)
+                .HasSuffix(false, at, dot, comma, openParenthesis, closeParenthesis, hash, openBracket, closeBracket)
                 .HasValueFactory(token =>
                 {
                     string storeName = new string(token.TokenData);
@@ -102,25 +87,29 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
                         var store = config.StoreOfStores.Get<NamedNaturalInMemoryStore>(storeName);
                         return store;
                     }
-                }).HasId("Store"); 
+                })
+                .HasId("Store");
 
+            //id token starts with [ and ends with ]. brackets are non-nesting
             var idTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasPrefix(openBracket)
-                .HasSuffix(true, closedBracket)
+                .HasSuffix(true, closeBracket)
                 .HasValueFactory(token =>
                 {
                     string id = new string(token.TokenData);
                     return id;
                 }).HasId("Id");
 
+            //op token starts with . and ends with ( or .
             var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasPrefix(dot)
                 .HasSuffix(false, dot, openParenthesis)
                 .HasId("Op");
 
-            //parse ness name into ness token.  eg. #ness
+            //ness token starts with # and ends with ( or .
             var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(hash).HasSuffix(false, dot,openParenthesis)
+                .HasPrefix(hash)
+                .HasSuffix(false, dot, openParenthesis)
                 .HasValueFactory(token =>
                 {
                     string nessName = new string(token.TokenData);
@@ -132,71 +121,43 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
                     var rv = config.NessManager.GetNess(lastTokenValue, nessName);
                     return rv;
-                }).HasId("Ness");
-
-            //parse ness name into ness token.  eg. #ness
-            var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(hash).HasSuffix(false, dot, openParenthesis)
-                .HasValueFactory(token =>
-                {
-                    string nessName = new string(token.TokenData);
-
-                    //ness is contextual and depends on who is invoking the ness 
-                    //so we have to get the prior token's value
-                    var lastTokenValueFace = token.PriorToken.GetFace<IHasValue>();
-                    var lastTokenValue = lastTokenValueFace.Value;
-
-                    var rv = config.NessManager.GetNess(lastTokenValue, nessName);
-                    return rv;
-                }).HasId("Ness");
-
-            router.AddTokenizer(nessTokenizer);
-
-
-
-            //to parse this type of syntax we use prefix routing - ie. we route via prefix
-            var router = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter();
-            
-            //parse store name into store token.  eg.  @store
-
-            router.AddTokenizer(storeTokenizer);
-
-
-            //parse thing token - isn't a store or a ness or an op since it has no predecessors.  
-            //isn't an arg cos it's not terminated by , or ).  eg. "hello" 
-            var thingTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasPredecessorTokenizerIds(null).HasSuffix(".".ToCharArray())
-                .HasValueFactory(token =>
-                {
-                    string tokenData = new string(token.TokenData);
-                    return tokenData;
                 })
-                .HasId(THING);
-            router.AddTokenizer(thingTokenizer);
+                .HasId("Ness");
 
-            //parse operation name into op token.  eg. .search
-             router.AddTokenizer(opTokenizer);
+            var commaTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .HasConstantValue(comma)
+                .HasId("Comma");
+            #endregion
 
-            //open and close brackets.  constants
-            var openParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasConstantValue("(".ToCharArray()).HasId(OPENPAREN);
-            var closeParenTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasConstantValue(")".ToCharArray()).HasId(CLOSEPAREN);
-            router.AddTokenizer(openParenTokenizer);
-            router.AddTokenizer(closeParenTokenizer);
+            //now build the compound tokenizers
+            var mainRouter = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter().HasId("MainRouter");
+            var parenthesisTokenizerRouter = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter()
+                .AddTokenizer(mainRouter);//parenthesis always recurses to the mainRouter
+ 
+            //parenthesis token starts with ( and ends with ), and handles nesting propertly.  
+            //is a compound that recurses the whole stack 
+            var parenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .HasPrefix(openParenthesis)
+                .HasLengthStrategy(LogicOfTo<ForwardMovingTokenizingCursor<char>, int>.New(cursor =>
+                {
+                    return cursor.Source.GetPositionOfComplement(openParenthesis, closeParenthesis, cursor.CurrentPosition);
+                }))
+                .MakeComposite(parenthesisTokenizerRouter)
+                .HasId("Parenthesis");
+            
 
-            //the comma.  constant
-            var commaTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasConstantValue(",".ToCharArray()).HasId(COMMA);
-            router.AddTokenizer(commaTokenizer);
+            //Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
+            var decoratingCmdTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .MakeComposite()
+                .HasId("Decorating");
 
-            //args.  eg. "x", "y"
-            //can have no predecessor tokenizer, or ( or ,
-            var argTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New().HasPredecessorTokenizerIds(null, OPENPAREN, COMMA).HasSuffix(",".ToCharArray(), ")".ToCharArray())
-            .HasValueFactory(token =>
-            {
-                string tokenData = new string(token.TokenData);
-                return tokenData;
-            })
-            .HasId(ARG);
-            router.AddTokenizer(argTokenizer);
+            decoratingCmdTokenizer.GetFace<CompositeTokenizerDecoration<char>>().Router
+                .AddTokenizer(storeTokenizer)
+                .AddTokenizer(idTokenizer)
+                .AddTokenizer(nessTokenizer)
+                .AddTokenizer(parenthesisTokenizer)
 
+            var router = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter();
             return router;
         }
 

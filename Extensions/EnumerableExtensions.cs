@@ -16,7 +16,51 @@ namespace Decoratid.Extensions
     [DebuggerStepThrough]
     public static class EnumerableExtensions
     {
-        public static bool StartsWithSegment<T>(this T[] source, T[] prefix)
+        /// <summary>
+        /// Parsing helper.  Looks for the next "right" segment such that the count of "left" and "right" segments
+        /// are equal.  This ensures we get a well-formed bracketing of left and right.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="startPos"></param>
+        /// <returns></returns>
+        public static int GetPositionOfComplement<T>(this T[] source, T[] left, T[] right, int startPos = 0)
+        {
+            Condition.Requires(source.StartsWithSegment(left)).IsTrue();
+
+            int pos = startPos;
+            int unmatchedpairs = 0;
+            for (int i = startPos; i < source.Length; i++)
+            {
+                pos = i;
+
+                if (source.StartsWithSegment(left, i))
+                {
+                    unmatchedpairs++;
+                    i += left.Length;
+                }
+                if (source.StartsWithSegment(right, i))
+                {
+                    unmatchedpairs--;
+                    i += left.Length;
+                }
+                if (unmatchedpairs == 0)
+                    break;
+            }
+            return pos;
+        }
+
+        /// <summary>
+        /// does the source start with the prefix at the given position
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="prefix"></param>
+        /// <param name="startPos"></param>
+        /// <returns></returns>
+        public static bool StartsWithSegment<T>(this T[] source, T[] prefix, int startPos = 0)
         {
             if (source == null)
                 return false;
@@ -27,7 +71,7 @@ namespace Decoratid.Extensions
             Condition.Requires(source).IsLongerOrEqual(prefix.Length);
 
             for (int i = 0; i < prefix.Length; i++)
-                if (!source[i].Equals(prefix[i]))
+                if (!source[startPos + i].Equals(prefix[i]))
                     return false;
 
             return true;
