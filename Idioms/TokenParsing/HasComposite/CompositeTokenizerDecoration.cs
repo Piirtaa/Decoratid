@@ -5,7 +5,6 @@ using Decoratid.Core.Decorating;
 using Decoratid.Core.Identifying;
 using Decoratid.Core.Storing;
 using Decoratid.Extensions;
-using Decoratid.Extensions;
 using Decoratid.Idioms.TokenParsing.HasId;
 using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Storidioms.StoreOf;
@@ -99,6 +98,7 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
             newToken = NaturalToken<T>.New(segData).HasComposite(tokens.ToArray());
             newParser = null;
             newPosition = currentPosition + subNewPos;
+
             return true;
         }
         #endregion
@@ -118,6 +118,19 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
         {
             Condition.Requires(decorated).IsNotNull();
             return new CompositeTokenizerDecoration<T>(decorated, router);
+        }
+        public static CompositeTokenizerDecoration<T> MakeCompositeOf<T>(this IForwardMovingTokenizer<T> decorated, params IForwardMovingTokenizer<T>[] composites)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+            var rv = new CompositeTokenizerDecoration<T>(decorated);
+            composites.WithEach(x =>
+            {
+                var tokenizer = x.As<IHasStringIdTokenizer<T>>(false);
+                if (tokenizer != null)
+                    rv.Router.AddTokenizer(tokenizer);
+            });
+            return rv;
         }
     }
 }

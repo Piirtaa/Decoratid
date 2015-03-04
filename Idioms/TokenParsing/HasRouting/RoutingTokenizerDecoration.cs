@@ -72,7 +72,6 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             //tell each tokenizer to use the router as the backup router
             var newT = t.HasRouting(this, false);
 
-
             TokenizerItem item = new TokenizerItem(newT);
 
             this.Rules.SaveItem(item);

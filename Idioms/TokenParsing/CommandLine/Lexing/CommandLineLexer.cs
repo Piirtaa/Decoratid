@@ -20,6 +20,7 @@ using Decoratid.Core.Storing;
 using Decoratid.Core;
 using CuttingEdge.Conditions;
 using Decoratid.Core.Logical;
+using Decoratid.Core.Decorating;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 {
@@ -130,35 +131,39 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             #endregion
 
             //now build the compound tokenizers
-            var mainRouter = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter().HasId("MainRouter");
-            var parenthesisTokenizerRouter = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter()
-                .AddTokenizer(mainRouter);//parenthesis always recurses to the mainRouter
- 
-            //parenthesis token starts with ( and ends with ), and handles nesting propertly.  
+            var mainRouterStack = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter().HasId("MainRouter");
+            var mainRouter =  mainRouterStack.As<IRoutingTokenizer<char>>(false);
+            
+            //parenthesis token starts with ( and ends with ), and handles nesting   
             //is a compound that recurses the whole stack 
+            //uses the mainRouter to recurse, but is not registered with it as it's not a high level token
             var parenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasPrefix(openParenthesis)
                 .HasLengthStrategy(LogicOfTo<ForwardMovingTokenizingCursor<char>, int>.New(cursor =>
                 {
                     return cursor.Source.GetPositionOfComplement(openParenthesis, closeParenthesis, cursor.CurrentPosition);
                 }))
-                .MakeComposite(parenthesisTokenizerRouter)
+                .MakeComposite(mainRouter)
                 .HasId("Parenthesis");
             
-
             //Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
             var decoratingCmdTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .MakeComposite()
+                .MakeCompositeOf(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer,parenthesisTokenizer,commaTokenizer)
                 .HasId("Decorating");
+           
+            //object manipulation
+            //Saving:@[id1].Save()
+            //Deleting:	@[id1].Delete()
+            //Getting Ness Value:	@[id1]#HasDateCreated.Date
+            //Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
+            //Conditional Ness: #HasDateCreated.IsAfter(now)
+            var hasIdCmdTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .MakeCompositeOf(storeTokenizer, idTokenizer, nessTokenizer,  parenthesisTokenizer)
+                .HasId("HasIdCommand");
 
-            decoratingCmdTokenizer.GetFace<CompositeTokenizerDecoration<char>>().Router
-                .AddTokenizer(storeTokenizer)
-                .AddTokenizer(idTokenizer)
-                .AddTokenizer(nessTokenizer)
-                .AddTokenizer(parenthesisTokenizer)
+            mainRouter.AddTokenizer(decoratingCmdTokenizer).AddTokenizer(hasIdCmdTokenizer);
 
-            var router = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter();
-            return router;
+            return mainRouter;
         }
 
         public static List<IToken<char>> ForwardMovingTokenize(CLConfig config, string text)
