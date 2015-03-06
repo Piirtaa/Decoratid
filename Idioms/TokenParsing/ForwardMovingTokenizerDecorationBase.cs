@@ -1,4 +1,5 @@
-﻿using Decoratid.Core.Decorating;
+﻿using Decoratid.Core;
+using Decoratid.Core.Decorating;
 using System;
 using System.Runtime.Serialization;
 
@@ -37,6 +38,10 @@ namespace Decoratid.Idioms.TokenParsing
     out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
             return this.Decorated.Parse(rawData, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+        }
+        public virtual IToken<T> DecorateToken(IToken<T> token, Arg arg)
+        {
+            return token;
         }
         public override IForwardMovingTokenizer<T> This
         {

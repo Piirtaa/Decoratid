@@ -70,6 +70,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             var hash = "#".ToCharArray();
             var openBracket = "[".ToCharArray();
             var closeBracket = "]".ToCharArray();
+            var emptyParenthesis = "()".ToCharArray();
 
             #region Primitive-y Tokenizers - all routing unhydrated
             //store token starts with @ and ends with any punctuation
@@ -128,10 +129,16 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             var commaTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasConstantValue(comma)
                 .HasId("Comma");
+
+            var emptyParenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .HasConstantValue(emptyParenthesis)
+                .HasId("EmptyParenthesis");
             #endregion
 
             //now build the compound tokenizers
-            var mainRouterStack = NaturallyNotImplementedForwardMovingTokenizer<char>.New().MakeRouter().HasId("MainRouter");
+            var mainRouterStack = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
+                .MakeRouter(true, true)
+                .HasId("MainRouter");
             var mainRouter =  mainRouterStack.As<IRoutingTokenizer<char>>(false);
             
             //parenthesis token starts with ( and ends with ), and handles nesting   
@@ -163,13 +170,14 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
             //mainRouter.AddTokenizer(decoratingCmdTokenizer).AddTokenizer(hasIdCmdTokenizer);
             mainRouter.AddTokenizer(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
-            return mainRouter;
+            return mainRouterStack;
         }
 
         public static List<IToken<char>> ForwardMovingTokenize(CLConfig config, string text)
         {
             var tokenizer = BuildLexingLogic(config);
-            var rv = text.ToCharArray().ForwardMovingTokenizeToCompletion(null, tokenizer);
+            int newPos;
+            var rv = text.ToCharArray().ForwardMovingTokenize(null, tokenizer, out newPos);
 
             rv.WithEach(x =>
             {

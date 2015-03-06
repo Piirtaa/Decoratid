@@ -9,13 +9,17 @@ using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Core.Conditional.Of;
+using Decoratid.Idioms.TokenParsing.KnowsLength;
 
 namespace Decoratid.Idioms.TokenParsing.HasSuffix
 {
+
+
+
     /// <summary>
     /// parses from current spot to any of the suffixes
     /// </summary>
-    public interface ISuffixDelimitedTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
+    public interface ISuffixDelimitedTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         T[][] Suffixes { get; }
         bool IsInclusive { get;}
@@ -30,7 +34,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
     {
         #region Ctor
         public SuffixDelimitedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, bool isInclusive, params T[][] suffixes)
-            : base(decorated)
+            : base(decorated.KnowsLength())
         {
             Condition.Requires(suffixes).IsNotEmpty();
             this.Suffixes = suffixes;
@@ -71,7 +75,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
                     var closestIdx = x.Source.FindNearestIndexOf(this.Suffixes, out seg, x.CurrentPosition);
                     
                     //if we can't find a suffix, we kack
-                    return (closestIdx == -1);
+                    return (closestIdx > -1);
                 });
                 return cond;
             }

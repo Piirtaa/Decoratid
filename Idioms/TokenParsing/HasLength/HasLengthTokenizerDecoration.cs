@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Core.Conditional.Of;
+using Decoratid.Idioms.TokenParsing.KnowsLength;
 
 namespace Decoratid.Idioms.TokenParsing.HasLength
 {
-    public interface IHasLengthTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
+    public interface IHasLengthTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         int Length { get; }
     }
@@ -26,7 +27,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
     {
         #region Ctor
         public HasLengthTokenizerDecoration(IForwardMovingTokenizer<T> decorated, int length)
-            : base(decorated)
+            : base(decorated.KnowsLength())
         {
             Condition.Requires(length).IsGreaterThan(0);
             this.Length = length;

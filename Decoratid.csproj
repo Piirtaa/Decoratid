@@ -576,6 +576,7 @@
     <Compile Include="Idioms\TokenParsing\HasPrefix\HasPrefixTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasTokenizerId\HasTokenizerIdTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasValue\HasValueFactoryTokenizerDecoration.cs" />
+    <Compile Include="Idioms\TokenParsing\KnowsLength\KnowsLengthTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\NaturallyNotImplementedForwardMovingTokenizer.cs" />
     <Compile Include="Idioms\TokenParsing\HasRouting\RoutingTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasId\HasStringIdTokenizerDecoration.cs" />

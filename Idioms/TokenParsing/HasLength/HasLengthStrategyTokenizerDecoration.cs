@@ -10,10 +10,11 @@ using Decoratid.Extensions;
 using Decoratid.Core.Logical;
 using Decoratid.Idioms.TokenParsing.HasValidation;
 using Decoratid.Core.Conditional.Of;
+using Decoratid.Idioms.TokenParsing.KnowsLength;
 
 namespace Decoratid.Idioms.TokenParsing.HasLength
 {
-    public interface IHasLengthStrategyTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
+    public interface IHasLengthStrategyTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy { get; }
     }

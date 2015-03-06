@@ -65,14 +65,7 @@ namespace Decoratid.Idioms.TokenParsing
 
             return rv;
         }
-        //public static List<IToken<T>> ForwardMovingTokenizeWithUnclassified<T>(this T[] rawData, object state, IForwardMovingTokenizer<T> parser)
-        //{
-        //    List<IToken<T>> rv = new List<IToken<T>>();
 
-
-
-        //    return rv;
-        //}
         /// <summary>
         /// tokenizes until it can't anymore
         /// </summary>

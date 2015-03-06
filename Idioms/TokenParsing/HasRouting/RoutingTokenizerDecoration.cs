@@ -73,9 +73,10 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         #endregion
 
         #region Fluent Static
-        public static RoutingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated)
+        public static RoutingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, bool overridesTokenizerRouting = true,
+            bool tokenizeUnrecognized = true)
         {
-            return new RoutingTokenizerDecoration<T>(decorated);
+            return new RoutingTokenizerDecoration<T>(decorated, overridesTokenizerRouting, tokenizeUnrecognized);
         }
         #endregion
 
@@ -142,24 +143,23 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         {
             //get the new tokenizer
             var tokenizer = GetTokenizer(source, currentPosition, state, currentToken);
-
-            //skip out with a false
-            if (tokenizer == null)
-            {
-                newParser = null;
-                newToken = null;
-                newPosition = -1;
-                return false;
-            }
+            
+            int newPositionOUT = 0;
+            IToken<T> newTokenOUT = null;
             IForwardMovingTokenizer<T> newParserOUT = null;
-            IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
-            var rv = alg.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParserOUT);
+
+            bool rv = tokenizer != null;
+
+            if (rv)
+            {
+                IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
+                rv = alg.Parse(source, currentPosition, state, currentToken, out newPositionOUT, out newTokenOUT, out newParserOUT);
+            }
 
             //loop back into router to handle the next token
             if (OverridesTokenizerRouting)
                 newParserOUT = this;
-            newParser = newParserOUT;
-
+ 
             //if we classify unrecognized, then we do that here
             if (!rv && this.TokenizeUnrecognized)
             {
@@ -172,6 +172,10 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
                 //returns a suffixed natural token
                 newToken = NaturalToken<T>.New(tokenText).HasComment("UNRECOGNIZED");
             }
+
+            newParser = newParserOUT;
+            newToken = newTokenOUT;
+            newPosition = -1;
 
             return rv;
         }
@@ -193,7 +197,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         #region Overrides
         public override IDecorationOf<IForwardMovingTokenizer<T>> ApplyThisDecorationTo(IForwardMovingTokenizer<T> thing)
         {
-            var rv = new RoutingTokenizerDecoration<T>(thing);
+            var rv = new RoutingTokenizerDecoration<T>(thing, this.OverridesTokenizerRouting, this.TokenizeUnrecognized);
 
             //move the rules over
             var rules = this.TokenizerStore.GetAll();
@@ -209,7 +213,9 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
     public static class RoutingTokenizerDecorationExtensions
     {
-        public static RoutingTokenizerDecoration<T> MakeRouter<T>(this IForwardMovingTokenizer<T> decorated)
+        public static RoutingTokenizerDecoration<T> MakeRouter<T>(this IForwardMovingTokenizer<T> decorated ,
+            bool overridesTokenizerRouting = true,
+            bool tokenizeUnrecognized = true)
         {
             Condition.Requires(decorated).IsNotNull();
             return new RoutingTokenizerDecoration<T>(decorated);

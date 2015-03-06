@@ -31,8 +31,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
 
     /// <summary>
     /// tokenizer that knows if it can handle (ie. tokenize) the text provided.  Only one of this decoration per stack is allowed.
-    /// implemented with IHasHandleConditionTokenizer as well to specify implementation of handling filter as IConditionOf.
-    /// The default handle condition (eg. if canHandleCondition = null) uses the base.Parse call itself to validate
+    /// implemented with IHasHandleConditionTokenizer as well to specify implementation of handling filter as IConditionOf
     /// </summary>
     /// <remarks>
     /// Works in conjunction with IHasHandleConditionTokenizer which is applied on any decoration that has a handling requirement.
@@ -54,18 +53,18 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
 
             if (canHandleCondition == null)
             {
-                //default implementation is to do the base parse
-                this.CanTokenizeCondition = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New(cursor =>
-                {
-                    int newPosition;
-                    IToken<T> newToken;
-                    IForwardMovingTokenizer<T> newTokenizer;
+                ////default implementation is to do the base parse
+                //this.CanTokenizeCondition = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New(cursor =>
+                //{
+                //    int newPosition;
+                //    IToken<T> newToken;
+                //    IForwardMovingTokenizer<T> newTokenizer;
 
-                    return base.Parse(cursor.Source, cursor.CurrentPosition, cursor.State, cursor.CurrentToken,
-                        out newPosition,
-                        out newToken,
-                        out newTokenizer);
-                });
+                //    return base.Parse(cursor.Source, cursor.CurrentPosition, cursor.State, cursor.CurrentToken,
+                //        out newPosition,
+                //        out newToken,
+                //        out newTokenizer);
+                //});
             }
             else
             {
