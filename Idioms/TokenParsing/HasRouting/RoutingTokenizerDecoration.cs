@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Decoratid.Idioms.TokenParsing.HasComment;
 
 namespace Decoratid.Idioms.TokenParsing.HasRouting
 {
@@ -21,16 +22,36 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
     //define behaviour of the logic for each bit
     using TokenizerItem = IsA<IHasId<string>>;
 
-
     /// <summary>
     /// this decoration delegates the actual tokenizing process to the appropriate tokenizer. Typically instances of this
     /// are used as the bootstrapping tokenizer
     /// </summary>
     public interface IRoutingTokenizer<T> : IValidatingTokenizer<T>
     {
-        IStoreOf<TokenizerItem> Rules { get; }
-        IRoutingTokenizer<T> AddTokenizer(IHasStringIdTokenizer<T> t);
+        /// <summary>
+        /// the store of IValidatingTokenizer (wrapped as an IsA to handle cakes)
+        /// </summary>
+        IStoreOf<TokenizerItem> TokenizerStore { get; }
+        IRoutingTokenizer<T> AddTokenizer(params IHasStringIdTokenizer<T>[] t);
+        /// <summary>
+        /// finds first tokenizer that validates (eg. says it can handle) the current cursor position
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="currentPosition"></param>
+        /// <param name="state"></param>
+        /// <param name="currentToken"></param>
+        /// <returns></returns>
         TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken);
+        /// <summary>
+        /// ignores the nextRouter provided by the handling tokenizer and uses own routing 
+        /// </summary>
+        bool OverridesTokenizerRouting { get; }
+        /// <summary>
+        /// if no validating tokenizer can be found for a given cursor, it will capture the unrecognized area
+        /// as a token commented as UNRECOGNIZED
+        /// </summary>
+        bool TokenizeUnrecognized { get; }
+
     }
 
     /// <summary>
@@ -40,10 +61,14 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
     public class RoutingTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IRoutingTokenizer<T>
     {
         #region Ctor
-        public RoutingTokenizerDecoration(IForwardMovingTokenizer<T> decorated)
+        public RoutingTokenizerDecoration(IForwardMovingTokenizer<T> decorated, 
+            bool overridesTokenizerRouting = true,
+            bool tokenizeUnrecognized = true)
             : base(decorated)
         {
-            this.Rules = NaturalInMemoryStore.New().IsOf<TokenizerItem>();
+            this.TokenizerStore = NaturalInMemoryStore.New().IsOf<TokenizerItem>();
+            this.OverridesTokenizerRouting = overridesTokenizerRouting;
+            this.TokenizeUnrecognized = tokenizeUnrecognized;
         }
         #endregion
 
@@ -66,15 +91,26 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         #endregion
 
         #region Implementation
-        public IStoreOf<TokenizerItem> Rules { get; private set; }
-        public IRoutingTokenizer<T> AddTokenizer(IHasStringIdTokenizer<T> t)
+        /// <summary>
+        /// ignores the nextRouter provided by the handling tokenizer and uses own routing 
+        /// </summary>
+        public bool OverridesTokenizerRouting { get; private set; }
+        /// <summary>
+        /// if no validating tokenizer can be found for a given cursor, it will capture the unrecognized area
+        /// as a token commented as UNRECOGNIZED
+        /// </summary>
+        public bool TokenizeUnrecognized { get; private set; }
+        public IStoreOf<TokenizerItem> TokenizerStore { get; private set; }
+        public IRoutingTokenizer<T> AddTokenizer(params IHasStringIdTokenizer<T>[] t)
         {
-            //tell each tokenizer to use the router as the backup router
-            var newT = t.HasRouting(this, false);
+            t.WithEach(x =>
+            {
 
-            TokenizerItem item = new TokenizerItem(newT);
+                TokenizerItem item = new TokenizerItem(x as IFaceted);
 
-            this.Rules.SaveItem(item);
+                this.TokenizerStore.SaveItem(item);
+
+            });
             return this;
         }
         public TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken)
@@ -83,7 +119,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             if (source.Length <= currentPosition)
                 return null;
 
-            List<TokenizerItem> tokenizers = Rules.GetAll();
+            List<TokenizerItem> tokenizers = TokenizerStore.GetAll();
 
             //iterate thru all the tokenizers and find ones that know if they can handle stuff
             foreach (var each in tokenizers)
@@ -115,9 +151,42 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
                 newPosition = -1;
                 return false;
             }
+            IForwardMovingTokenizer<T> newParserOUT = null;
             IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
-            var rv = alg.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            var rv = alg.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParserOUT);
+
+            //loop back into router to handle the next token
+            if (OverridesTokenizerRouting)
+                newParserOUT = this;
+            newParser = newParserOUT;
+
+            //if we classify unrecognized, then we do that here
+            if (!rv && this.TokenizeUnrecognized)
+            {
+                rv = true;
+                newPosition = GetNextRecognizedPosition(source, currentPosition, state, currentToken);
+
+                //get string between old and new positions
+                var tokenText = source.GetSegment(currentPosition, newPosition - currentPosition);
+
+                //returns a suffixed natural token
+                newToken = NaturalToken<T>.New(tokenText).HasComment("UNRECOGNIZED");
+            }
+
             return rv;
+        }
+        private int GetNextRecognizedPosition(T[] source, int currentPosition, object state, IToken<T> currentToken)
+        {
+            bool isRecognized = false;
+            int pos = currentPosition;
+            int maxPos = source.Length - 1;
+            while (!isRecognized && pos <= maxPos)
+            {
+                isRecognized = this.CanHandle(source, pos, state, currentToken);
+                if (!isRecognized)
+                    pos++;
+            }
+            return pos;
         }
         #endregion
 
@@ -127,10 +196,10 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             var rv = new RoutingTokenizerDecoration<T>(thing);
 
             //move the rules over
-            var rules = this.Rules.GetAll();
+            var rules = this.TokenizerStore.GetAll();
             rules.WithEach(x =>
             {
-                rv.Rules.SaveItem(x);
+                rv.TokenizerStore.SaveItem(x);
             });
 
             return rv;

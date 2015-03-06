@@ -550,6 +550,7 @@
     <Compile Include="Idioms\Throttling\ThrottlingLogicDecoration.cs" />
     <Compile Include="Idioms\Throttling\ThrottlingValueOfDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\CommandLine\CLConfig.cs" />
+    <Compile Include="Idioms\TokenParsing\HasComment\HasCommentTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasComposite\HasCompositeTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasComposite\CompositeTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasLength\HasLengthStrategyTokenizerDecoration.cs" />
@@ -574,7 +575,6 @@
     <Compile Include="Idioms\TokenParsing\HasSuffix\HasSuffixTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasPrefix\HasPrefixTokenDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasTokenizerId\HasTokenizerIdTokenDecoration.cs" />
-    <Compile Include="Idioms\TokenParsing\HasRouting\HasRoutingTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\HasValue\HasValueFactoryTokenizerDecoration.cs" />
     <Compile Include="Idioms\TokenParsing\NaturallyNotImplementedForwardMovingTokenizer.cs" />
     <Compile Include="Idioms\TokenParsing\HasRouting\RoutingTokenizerDecoration.cs" />

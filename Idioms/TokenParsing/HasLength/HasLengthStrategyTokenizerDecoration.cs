@@ -19,14 +19,14 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
     }
 
     /// <summary>
-    /// a tokenizer that tokenizes to the nearest suffix.  Defines the core tokenizing process as a parse and outputs
-    /// suffix decorated natural tokens.
+    /// a tokenizer that knows how long the token it will tokenize is.  uses this info to perform the tokenize.
     /// </summary>
     [Serializable]
     public class HasLengthStrategyTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IHasLengthStrategyTokenizerDecoration<T>
     {
         #region Ctor
-        public HasLengthStrategyTokenizerDecoration(IForwardMovingTokenizer<T> decorated, LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
+        public HasLengthStrategyTokenizerDecoration(IForwardMovingTokenizer<T> decorated,
+            LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
             : base(decorated)
         {
             Condition.Requires(lengthStrategy).IsNotNull();
@@ -35,7 +35,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
         #endregion
 
         #region Fluent Static
-        public static HasLengthStrategyTokenizerDecoration<T> New<T>(IForwardMovingTokenizer<T> decorated, LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
+        public static HasLengthStrategyTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
         {
             return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy);
         }
@@ -53,6 +53,9 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
         #endregion
 
         #region Implementation
+        /// <summary>
+        /// if we have a longer than 0 length we can tokenize
+        /// </summary>
         public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
         {
             get
@@ -66,7 +69,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
                 return cond;
             }
         }
-        public LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy  { get; private set; }
+        public LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy { get; private set; }
 
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken,
             out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)

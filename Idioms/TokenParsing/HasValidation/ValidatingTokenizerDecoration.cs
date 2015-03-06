@@ -31,7 +31,8 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
 
     /// <summary>
     /// tokenizer that knows if it can handle (ie. tokenize) the text provided.  Only one of this decoration per stack is allowed.
-    /// implemented with IHasHandleConditionTokenizer as well to specify implementation of handling filter as IConditionOf 
+    /// implemented with IHasHandleConditionTokenizer as well to specify implementation of handling filter as IConditionOf.
+    /// The default handle condition (eg. if canHandleCondition = null) uses the base.Parse call itself to validate
     /// </summary>
     /// <remarks>
     /// Works in conjunction with IHasHandleConditionTokenizer which is applied on any decoration that has a handling requirement.
@@ -51,12 +52,30 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
             if (decorated.HasDecoration<ValidatingTokenizerDecoration<T>>())
                 throw new InvalidOperationException("already self-directed");
 
-            this.CanTokenizeCondition = canHandleCondition;
+            if (canHandleCondition == null)
+            {
+                //default implementation is to do the base parse
+                this.CanTokenizeCondition = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New(cursor =>
+                {
+                    int newPosition;
+                    IToken<T> newToken;
+                    IForwardMovingTokenizer<T> newTokenizer;
+
+                    return base.Parse(cursor.Source, cursor.CurrentPosition, cursor.State, cursor.CurrentToken,
+                        out newPosition,
+                        out newToken,
+                        out newTokenizer);
+                });
+            }
+            else
+            {
+                this.CanTokenizeCondition = canHandleCondition;
+            }
         }
         #endregion
 
         #region Fluent Static
-        public static ValidatingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition)
+        public static ValidatingTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
         {
             return new ValidatingTokenizerDecoration<T>(decorated, canHandleCondition);
         }
