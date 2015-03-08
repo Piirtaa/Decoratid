@@ -59,7 +59,8 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
             {
                 //remove the suffix
                 var rv = base.TokenData;
-                rv = rv.GetSegment(0, rv.Length - this.Suffix.Length);
+                if(this.IsInclusive)
+                    rv = rv.GetSegment(0, rv.Length - this.Suffix.Length);
                 return rv;
             }
         }

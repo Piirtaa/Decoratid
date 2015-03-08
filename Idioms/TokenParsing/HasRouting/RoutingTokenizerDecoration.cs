@@ -152,11 +152,8 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
             if (rv)
             {
-                var cake = tokenizer.GetAllDecorations();
-                IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
+                IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>().GetOuterDecorator() as IForwardMovingTokenizer<T>;
                 var cake2 = alg.GetAllDecorations();
-                IForwardMovingTokenizer<T> alg2 = alg.GetOuterDecorator() as IForwardMovingTokenizer<T>;
-                var cake3 = alg2.GetAllDecorations();
                 
                 rv = alg.Parse(source, currentPosition, state, currentToken, out newPositionOUT, out newTokenOUT, out newParserOUT);
             }
@@ -169,18 +166,18 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             if (!rv && this.TokenizeUnrecognized)
             {
                 rv = true;
-                newPosition = GetNextRecognizedPosition(source, currentPosition, state, currentToken);
+                newPositionOUT = GetNextRecognizedPosition(source, currentPosition, state, currentToken);
 
                 //get string between old and new positions
-                var tokenText = source.GetSegment(currentPosition, newPosition - currentPosition);
+                var tokenText = source.GetSegment(currentPosition, newPositionOUT - currentPosition);
 
                 //returns a suffixed natural token
-                newToken = NaturalToken<T>.New(tokenText).HasComment("UNRECOGNIZED");
+                newTokenOUT = NaturalToken<T>.New(tokenText).HasComment("UNRECOGNIZED");
             }
 
             newParser = newParserOUT;
             newToken = newTokenOUT;
-            newPosition = -1;
+            newPosition = newPositionOUT;
 
             return rv;
         }

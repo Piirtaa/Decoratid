@@ -169,7 +169,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             //    .HasId("HasIdCommand");
 
             //mainRouter.AddTokenizer(decoratingCmdTokenizer).AddTokenizer(hasIdCmdTokenizer);
-            mainRouter.AddTokenizer(storeTokenizer);//, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
+            mainRouter.AddTokenizer(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
             return mainRouterStack;
         }
 

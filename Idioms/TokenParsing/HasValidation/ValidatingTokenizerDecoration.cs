@@ -47,8 +47,6 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
             IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
             : base(decorated)
         {
-            var cake = decorated.GetAllDecorations();
-
             //ensure no more than 1 selfdirected decoration is possible per stack
 
             //checking for this is a bit subtle.   at this point in the decoration process

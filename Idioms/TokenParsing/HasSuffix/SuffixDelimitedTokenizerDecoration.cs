@@ -22,6 +22,9 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
     public interface ISuffixDelimitedTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         T[][] Suffixes { get; }
+        /// <summary>
+        /// do we include the suffix in the produced token?
+        /// </summary>
         bool IsInclusive { get;}
     }
 
@@ -39,8 +42,6 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
             Condition.Requires(suffixes).IsNotEmpty();
             this.Suffixes = suffixes;
             this.IsInclusive = isInclusive;
-
-            var cake = this.GetAllDecorations();
         }
         #endregion
 
@@ -102,6 +103,8 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
             }
 
             newPosition = closestIdx;
+            if (this.IsInclusive)
+                newPosition += suffix.Length;
 
             //get string between old and new positions
             var tokenText = dataToTokenize.GetSegment(currentPosition, newPosition - currentPosition);

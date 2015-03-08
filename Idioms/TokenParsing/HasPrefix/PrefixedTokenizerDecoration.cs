@@ -32,8 +32,6 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
         {
             Condition.Requires(prefixes).IsNotEmpty();
             this.Prefixes = prefixes;
-
-            var cake = this.GetAllDecorations();
         }
         #endregion
 
