@@ -62,7 +62,7 @@ namespace Decoratid.Idioms.TokenParsing.HasId
         {
             IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with tokenizer id
             newTokenOUT = newTokenOUT.HasTokenizerId(this.Id);

@@ -152,7 +152,12 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
             if (rv)
             {
+                var cake = tokenizer.GetAllDecorations();
                 IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>();
+                var cake2 = alg.GetAllDecorations();
+                IForwardMovingTokenizer<T> alg2 = alg.GetOuterDecorator() as IForwardMovingTokenizer<T>;
+                var cake3 = alg2.GetAllDecorations();
+                
                 rv = alg.Parse(source, currentPosition, state, currentToken, out newPositionOUT, out newTokenOUT, out newParserOUT);
             }
 

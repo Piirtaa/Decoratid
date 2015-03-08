@@ -56,7 +56,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValue
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
             IToken<T> newTokenOUT = null;
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
             
             //apply the has value token scrub
             newTokenOUT.HasValueFactory(this.ValueFactory);

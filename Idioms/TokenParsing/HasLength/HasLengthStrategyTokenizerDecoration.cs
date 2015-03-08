@@ -28,7 +28,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
         #region Ctor
         public HasLengthStrategyTokenizerDecoration(IForwardMovingTokenizer<T> decorated,
             LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
-            : base(decorated)
+            : base(decorated.KnowsLength())
         {
             Condition.Requires(lengthStrategy).IsNotNull();
             this.LengthStrategy = lengthStrategy;
@@ -104,10 +104,11 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
 
     public static class HasLengthStrategyTokenizerDecorationExtensions
     {
-        public static HasLengthStrategyTokenizerDecoration<T> HasLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated, LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
+        public static IForwardMovingTokenizer<T> HasLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated, LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy);
+            return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
 
     }

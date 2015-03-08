@@ -82,6 +82,8 @@ namespace Decoratid.Core.Decorating
         #endregion
 
         #region IDecoration
+
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public object Decorated { get { return this._Decorated; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -111,6 +113,7 @@ namespace Decoratid.Core.Decorating
         {
             get { return this.Decorated != null; }
         }
+        public List<object> Cake { get { return this.GetAllDecorations(); } }
         #endregion
 
         #region Methods

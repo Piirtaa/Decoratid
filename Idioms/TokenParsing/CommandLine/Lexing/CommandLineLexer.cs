@@ -75,8 +75,8 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             #region Primitive-y Tokenizers - all routing unhydrated
             //store token starts with @ and ends with any punctuation
             var storeTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(at)
                 .HasSuffix(false, at, dot, comma, openParenthesis, closeParenthesis, hash, openBracket, closeBracket)
+                .HasPrefix(at)
                 .HasValueFactory(token =>
                 {
                     string storeName = new string(token.TokenData);
@@ -94,8 +94,8 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
             //id token starts with [ and ends with ]. brackets are non-nesting
             var idTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(openBracket)
                 .HasSuffix(true, closeBracket)
+                .HasPrefix(openBracket)
                 .HasValueFactory(token =>
                 {
                     string id = new string(token.TokenData);
@@ -104,14 +104,14 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
             //op token starts with . and ends with ( or .
             var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(dot)
                 .HasSuffix(false, dot, openParenthesis)
+                .HasPrefix(dot)
                 .HasId("Op");
 
             //ness token starts with # and ends with ( or .
             var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(hash)
                 .HasSuffix(false, dot, openParenthesis)
+                .HasPrefix(hash)
                 .HasValueFactory(token =>
                 {
                     string nessName = new string(token.TokenData);
@@ -145,11 +145,11 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             //is a compound that recurses the whole stack 
             //uses the mainRouter to recurse, but is not registered with it as it's not a high level token
             var parenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasPrefix(openParenthesis)
                 .HasLengthStrategy(LogicOfTo<ForwardMovingTokenizingCursor<char>, int>.New(cursor =>
                 {
                     return cursor.Source.GetPositionOfComplement(openParenthesis, closeParenthesis, cursor.CurrentPosition);
                 }))
+                .HasPrefix(openParenthesis)
                 .MakeComposite(mainRouter)
                 .HasId("Parenthesis");
             
@@ -169,7 +169,7 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             //    .HasId("HasIdCommand");
 
             //mainRouter.AddTokenizer(decoratingCmdTokenizer).AddTokenizer(hasIdCmdTokenizer);
-            mainRouter.AddTokenizer(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
+            mainRouter.AddTokenizer(storeTokenizer);//, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
             return mainRouterStack;
         }
 

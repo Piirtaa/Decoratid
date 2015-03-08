@@ -43,12 +43,21 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
     public class ValidatingTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, IValidatingTokenizer<T>, IHasHandleConditionTokenizer<T>
     {
         #region Ctor
-        public ValidatingTokenizerDecoration(IForwardMovingTokenizer<T> decorated, 
+        public ValidatingTokenizerDecoration(IForwardMovingTokenizer<T> decorated,
             IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
             : base(decorated)
         {
+            var cake = decorated.GetAllDecorations();
+
             //ensure no more than 1 selfdirected decoration is possible per stack
-            if (decorated.HasDecoration<ValidatingTokenizerDecoration<T>>())
+
+            //checking for this is a bit subtle.   at this point in the decoration process
+            // SetDecorated has been called by the base ctor, which puts ValidatingTokenizerDecoration
+            // as the topmost decoration.  So any AS call will return this, as it walks to topmost first.
+            //We need to check beneath this layer rather, and do an ASBelow call or we will always kack
+            var validator = decorated.AsBelow<ValidatingTokenizerDecoration<T>>();
+
+            if (validator != null)
                 throw new InvalidOperationException("already self-directed");
 
             if (canHandleCondition == null)
@@ -118,7 +127,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
 
             var cond = AndOf<ForwardMovingTokenizingCursor<T>>.New(conds.ToArray());
             var rv = cond.Evaluate(cursor);
-            
+
             if (!rv.GetValueOrDefault())
                 return false;
 
@@ -129,7 +138,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
             if (!CanHandle(source, currentPosition, state, currentToken))
                 throw new LexingException("cannot tokenize");
 
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
             return rv;
         }
         #endregion
@@ -150,16 +159,26 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
         /// <param name="decorated"></param>
         /// <param name="canHandleStrategy"></param>
         /// <returns></returns>
-        public static ValidatingTokenizerDecoration<T> HasValidation<T>(this IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
+        public static IForwardMovingTokenizer<T> HasValidation<T>(this IForwardMovingTokenizer<T> decorated, IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
         {
             Condition.Requires(decorated).IsNotNull();
+
+            /**NOTE:
+             * We search for the same decoration in order to prevent a duplication of decoration.
+             * We MUST ALWAYS return the outermost decoration!!!!!!
+             * This would naturally happen if we do a simple decoration.  
+             * If we don't return outermost then we can cause layers to disappear.
+             */ 
 
             //if we have a self direction decoration in the stack we return that
             var dec = decorated.As<ValidatingTokenizerDecoration<T>>(true);
             if (dec != null)
             {
-                dec.CanTokenizeCondition = dec.CanTokenizeCondition.And(canHandleCondition);
-                return dec;
+                if (canHandleCondition != null)
+                    dec.CanTokenizeCondition = dec.CanTokenizeCondition.And(canHandleCondition);
+
+                var outer = dec.GetOuterDecorator() as IForwardMovingTokenizer<T>;
+                return outer;
             }
             return new ValidatingTokenizerDecoration<T>(decorated, canHandleCondition);
         }

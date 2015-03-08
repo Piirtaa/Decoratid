@@ -96,10 +96,11 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
 
     public static class HasLengthTokenizerDecorationExtensions
     {
-        public static HasLengthTokenizerDecoration<T> HasLength<T>(this IForwardMovingTokenizer<T> decorated, int length)
+        public static IForwardMovingTokenizer<T> HasLength<T>(this IForwardMovingTokenizer<T> decorated, int length)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasLengthTokenizerDecoration<T>(decorated, length);
+            return new HasLengthTokenizerDecoration<T>(decorated, length).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
     }
 }

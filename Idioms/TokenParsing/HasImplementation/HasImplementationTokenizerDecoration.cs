@@ -85,7 +85,7 @@ namespace Decoratid.Idioms.TokenParsing.HasImplementation
 
     public static class HasImplementationTokenizerDecorationExtensions
     {
-        public static HasImplementationTokenizerDecoration<T> HasImplementation<T>(this IForwardMovingTokenizer<T> decorated,
+        public static IForwardMovingTokenizer<T> HasImplementation<T>(this IForwardMovingTokenizer<T> decorated,
             Func<ForwardMovingTokenizingCursor<T>, ForwardMovingTokenizingCursor<T>> tokenizingStrategy,
             IConditionOf<ForwardMovingTokenizingCursor<T>> canHandleCondition = null)
         {

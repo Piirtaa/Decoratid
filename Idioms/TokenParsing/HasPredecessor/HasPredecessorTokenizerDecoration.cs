@@ -33,7 +33,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
     {
         #region Ctor
         public HasPredecessorTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params string[] priorTokenizerIds)
-            : base(decorated.HasValidation())
+            : base(decorated)
         {
             this.PriorTokenizerIds = priorTokenizerIds;
         }
@@ -150,7 +150,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
         {
             IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with prior tokenizer id
             var priorTokenizerId = this.GetPriorTokenizerId(source, currentPosition, state, currentToken);
@@ -171,14 +171,15 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
 
     public static class HasPriorTokenizerIdTokenizerDecorationExtensions
     {
-        public static HasPredecessorTokenizerDecoration<T> HasPredecessorTokenizerIds<T>(this IForwardMovingTokenizer<T> decorated,
+        public static IForwardMovingTokenizer<T> HasPredecessorTokenizerIds<T>(this IForwardMovingTokenizer<T> decorated,
             params string[] priorTokenizerIds)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new HasPredecessorTokenizerDecoration<T>(decorated, priorTokenizerIds);
+            return new HasPredecessorTokenizerDecoration<T>(decorated, priorTokenizerIds).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
 
-        public static HasPredecessorTokenizerDecoration<T> HasPredecessorTokenizers<T>(this IForwardMovingTokenizer<T> decorated,
+        public static IForwardMovingTokenizer<T> HasPredecessorTokenizers<T>(this IForwardMovingTokenizer<T> decorated,
     params IHasStringIdTokenizer<T>[] priorTokenizers)
         {
             Condition.Requires(decorated).IsNotNull();
@@ -186,7 +187,8 @@ namespace Decoratid.Idioms.TokenParsing.HasPredecessor
             foreach (var each in priorTokenizers)
                 ids.Add(each.Id);
 
-            var rv = new HasPredecessorTokenizerDecoration<T>(decorated, ids.ToArray());
+            var rv = new HasPredecessorTokenizerDecoration<T>(decorated, ids.ToArray()).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
 
             //wire up the 
 

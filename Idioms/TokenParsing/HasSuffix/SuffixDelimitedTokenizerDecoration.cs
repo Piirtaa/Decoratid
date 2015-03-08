@@ -39,6 +39,8 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
             Condition.Requires(suffixes).IsNotEmpty();
             this.Suffixes = suffixes;
             this.IsInclusive = isInclusive;
+
+            var cake = this.GetAllDecorations();
         }
         #endregion
 
@@ -125,10 +127,11 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
 
     public static class SuffixDelimitedTokenizerDecorationExtensions
     {
-        public static SuffixDelimitedTokenizerDecoration<T> HasSuffix<T>(this IForwardMovingTokenizer<T> decorated, bool isInclusive, params T[][] suffixes)
+        public static IForwardMovingTokenizer<T> HasSuffix<T>(this IForwardMovingTokenizer<T> decorated, bool isInclusive, params T[][] suffixes)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new SuffixDelimitedTokenizerDecoration<T>(decorated, isInclusive, suffixes);
+            return new SuffixDelimitedTokenizerDecoration<T>(decorated, isInclusive, suffixes).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
     }
 }

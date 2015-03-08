@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Extensions;
 using Decoratid.Idioms.TokenParsing.HasValidation;
+using Decoratid.Idioms.TokenParsing.KnowsLength;
 
 namespace Decoratid.Idioms.TokenParsing.HasConstantValue
 {
     /// <summary>
     /// a tokenizer that parses constants
     /// </summary>
-    public interface IConstantTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>
+    public interface IConstantTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T>
     {
         T[] TokenValue { get; }
     }
@@ -29,7 +30,7 @@ namespace Decoratid.Idioms.TokenParsing.HasConstantValue
     {
         #region Ctor
         public ConstantTokenizerDecoration(IForwardMovingTokenizer<T> decorated, T[] tokenValue)
-            : base(decorated.HasValidation())
+            : base(decorated.KnowsLength())
         {
             Condition.Requires(tokenValue).IsNotNull();
             this.TokenValue = tokenValue;
@@ -99,10 +100,11 @@ namespace Decoratid.Idioms.TokenParsing.HasConstantValue
 
     public static class ConstantTokenizerDecorationExtensions
     {
-        public static ConstantTokenizerDecoration<T> HasConstantValue<T>(this IForwardMovingTokenizer<T> decorated, T[] tokenValue)
+        public static IForwardMovingTokenizer<T> HasConstantValue<T>(this IForwardMovingTokenizer<T> decorated, T[] tokenValue)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new ConstantTokenizerDecoration<T>(decorated, tokenValue);
+            return new ConstantTokenizerDecoration<T>(decorated, tokenValue).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
     }
 }

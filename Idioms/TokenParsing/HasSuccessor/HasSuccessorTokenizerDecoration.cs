@@ -58,7 +58,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSuccessor
 
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newToken, out newParser);
 
             newParser = this.NextTokenizer;
             return rv;

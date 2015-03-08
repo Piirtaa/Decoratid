@@ -28,10 +28,12 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
     {
         #region Ctor
         public PrefixedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
-            : base(decorated.HasValidation())
+            : base(decorated)
         {
             Condition.Requires(prefixes).IsNotEmpty();
             this.Prefixes = prefixes;
+
+            var cake = this.GetAllDecorations();
         }
         #endregion
 
@@ -98,7 +100,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
         {
             IToken<T> newTokenOUT = null;
 
-            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with prefix
             var prefix = this.GetPrefix(source, currentPosition);
@@ -119,10 +121,11 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
 
     public static class PrefixedTokenizerDecorationExtensions
     {
-        public static PrefixedTokenizerDecoration<T> HasPrefix<T>(this IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
+        public static IForwardMovingTokenizer<T> HasPrefix<T>(this IForwardMovingTokenizer<T> decorated, params T[][] prefixes)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new PrefixedTokenizerDecoration<T>(decorated, prefixes);
+            return new PrefixedTokenizerDecoration<T>(decorated, prefixes).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
     }
 }
