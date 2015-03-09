@@ -107,6 +107,7 @@ namespace Decoratid.Core.Decorating
             return returnValue;
         }
     }
+
     /// <summary>
     /// basically the mirror of IDecorationExtensions but going Upwards on the Decorator chain, instead of 
     /// Downwards on the Decorated chain

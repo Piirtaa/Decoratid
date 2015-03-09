@@ -21,7 +21,7 @@ namespace Decoratid.Core
      */ 
 
     /// <summary>
-    /// a tuple type of container of data that can be grown with more data, dynamically
+    /// a tuple type of container of data that can be grown with more data, dynamically.  HasId cos this is a common need.
     /// </summary>
     public class Arg : IFaceted, IHasId
     {

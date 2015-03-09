@@ -152,24 +152,24 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
                 .HasPrefix(openParenthesis)
                 .MakeComposite(mainRouter)
                 .HasId("Parenthesis");
-            
-            ////Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
+
+            //Decorating:   @[id1]#HasDateCreated(now)#HasId(id2)#HasName(name1)  
             //var decoratingCmdTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-            //    .MakeCompositeOf(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer,parenthesisTokenizer,commaTokenizer)
+            //    .MakeCompositeOf(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, parenthesisTokenizer, commaTokenizer)
             //    .HasId("Decorating");
-           
-            ////object manipulation
-            ////Saving:@[id1].Save()
-            ////Deleting:	@[id1].Delete()
-            ////Getting Ness Value:	@[id1]#HasDateCreated.Date
-            ////Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
-            ////Conditional Ness: #HasDateCreated.IsAfter(now)
+
+            //object manipulation
+            //Saving:@[id1].Save()
+            //Deleting:	@[id1].Delete()
+            //Getting Ness Value:	@[id1]#HasDateCreated.Date
+            //Performing Ness Op: @[id1]#HasDateCreated.SetDate(now)#HasBeep.Beep()
+            //Conditional Ness: #HasDateCreated.IsAfter(now)
             //var hasIdCmdTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-            //    .MakeCompositeOf(storeTokenizer, idTokenizer, nessTokenizer,  parenthesisTokenizer)
+            //    .MakeCompositeOf(storeTokenizer, idTokenizer, nessTokenizer, parenthesisTokenizer)
             //    .HasId("HasIdCommand");
 
-            //mainRouter.AddTokenizer(decoratingCmdTokenizer).AddTokenizer(hasIdCmdTokenizer);
-            mainRouter.AddTokenizer(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer);
+           // mainRouter.AddTokenizer(hasIdCmdTokenizer);//.AddTokenizer(decoratingCmdTokenizer).
+            mainRouter.AddTokenizer(storeTokenizer, idTokenizer, opTokenizer, nessTokenizer, commaTokenizer, parenthesisTokenizer);
             return mainRouterStack;
         }
 

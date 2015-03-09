@@ -14,6 +14,13 @@ using Decoratid.Idioms.TokenParsing.KnowsLength;
 
 namespace Decoratid.Idioms.TokenParsing.HasLength
 {
+    /// <summary>
+    /// the tokenizer knows how to calculate the length of its parse.  
+    /// -if the calculated length exceeds the length available, we cannot handle -> thus IHasHandleCondition
+    /// -if the calculated length is 0, we cannot handle -> thus IHasHandleCondition
+    /// -marked with IKnowsLength to declare that this layer defines the parse length
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IHasLengthStrategyTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy { get; }
@@ -54,18 +61,23 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
         #endregion
 
         #region Implementation
-        /// <summary>
-        /// if we have a longer than 0 length we can tokenize
-        /// </summary>
         public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
         {
             get
             {
                 var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
                 {
+                    //calculate the length
                     var res = this.LengthStrategy.Perform(x) as LogicOfTo<ForwardMovingTokenizingCursor<T>, int>;
                     int length = res.Result;
-                    return x.CurrentPosition + length <= x.Source.Length;
+
+                    if (x.CurrentPosition + length >= x.Source.Length)
+                        return false;
+
+                    if (length <= 0)
+                        return false;
+                    
+                    return true;
                 });
                 return cond;
             }

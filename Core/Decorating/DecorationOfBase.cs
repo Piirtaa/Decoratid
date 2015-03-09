@@ -132,6 +132,7 @@ namespace Decoratid.Core.Decorating
         {
             get { return this.Decorated != null; }
         }
+        public List<object> Cake { get { return this.GetAllDecorations(); } }
         #endregion
 
 
@@ -179,6 +180,32 @@ namespace Decoratid.Core.Decorating
             {
                 (decorated as IDecoratorAwareDecoration).Decorator = this;
             }
+
+            //if a cake constraint (aka IHasDecoration) is declared anywhere in the stack
+            //we validate the current cake supports the constraint.  this is a topdown walk
+            var cake = this.Cake;
+            cake.WithEach(layer =>
+            {
+                if (layer is IHasDecoration)
+                {
+                    //get all the interfaces it has, that derive from IHasDecoration
+                    var layerType = layer.GetType();
+                    var interfaces = layerType.GetInterfaces();
+                    foreach (var interfaceType in interfaces)
+                    {
+                        if (!(typeof(IHasDecoration).IsAssignableFrom(interfaceType)))
+                            continue;
+
+                        var requiredDecorations = interfaceType.GetGenericArguments();
+
+                        foreach (Type each in requiredDecorations)
+                        {
+                            if (this.As(each, false) == null)
+                                throw new InvalidOperationException(string.Format("required decoration {0} not found in cake", each.Name));
+                        }
+                    }
+                }
+            });
         }
         /// <summary>
         /// replaces the Decorated member.  In effect, we are injecting a decoration immediately below the "surface"

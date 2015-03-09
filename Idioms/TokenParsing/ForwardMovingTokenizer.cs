@@ -6,6 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Idioms.TokenParsing.HasStartEnd;
+using System.Diagnostics;
+using Decoratid.Core;
+using Decoratid.Core.Decorating;
+using Decoratid.Core.Identifying;
+using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
+using Decoratid.Idioms.TokenParsing.HasComment;
 
 namespace Decoratid.Idioms.TokenParsing
 {
@@ -66,6 +73,16 @@ namespace Decoratid.Idioms.TokenParsing
             return rv;
         }
 
+        public static string DumpToken<T>(IToken<T> token)
+        {
+            var rv = string.Format("TokenizerId:{0} StartPos:{1} Data:{2} Comment:{3}",
+                token.As<IHasTokenizerId<T>>(false).With(x => x.TokenizerId),
+                token.As<IStartEndPositionalToken<T>>(false).WithValueType(x => x.StartPos),
+                string.Join("", token.TokenData),
+                token.As<IHasCommentToken<T>>(false).With(x => x.Comment));
+
+            return rv;
+        }
         /// <summary>
         /// tokenizes until it can't anymore
         /// </summary>
@@ -76,6 +93,8 @@ namespace Decoratid.Idioms.TokenParsing
         /// <returns></returns>
         public static List<IToken<T>> ForwardMovingTokenize<T>(this T[] rawData, object state, IForwardMovingTokenizer<T> parser, out int newPosition)
         {
+            Debug.WriteLine(string.Format("ForwardMovingTokenize. starts {0}", string.Join("", rawData)));
+
             List<IToken<T>> rv = new List<IToken<T>>();
             newPosition = 0;
 
@@ -103,22 +122,37 @@ namespace Decoratid.Idioms.TokenParsing
 
                 var priorToken = token;
                 var startPos = pos;
+                string currentParserId = currentParser.As<IHasId>(false).With(x => x.Id.ToString());
+                string currentParserType = currentParser.GetType().Name;
 
+                Debug.WriteLine("ForwardMovingTokenize. iteration starts @ {0} with {1}, {2}", pos, currentParserId, currentParserType);
                 goodParse = currentParser.Parse(rawData, pos, state, token, out pos, out token, out currentParser);
                 if (goodParse)
                 {
+                    Debug.WriteLine("ForwardMovingTokenize. iteration @ {0} with {1} success", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
+
                     if (token != null)
                     {
+
                         token.PriorToken = priorToken;
                         //decorate token with positional info
                         token = token.HasStartEnd(startPos, pos);
 
+                        Debug.WriteLine(string.Format("ForwardMovingTokenize. Token={0}", DumpToken(token)));
+
                         rv.Add(token);
                     }
+                }
+                else
+                {
+                    Debug.WriteLine("ForwardMovingTokenize. iteration @ {0} with {1} fail", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
                 }
             }
 
             newPosition = pos;
+
+            Debug.WriteLine(string.Format("ForwardMovingTokenize. ends {0}", string.Join("", rawData)));
+
             return rv;
         }
 

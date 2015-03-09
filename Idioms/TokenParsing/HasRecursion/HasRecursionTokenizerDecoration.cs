@@ -17,18 +17,16 @@ using System.Threading.Tasks;
 using Decoratid.Idioms.TokenParsing.HasRouting;
 using Decoratid.Idioms.TokenParsing.HasLength;
 using Decoratid.Core.Logical;
-using Decoratid.Idioms.TokenParsing.KnowsLength;
 
-namespace Decoratid.Idioms.TokenParsing.HasComposite
+namespace Decoratid.Idioms.TokenParsing.HasRecursion
 {
     /// <summary>
-    ///composite tokenizers essentially encapsulate the task of tokenizing (with the state provided, using a 
-    ///router as the initial logic).  takes the results and sticks them in a child token.  
-    ///MUST decorate an IKnowsLength decorated stack, as this will indicate how far to tokenize (and thus parse).
-    ///It means that somewhere on the stack there has to be a HasSuffix, HasLength, HasLengthStrategy or 
-    ///similarly IKnowsLength marked decoration.
+    ///composite tokenizers essentially encapsulate the task of tokenizing with the state provided, using a 
+    ///router as the initial logic.  takes the results and sticks them in a child token.  will tokenize as
+    ///far as the routing allows for.  
     /// </summary>
-    public interface ICompositeTokenizer<T> : IHasDecoration<IKnowsLengthTokenizerDecoration<T>>
+    public interface ICompositeTokenizer<T> : IValidatingTokenizer<T>,
+        IHasLengthStrategyTokenizerDecoration<T>
     {
         IRoutingTokenizer<T> Router { get; }
 
@@ -45,14 +43,17 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
     /// <remarks>
     /// creates a token that has child tokens 
     /// has a router that contains child token defs
+    /// has length strategy that will default to perform the routed walk to see how long things are
+    /// has 
     /// </remarks>
     [Serializable]
-    public class CompositeTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>,
+    public class CompositeTokenizerDecoration<T> : ForwardMovingTokenizerDecorationBase<T>, 
         ICompositeTokenizer<T>
     {
         #region Ctor
-        public CompositeTokenizerDecoration(IForwardMovingTokenizer<T> decorated,
+        public CompositeTokenizerDecoration(IForwardMovingTokenizer<T> decorated, 
             IRoutingTokenizer<T> router = null,
+            LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy = null,
             LogicOfTo<ForwardMovingTokenizingCursor<T>, object> stateStrategy = null)
             : base(decorated)
         {
@@ -64,7 +65,20 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
             {
                 this.Router = router;
             }
-
+            if (lengthStrategy == null)
+            {
+                //do a router parse and see how far we go
+                this.LengthStrategy = LogicOfTo<ForwardMovingTokenizingCursor<T>, int>.New(cursor =>
+                {
+                    int newPos;
+                    var vals = this.routerParse(cursor.Source, cursor.CurrentPosition, cursor.State, cursor.CurrentToken, out newPos);
+                    return newPos;
+                });
+            }
+            else
+            {
+                this.LengthStrategy = lengthStrategy;
+            }
             if (stateStrategy == null)
             {
                 this.StateStrategy = LogicOfTo<ForwardMovingTokenizingCursor<T>, object>.New(cursor =>
@@ -81,9 +95,10 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
 
         #region Fluent Static
         public static CompositeTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, IRoutingTokenizer<T> router = null,
+            LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy = null,
             LogicOfTo<ForwardMovingTokenizingCursor<T>, object> stateStrategy = null)
         {
-            return new CompositeTokenizerDecoration<T>(decorated, router,  stateStrategy);
+            return new CompositeTokenizerDecoration<T>(decorated, router, lengthStrategy, stateStrategy);
         }
         #endregion
 
@@ -107,7 +122,7 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
         /// <param name="currentToken"></param>
         /// <param name="newPosition"></param>
         /// <returns></returns>
-        private List<IToken<T>> routerParse(T[] rawData, int currentPosition, object state, IToken<T> currentToken, out int newPosition)
+        private List<IToken<T>> routerParse<T>(T[] rawData,int currentPosition, object state, IToken<T> currentToken, out int newPosition)
         {
             var res = this.StateStrategy.Perform(ForwardMovingTokenizingCursor<T>.New(rawData, currentPosition, state, currentToken)) as LogicOfTo<ForwardMovingTokenizingCursor<T>, object>;
             object routerInitialState = res.Result;
@@ -132,7 +147,15 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
 
         #region Implementation
         public LogicOfTo<ForwardMovingTokenizingCursor<T>, object> StateStrategy { get; private set; }
+        public LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy { get; private set; }
         public IRoutingTokenizer<T> Router { get; private set; }
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition { get; set; }
+        public bool CanHandle(T[] source, int currentPosition, object state, IToken<T> currentToken)
+        {
+            int newPosition;
+            this.routerParse(source, currentPosition, state, currentToken, out newPosition);
+            return newPosition > 0;
+        }
 
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
@@ -168,12 +191,13 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
 
     public static class CompositeTokenizerDecorationExtensions
     {
-        public static CompositeTokenizerDecoration<T> MakeComposite<T>(this IForwardMovingTokenizer<T> decorated,
+        public static CompositeTokenizerDecoration<T> MakeComposite<T>(this IForwardMovingTokenizer<T> decorated, 
             IRoutingTokenizer<T> router = null,
+            LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy = null,
             LogicOfTo<ForwardMovingTokenizingCursor<T>, object> stateStrategy = null)
         {
             Condition.Requires(decorated).IsNotNull();
-            return new CompositeTokenizerDecoration<T>(decorated, router,  stateStrategy);
+            return new CompositeTokenizerDecoration<T>(decorated, router, lengthStrategy, stateStrategy);
         }
         public static CompositeTokenizerDecoration<T> MakeCompositeOf<T>(this IForwardMovingTokenizer<T> decorated, params IForwardMovingTokenizer<T>[] composites)
         {

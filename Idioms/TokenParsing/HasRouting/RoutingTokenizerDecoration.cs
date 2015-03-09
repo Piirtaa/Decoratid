@@ -21,6 +21,7 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
     //define behaviour of the logic for each bit
     using TokenizerItem = IsA<IHasId<string>>;
+    using System.Diagnostics;
 
     /// <summary>
     /// this decoration delegates the actual tokenizing process to the appropriate tokenizer. Typically instances of this
@@ -116,6 +117,8 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         }
         public TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
+           // Debug.WriteLine("Router getting tokenizer @ {0} of {1}", currentPosition, string.Join("", source));
+
             //if we're passed the end of the source, return null
             if (source.Length <= currentPosition)
                 return null;
@@ -129,8 +132,12 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
                 if (sd != null)
                     if (sd.CanHandle(source, currentPosition, state, currentToken))
+                    {
+                       // Debug.WriteLine("Router gets {0}", each.Id);
                         return each;
+                    }
             }
+            //Debug.WriteLine("Router cannot get tokenizer");
             return null;
         }
 
@@ -141,6 +148,8 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         }
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
+            //Debug.WriteLine("Parsing @ {0} of {1}", currentPosition, string.Join("", source));
+
             //get the new tokenizer
             var tokenizer = GetTokenizer(source, currentPosition, state, currentToken);
             
@@ -152,9 +161,9 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
 
             if (rv)
             {
+                //Debug.WriteLine("located tokenizer delegated to");
                 IForwardMovingTokenizer<T> alg = tokenizer.As<IForwardMovingTokenizer<T>>().GetOuterDecorator() as IForwardMovingTokenizer<T>;
                 var cake2 = alg.GetAllDecorations();
-                
                 rv = alg.Parse(source, currentPosition, state, currentToken, out newPositionOUT, out newTokenOUT, out newParserOUT);
             }
 
@@ -165,19 +174,33 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
             //if we classify unrecognized, then we do that here
             if (!rv && this.TokenizeUnrecognized)
             {
+                //Debug.WriteLine("classifying unrecognized");
+
                 rv = true;
                 newPositionOUT = GetNextRecognizedPosition(source, currentPosition, state, currentToken);
 
                 //get string between old and new positions
                 var tokenText = source.GetSegment(currentPosition, newPositionOUT - currentPosition);
 
+                //Debug.WriteLine("unrecognized runs to {0}, producing {1}", newPositionOUT, string.Join("", tokenText));
+
                 //returns a suffixed natural token
                 newTokenOUT = NaturalToken<T>.New(tokenText).HasComment("UNRECOGNIZED");
+
+                newParserOUT = this;
             }
 
             newParser = newParserOUT;
             newToken = newTokenOUT;
             newPosition = newPositionOUT;
+
+            //if (!rv)
+            //    Debug.WriteLine("tokenize fail.");
+
+            //if (rv)
+            //    Debug.WriteLine("tokenize successful. new position = {0}. token = {1}", newPositionOUT, string.Join("", newToken.TokenData));
+
+            //Debug.WriteLine("Parsing Complete @ {0} of {1}", currentPosition, string.Join("", source));
 
             return rv;
         }

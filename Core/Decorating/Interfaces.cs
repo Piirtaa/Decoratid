@@ -74,6 +74,32 @@ namespace Decoratid.Core.Decorating
         IDecorationOf<T> ApplyThisDecorationTo(T thing);
     }
 
+    //a bunch of marker interfaces to use as placeholders, type constraints 
+    //indicating that the decoration cake contains the specified type
+    public interface IHasDecoration { }
+    public interface IHasDecoration<T1> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3> :IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> : IHasDecoration { }
+    public interface IHasDecoration<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23> : IHasDecoration { }
 
 
 
