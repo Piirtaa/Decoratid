@@ -136,6 +136,16 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
 
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
+            IToken<T> newTokenOUT;
+            int newPosOUT;
+            IForwardMovingTokenizer<T> newTokenizerOUT;
+
+            //do the initial parse by length
+            var rv = base.Parse(source, currentPosition, state, currentToken, out newPosOUT, out newTokenOUT, out newTokenizerOUT);
+
+            //get the substring to dig into
+            var compositeSeg = source.GetSegment(currentPosition, newPosOUT - currentPosition);
+
             int newPos;
             var tokens = this.routerParse(source, currentPosition, state, currentToken, out newPos);
 

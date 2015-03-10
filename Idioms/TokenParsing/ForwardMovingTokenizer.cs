@@ -129,7 +129,7 @@ namespace Decoratid.Idioms.TokenParsing
                 goodParse = currentParser.Parse(rawData, pos, state, token, out pos, out token, out currentParser);
                 if (goodParse)
                 {
-                    Debug.WriteLine("ForwardMovingTokenize. iteration @ {0} with {1} success", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
+                    Debug.WriteLine("ForwardMovingTokenize. iteration success @ {0} with {1} ", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
 
                     if (token != null)
                     {
@@ -145,7 +145,7 @@ namespace Decoratid.Idioms.TokenParsing
                 }
                 else
                 {
-                    Debug.WriteLine("ForwardMovingTokenize. iteration @ {0} with {1} fail", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
+                    Debug.WriteLine("ForwardMovingTokenize. iteration fail @ {0} with {1}", pos, currentParser.As<IHasId>(false).With(x => x.Id.ToString()));
                 }
             }
 

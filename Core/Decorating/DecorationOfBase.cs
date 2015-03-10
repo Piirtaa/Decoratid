@@ -190,10 +190,11 @@ namespace Decoratid.Core.Decorating
                 {
                     //get all the interfaces it has, that derive from IHasDecoration
                     var layerType = layer.GetType();
+
                     var interfaces = layerType.GetInterfaces();
                     foreach (var interfaceType in interfaces)
                     {
-                        if (!(typeof(IHasDecoration).IsAssignableFrom(interfaceType)))
+                        if (!interfaceType.Name.Contains("IHasDecoration`"))
                             continue;
 
                         var requiredDecorations = interfaceType.GetGenericArguments();

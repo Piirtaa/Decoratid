@@ -147,7 +147,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             var parenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
                 .HasLengthStrategy(LogicOfTo<ForwardMovingTokenizingCursor<char>, int>.New(cursor =>
                 {
-                    return cursor.Source.GetPositionOfComplement(openParenthesis, closeParenthesis, cursor.CurrentPosition);
+                    var rv = GetPositionOfComplement(cursor.Source, openParenthesis, closeParenthesis, cursor.CurrentPosition);
+
+                    return rv - cursor.CurrentPosition;
                 }))
                 .HasPrefix(openParenthesis)
                 .MakeComposite(mainRouter)
@@ -185,6 +187,41 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             });
 
             return rv;
+        }
+        /// <summary>
+        /// Parsing helper.  Looks for the next "right" segment such that the count of "left" and "right" segments
+        /// are equal.  This ensures we get a well-formed bracketing of left and right.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="startPos"></param>
+        /// <returns></returns>
+        public static int GetPositionOfComplement<T>( T[] source, T[] left, T[] right, int startPos = 0)
+        {
+            //  Condition.Requires(source.StartsWithSegment(left)).IsTrue();
+
+            int pos = startPos;
+            int unmatchedpairs = 0;
+            for (int i = startPos; i < source.Length; i++)
+            {
+                pos = i;
+
+                if (source.StartsWithSegment(left, i))
+                {
+                    unmatchedpairs++;
+                    i += left.Length;
+                }
+                if (source.StartsWithSegment(right, i))
+                {
+                    unmatchedpairs--;
+                    i += left.Length;
+                }
+                if (unmatchedpairs == 0)
+                    break;
+            }
+            return pos;
         }
     }
 }

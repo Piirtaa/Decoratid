@@ -35,7 +35,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
         #endregion
 
         #region Fluent Static
-        public static HasLengthTokenizerDecoration<T> New<T>(IForwardMovingTokenizer<T> decorated, int length)
+        public static HasLengthTokenizerDecoration<T> New(IForwardMovingTokenizer<T> decorated, int length)
         {
             return new HasLengthTokenizerDecoration<T>(decorated, length);
         }
