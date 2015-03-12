@@ -13,10 +13,87 @@ namespace Decoratid.Extensions
     /// Extensions that operate on enumerables 
     /// </summary>
     /// 
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static class EnumerableExtensions
     {
+        /// <summary>
+        /// given some text, looks to find the matching suffix in the provided items list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static T[] FindMatchingSuffix<T>(this T[] source, T[][] items)
+        {
+            foreach (T[] each in items)
+                if (source.EndsWithSegment(each))
+                    return each;
 
+            return null;
+        }
+        /// <summary>
+        /// given some text, looks to find the matching prefix in the provided items list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="currentPosition"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static T[] FindMatchingPrefix<T>(this T[] source, int currentPosition, T[][] items)
+        {
+            var substring = source.GetSegment(currentPosition);
+
+            foreach (T[] each in items)
+                if (substring.StartsWithSegment(each))
+                    return each;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parsing helper.  Looks for the next "right" segment such that the count of "left" and "right" segments
+        /// are equal.  This ensures we get a well-formed bracketing of left and right.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="startPos"></param>
+        /// <returns></returns>
+        public static int GetPositionOfComplement<T>(this T[] source, T[] left, T[] right, int startPos = 0)
+        {
+            //  Condition.Requires(source.StartsWithSegment(left)).IsTrue();
+
+            int pos = startPos;
+            int unmatchedpairs = 0;
+            for (int i = startPos; i < source.Length;)
+            {
+                var currentChar = source[i];
+                pos = i;
+
+                if (source.StartsWithSegment(left, i))
+                {
+                    unmatchedpairs++;
+                    i += left.Length;
+                }
+                else if (source.StartsWithSegment(right, i))
+                {
+                    unmatchedpairs--;
+                    i += right.Length;
+                }
+                else
+                {
+                    i++;
+                }
+
+                if (unmatchedpairs == 0)
+                {
+                    pos = i;
+                    break;
+                }
+            }
+            return pos;
+        }
 
         /// <summary>
         /// does the source start with the prefix at the given position
@@ -38,6 +115,24 @@ namespace Decoratid.Extensions
 
             for (int i = 0; i < prefix.Length; i++)
                 if (!source[startPos + i].Equals(prefix[i]))
+                    return false;
+
+            return true;
+        }
+
+        public static bool EndsWithSegment<T>(this T[] source, T[] suffix)
+        {
+            if (source == null)
+                return false;
+
+            if (suffix == null)
+                return false;
+
+            Condition.Requires(source).IsLongerOrEqual(suffix.Length);
+            int length = source.Length;
+
+            for (int i = 0; i < suffix.Length; i++)
+                if (!source[length - i - 1].Equals(suffix[suffix.Length - i - 1]))
                     return false;
 
             return true;

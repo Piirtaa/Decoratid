@@ -21,7 +21,7 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
     /// -marked with IKnowsLength to declare that this layer defines the parse length
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IHasLengthStrategyTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
+    public interface IHasLengthStrategyTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T>
     {
         LogicOfTo<ForwardMovingTokenizingCursor<T>, int> LengthStrategy { get; }
     }
@@ -71,12 +71,12 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
                     var res = this.LengthStrategy.Perform(x) as LogicOfTo<ForwardMovingTokenizingCursor<T>, int>;
                     int length = res.Result;
 
-                    if (x.CurrentPosition + length >= x.Source.Length)
+                    if (x.CurrentPosition + length > x.Source.Length)
                         return false;
 
                     if (length <= 0)
                         return false;
-                    
+
                     return true;
                 });
                 return cond;
@@ -116,13 +116,57 @@ namespace Decoratid.Idioms.TokenParsing.HasLength
 
     public static class HasLengthStrategyTokenizerDecorationExtensions
     {
-        public static IForwardMovingTokenizer<T> HasLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated, 
+        public static IForwardMovingTokenizer<T> HasLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated,
             LogicOfTo<ForwardMovingTokenizingCursor<T>, int> lengthStrategy)
         {
             Condition.Requires(decorated).IsNotNull();
             return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy).HasValidation();
             //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
         }
+        public static IForwardMovingTokenizer<T> HasSuffixDelimitedLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated,
+                params T[][] suffixes)
+        {
+            Condition.Requires(decorated).IsNotNull();
+
+            var lengthStrategy = LogicOfTo<ForwardMovingTokenizingCursor<T>, int>.New(x =>
+            {
+                int closestIdx = -1;
+                T[] suffix = null;
+
+                closestIdx = x.Source.FindNearestIndexOf(suffixes, out suffix, x.CurrentPosition);
+
+                if (closestIdx <= 0)
+                    return 0;
+
+                var rv = closestIdx - x.CurrentPosition;
+
+                return rv;
+            });
+
+            return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
+        }
+        public static IForwardMovingTokenizer<T> HasPairDelimitedLengthStrategy<T>(this IForwardMovingTokenizer<T> decorated,
+        T[] prefix, T[] suffix)
+        {
+            Condition.Requires(decorated).IsNotNull();
+            Condition.Requires(prefix).IsNotNull().IsNotEmpty();
+            Condition.Requires(suffix).IsNotNull().IsNotEmpty();
+
+            var lengthStrategy = LogicOfTo<ForwardMovingTokenizingCursor<T>, int>.New(x =>
+            {
+                var pos = x.Source.GetPositionOfComplement(prefix, suffix, x.CurrentPosition);
+                var rv = pos - x.CurrentPosition;
+
+                if (rv <= 0)
+                    return 0;
+                return rv;
+            });
+
+            return new HasLengthStrategyTokenizerDecoration<T>(decorated, lengthStrategy).HasValidation();
+            //NOTE: good practice is to add validation fluently after any decoration that introduces a handling condition
+        }
+
 
     }
 }

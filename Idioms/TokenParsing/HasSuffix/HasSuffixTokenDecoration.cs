@@ -27,6 +27,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
         public HasSuffixTokenDecoration(IToken<T> decorated, T[] suffix, bool isInclusive)
             : base(decorated)
         {
+            Condition.Requires(suffix).IsNotNull().IsNotEmpty();
             this.Suffix = suffix;
             this.IsInclusive = isInclusive;
         }

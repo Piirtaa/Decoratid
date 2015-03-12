@@ -29,7 +29,7 @@ namespace Decoratid.Core.Decorating
     /// Implements ISerializable so that derivations from this class will have hooks to implement
     /// native serialization
     /// </remarks>
-    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted, IDecoratorAwareDecoration
+    public abstract class DecorationOfBase<T> : DisposableBase, IDecorationOf<T>, ISerializable, IFaceted, IDecoratorAwareDecoration, ITogglingDecoration
     {
         #region Declarations
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -120,6 +120,10 @@ namespace Decoratid.Core.Decorating
         /// the outermost decoration in the stack
         /// </summary>
         public object Outer { get { return this.GetOuterDecorator(); } }
+        #endregion
+
+        #region ITogglingDecoration
+        public bool IsDecorationEnabled { get; set; }
         #endregion
 
         #region Calculated Properties

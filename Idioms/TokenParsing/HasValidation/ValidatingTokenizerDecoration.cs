@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Decoratid.Core;
 using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasId;
+using System.Diagnostics;
 
 namespace Decoratid.Idioms.TokenParsing.HasValidation
 {
@@ -113,23 +115,31 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
             var decs = this.GetAllDecorations();
 
             var hasConditions = this.GetAllImplementingDecorations<IHasHandleConditionTokenizer<T>>();
-            List<IConditionOf<ForwardMovingTokenizingCursor<T>>> conds = new List<IConditionOf<ForwardMovingTokenizingCursor<T>>>();
-            hasConditions.WithEach(x =>
-            {
-                if (x.CanTokenizeCondition != null)
-                    conds.Add(x.CanTokenizeCondition);
-            });
 
-            if (conds.Count == 0)
-                return false;
+            var segmentText = string.Join("", source.GetSegment(currentPosition));
+            Debug.WriteLine(string.Format("can handle {0}?", segmentText));
+            Debug.WriteLine(string.Format("   {0}", this.GetDecorationSummary()));
 
-            var cond = AndOf<ForwardMovingTokenizingCursor<T>>.New(conds.ToArray());
-            var rv = cond.Evaluate(cursor);
+            var rv = true;
 
-            if (!rv.GetValueOrDefault())
-                return false;
+            if (hasConditions != null)
+                foreach (var each in hasConditions)
+                {
+                    if (each.CanTokenizeCondition == null)
+                        continue;
 
-            return true;
+                    var canTokenize = each.CanTokenizeCondition.Evaluate(cursor).GetValueOrDefault();
+                    Debug.WriteLine("       layer {0} = {1}", each.GetType().Name, canTokenize.ToString());
+                    if (!canTokenize)
+                    {
+                        rv = false;
+                        break;
+                    }
+                }
+
+            Debug.WriteLine("   " + rv.ToString());
+
+            return rv;
         }
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
@@ -166,7 +176,7 @@ namespace Decoratid.Idioms.TokenParsing.HasValidation
              * We MUST ALWAYS return the outermost decoration!!!!!!
              * This would naturally happen if we do a simple decoration.  
              * If we don't return outermost then we can cause layers to disappear.
-             */ 
+             */
 
             //if we have a self direction decoration in the stack we return that
             var dec = decorated.As<ValidatingTokenizerDecoration<T>>(true);

@@ -18,6 +18,7 @@ using Decoratid.Idioms.TokenParsing.HasRouting;
 using Decoratid.Idioms.TokenParsing.HasLength;
 using Decoratid.Core.Logical;
 using Decoratid.Idioms.TokenParsing.KnowsLength;
+using System.Diagnostics;
 
 namespace Decoratid.Idioms.TokenParsing.HasComposite
 {
@@ -97,38 +98,6 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
             base.ISerializable_GetObjectData(info, context);
         }
         #endregion
-        /// <summary>
-        /// using the router, and a calculated initial state, performs a tokenize 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="rawData"></param>
-        /// <param name="currentPosition"></param>
-        /// <param name="state"></param>
-        /// <param name="currentToken"></param>
-        /// <param name="newPosition"></param>
-        /// <returns></returns>
-        private List<IToken<T>> routerParse(T[] rawData, int currentPosition, object state, IToken<T> currentToken, out int newPosition)
-        {
-            var res = this.StateStrategy.Perform(ForwardMovingTokenizingCursor<T>.New(rawData, currentPosition, state, currentToken)) as LogicOfTo<ForwardMovingTokenizingCursor<T>, object>;
-            object routerInitialState = res.Result;
-
-            //get the substring from current position
-            var subData = rawData.GetSegment(currentPosition);
-
-            int newPos;
-            var rv = subData.ForwardMovingTokenize(routerInitialState, this.Router as IForwardMovingTokenizer<T>, out newPos);
-
-            //calc length to validate
-            int length = 0;
-            rv.WithEach(x =>
-            {
-                length += x.TokenData.Length;
-            });
-            Condition.Requires(length).IsEqualTo(newPos);
-
-            newPosition = currentPosition + newPos;
-            return rv;
-        }
 
         #region Implementation
         public LogicOfTo<ForwardMovingTokenizingCursor<T>, object> StateStrategy { get; private set; }
@@ -143,13 +112,7 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
             //do the initial parse by length
             var rv = base.Parse(source, currentPosition, state, currentToken, out newPosOUT, out newTokenOUT, out newTokenizerOUT);
 
-            //get the substring to dig into
-            var compositeSeg = source.GetSegment(currentPosition, newPosOUT - currentPosition);
-
-            int newPos;
-            var tokens = this.routerParse(source, currentPosition, state, currentToken, out newPos);
-
-            if (newPos == 0)
+            if (!rv)
             {
                 newPosition = currentPosition;
                 newToken = null;
@@ -157,11 +120,23 @@ namespace Decoratid.Idioms.TokenParsing.HasComposite
                 return false;
             }
 
-            //build the composite
-            var segData = source.GetSegment(currentPosition, newPos);
-            newToken = NaturalToken<T>.New(segData).HasComposite(tokens.ToArray());
-            newParser = null;
-            newPosition = currentPosition + newPos;
+            Debug.WriteLine(string.Format("Composite token created. Token={0}", newTokenOUT.DumpToken()));
+
+            //get the substring to dig into
+            var compositeSeg = newTokenOUT.TokenData;
+
+            //build state data for recursion
+            var res = this.StateStrategy.Perform(ForwardMovingTokenizingCursor<T>.New(compositeSeg, currentPosition, state, currentToken)) as LogicOfTo<ForwardMovingTokenizingCursor<T>, object>;
+            object routerInitialState = res.Result;
+
+            int newPos;
+            var childTokens = compositeSeg.ForwardMovingTokenize(routerInitialState, this.Router as IForwardMovingTokenizer<T>, out newPos);
+            
+            newTokenOUT = newTokenOUT.HasComposite(childTokens.ToArray());
+
+            newToken = newTokenOUT;
+            newParser = newTokenizerOUT;
+            newPosition = newPosOUT;
 
             return true;
         }

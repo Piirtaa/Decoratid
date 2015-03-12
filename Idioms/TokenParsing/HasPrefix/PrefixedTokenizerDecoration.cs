@@ -83,16 +83,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
             }
         }
         public T[][] Prefixes { get; private set; }
-        private T[] GetPrefix(T[] source, int currentPosition)
-        {
-            var substring = source.GetSegment(currentPosition);
 
-            foreach (T[] each in this.Prefixes)
-                if (substring.StartsWithSegment(each))
-                    return each;
-
-            return null;
-        }
 
         public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken, out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
@@ -101,7 +92,7 @@ namespace Decoratid.Idioms.TokenParsing.HasPrefix
             var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
 
             //decorate token with prefix
-            var prefix = this.GetPrefix(source, currentPosition);
+            var prefix = source.FindMatchingPrefix(currentPosition, this.Prefixes);
             newTokenOUT = newTokenOUT.HasPrefix(prefix);
 
             newToken = newTokenOUT;

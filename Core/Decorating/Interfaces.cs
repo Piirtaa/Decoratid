@@ -41,6 +41,11 @@ namespace Decoratid.Core.Decorating
         object Outer { get; }
     }
 
+    public interface ITogglingDecoration : IDecoration
+    {
+        bool IsDecorationEnabled { get; set; }
+    }
+
     /// <summary>
     /// a generic decoration
     /// </summary>

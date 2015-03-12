@@ -73,16 +73,7 @@ namespace Decoratid.Idioms.TokenParsing
             return rv;
         }
 
-        public static string DumpToken<T>(IToken<T> token)
-        {
-            var rv = string.Format("TokenizerId:{0} StartPos:{1} Data:{2} Comment:{3}",
-                token.As<IHasTokenizerId<T>>(false).With(x => x.TokenizerId),
-                token.As<IStartEndPositionalToken<T>>(false).WithValueType(x => x.StartPos),
-                string.Join("", token.TokenData),
-                token.As<IHasCommentToken<T>>(false).With(x => x.Comment));
 
-            return rv;
-        }
         /// <summary>
         /// tokenizes until it can't anymore
         /// </summary>
@@ -138,7 +129,7 @@ namespace Decoratid.Idioms.TokenParsing
                         //decorate token with positional info
                         token = token.HasStartEnd(startPos, pos);
 
-                        Debug.WriteLine(string.Format("ForwardMovingTokenize. Token={0}", DumpToken(token)));
+                        Debug.WriteLine(string.Format("ForwardMovingTokenize. Token={0}", token.DumpToken()));
 
                         rv.Add(token);
                     }

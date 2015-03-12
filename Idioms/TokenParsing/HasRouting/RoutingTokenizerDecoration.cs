@@ -117,8 +117,8 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
         }
         public TokenizerItem GetTokenizer(T[] source, int currentPosition, object state, IToken<T> currentToken)
         {
-           // Debug.WriteLine("Router getting tokenizer @ {0} of {1}", currentPosition, string.Join("", source));
-
+            Debug.WriteLine("Router getting tokenizer @ {0} {1}", currentPosition, string.Join("", source.GetSegment(currentPosition)));
+           
             //if we're passed the end of the source, return null
             if (source.Length <= currentPosition)
                 return null;
@@ -133,7 +133,8 @@ namespace Decoratid.Idioms.TokenParsing.HasRouting
                 if (sd != null)
                     if (sd.CanHandle(source, currentPosition, state, currentToken))
                     {
-                       // Debug.WriteLine("Router gets {0}", each.Id);
+                        Debug.WriteLine("Router gets {0}", each.Id);
+                        
                         return each;
                     }
             }

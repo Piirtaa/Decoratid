@@ -21,6 +21,7 @@ using Decoratid.Core;
 using CuttingEdge.Conditions;
 using Decoratid.Core.Logical;
 using Decoratid.Core.Decorating;
+using System.Diagnostics;
 
 namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 {
@@ -75,8 +76,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             #region Primitive-y Tokenizers - all routing unhydrated
             //store token starts with @ and ends with any punctuation
             var storeTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasSuffix(false, at, dot, comma, openParenthesis, closeParenthesis, hash, openBracket, closeBracket)
+                .HasSuffixDelimitedLengthStrategy(at, dot, comma, openParenthesis, closeParenthesis, hash, openBracket, closeBracket)
                 .HasPrefix(at)
+                .HasSuffix(false, at, dot, comma, openParenthesis, closeParenthesis, hash, openBracket, closeBracket)
                 .HasValueFactory(token =>
                 {
                     string storeName = new string(token.TokenData);
@@ -94,8 +96,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
             //id token starts with [ and ends with ]. brackets are non-nesting
             var idTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasSuffix(true, closeBracket)
+                .HasSuffixDelimitedLengthStrategy(closeBracket)
                 .HasPrefix(openBracket)
+                .HasSuffix(true, closeBracket)
                 .HasValueFactory(token =>
                 {
                     string id = new string(token.TokenData);
@@ -104,14 +107,16 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
 
             //op token starts with . and ends with ( or .
             var opTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasSuffix(false, dot, openParenthesis)
+                .HasSuffixDelimitedLengthStrategy(dot, openParenthesis)
                 .HasPrefix(dot)
+                .HasSuffix(false, dot, openParenthesis)
                 .HasId("Op");
 
             //ness token starts with # and ends with ( or .
             var nessTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasSuffix(false, dot, openParenthesis)
+                .HasSuffixDelimitedLengthStrategy(dot, openParenthesis)
                 .HasPrefix(hash)
+                .HasSuffix(false, dot, openParenthesis)
                 .HasValueFactory(token =>
                 {
                     string nessName = new string(token.TokenData);
@@ -145,13 +150,9 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             //is a compound that recurses the whole stack 
             //uses the mainRouter to recurse, but is not registered with it as it's not a high level token
             var parenthesisTokenizer = NaturallyNotImplementedForwardMovingTokenizer<char>.New()
-                .HasLengthStrategy(LogicOfTo<ForwardMovingTokenizingCursor<char>, int>.New(cursor =>
-                {
-                    var rv = GetPositionOfComplement(cursor.Source, openParenthesis, closeParenthesis, cursor.CurrentPosition);
-
-                    return rv - cursor.CurrentPosition;
-                }))
+                .HasPairDelimitedLengthStrategy(openParenthesis, closeParenthesis)
                 .HasPrefix(openParenthesis)
+                .HasSuffix(true, closeParenthesis)
                 .MakeComposite(mainRouter)
                 .HasId("Parenthesis");
 
@@ -181,47 +182,15 @@ namespace Decoratid.Idioms.TokenParsing.CommandLine.Lexing
             int newPos;
             var rv = text.ToCharArray().ForwardMovingTokenize(null, tokenizer, out newPos);
 
+            Debug.WriteLine(Environment.NewLine);
+            Debug.WriteLine(string.Format("Tokenizing of {0} complete", text));
             rv.WithEach(x =>
             {
-
+                Debug.Write(x.DumpToken());
             });
 
             return rv;
         }
-        /// <summary>
-        /// Parsing helper.  Looks for the next "right" segment such that the count of "left" and "right" segments
-        /// are equal.  This ensures we get a well-formed bracketing of left and right.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <param name="startPos"></param>
-        /// <returns></returns>
-        public static int GetPositionOfComplement<T>( T[] source, T[] left, T[] right, int startPos = 0)
-        {
-            //  Condition.Requires(source.StartsWithSegment(left)).IsTrue();
 
-            int pos = startPos;
-            int unmatchedpairs = 0;
-            for (int i = startPos; i < source.Length; i++)
-            {
-                pos = i;
-
-                if (source.StartsWithSegment(left, i))
-                {
-                    unmatchedpairs++;
-                    i += left.Length;
-                }
-                if (source.StartsWithSegment(right, i))
-                {
-                    unmatchedpairs--;
-                    i += left.Length;
-                }
-                if (unmatchedpairs == 0)
-                    break;
-            }
-            return pos;
-        }
     }
 }

@@ -449,7 +449,44 @@ namespace Decoratid.Core.Decorating
 
     public static class DecorationExtensions
     {
+        public static bool ToggleDecoration(this object obj, bool isEnabled, Type decType, bool exactTypeMatch = true)
+        {
+            if (obj == null)
+                return false;
 
+            var dec = obj.As(decType, exactTypeMatch);
+
+            if (dec == null)
+                return false;
+
+            if (dec is ITogglingDecoration)
+            {
+                (dec as ITogglingDecoration).IsDecorationEnabled = isEnabled;
+                return true;
+            }
+            return false;
+        }
+        public static bool ToggleDecoration<T>(this object obj, bool isEnabled, bool exactTypeMatch = true)
+        {
+            return obj.ToggleDecoration(isEnabled, typeof(T), exactTypeMatch);
+        }
+
+        /// <summary>
+        /// returns a textual decoration summary of "id, layers"
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string GetDecorationSummary(this object obj)
+        {
+            if (obj == null)
+                return null;
+
+            var cake = obj.GetAllDecorations();
+            var id = obj.As<IHasId>(false).With(x => x.Id.ToString());
+
+            var rv = string.Format("{0}, {1}", id == null ? "<NULL>" : id, string.Join(", ", (from o in cake select o.GetType().Name).ToList()));
+            return rv;
+        }
 
         #region Decoration Signatures
         ///// <summary>
@@ -522,4 +559,7 @@ namespace Decoratid.Core.Decorating
         //    return rv;
         //}
     }
+
+    //TODO: enable/disable layer switch
+
 }

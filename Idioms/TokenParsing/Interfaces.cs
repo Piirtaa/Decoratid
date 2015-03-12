@@ -1,14 +1,13 @@
-﻿using CuttingEdge.Conditions;
-using Decoratid.Core;
-using Decoratid.Idioms.Stringing;
+﻿using Decoratid.Core.Decorating;
+using Decoratid.Extensions;
+using Decoratid.Idioms.TokenParsing.HasComment;
+using Decoratid.Idioms.TokenParsing.HasComposite;
+using Decoratid.Idioms.TokenParsing.HasStartEnd;
+using Decoratid.Idioms.TokenParsing.HasTokenizerId;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Decoratid.Extensions;
-using Decoratid.Core.Conditional.Of;
-using Decoratid.Core.Logical;
+
 
 namespace Decoratid.Idioms.TokenParsing
 {
@@ -67,7 +66,49 @@ namespace Decoratid.Idioms.TokenParsing
         }
     }
 
+    public static class TokenizingExtensions
+    {
+        public static string DumpToken<T>(this IToken<T> token)
+        {
+            List<Tuple<int, string>> state = new List<Tuple<int, string>>();
+            dumpToken(token, 0, state);
 
+            return DumpLeveledLines(state);
+        }
+        private static void dumpToken<T>(IToken<T> token, int indentLevel, List<Tuple<int,string>> state)
+        {
+            var rv = string.Format("TokenizerId:{0} StartPos:{1} Data:{2} Comment:{3}",
+                token.As<IHasTokenizerId<T>>(false).With(x => x.TokenizerId),
+                token.As<IStartEndPositionalToken<T>>(false).WithValueType(x => x.StartPos),
+                string.Join("", token.TokenData),
+                token.As<IHasCommentToken<T>>(false).With(x => x.Comment));
+
+            state.Add(new Tuple<int, string>(indentLevel, rv));
+
+            var comp = token.As<HasCompositeTokenDecoration<T>>();
+            if (comp != null && comp.ChildTokens != null)
+            {
+                foreach (var each in comp.ChildTokens)
+                    dumpToken(each, indentLevel + 1, state);
+            }
+        }
+
+        private static string DumpLeveledLines(List<Tuple<int, string>> data)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var each in data)
+            {
+                if(each.Item2.EndsWith(Environment.NewLine))
+                    sb.Append("/t".RepeatString(each.Item1) + each.Item2);
+                else
+                    sb.AppendLine("/t".RepeatString(each.Item1) + each.Item2);
+                
+            }
+
+            return sb.ToString();
+        }
+    }
     
     #region String Implementations
 

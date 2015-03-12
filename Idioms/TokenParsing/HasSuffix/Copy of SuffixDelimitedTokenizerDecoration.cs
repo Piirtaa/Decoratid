@@ -19,15 +19,11 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
     /// <summary>
     /// parses from current spot to any of the suffixes
     /// </summary>
-    public interface ISuffixDelimitedTokenizerDecoration<T> : IForwardMovingTokenizer<T> 
+    public interface ISuffixDelimitedTokenizerDecoration<T> : IHasHandleConditionTokenizer<T>, IKnowsLengthTokenizerDecoration<T> 
     {
         T[][] Suffixes { get; }
-
         /// <summary>
-        /// does the parser/tokenizer that pulls the raw token data include the suffix, 
-        /// or is this determined after the parse?  in other words, does the NEXT cursor position
-        /// include the suffix (eg. IsInclusive = false), or does the CURRENT token include the suffix 
-        /// (eg. IsInclusive = true).
+        /// do we include the suffix in the produced token?
         /// </summary>
         bool IsInclusive { get;}
     }
@@ -41,7 +37,7 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
     {
         #region Ctor
         public SuffixDelimitedTokenizerDecoration(IForwardMovingTokenizer<T> decorated, bool isInclusive, params T[][] suffixes)
-            : base(decorated)
+            : base(decorated.KnowsLength())
         {
             Condition.Requires(suffixes).IsNotEmpty();
             this.Suffixes = suffixes;
@@ -71,30 +67,55 @@ namespace Decoratid.Idioms.TokenParsing.HasSuffix
         public bool IsInclusive { get; private set; }
         public T[][] Suffixes { get; private set; }
 
+        public IConditionOf<ForwardMovingTokenizingCursor<T>> CanTokenizeCondition
+        {
+            get
+            {
+                var cond = StrategizedConditionOf<ForwardMovingTokenizingCursor<T>>.New((x) =>
+                {
+                    T[] seg = null;
 
-        public override bool Parse(T[] source, int currentPosition, object state, IToken<T> currentToken,
+                    var closestIdx = x.Source.FindNearestIndexOf(this.Suffixes, out seg, x.CurrentPosition);
+                    
+                    //if we can't find a suffix, we kack
+                    return (closestIdx > -1);
+                });
+                return cond;
+            }
+        }
+
+        public override bool Parse(T[] dataToTokenize, int currentPosition, object state, IToken<T> currentToken,
             out int newPosition, out IToken<T> newToken, out IForwardMovingTokenizer<T> newParser)
         {
-            IToken<T> newTokenOUT = null;
+            //for all the suffixes this parses to, finds the nearest one (nongreedy)
+            int closestIdx = -1;
+            T[] suffix = null;
 
-            var rv = this.Decorated.Parse(source, currentPosition, state, currentToken, out newPosition, out newTokenOUT, out newParser);
+            closestIdx = dataToTokenize.FindNearestIndexOf(this.Suffixes, out suffix, currentPosition);
 
+            //if we can't find a suffix, we kack
+            if (closestIdx == -1)
+            {
+                newParser = null;
+                newToken = null;
+                newPosition = -1;
+                return false;
+            }
 
+            newPosition = closestIdx;
             if (this.IsInclusive)
-            {
-                //decorate token with suffix
-                var suffix = newTokenOUT.TokenData.FindMatchingSuffix(this.Suffixes);
-                newTokenOUT = newTokenOUT.HasSuffix(suffix, this.IsInclusive);
-            }
-            else
-            {
-                //find which suffix is first
-                var suffix = source.FindMatchingPrefix(newPosition, this.Suffixes);
-                newTokenOUT = newTokenOUT.HasSuffix(suffix, this.IsInclusive);
-            }
+                newPosition += suffix.Length;
 
-            newToken = newTokenOUT;
-            return rv;
+            //get string between old and new positions
+            var tokenText = dataToTokenize.GetSegment(currentPosition, newPosition - currentPosition);
+
+            //returns a suffixed natural token
+            newToken = NaturalToken<T>.New(tokenText).HasSuffix(suffix, this.IsInclusive);
+
+            //we don't know what parser to use next
+            newParser = null;
+
+            return true;
         }
 
         #endregion
